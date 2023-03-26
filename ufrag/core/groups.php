@@ -123,7 +123,7 @@ class Groups extends Core
 
 		foreach ($this->_groups as $group_id => &$group)
 		{
-			if (array_key_exists('user', $group))
+			if (array_key_exists('users', $group))
 			{
 				$group['url'] = url_title($group_id).($group['auto'] != 'ufrag' ? '/'.$group['name'] : '');
 			}

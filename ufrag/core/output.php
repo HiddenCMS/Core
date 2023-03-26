@@ -7,7 +7,6 @@
 namespace UF\uFrag\Core;
 
 use UF\uFrag\Core;
-use UF\uFrag\Exception;
 
 class Output extends Core
 {
@@ -259,7 +258,7 @@ class Output extends Core
 								->append($output);
 			}
 		}
-		catch (Exception $e)
+		catch (\UF\uFrag\Exception $e)
 		{
 			$error = TRUE;
 			$this->_error = (string)$e;

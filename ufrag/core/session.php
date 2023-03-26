@@ -97,7 +97,7 @@ class Session extends Core
 			$user->set('last_activity_date', uFrag()->date())->update();
 		}
 
-		$this	->trigger('sessions_init', $this)
+		$this	->trigger('session_init', $this)
 				->debug->bar('session', function(){
 					return $this->_data->__toArray();
 				});
@@ -136,7 +136,7 @@ class Session extends Core
 						->set_if($remember !== NULL, 'remember', $remember)
 						->update();
 
-		$this	->model2('sessions_history')
+		$this	->model2('session_history')
 				->set('user',       $user)
 				->set('ip_address', $ip_address = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : $_SERVER['REMOTE_ADDR'])
 				->set('host_name',  utf8_string(gethostbyaddr($ip_address)))
