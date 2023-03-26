@@ -72,9 +72,9 @@ class News extends Model
 						->join('news_lang nl',            'n.news_id     = nl.news_id')
 						->join('news_categories c',       'n.category_id = c.category_id')
 						->join('news_categories_lang cl', 'c.category_id = cl.category_id')
-						->join('users u',                 'u.id          = n.user_id AND u.deleted = "0"')
-						->join('users_profile up',        'u.id          = up.id')
-						->join('sessions       s',        'u.id          = s.user_id')
+						->join('user u',                 'u.id          = n.user_id AND u.deleted = "0"')
+						->join('user_profile up',        'u.id          = up.id')
+						->join('session       s',        'u.id          = s.user_id')
 						->where('n.news_id', $news_id)
 						->where('nl.lang', $lang)
 						->where('cl.lang', $lang);
