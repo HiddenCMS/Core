@@ -47,9 +47,10 @@ class Groups extends Core
 		];
 
 		$groups = $this->db	->select('g.group_id', 'g.name', 'g.color', 'g.icon', 'g.hidden', 'IFNULL(gl.title, g.name) AS title', 'g.auto')
-							->from('groups g')
+							->from('groups_def g')
 							->join('groups_lang gl', 'gl.group_id = g.group_id')
-							->where('gl.lang', is_object($this->config->lang) ? $this->config->lang->info()->name : NULL)
+							->where('gl.lang', $this->config->lang->info()->name, 'OR')
+							->where('gl.lang', NULL)
 							->order_by('g.order')
 							->get();
 
