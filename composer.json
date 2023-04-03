@@ -1,13 +1,13 @@
 {
-    "name": "ufragcms/core",
-    "description": "uFragCMS, easy php cms",
+    "name": "hiddencms/core",
+    "description": "HiddenCMS, php cms",
     "type": "project",
     "license": "GPL-3.0-only",
     "minimum-stability": "stable",
     "authors": [
         {
-            "name": "BloberSh",
-            "email": "ufrag@hiddenblob.com"
+            "name": "HiddenBlob",
+            "email": "contact@hiddenblob.com"
         }
     ],
     "require": {
