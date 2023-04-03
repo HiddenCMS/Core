@@ -4,11 +4,11 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Tools\Controllers;
+namespace HD\Modules\Tools\Controllers;
 
 use Exception;
 use Leafo\ScssPhp\Compiler;
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Api extends Controller_Module
 {

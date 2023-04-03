@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Admin\Controllers;
+namespace HD\Modules\Admin\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -30,7 +30,7 @@ class Admin extends Controller_Module
 				],
 				[
 					'content' => function($data){
-						return uFrag()->user->link($data['id'], $data['username']);
+						return Hidden()->user->link($data['id'], $data['username']);
 					}
 				],
 				[

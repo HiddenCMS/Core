@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Settings\Controllers;
+namespace HD\Modules\Settings\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {

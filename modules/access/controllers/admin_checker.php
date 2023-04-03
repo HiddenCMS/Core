@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Access\Controllers;
+namespace HD\Modules\Access\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module_Checker;
+use HD\Hidden\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
@@ -14,7 +14,7 @@ class Admin_Checker extends Module_Checker
 	{
 		$modules = $objects = [];
 
-		foreach (uFrag()->model2('addon')->get('module') as $module)
+		foreach (Hidden()->model2('addon')->get('module') as $module)
 		{
 			foreach ($module->get_permissions() as $type => $access)
 			{

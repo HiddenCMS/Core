@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Search;
+namespace HD\Widgets\Search;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class Search extends Widget
 {
@@ -16,7 +16,7 @@ class Search extends Widget
 			'title'       => $this->lang('Rechercher'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>'
 		];
 	}

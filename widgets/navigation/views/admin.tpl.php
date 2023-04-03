@@ -32,7 +32,7 @@
 					<?php
 					$modules = [];
 
-					foreach (uFrag()->model2('addon')->get('module') as $module)
+					foreach (Hidden()->model2('addon')->get('module') as $module)
 					{
 						if (@$module->controller('index') && !in_array($module->name, ['live_editor', 'pages']))
 						{
@@ -43,7 +43,7 @@
 					array_natsort($modules);
 
 					$modules = array_merge([
-						'index' => uFrag()->lang('Accueil')
+						'index' => Hidden()->lang('Accueil')
 					], $modules);
 					?>
 					<div class="list-group mt-3">

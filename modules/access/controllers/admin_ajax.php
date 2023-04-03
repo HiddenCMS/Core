@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Access\Controllers;
+namespace HD\Modules\Access\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
@@ -16,7 +16,7 @@ class Admin_Ajax extends Controller_Module
 
 		foreach (array_keys($this->groups()) as $group_id)
 		{
-			$groups[$group_id] = uFrag()->access($module_name, $action, $id, $group_id);
+			$groups[$group_id] = Hidden()->access($module_name, $action, $id, $group_id);
 		}
 
 		return $this->col(
@@ -77,7 +77,7 @@ class Admin_Ajax extends Controller_Module
 						[
 						'title'   => $this->lang('Membre'),
 						'content' => function($data){
-							return uFrag()->user->link($data['user_id'], $data['username']).'<span data-user-id="'.$data['user_id'].'"></span>';
+							return Hidden()->user->link($data['user_id'], $data['username']).'<span data-user-id="'.$data['user_id'].'"></span>';
 						},
 						'sort'    => function($data){
 							return $data['username'];
@@ -89,13 +89,13 @@ class Admin_Ajax extends Controller_Module
 					[
 						'title'   => $this->lang('Groupes'),
 						'content' => function($data){
-							return uFrag()->groups->user_groups($data['user_id']);
+							return Hidden()->groups->user_groups($data['user_id']);
 						},
 						'sort'    => function($data){
-							return uFrag()->groups->user_groups($data['user_id'], FALSE);
+							return Hidden()->groups->user_groups($data['user_id'], FALSE);
 						},
 						'search'  => function($data){
-							return uFrag()->groups->user_groups($data['user_id'], FALSE);
+							return Hidden()->groups->user_groups($data['user_id'], FALSE);
 						}
 					],
 					[
@@ -132,7 +132,7 @@ class Admin_Ajax extends Controller_Module
 
 							if ($admins === NULL)
 							{
-								$admins = uFrag()->groups()['admins']['users'];
+								$admins = Hidden()->groups()['admins']['users'];
 							}
 
 							return in_array($data['user_id'], $admins) ? '<td></td>' : $this->view('radio', [
@@ -145,7 +145,7 @@ class Admin_Ajax extends Controller_Module
 				])
 				->data($this->db->select('id as user_id', 'username')->from('user')->where('deleted', FALSE)->get())
 				->preprocessing(function($row) use ($module_name, $action, $id){
-					$row['active'] = uFrag()->access($module_name, $action, $id, NULL, $row['user_id']);
+					$row['active'] = Hidden()->access($module_name, $action, $id, NULL, $row['user_id']);
 					return $row;
 				})
 				->sort_by(3, SORT_DESC)

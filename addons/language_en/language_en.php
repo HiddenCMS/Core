@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Language_En;
+namespace HD\Addons\Language_En;
 
-use UF\uFrag\Addons\Language;
+use HD\Hidden\Addons\Language;
 
 class Language_En extends Language
 {
@@ -17,7 +17,7 @@ class Language_En extends Language
 			'icon'    => '🇬🇧',
 			'version' => '1.0',
 			'depends' => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			]
 		];
 	}

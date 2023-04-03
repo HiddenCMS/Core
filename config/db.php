@@ -4,6 +4,6 @@ $db[] = [
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-	'database' => 'ufragcms',
+	'database' => 'hidden',
 	'driver'   => 'mysqli'
 ];

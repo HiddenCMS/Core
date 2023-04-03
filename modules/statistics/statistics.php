@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Statistics;
+namespace HD\Modules\Statistics;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class Statistics extends Module
 {
@@ -17,7 +17,7 @@ class Statistics extends Module
 			'description' => '',
 			'icon'        => 'far fa-chart-bar',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE
 		];

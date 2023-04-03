@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Statistics\Models;
+namespace HD\Modules\Statistics\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Statistics extends Model
 {
@@ -17,7 +17,7 @@ class Statistics extends Model
 
 		$i = 0;
 
-		foreach (uFrag()->model2('addon')->get('module') as $module)
+		foreach (Hidden()->model2('addon')->get('module') as $module)
 		{
 			if ($controller = @$module->controller('statistics'))
 			{

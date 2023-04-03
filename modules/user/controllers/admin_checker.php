@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Controllers;
+namespace HD\Modules\User\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module_Checker;
+use HD\Hidden\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
@@ -63,7 +63,7 @@ class Admin_Checker extends Module_Checker
 
 	public function _sessions($page = '')
 	{
-		return [uFrag()->collection('session')->order_by('_.last_activity DESC')->paginate($page)];
+		return [Hidden()->collection('session')->order_by('_.last_activity DESC')->paginate($page)];
 	}
 
 	public function _sessions_delete($session_id)

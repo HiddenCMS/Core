@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\uFrag\Models;
+namespace HD\Hidden\Models;
 
-use UF\uFrag\Loadables\Model2;
+use HD\Hidden\Loadables\Model2;
 
 class User extends Model2
 {
@@ -94,6 +94,7 @@ class User extends Model2
 		{
 			return '';
 		}
+		$this->js('popover');
 
 		return '<a data-popover-ajax="'.url('ajax/user/'.$user_id.'/'.url_title($username)).'" href="'.url('///user/'.$user_id.'/'.url_title($username)).'">'.$prefix.$username.'</a>';
 	}
@@ -122,11 +123,11 @@ class User extends Model2
 
 	public function password($password)
 	{
-		if (uFrag()->password->is_valid($password.$this->salt, $this->password, $salt = $this->salt !== ''))
+		if (Hidden()->password->is_valid($password.$this->salt, $this->password, $salt = $this->salt !== ''))
 		{
 			if (!$salt)
 			{
-				$this	->set('password', uFrag()->password->encrypt($password.($salt = unique_id())))
+				$this	->set('password', Hidden()->password->encrypt($password.($salt = unique_id())))
 						->set('salt', $salt)
 						->update();
 			}
@@ -139,13 +140,13 @@ class User extends Model2
 
 	public function set_password($password)
 	{
-		$this	->set('password', uFrag()->password->encrypt($password.($salt = unique_id())))
+		$this	->set('password', Hidden()->password->encrypt($password.($salt = unique_id())))
 				->set('salt', $salt);
 
 		if ($this())
 		{
 			$this	->sessions()
-					->where_if(uFrag()->user() && uFrag()->user->id == $this->id, 'id <>', uFrag()->session->id)
+					->where_if(Hidden()->user() && Hidden()->user->id == $this->id, 'id <>', Hidden()->session->id)
 					->update([
 						'user_id' => NULL
 					]);
@@ -156,7 +157,7 @@ class User extends Model2
 
 	public function sessions()
 	{
-		return uFrag()->collection('session')
+		return Hidden()->collection('session')
 						->where('_.user_id', $this->id);
 	}
 

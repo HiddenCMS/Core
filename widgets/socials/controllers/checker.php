@@ -4,9 +4,9 @@
  * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace UF\Widgets\Socials\Controllers;
+namespace HD\Widgets\Socials\Controllers;
 
-use UF\uFrag\Loadables\Controller;
+use HD\Hidden\Loadables\Controller;
 
 class Checker extends Controller
 {

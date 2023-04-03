@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Header\Controllers;
+namespace HD\Widgets\Header\Controllers;
 
-use UF\uFrag\Loadables\Controller;
+use HD\Hidden\Loadables\Controller;
 
 class Checker extends Controller
 {

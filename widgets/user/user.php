@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\User;
+namespace HD\Widgets\User;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class User extends Widget
 {
@@ -16,7 +16,7 @@ class User extends Widget
 			'title'       => $this->lang('Espace membre'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
 				'index'          => $this->lang('Espace membre'),

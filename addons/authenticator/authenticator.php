@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator;
+namespace HD\Addons\Authenticator;
 
-use UF\uFrag\Loadables\Addon;
+use HD\Hidden\Loadables\Addon;
 
 class Authenticator extends Addon
 {
@@ -17,7 +17,7 @@ class Authenticator extends Addon
 			'icon'    => 'fas fa-sign-in-alt',
 			'version' => '1.0',
 			'depends' => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			]
 		];
 	}

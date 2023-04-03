@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Contact\Controllers;
+namespace HD\Modules\Contact\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Ajax extends Controller_Module
 {

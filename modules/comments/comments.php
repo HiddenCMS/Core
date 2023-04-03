@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Comments;
+namespace HD\Modules\Comments;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class Comments extends Module
 {
@@ -17,7 +17,7 @@ class Comments extends Module
 			'description' => '',
 			'icon'        => 'far fa-comments',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'routes'      => [
@@ -28,7 +28,7 @@ class Comments extends Module
 
 	public function __invoke($module, $module_id = 0)
 	{
-		if (is_a($module, 'UF\uFrag\Loadables\Model2'))
+		if (is_a($module, 'HD\Hidden\Loadables\Model2'))
 		{
 			$module_id = $module->id;
 			$module    = $module->__table;

@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Search\Controllers;
+namespace HD\Widgets\Search\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HD\Hidden\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {

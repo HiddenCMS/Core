@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Monitoring;
+namespace HD\Modules\Monitoring;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class Monitoring extends Module
 {
@@ -17,7 +17,7 @@ class Monitoring extends Module
 			'description' => '',
 			'icon'        => 'fas fa-heartbeat',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE
 		];

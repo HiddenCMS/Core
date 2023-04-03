@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator_Google;
+namespace HD\Addons\Authenticator_Google;
 
-use UF\uFrag\Addons\Authenticator;
+use HD\Hidden\Addons\Authenticator;
 
 class Authenticator_Google extends Authenticator
 {

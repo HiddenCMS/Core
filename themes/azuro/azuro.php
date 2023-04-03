@@ -4,9 +4,9 @@
  * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace UF\Themes\Azuro;
+namespace HD\Themes\Azuro;
 
-use UF\uFrag\Addons\Theme;
+use HD\Hidden\Addons\Theme;
 
 class Azuro extends Theme
 {
@@ -20,7 +20,7 @@ class Azuro extends Theme
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0.0',
 			'depends' => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			],
 			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];
@@ -353,7 +353,7 @@ class Azuro extends Theme
 
 	public function uninstall($remove = TRUE)
 	{
-		uFrag()->model2('file', $this->config->azuro_background)->delete();
+		Hidden()->model2('file', $this->config->azuro_background)->delete();
 
 		$this	->config->unset('azuro_background')
 				->config->unset('azuro_background_repeat')

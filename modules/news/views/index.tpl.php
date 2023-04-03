@@ -1,6 +1,6 @@
 <?php if ($image): ?>
 	<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>">
-		<img class="card-img-top" src="<?php echo uFrag()->model2('file', $image)->path() ?>" alt="" />
+		<img class="card-img-top" src="<?php echo Hidden()->model2('file', $image)->path() ?>" alt="" />
 	</a>
 <?php endif ?>
 <div class="card-body">

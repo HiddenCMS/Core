@@ -6,10 +6,10 @@
 
  require 'vendor/autoload.php';
 
-define('UFRAG_MEMORY',  memory_get_usage());
-define('UFRAG_TIME',    microtime(TRUE));
-const UFRAG_CMS = __DIR__;
-const UFRAG_VERSION = '0.0.1';
+define('HIDDEN_MEMORY',  memory_get_usage());
+define('HIDDEN_TIME',    microtime(TRUE));
+const HIDDEN_CMS = __DIR__;
+const HIDDEN_VERSION = '0.0.1';
 
 error_reporting(E_ALL);
 
@@ -21,7 +21,7 @@ if (file_exists('install/index.php'))
 {
 	if (file_exists('install/db.txt'))
 	{
-		define('UFRAG_INSTALL', TRUE);
+		define('HIDDEN_INSTALL', TRUE);
 	}
 	else
 	{
@@ -32,7 +32,7 @@ if (file_exists('install/index.php'))
 mb_regex_encoding('UTF-8');
 mb_internal_encoding('UTF-8');
 
-require_once 'config/ufrag.php';
+require_once 'config/hidden.php';
 
 function class_name($name): string
 {
@@ -48,9 +48,9 @@ function class_name($name): string
 	return implode('\\', $name);
 }
 
-function uFrag()
+function Hidden()
 {
-	static $uFrag;
+	static $Hidden;
 
 	if ($args = func_get_args())
 	{
@@ -63,7 +63,7 @@ function uFrag()
 			return;
 		}
 
-		if ($debug = UFRAG_DEBUG_BAR || UFRAG_LOGS)
+		if ($debug = HIDDEN_DEBUG_BAR || HIDDEN_LOGS)
 		{
 			$memory = memory_get_usage();
 			$time   = microtime(TRUE);
@@ -79,16 +79,16 @@ function uFrag()
 			];
 		}
 
-		if (!$uFrag)
+		if (!$Hidden)
 		{
-			$uFrag = $object;
+			$Hidden = $object;
 		}
 
 		return $object;
 	}
 	else
 	{
-		return $uFrag;
+		return $Hidden;
 	}
 }
 
@@ -141,7 +141,7 @@ foreach ([
 		] as $helper
 	)
 {
-	require_once 'ufrag/helpers/'.$helper.'.php';
+	require_once 'hidden/helpers/'.$helper.'.php';
 }
 
 spl_autoload_register(function($name){
@@ -160,7 +160,7 @@ spl_autoload_register(function($name){
 	}
 });
 
-uFrag('UF\uFrag\uFrag')->__path(function ($caller, $type, $file){
+Hidden('HD\Hidden\Hidden')->__path(function ($caller, $type, $file){
     $file = [$file];
 
     if (!in_array($type, ['addons', 'assets'])) {
@@ -168,12 +168,12 @@ uFrag('UF\uFrag\uFrag')->__path(function ($caller, $type, $file){
             array_unshift($file, $type);
         }
 
-        array_unshift($file, 'ufrag');
+        array_unshift($file, 'hidden');
     }
 
     $file = implode('/', $file);
 
-    if (!UFRAG_SAFE_MODE) {
+    if (!HIDDEN_SAFE_MODE) {
         yield 'overrides/' . $file;
 
         if (property_exists($caller, 'output') && ($theme = $caller->output->theme())) {
@@ -199,17 +199,17 @@ foreach ([
 	)
 {
 
-uFrag()->{'core_' . $core};
+Hidden()->{'core_' . $core};
 
 }
 
-const UFRAG_CORE = TRUE;
+const HIDDEN_CORE = TRUE;
 
-if (defined('UFRAG_INSTALL'))
+if (defined('HIDDEN_INSTALL'))
 {
 	require_once 'install/index.php';
 }
 
 
-uFrag()->output();
+Hidden()->output();
 

@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Settings\Controllers;
+namespace HD\Modules\Settings\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -17,7 +17,7 @@ class Admin extends Controller_Module
 
 		$modules = $pages = [];
 
-		foreach (uFrag()->model2('addon')->get('module') as $module)
+		foreach (Hidden()->model2('addon')->get('module') as $module)
 		{
 			if (@$module->controller('index') && !in_array($module->info()->name, ['settings', 'user']))
 			{
@@ -606,8 +606,8 @@ class Admin extends Controller_Module
 														->attr('class', 'alert alert-primary')
 														->content('	<h5 class="alert-heading">Mots magiques</h5>
 																	<dl>
-																		<dt>Lien vers uFrag</dt>
-																			<dd>{ufrag}</dd>
+																		<dt>Lien vers Hidden</dt>
+																			<dd>{hidden}</dd>
 																		<dt>Nom du site</dt>
 																			<dd>{name}</dd>
 																		<dt>Symbole '.icon('far fa-copyright').'</dt>

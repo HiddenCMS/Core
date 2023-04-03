@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Copyright\Controllers;
+namespace HD\Widgets\Copyright\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HD\Hidden\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
@@ -14,14 +14,14 @@ class Index extends Controller_Widget
 	{
 		$keywords = [
 			'name'      => '<a href="'.url().'">'.$this->config->name.'</a>',
-			'ufrag'   => '<a href="https://neofr.ag">uFrag</a>',
+			'hidden'   => '<a href="https://neofr.ag">Hidden</a>',
 			'year'      => date('Y'),
 			'copyright' => icon('far fa-copyright')
 		];
 
-		if (!in_string('{ufrag}', $copyright = utf8_html_entity_decode($this->config->copyright)))
+		if (!in_string('{hidden}', $copyright = utf8_html_entity_decode($this->config->copyright)))
 		{
-			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{ufrag}').'</div>';
+			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{hidden}').'</div>';
 		}
 
 		return $this->panel()

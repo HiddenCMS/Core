@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Controllers;
+namespace HD\Modules\User\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -20,16 +20,16 @@ class Admin extends Controller_Module
 			->add_columns([
 				[
 					'content' => function($data){
-						return $data['auto'] != 'ufrag' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
+						return $data['auto'] != 'hidden' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
 					},
 					'size'    => TRUE
 				],
 				[
 					'content' => function($data){
-						return uFrag()->groups->display($data['data_id']);
+						return Hidden()->groups->display($data['data_id']);
 					},
 					'search'  => function($data){
-						return uFrag()->groups->display($data['data_id'], FALSE, FALSE);
+						return Hidden()->groups->display($data['data_id'], FALSE, FALSE);
 					}
 				],
 				[

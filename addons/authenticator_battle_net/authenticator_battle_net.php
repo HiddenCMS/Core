@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator_Battle_Net;
+namespace HD\Addons\Authenticator_Battle_Net;
 
-use UF\uFrag\Addons\Authenticator;
+use HD\Hidden\Addons\Authenticator;
 
 class Authenticator_Battle_Net extends Authenticator
 {

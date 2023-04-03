@@ -4,10 +4,10 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Statistics\Controllers;
+namespace HD\Modules\Statistics\Controllers;
 
 use DateInterval;
-use UF\uFrag\Loadables\Controllers\Module_Checker;
+use HD\Hidden\Loadables\Controllers\Module_Checker;
 
 class Admin_Ajax_Checker extends Module_Checker
 {

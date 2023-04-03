@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Monitoring\Controllers;
+namespace HD\Modules\Monitoring\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module_Checker;
+use HD\Hidden\Loadables\Controllers\Module_Checker;
 
 class Admin_Ajax_Checker extends Module_Checker
 {

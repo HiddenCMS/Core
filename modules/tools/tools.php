@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Tools;
+namespace HD\Modules\Tools;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class Tools extends Module
 {
@@ -17,7 +17,7 @@ class Tools extends Module
 			'description' => '',
 			'icon'        => 'fas fa-wrench',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>'
 		];
 	}

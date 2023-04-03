@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\User\Controllers;
+namespace HD\Widgets\User\Controllers;
 
-use UF\uFrag\Loadables\Controller;
+use HD\Hidden\Loadables\Controller;
 
 class Admin extends Controller
 {

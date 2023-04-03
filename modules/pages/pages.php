@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Pages;
+namespace HD\Modules\Pages;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class Pages extends Module
 {
@@ -17,7 +17,7 @@ class Pages extends Module
 			'description' => '',
 			'icon'        => 'far fa-file',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'routes'      => [
@@ -61,10 +61,10 @@ class Pages extends Module
 			],
 			'page' => [
 				'get_all' => function(){
-					return uFrag()->db->select('p.page_id', 'CONCAT_WS(" ", "Page", pl.title)')->from('pages p')->join('pages_lang pl', 'p.page_id = pl.page_id')->where('pl.lang', $this->config->lang->info()->name)->get();
+					return Hidden()->db->select('p.page_id', 'CONCAT_WS(" ", "Page", pl.title)')->from('pages p')->join('pages_lang pl', 'p.page_id = pl.page_id')->where('pl.lang', $this->config->lang->info()->name)->get();
 				},
 				'check'   => function($page_id){
-					if (($page = uFrag()->db->select('title')->from('pages_lang')->where('page_id', $page_id)->where('lang', $this->config->lang->info()->name)->row()) !== [])
+					if (($page = Hidden()->db->select('title')->from('pages_lang')->where('page_id', $page_id)->where('lang', $this->config->lang->info()->name)->row()) !== [])
 					{
 						return 'Page '.$page;
 					}

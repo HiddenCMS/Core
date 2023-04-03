@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Html;
+namespace HD\Widgets\Html;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class Html extends Widget
 {
@@ -16,7 +16,7 @@ class Html extends Widget
 			'title'       => $this->lang('Contenu libre / Code HTML'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
 				'index' => $this->lang('Contenu libre'),

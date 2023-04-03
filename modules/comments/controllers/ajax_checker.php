@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Comments\Controllers;
+namespace HD\Modules\Comments\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module_Checker;
+use HD\Hidden\Loadables\Controllers\Module_Checker;
 
 class Ajax_Checker extends Module_Checker
 {

@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Module;
+namespace HD\Widgets\Module;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class Module extends Widget
 {
@@ -16,7 +16,7 @@ class Module extends Widget
 			'title'       => 'Module',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>'
 		];
 	}

@@ -14,7 +14,7 @@
 			<tr data-action="<?php echo $name ?>">
 				<td class="text-primary"><?php echo icon($access['icon']).' '.$access['title'] ?></td>
 				<td class="access-count">
-					<?php echo uFrag()->access->count($module, $name, $id) ?>
+					<?php echo Hidden()->access->count($module, $name, $id) ?>
 				</td>
 			</tr>
 			<?php endforeach ?>

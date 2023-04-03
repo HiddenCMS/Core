@@ -1,4 +1,4 @@
-<?php if (!defined('UFRAG_CMS')) exit;
+<?php if (!defined('HIDDEN_CMS')) exit;
 
 $step = array_key_exists('step', $_GET) ? $_GET['step'] : '';
 $output = [];
@@ -118,7 +118,7 @@ if ($step == 'check')
 			$get = function($ssl = TRUE) use (&$output){
 				$ch = curl_init();
 
-				curl_setopt($ch, CURLOPT_URL, 'https://vc.ufragcms.hiddenblob.com/version.json?v=last');
+				curl_setopt($ch, CURLOPT_URL, 'https://vc.hiddencms.hiddenblob.com/version.json?v=last');
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
@@ -131,12 +131,12 @@ if ($step == 'check')
 
 				$content = json_decode(curl_exec($ch));
 
-				if ($content && $content->ufrag->version != UFRAG_VERSION)
+				if ($content && $content->hidden->version != HIDDEN_VERSION)
 				{
 					$output[] =[
-						'title' => 'µFrag '.UFRAG_VERSION,
+						'title' => 'µFrag '.HIDDEN_VERSION,
 						'info'  => [
-							lang('Dernière version') => $content->ufrag->version
+							lang('Dernière version') => $content->hidden->version
 						],
 						'icon'  => 'danger'
 					];
@@ -164,7 +164,7 @@ if ($step == 'check')
 			}
 
 			return array_merge([[
-				'title' => lang('Liaison avec https://ufragcms.hiddenblob.com'),
+				'title' => lang('Liaison avec https://hiddencms.hiddenblob.com'),
 				'info'  => $info,
 				'icon'  => $icon
 			]], $output);
@@ -423,18 +423,19 @@ else if ($step == 'user')
 		}
 	}
 
+
 	if ($ok)
 	{
-		$user = uFrag()	->module('user')
+		$user = Hidden()	->module('user')
 							->model2('user', 1)
 							->set_password($password)
 							->set('username', utf8_htmlentities($username))
 							->set('email',    utf8_htmlentities($email))
 							->update();
 
-		uFrag()->session->login($user);
+		Hidden()->session->login($user);
 
-		require_once 'ufrag/helpers/dir.php';
+		require_once 'hidden/helpers/dir.php';
 		unlink('.htaccess');
 		rename('.htaccess_tmp', '.htaccess');
 		dir_remove('install');

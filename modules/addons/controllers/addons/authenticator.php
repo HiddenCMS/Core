@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Addons\Controllers\Addons;
+namespace HD\Modules\Addons\Controllers\Addons;
 
-use UF\uFrag\Loadables\Controller;
+use HD\Hidden\Loadables\Controller;
 
 class Authenticator extends Controller
 {
@@ -47,7 +47,7 @@ class Authenticator extends Controller
 	{
 		$authenticators = [];
 
-		foreach (uFrag()->collection('addon')->where('type_id', uFrag()->collection('addon_type')->where('name', 'authenticator')->row()->id)->get() as $authenticator)
+		foreach (Hidden()->collection('addon')->where('type_id', Hidden()->collection('addon_type')->where('name', 'authenticator')->row()->id)->get() as $authenticator)
 		{
 			if ($authenticator->data->get('enabled'))
 			{

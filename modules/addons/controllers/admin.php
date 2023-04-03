@@ -4,15 +4,15 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Addons\Controllers;
+namespace HD\Modules\Addons\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
 	public function index()
 	{
-		$addons = array_filter(uFrag()->collection('addon')->get(), function($addon){
+		$addons = array_filter(Hidden()->collection('addon')->get(), function($addon){
 			$object = $addon->addon();
 
 			if ($object && ($controller = $addon->controller()))

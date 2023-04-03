@@ -5,7 +5,7 @@
 			<?php if ($group['users'] === NULL) continue ?>
 			<li class="col-12">
 				<label>
-					<input type="checkbox" name="<?php echo $form_id ?>[groups][]" value="<?php echo $group_id ?>"<?php if (in_array($user_id, $group['users'])) echo ' checked="checked"'; if ($group['auto'] && $group['auto'] != 'ufrag') echo ' disabled="disabled"' ?> />
+					<input type="checkbox" name="<?php echo $form_id ?>[groups][]" value="<?php echo $group_id ?>"<?php if (in_array($user_id, $group['users'])) echo ' checked="checked"'; if ($group['auto'] && $group['auto'] != 'hidden') echo ' disabled="disabled"' ?> />
 					<?php echo $this->groups->display($group_id, TRUE, FALSE) ?>
 				</label>
 			</li>

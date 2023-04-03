@@ -4,16 +4,16 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Controllers;
+namespace HD\Modules\User\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
 	public function _groups_sort($group_id, $position)
 	{
 		$groups = array_filter($this->groups(), function($a){
-			return $a['auto'] != 'ufrag';
+			return $a['auto'] != 'hidden';
 		});
 
 		array_walk($groups, function(&$a, $id){

@@ -1,4 +1,4 @@
-<?php if (!defined('UFRAG_CMS')) exit;
+<?php if (!defined('HIDDEN_CMS')) exit;
 
 ini_set('display_errors', FALSE);
 
@@ -94,14 +94,14 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
 <meta content="IE=edge, chrome=1" http-equiv="X-UA-Compatible">
 <meta name="theme-color" content="#2b373a">
-<title><?php echo lang('Installation').' @µFrag '.UFRAG_VERSION ?></title>
+<title><?php echo lang('Installation').' @µFrag '.HIDDEN_VERSION ?></title>
 <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="install/install.css" type="text/css">
 <link rel="stylesheet" href="css/icons/fontawesome.min.css" type="text/css">
 </head>
 <body>
-	<a class="logo" href="https://ufragcms.hiddenblob.com" target="_blank"><img src="install/logo.png" alt="" /></a>
+	<a class="logo" href="https://hiddencms.hiddenblob.com" target="_blank"><img src="install/logo.png" alt="" /></a>
 	<div class="container">
 		<?php if (!file_exists('install/db.txt')): ?>
 			<section class="step check-init">
@@ -270,7 +270,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<a href="https://ufragcms.hiddenblob.com" class="btn btn-action btn-link" target="_blank"><?php echo lang('Site µFrag') ?><i class="fa fa-angle-right"></i></a>
+						<a href="https://hiddencms.hiddenblob.com" class="btn btn-action btn-link" target="_blank"><?php echo lang('Site µFrag') ?><i class="fa fa-angle-right"></i></a>
 						<a href="admin/settings" class="btn btn-action btn-info btn-finished"><?php echo lang('Configurer mon site') ?><i class="fa fa-angle-right"></i></a>
 					</div>
 				</div>

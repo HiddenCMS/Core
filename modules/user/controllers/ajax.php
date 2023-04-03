@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Controllers;
+namespace HD\Modules\User\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Ajax extends Controller_Module
 {
@@ -17,7 +17,7 @@ class Ajax extends Controller_Module
 
 	public function auth()
 	{
-		$authenticators = uFrag()	->model2('addon')
+		$authenticators = Hidden()	->model2('addon')
 									->get('authenticator')
 									->filter('is_setup')
 									->sort(function($a, $b){

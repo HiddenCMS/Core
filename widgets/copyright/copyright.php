@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\Copyright;
+namespace HD\Widgets\Copyright;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class Copyright extends Widget
 {
@@ -16,11 +16,11 @@ class Copyright extends Widget
 			'title'       => 'Copyright',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0',
 			'depends'     => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			]
 		];
 	}

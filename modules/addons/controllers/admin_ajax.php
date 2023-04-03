@@ -4,12 +4,12 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Addons\Controllers;
+namespace HD\Modules\Addons\Controllers;
 
 use ReflectionClass;
 use ReflectionException;
-use UF\uFrag\Core\Debug;
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Core\Debug;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 use ZipArchive;
 
 class Admin_Ajax extends Controller_Module
@@ -49,9 +49,9 @@ class Admin_Ajax extends Controller_Module
 								{
 									if (!is_dir($file = $dir.'/'.$filename) &&
 										preg_match('/^(.+?)\.php$/', $filename, $match) &&
-										preg_match('/use UF\\\uFrag\\\Addons\\\('.implode('|', $types).');/m', $content = file_get_contents($file), $match2))
+										preg_match('/use HD\\\Hidden\\\Addons\\\('.implode('|', $types).');/m', $content = file_get_contents($file), $match2))
 									{
-										file_put_contents($file, preg_replace('/^(namespace )UF\\\/m', '\1UF_Temp\\', $content));
+										file_put_contents($file, preg_replace('/^(namespace )HD\\\/m', '\1UF_Temp\\', $content));
 
 										require_once $file;
 
@@ -64,18 +64,18 @@ class Admin_Ajax extends Controller_Module
 											break;
 										}
 
-										$addon = $class->newInstanceArgs([uFrag()]);
+										$addon = $class->newInstanceArgs([Hidden()]);
 
 										$version = $addon->info()->version;
 										$depends = $addon->info()->depends;
 
-										$version = $depends['ufrag'];
+										$version = $depends['hidden'];
 
 										if (!empty($version) && !empty($version))
 										{
 											$type = strtolower($match2[1]);
 
-											$addon = uFrag()->$type($name = strtolower($match[1]));
+											$addon = Hidden()->$type($name = strtolower($match[1]));
 
 											if ($addon)
 											{
@@ -95,14 +95,14 @@ class Admin_Ajax extends Controller_Module
 												}
 											}
 
-											if (($cmp = version_compare($version, version_format(UFRAG_VERSION))) !== 1)
+											if (($cmp = version_compare($version, version_format(HIDDEN_VERSION))) !== 1)
 											{
 												file_put_contents($file, $content);
 												dir_copy($dir, $type.'s/'.$name);
 
-												if (!uFrag()->collection('addon')->where('name', $name)->where('type_id', $type_id = uFrag()->collection('addon_type')->where('name', $type)->row()->id)->row()->id)
+												if (!Hidden()->collection('addon')->where('name', $name)->where('type_id', $type_id = Hidden()->collection('addon_type')->where('name', $type)->row()->id)->row()->id)
 												{
-													uFrag()	->model2('addon')
+													Hidden()	->model2('addon')
 																->set('name', $name)
 																->set('type', $type_id)
 																->set('data', [
@@ -111,7 +111,7 @@ class Admin_Ajax extends Controller_Module
 																->create();
 												}
 
-												if ($addon = uFrag()->$type($name))
+												if ($addon = Hidden()->$type($name))
 												{
 													$addon->reset();
 
@@ -126,7 +126,7 @@ class Admin_Ajax extends Controller_Module
 											}
 
 											return [
-												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$version.' de uFrag, veuillez mettre jour votre site'
+												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$version.' de Hidden, veuillez mettre jour votre site'
 											];
 										}
 

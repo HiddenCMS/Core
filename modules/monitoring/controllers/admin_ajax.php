@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Monitoring\Controllers;
+namespace HD\Modules\Monitoring\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 use ZipArchive;
 
 class Admin_Ajax extends Controller_Module
@@ -46,7 +46,7 @@ class Admin_Ajax extends Controller_Module
 
 			foreach (['version', 'checksum'] as $file)
 			{
-				if ($$file = $this	->network('https://vc.ufragcms.hiddenblob.com/'.$file.'.json?v='.version_format(UFRAG_VERSION).($this->config->update_beta ? '&beta=1' : ''))
+				if ($$file = $this	->network('https://vc.hiddencms.hiddenblob.com/'.$file.'.json?v='.version_format(HIDDEN_VERSION).($this->config->update_beta ? '&beta=1' : ''))
 									->type('text')
 									->get())
 				{
@@ -258,8 +258,8 @@ class Admin_Ajax extends Controller_Module
 
 			$result = [
 				'storage' => [
-					'total'    => disk_total_space(UFRAG_CMS) ?: 0,
-					'free'     => disk_free_space(UFRAG_CMS) ?: 0,
+					'total'    => disk_total_space(HIDDEN_CMS) ?: 0,
+					'free'     => disk_free_space(HIDDEN_CMS) ?: 0,
 					'files'    => array_sum(dir_scan($this->model()->folders, 'filesize')) + filesize('index.php'),
 					'database' => $this->db->get_size()
 				],
@@ -331,8 +331,8 @@ class Admin_Ajax extends Controller_Module
 
 				dir_create('cache/monitoring');
 
-				$this	->network('https://dl.ufragcms.hiddenblob.com/?v='.version_format($version->version))
-						->stream($file = 'cache/monitoring/ufragcms.zip', function($size, $total){
+				$this	->network('https://dl.hiddencms.hiddenblob.com/?v='.version_format($version->version))
+						->stream($file = 'cache/monitoring/hiddencms.zip', function($size, $total){
 							$this->_flush(2, $size / $total * 100);
 						});
 
@@ -375,8 +375,8 @@ class Admin_Ajax extends Controller_Module
 
 					unlink($file);
 
-					foreach (array_diff(array_keys(dir_scan('ufrag')), array_filter($files, function($a){
-						return preg_match('_^ufrag/_', $a);
+					foreach (array_diff(array_keys(dir_scan('hidden')), array_filter($files, function($a){
+						return preg_match('_^hidden/_', $a);
 					})) as $file)
 					{
 						unlink($file);
@@ -384,10 +384,10 @@ class Admin_Ajax extends Controller_Module
 
 					if (!$this->config->version)
 					{
-						$this->config('version', version_format(UFRAG_VERSION));
+						$this->config('version', version_format(HIDDEN_VERSION));
 					}
 
-					if ($patch = @uFrag()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))
+					if ($patch = @Hidden()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))
 					{
 						$patch->up();
 					}

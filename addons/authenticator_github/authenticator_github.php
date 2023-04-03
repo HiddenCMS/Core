@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator_Github;
+namespace HD\Addons\Authenticator_Github;
 
-use UF\uFrag\Addons\Authenticator;
+use HD\Hidden\Addons\Authenticator;
 
 class Authenticator_Github extends Authenticator
 {

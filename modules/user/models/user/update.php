@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Models\User;
+namespace HD\Modules\User\Models\User;
 
-class Update extends \UF\uFrag\Actions\Update
+class Update extends \HD\Hidden\Actions\Update
 {
 	protected $_ajax = FALSE;
 
@@ -23,7 +23,7 @@ class Update extends \UF\uFrag\Actions\Update
 				'groups' => [
 					'type'   => 'checkbox',
 					'values' => array_filter($this->groups(), function($group){
-						return !$group['auto'] || $group['auto'] == 'ufrag' || $group['users'] !== NULL;
+						return !$group['auto'] || $group['auto'] == 'hidden' || $group['users'] !== NULL;
 					}),
 					'rules'  => 'required'
 				]

@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\News\Controllers;
+namespace HD\Modules\News\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -40,7 +40,7 @@ class Admin extends Controller_Module
 							[
 								'title'   => $this->lang('Catégorie'),
 								'content' => function($data){
-									return '<a href="'.url('admin/news/categories/'.$data['category_id'].'/'.$data['category_name']).'"><img src="'.uFrag()->model2('file', $data['category_icon'])->path().'" alt="" /> '.$data['category_title'].'</a>';
+									return '<a href="'.url('admin/news/categories/'.$data['category_id'].'/'.$data['category_name']).'"><img src="'.Hidden()->model2('file', $data['category_icon'])->path().'" alt="" /> '.$data['category_title'].'</a>';
 								},
 								'sort'    => function($data){
 									return $data['category_title'];
@@ -52,7 +52,7 @@ class Admin extends Controller_Module
 							[
 								'title'   => $this->lang('Auteur'),
 								'content' => function($data){
-									return $data['user_id'] ? uFrag()->user->link($data['user_id'], $data['username']) : $this->lang('Visiteur');
+									return $data['user_id'] ? Hidden()->user->link($data['user_id'], $data['username']) : $this->lang('Visiteur');
 								},
 								'sort'    => function($data){
 									return $data['username'];
@@ -64,7 +64,7 @@ class Admin extends Controller_Module
 							[
 								'title'   => $this->lang('Date'),
 								'content' => function($data){
-									return '<span data-toggle="tooltip" title="'.timetostr(uFrag()->lang('l j F Y, H:i'), $data['date']).'">'.time_span($data['date']).'</span>';
+									return '<span data-toggle="tooltip" title="'.timetostr(Hidden()->lang('l j F Y, H:i'), $data['date']).'">'.time_span($data['date']).'</span>';
 								},
 								'sort'    => function($data){
 									return $data['date'];
@@ -98,7 +98,7 @@ class Admin extends Controller_Module
 							->add_columns([
 								[
 									'content' => function($data){
-										return '<a href="'.url('admin/news/categories/'.$data['category_id'].'/'.$data['name']).'"><img src="'.uFrag()->model2('file', $data['icon_id'])->path().'" alt="" /> '.$data['title'].'</a>';
+										return '<a href="'.url('admin/news/categories/'.$data['category_id'].'/'.$data['name']).'"><img src="'.Hidden()->model2('file', $data['icon_id'])->path().'" alt="" /> '.$data['title'].'</a>';
 									},
 									'search'  => function($data){
 										return $data['title'];

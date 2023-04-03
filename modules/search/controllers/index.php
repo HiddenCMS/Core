@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Search\Controllers;
+namespace HD\Modules\Search\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
@@ -47,7 +47,7 @@ class Index extends Controller_Module
 					[$keywords,     'LIKE',     'OR']
 				];
 
-				foreach (uFrag()->model2('addon')->get('module') as $module)
+				foreach (Hidden()->model2('addon')->get('module') as $module)
 				{
 					if (($search_controller = @$module->controller('search')) && ($columns = $search_controller->search()))
 					{

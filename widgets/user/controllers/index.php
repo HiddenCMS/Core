@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Widgets\User\Controllers;
+namespace HD\Widgets\User\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HD\Hidden\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
@@ -25,7 +25,7 @@ class Index extends Controller_Widget
 		}
 		else
 		{
-			if ($authenticators = uFrag()->model2('addon')->get('authenticator')->filter('is_enabled')->__toArray())
+			if ($authenticators = Hidden()->model2('addon')->get('authenticator')->filter('is_enabled')->__toArray())
 			{
 				$this	->css('auth')
 						->css('auth_mini');

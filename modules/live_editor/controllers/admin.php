@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Live_Editor\Controllers;
+namespace HD\Modules\Live_Editor\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -20,7 +20,7 @@ class Admin extends Controller_Module
 
 		$modules = $pages = [];
 
-		foreach (uFrag()->model2('addon')->get('module') as $module)
+		foreach (Hidden()->model2('addon')->get('module') as $module)
 		{
 			if (@$module->controller('index') && !in_array($module->info()->name, ['settings']))
 			{
@@ -33,7 +33,7 @@ class Admin extends Controller_Module
 		});
 
 		$pages = array_merge([
-			'index' => uFrag()->lang('Accueil')
+			'index' => Hidden()->lang('Accueil')
 		], $pages);
 
 		foreach ($modules as $module)

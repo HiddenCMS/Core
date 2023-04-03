@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Themes\Admin;
+namespace HD\Themes\Admin;
 
-use UF\uFrag\Addons\Theme;
+use HD\Hidden\Addons\Theme;
 
 class Admin extends Theme
 {
@@ -18,7 +18,7 @@ class Admin extends Theme
 			'title'       => 'Administration',
 			'description' => 'Panel d\'administration',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
 		];
@@ -30,14 +30,14 @@ class Admin extends Theme
 		{
 			$this->config('update_callback', '');
 
-			if ($patch = @uFrag()->install($this->config->update_callback))
+			if ($patch = @Hidden()->install($this->config->update_callback))
 			{
 				if (method_exists($patch, 'post'))
 				{
 					$patch->post();
 				}
 
-				unlink('ufrag/install/'.$this->config->update_callback.'.php');
+				unlink('hidden/install/'.$this->config->update_callback.'.php');
 			}
 
 			refresh();
@@ -63,7 +63,7 @@ class Admin extends Theme
 			'gaming'  => []
 		];
 
-		foreach (uFrag()->model2('addon')->get('module') as $module)
+		foreach (Hidden()->model2('addon')->get('module') as $module)
 		{
 			if ($module->is_enabled() && $module->is_administrable($category) && $category != 'none' && $module->is_authorized())
 			{
@@ -82,7 +82,7 @@ class Admin extends Theme
 		});
 
 		$customize = $this->array();
-		$theme     = uFrag()->model2('addon')->get('theme', $this->config->default_theme, FALSE);
+		$theme     = Hidden()->model2('addon')->get('theme', $this->config->default_theme, FALSE);
 
 		if (@$theme->addon()->controller('admin'))
 		{
@@ -163,9 +163,9 @@ class Admin extends Theme
 	{
 		if (file_exists($file = 'cache/monitoring/version.json'))
 		{
-			$version = json_decode(file_get_contents($file))->ufrag;
+			$version = json_decode(file_get_contents($file))->hidden;
 
-			if (version_compare(version_format($version->version), version_format(UFRAG_VERSION), '>'))
+			if (version_compare(version_format($version->version), version_format(HIDDEN_VERSION), '>'))
 			{
 				return $version;
 			}

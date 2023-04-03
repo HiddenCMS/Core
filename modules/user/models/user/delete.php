@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Models\User;
+namespace HD\Modules\User\Models\User;
 
-class Delete extends \UF\uFrag\Actions\Delete
+class Delete extends \HD\Hidden\Actions\Delete
 {
 	protected function check($user)
 	{

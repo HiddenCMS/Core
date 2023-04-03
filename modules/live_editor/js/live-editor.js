@@ -260,7 +260,7 @@ var modal_delete = function(message, callback){
 };
 
 $(function(){
-	var $widgets = $('[data-mode="<?php echo \UF\uFrag\Core\Output::WIDGETS ?>"]');
+	var $widgets = $('[data-mode="<?php echo \HD\Hidden\Core\Output::WIDGETS ?>"]');
 
 	$('form[target="live-editor-iframe"]').submit();
 
@@ -284,7 +284,7 @@ $(function(){
 	$('.live-editor-mode').click(function(){
 		$(this).toggleClass('active');
 
-		if ($(this).data('mode') == <?php echo \UF\uFrag\Core\Output::WIDGETS ?>){
+		if ($(this).data('mode') == <?php echo \HD\Hidden\Core\Output::WIDGETS ?>){
 			return;
 		}
 
@@ -391,7 +391,7 @@ $(function(){
 				disposition_id: $this.data('disposition-id'),
 				live_editor: $('input[type="hidden"][name="live_editor"]').val()
 			}, function(data){
-				var $rows_button = $('.live-editor-mode[data-mode="<?php echo \UF\uFrag\Core\Output::ROWS ?>"]');
+				var $rows_button = $('.live-editor-mode[data-mode="<?php echo \HD\Hidden\Core\Output::ROWS ?>"]');
 
 				if (!$rows_button.hasClass('active')){
 					$rows_button.trigger('click');
@@ -478,7 +478,7 @@ $(function(){
 				row_id: $row.data('row-id'),
 				live_editor: $('input[type="hidden"][name="live_editor"]').val()
 			}, function(data){
-				var $cols_button = $('.live-editor-mode[data-mode="<?php echo \UF\uFrag\Core\Output::COLS ?>"]');
+				var $cols_button = $('.live-editor-mode[data-mode="<?php echo \HD\Hidden\Core\Output::COLS ?>"]');
 
 				if (!$cols_button.hasClass('active')){
 					$cols_button.trigger('click');

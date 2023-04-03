@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator_Twitch;
+namespace HD\Addons\Authenticator_Twitch;
 
-use UF\uFrag\Addons\Authenticator;
+use HD\Hidden\Addons\Authenticator;
 
 class Authenticator_Twitch extends Authenticator
 {

@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Pages\Models;
+namespace HD\Modules\Pages\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Pages extends Model
 {

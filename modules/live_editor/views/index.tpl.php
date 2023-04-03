@@ -1,4 +1,4 @@
-<form target="live-editor-iframe" action="<?php use UF\uFrag\Core\Output;
+<form target="live-editor-iframe" action="<?php use HD\Hidden\Core\Output;
 
 echo url() ?>" method="post">
 	<input type="hidden" name="live_editor" value="<?php echo $live_editor = $this->session('live_editor') ?: $this->output->live_editor() ^ Output::WIDGETS ?>" />

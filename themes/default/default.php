@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Themes\Default_;
+namespace HD\Themes\Default_;
 
-use UF\uFrag\Addons\Theme;
+use HD\Hidden\Addons\Theme;
 
 class Default_ extends Theme
 {
@@ -16,7 +16,7 @@ class Default_ extends Theme
 			'title'       => 'Thème par défaut',
 			'description' => 'Base de développement pour la création d\'un thème NeoFrag',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => ['Haut', 'Entête', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];

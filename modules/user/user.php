@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User;
+namespace HD\Modules\User;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class User extends Module
 {
@@ -17,7 +17,7 @@ class User extends Module
 			'description' => '',
 			'icon'        => 'fas fa-user',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE,
 			'routes'      => [

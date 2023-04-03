@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\News\Models;
+namespace HD\Modules\News\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Categories extends Model
 {
@@ -92,7 +92,7 @@ class Categories extends Model
 
 		foreach ($files as $file)
 		{
-			uFrag()->model2('file', $file)->delete();
+			Hidden()->model2('file', $file)->delete();
 		}
 
 		$this->db	->where('category_id', $category_id)

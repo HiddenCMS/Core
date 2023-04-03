@@ -2,7 +2,7 @@
 <div class="media">
 	<?php if ($news['image']): ?>
 	<div class="media-left">
-		<div class="img-cover" style="background-image: url(<?php echo uFrag()->model2('file', $news['image'])->path() ?>);"></div>
+		<div class="img-cover" style="background-image: url(<?php echo Hidden()->model2('file', $news['image'])->path() ?>);"></div>
 	</div>
 	<?php endif ?>
 	<div class="media-body">

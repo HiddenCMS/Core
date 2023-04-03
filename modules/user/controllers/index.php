@@ -4,12 +4,12 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Controllers;
+namespace HD\Modules\User\Controllers;
 
 use SocialConnect\Auth\Service;
 use SocialConnect\Common\Http\Client\Curl;
-use SocialConnect\Provider\Session\uFrag;
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use SocialConnect\Provider\Session\Hidden;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
@@ -138,7 +138,7 @@ class Index extends Controller_Module
 														$this->user->delete();
 													}
 
-													uFrag()->collection('session')->where('user_id', $this->user->id)->update([
+													Hidden()->collection('session')->where('user_id', $this->user->id)->update([
 														'user_id' => NULL
 													]);
 
@@ -232,7 +232,7 @@ class Index extends Controller_Module
 
 		$service = new Service(
 			new Curl,
-			new uFrag($this->session), [
+			new Hidden($this->session), [
 				'redirectUri' => $authenticator->static_url(),
 				'provider'    => [
 					$name = str_replace('_', '-', $authenticator->info()->name) => $authenticator->config()

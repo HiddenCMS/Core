@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Access\Models;
+namespace HD\Modules\Access\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Access extends Model
 {

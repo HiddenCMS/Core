@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Live_Editor\Controllers;
+namespace HD\Modules\Live_Editor\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
@@ -44,7 +44,7 @@ class Admin_Ajax extends Controller_Module
 		{
 			$traversal = function($array) use (&$traversal){
 				$array->each(function($a) use (&$traversal){
-					if (is_a($a, 'UF\uFrag\Libraries\Array_') && !is_a($a, 'UF\uFrag\Displayables\Widget'))
+					if (is_a($a, 'HD\Hidden\Libraries\Array_') && !is_a($a, 'HD\Hidden\Displayables\Widget'))
 					{
 						$traversal($a);
 					}

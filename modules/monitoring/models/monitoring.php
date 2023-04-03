@@ -4,13 +4,13 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Monitoring\Models;
+namespace HD\Modules\Monitoring\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Monitoring extends Model
 {
-	public $folders = ['addons', 'backups', 'cache', 'config', 'css', 'fonts', 'images', 'js', 'lib', 'logs', 'modules', 'ufrag', 'overrides', 'themes', 'upload', 'widgets'];
+	public $folders = ['addons', 'backups', 'cache', 'config', 'css', 'fonts', 'images', 'js', 'lib', 'logs', 'modules', 'hidden', 'overrides', 'themes', 'upload', 'widgets'];
 
 	public function get_info()
 	{

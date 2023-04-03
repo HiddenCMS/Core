@@ -4,9 +4,9 @@
  * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace UF\Widgets\Socials;
+namespace HD\Widgets\Socials;
 
-use UF\uFrag\Addons\Widget;
+use HD\Hidden\Addons\Widget;
 
 class Socials extends Widget
 {
@@ -20,7 +20,7 @@ class Socials extends Widget
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0',
 			'depends'     => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			]
 		];
 	}

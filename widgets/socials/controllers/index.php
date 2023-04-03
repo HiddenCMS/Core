@@ -4,9 +4,9 @@
  * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace UF\Widgets\Socials\Controllers;
+namespace HD\Widgets\Socials\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HD\Hidden\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {

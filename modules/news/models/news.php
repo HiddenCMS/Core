@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\News\Models;
+namespace HD\Modules\News\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class News extends Model
 {
@@ -136,7 +136,7 @@ class News extends Model
 
 	public function delete_news($news_id)
 	{
-		uFrag()->model2('file', $this->db->select('image_id')->from('news')->where('news_id', $news_id)->row())->delete();
+		Hidden()->model2('file', $this->db->select('image_id')->from('news')->where('news_id', $news_id)->row())->delete();
 
 		if ($comments = $this->module('comments'))
 		{

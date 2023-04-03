@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Live_Editor\Models;
+namespace HD\Modules\Live_Editor\Models;
 
-use UF\uFrag\Loadables\Model;
+use HD\Hidden\Loadables\Model;
 
 class Live_Editor extends Model
 {
@@ -37,7 +37,7 @@ class Live_Editor extends Model
 		$widgets = [];
 
 		$disposition->each($f = function($a) use (&$f, &$widgets){
-			if (is_a($a, 'UF\uFrag\Displayables\Widget'))
+			if (is_a($a, 'HD\Hidden\Displayables\Widget'))
 			{
 				$widgets[] = $a->widget_id();
 			}
@@ -77,7 +77,7 @@ class Live_Editor extends Model
 
 	public function get_widgets(&$widgets, &$types)
 	{
-		foreach (uFrag()->model2('addon')->get('widget') as $widget)
+		foreach (Hidden()->model2('addon')->get('widget') as $widget)
 		{
 			$widgets[$name = $widget->info()->name] = $widget->info()->title;
 

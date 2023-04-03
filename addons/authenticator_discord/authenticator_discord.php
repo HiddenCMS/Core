@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Addons\Authenticator_Discord;
+namespace HD\Addons\Authenticator_Discord;
 
-use UF\uFrag\Addons\Authenticator;
+use HD\Hidden\Addons\Authenticator;
 
 class Authenticator_Discord extends Authenticator
 {

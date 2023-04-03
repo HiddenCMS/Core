@@ -1,0 +1,39 @@
+{
+    "name": "socialconnect/jwx",
+    "description": "PHP library for JSON web tokens (JWT) and JWT",
+    "keywords": [
+        "jwt",
+        "json web token",
+        "jwe"
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5",
+        "phpstan/phpstan-shim": "^0.11.12"
+    },
+    "suggest": {
+        "ext-openssl": "Please install openssl extension to use RS encryption"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitry Patsura",
+            "email": "talk@dmtry.me"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "SocialConnect\\JWX\\": "src/"
+        }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "Test\\JWX\\" : "tests/"
+        }
+    }
+}

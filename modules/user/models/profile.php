@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\uFrag\Models;
+namespace HD\Hidden\Models;
 
-use UF\uFrag\Loadables\Model2;
+use HD\Hidden\Loadables\Model2;
 
 class Profile extends Model2
 {

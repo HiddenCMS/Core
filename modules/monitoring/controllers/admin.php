@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\Monitoring\Controllers;
+namespace HD\Modules\Monitoring\Controllers;
 
-use UF\uFrag\Loadables\Controllers\Module as Controller_Module;
+use HD\Hidden\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -54,7 +54,7 @@ class Admin extends Controller_Module
 						$this->row(
 							$this->col(
 								$this	->panel()
-										->heading('Votre installation uFrag', 'fas fa-heartbeat')
+										->heading('Votre installation Hidden', 'fas fa-heartbeat')
 										->body('<div id="tree"></div>', FALSE)
 							)
 						)
@@ -67,7 +67,7 @@ class Admin extends Controller_Module
 	{
 		$this->theme('admin')->js('update');
 
-		return $this->modal('Mise à jour de uFrag', 'fas fa-rocket')
+		return $this->modal('Mise à jour de Hidden', 'fas fa-rocket')
 					->large()
 					->set_id('modal-update')
 					->body('<div class="update-features">

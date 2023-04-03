@@ -28,7 +28,7 @@ $rules = [
 
 			$value = url_title($value);
 
-			if ($value != $name && !uFrag()->db->from('pages')->where('name', $value)->empty())
+			if ($value != $name && !Hidden()->db->from('pages')->where('name', $value)->empty())
 			{
 				return $this->lang('Chemin d\'accès déjà utilisé');
 			}

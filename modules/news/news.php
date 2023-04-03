@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\News;
+namespace HD\Modules\News;
 
-use UF\uFrag\Addons\Module;
+use HD\Hidden\Addons\Module;
 
 class News extends Module
 {
@@ -17,12 +17,12 @@ class News extends Module
 			'description' => '',
 			'icon'        => 'far fa-file-alt',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@ufrag.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@hidden.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'version'     => '1.0',
 			'depends'     => [
-				'ufrag' => '0.0.1'
+				'hidden' => '0.0.1'
 			],
 			'routes'      => [
 				//Index

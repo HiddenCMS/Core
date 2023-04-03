@@ -3,7 +3,7 @@
 		<div class="inner">
 			<h3 class="masthead-brand">
 				<?php if ($this->config->maintenance_logo): ?>
-					<img src="<?php echo uFrag()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
+					<img src="<?php echo Hidden()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
 				<?php else: ?>
 					<?php echo $this->config->name ?>
 				<?php endif ?>

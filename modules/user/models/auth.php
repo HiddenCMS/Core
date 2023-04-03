@@ -4,9 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace UF\Modules\User\Models;
+namespace HD\Modules\User\Models;
 
-use UF\uFrag\Loadables\Model2;
+use HD\Hidden\Loadables\Model2;
 
 class Auth extends Model2
 {

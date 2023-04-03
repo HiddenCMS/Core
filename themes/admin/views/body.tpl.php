@@ -3,7 +3,7 @@
 		<div class="sidebar-header">
 			<a class="logo" href="<?php echo url('admin') ?>">
 				<svg><use xlink:href="#logo"></use></svg>
-				<span class="badge badge-primary"><?php echo UFRAG_VERSION ?></span>
+				<span class="badge badge-primary"><?php echo HIDDEN_VERSION ?></span>
 			</a>
 		</div>
 		<?php if ($update = $this->__caller->update()): ?>
@@ -12,7 +12,7 @@
 				<?php echo icon('far fa-bell fa-2x mb-2') ?>
 				<h6 class="mb-3">
 					Nouvelle mise à jour !<br />
-					<small class="text-muted">uFrag <?php echo $update->version ?></small>
+					<small class="text-muted">Hidden <?php echo $update->version ?></small>
 				</h6>
 				<a href="#" class="btn btn-primary btn-block" data-modal-ajax="<?php echo url('admin/monitoring/update') ?>">Installer !</a>
 			</div>
@@ -79,7 +79,7 @@
 			<div class="module module-admin module-error"><?php echo $error ?></div>
 		<?php endif ?>
 		<footer class="footer">
-			<span class="text-muted"><?php echo $this->lang('Propulsé par').' uFrag '.UFRAG_VERSION ?></span>
+			<span class="text-muted"><?php echo $this->lang('Propulsé par').' Hidden '.HIDDEN_VERSION ?></span>
 			<ul class="mb-0 list-inline float-right">
 				<?php
 				foreach ([

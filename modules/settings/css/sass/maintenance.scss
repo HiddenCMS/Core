@@ -1,6 +1,6 @@
 html,
 body {
-	background-image: url("<?php echo uFrag()->model2('file', $this->config->nf_maintenance_background)->path() ?: image('maintenance.jpg') ?>");
+	background-image: url("<?php echo Hidden()->model2('file', $this->config->nf_maintenance_background)->path() ?: image('maintenance.jpg') ?>");
 	background-position: <?php echo $this->config->nf_maintenance_background_position ?: 'center top' ?>;
 	background-repeat: <?php echo $this->config->nf_maintenance_background_repeat ?: 'no-repeat' ?>;
 	background-attachment: scroll;

@@ -4,9 +4,9 @@
  * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace UF\Themes\Azuro\Controllers;
+namespace HD\Themes\Azuro\Controllers;
 
-use UF\uFrag\Loadables\Controller;
+use HD\Hidden\Loadables\Controller;
 
 class Admin extends Controller
 {

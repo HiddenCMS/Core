@@ -6,17 +6,17 @@
  */
 
 return [
-	'17f31504' => 'Bravo! You are using the very first version of the uFrag CMS.',
+	'17f31504' => 'Bravo! You are using the very first version of the Hidden CMS.',
 	'2348cf9d' => 'Team',
 	'28b15c7e' => 'LGPL v3 license',
 	'2fd34605' => 'Manage forum',
 	'30f00896' => 'See the list',
-	'37b81c41' => 'News uFrag CMS',
+	'37b81c41' => 'News Hidden CMS',
 	'4446b9c6' => 'News',
 	'788fd1e5' => 'Manage comments',
 	'87117dca' => 'Message|Messages',
 	'93d4184a' => 'Web designer',
-	'9be6592e' => 'Your contribution is essencial to the evolution of the project, if you have any suggestions, problems, or simply wanto to give your opinion, do not hesitate to log on the <a href="https://neofr.ag"> uFrag forum</a>.',
+	'9be6592e' => 'Your contribution is essencial to the evolution of the project, if you have any suggestions, problems, or simply wanto to give your opinion, do not hesitate to log on the <a href="https://neofr.ag"> Hidden forum</a>.',
 	'9e4dc5d0' => 'Membre|Member',
 	'a44ccb09' => 'Web developer',
 	'be31be05' => 'Recent entries',
