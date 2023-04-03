@@ -3,7 +3,7 @@
     "description": "HiddenCMS, php cms",
     "type": "project",
     "license": "GPL-3.0-only",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "HiddenBlob",
