@@ -557,8 +557,6 @@ abstract class Model2 extends Hidden implements \HD\Hidden\Loadable
 			{
 				$updated = TRUE;
 			}
-
-			debug_exit($this->_updates);
 			
 			if ($updated)
 			{

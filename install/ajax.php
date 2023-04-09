@@ -134,7 +134,7 @@ if ($step == 'check')
 				if ($content && $content->hidden->version != HIDDEN_VERSION)
 				{
 					$output[] =[
-						'title' => 'µFrag '.HIDDEN_VERSION,
+						'title' => 'HiddenCMS '.HIDDEN_VERSION,
 						'info'  => [
 							lang('Dernière version') => $content->hidden->version
 						],
@@ -353,7 +353,7 @@ else if ($step == 'db')
 				$output['errors']['host']     = 'ok';
 				$output['errors']['user']     = 'ok';
 				$output['errors']['password'] = 'ok';
-				$output['errors']['dbname']   = lang('Cette base de données contient déjà une installation µFrag');
+				$output['errors']['dbname']   = lang('Cette base de données contient déjà une installation HiddenCMS');
 			}
 			else
 			{
