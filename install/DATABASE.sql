@@ -435,6 +435,9 @@ CREATE TABLE `user` (
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`language`) REFERENCES `addon` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+INSERT INTO `nf_user` (`id`, `username`, `password`, `salt`, `email`, `registration_date`, `last_activity_date`, `admin`, `language`, `data`, `deleted`) VALUES
+(1, 'admin', '$H$92EwygSmbdXunbIvoo/V91MWcnHqzX/', '', 'noreply@hiddenblob.com', CURRENT_TIMESTAMP, NULL, '1', NULL, '', '0');
+
 DROP TABLE IF EXISTS `user_auth`;
 CREATE TABLE `user_auth` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
