@@ -147,7 +147,7 @@ foreach ([
 spl_autoload_register(function($name){
 	$namespace = explode('\\', $name);
 
-	if (array_shift($namespace) == 'UF' && $namespace)
+	if (array_shift($namespace) == 'HD' && $namespace)
 	{
 		array_walk($namespace, function(&$a){
 			$a = strtolower(rtrim($a, '_'));
