@@ -8,6 +8,7 @@ namespace HD\Hidden;
 
 use SqlFormatter;
 
+#[\AllowDynamicProperties]
 class Driver_Query
 {
 	public $driver;

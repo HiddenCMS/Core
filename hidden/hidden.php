@@ -6,6 +6,7 @@
 
 namespace HD\Hidden;
 
+#[\AllowDynamicProperties]
 class Hidden
 {
 	//TODO
