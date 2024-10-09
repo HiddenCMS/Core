@@ -118,7 +118,7 @@ if ($step == 'check')
 			$get = function($ssl = TRUE) use (&$output){
 				$ch = curl_init();
 
-				curl_setopt($ch, CURLOPT_URL, 'https://cms.hiddenblob.com/version.json?v=last');
+				curl_setopt($ch, CURLOPT_URL, 'https://vc.cms.hiddenblob.com/version.json?v=last');
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
@@ -164,7 +164,7 @@ if ($step == 'check')
 			}
 
 			return array_merge([[
-				'title' => lang('Liaison avec https://cms.hiddenblob.com'),
+				'title' => lang('Liaison avec https://vc.cms.hiddenblob.com'),
 				'info'  => $info,
 				'icon'  => $icon
 			]], $output);

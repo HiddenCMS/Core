@@ -46,7 +46,7 @@ class Admin_Ajax extends Controller_Module
 
 			foreach (['version', 'checksum'] as $file)
 			{
-				if ($$file = $this	->network('https://vc.hiddencms.hiddenblob.com/'.$file.'.json?v='.version_format(HIDDEN_VERSION).($this->config->update_beta ? '&beta=1' : ''))
+				if ($$file = $this	->network('https://vc.cms.hiddenblob.com/'.$file.'.json?v='.version_format(HIDDEN_VERSION).($this->config->update_beta ? '&beta=1' : ''))
 									->type('text')
 									->get())
 				{
@@ -331,7 +331,7 @@ class Admin_Ajax extends Controller_Module
 
 				dir_create('cache/monitoring');
 
-				$this	->network('https://dl.hiddencms.hiddenblob.com/?v='.version_format($version->version))
+				$this	->network('https://dl.cms.hiddenblob.com/?v='.version_format($version->version))
 						->stream($file = 'cache/monitoring/hiddencms.zip', function($size, $total){
 							$this->_flush(2, $size / $total * 100);
 						});

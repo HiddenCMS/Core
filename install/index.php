@@ -101,7 +101,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 <link rel="stylesheet" href="css/icons/fontawesome.min.css" type="text/css">
 </head>
 <body>
-	<a class="logo" href="https://hiddencms.hiddenblob.com" target="_blank"><img src="install/logo.png" alt="" /></a>
+	<a class="logo" href="https://cms.hiddenblob.com" target="_blank"><img src="install/logo.png" alt="" /></a>
 	<div class="container">
 		<?php if (!file_exists('install/db.txt')): ?>
 			<section class="step check-init">
@@ -270,7 +270,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<a href="https://hiddencms.hiddenblob.com" class="btn btn-action btn-link" target="_blank"><?php echo lang('Site HiddenCMS') ?><i class="fa fa-angle-right"></i></a>
+						<a href="https://cms.hiddenblob.com" class="btn btn-action btn-link" target="_blank"><?php echo lang('Site HiddenCMS') ?><i class="fa fa-angle-right"></i></a>
 						<a href="admin/settings" class="btn btn-action btn-info btn-finished"><?php echo lang('Configurer mon site') ?><i class="fa fa-angle-right"></i></a>
 					</div>
 				</div>
