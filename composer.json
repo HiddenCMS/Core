@@ -11,7 +11,10 @@
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^6.9.2"
+        "phpmailer/phpmailer": "^6.9.2",
+        "scssphp/scssphp": "^2.0.1",
+        "socialconnect/auth": "^3.0",
+        "jdorn/sql-formatter": "dev-master"
     },
     "config": {
         "allow-plugins": {
