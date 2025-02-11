@@ -1,6 +1,6 @@
 {
-    "name": "neofrag/core",
-    "description": "NeoFrag CMS",
+    "name": "hiddencms/core",
+    "description": "Forked from NeoFrag CMS",
     "type": "project",
     "license": "GPL-3.0-only",
     "minimum-stability": "dev",
