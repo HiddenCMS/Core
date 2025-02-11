@@ -118,7 +118,7 @@ if ($step == 'check')
 			$get = function($ssl = TRUE) use (&$output){
 				$ch = curl_init();
 
-				curl_setopt($ch, CURLOPT_URL, 'https://neofr.ag/version.json?v=last&install='.urlencode(NEOFRAG_VERSION));
+				curl_setopt($ch, CURLOPT_URL, 'https://vc.nf.hiddenblob.com/version.json?v=last&install='.urlencode(NEOFRAG_VERSION));
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
@@ -334,7 +334,7 @@ else if ($step == 'db')
 
 			$empty_base = TRUE;
 
-			if ($result = $mysqli->query('SHOW TABLE STATUS LIKE "nf\_%"'))
+			if ($result = $mysqli->query('SHOW TABLE STATUS LIKE "%"'))
 			{
 				while ($table = $result->fetch_object())
 				{
