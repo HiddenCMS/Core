@@ -32,7 +32,7 @@ function path($file, $file_type = '', $caller = NULL)
 
 	if (!in_array($file_type, ['images', 'css', 'js', 'fonts']))
 	{
-		return url($file_type.'/'.$file);
+		return url('dist/'.$file_type.'/'.$file);
 	}
 
 	if (!$caller)
