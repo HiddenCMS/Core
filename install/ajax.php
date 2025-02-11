@@ -380,8 +380,6 @@ else if ($step == 'db')
 
 					file_put_contents('config/db.php', $config);
 
-					require_once 'lib/SqlFormatter/SqlFormatter.php';
-
 					foreach (SqlFormatter::splitQuery(file_get_contents('install/DATABASE.sql')) as $query)
 					{
 						$mysqli->query($query);
