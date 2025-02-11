@@ -142,8 +142,8 @@ INSERT INTO `files` (`id`, `user_id`, `name`, `path`, `date`) VALUES
 (2, 1, 'logo.png', 'upload/partners/zwvmsjijfljaka4rdblgvlype1lnbwaw.png', '2016-05-07 18:51:53'),
 (3, 1, 'logo_black.png', 'upload/partners/y4ofwq2ekppwnfpmnrmnafeivszlg5bd.png', '2016-05-07 18:51:53');
 
-DROP TABLE IF EXISTS `groups_def`;
-CREATE TABLE `groups_def` (
+DROP TABLE IF EXISTS `groups`;
+CREATE TABLE `groups` (
   `group_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `color` varchar(20) NOT NULL,
@@ -161,7 +161,7 @@ CREATE TABLE `groups_lang` (
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`group_id`,`lang`),
   KEY `lang` (`lang`),
-  CONSTRAINT `groups_lang_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups_def` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `groups_lang_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `i18n`;
@@ -495,7 +495,7 @@ CREATE TABLE `users_groups` (
   PRIMARY KEY (`user_id`,`group_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `users_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `users_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_def` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `users_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `users_messages`;
