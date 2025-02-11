@@ -96,9 +96,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 <meta name="theme-color" content="#2b373a">
 <title><?php echo lang('Installation').' @NeoFrag '.NEOFRAG_VERSION ?></title>
 <link rel="shortcut icon" href="images/favicon.png" type="image/png">
-<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="dist/css/bootstrap.min.css" type="text/css">
 <link rel="stylesheet" href="install/install.css" type="text/css">
-<link rel="stylesheet" href="css/icons/fontawesome.min.css" type="text/css">
+<link rel="stylesheet" href="dist/css/icons/fontawesome.min.css" type="text/css">
 </head>
 <body>
 	<a class="logo" href="https://neofr.ag" target="_blank"><img src="install/logo.png" alt="" /></a>
@@ -277,8 +277,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 			</section>
 		<?php endif ?>
 	</div>
-	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="dist/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="install/install.js"></script>
 </body>
 </html>
