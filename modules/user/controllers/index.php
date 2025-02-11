@@ -210,7 +210,7 @@ class Index extends Controller_Module
 		if ($this->form()->is_valid())
 		{
 			$this->db	->where('id', $session_id)
-						->delete('nf_session');
+						->delete('session');
 
 			return 'OK';
 		}
@@ -445,7 +445,7 @@ class Index extends Controller_Module
 		{
 			$this->db	->where('user_id', $this->user->id)
 						->where('message_id', $message_id)
-						->update('nf_users_messages_recipients', [
+						->update('users_messages_recipients', [
 							'date'    => now(),
 							'deleted' => TRUE
 						]);
@@ -552,19 +552,19 @@ class Index extends Controller_Module
 
 		if ($forum = $this->module('forum'))
 		{
-			$categories = array_filter($this->db->select('category_id')->from('nf_forum_categories')->get(), function($a){
+			$categories = array_filter($this->db->select('category_id')->from('forum_categories')->get(), function($a){
 				return $this->access('forum', 'category_read', $a);
 			});
 
 			if ($categories)
 			{
 				$user_activity = $this->db	->select('m.message_id', 'm.topic_id', 't.title', 'u.id as user_id', 'u.username', 'up.avatar', 'up.signature', 'up.sex', 'u.admin', 'm.message', 'UNIX_TIMESTAMP(m.date) as date')
-											->from('nf_forum_messages m')
-											->join('nf_forum_topics   t',  'm.topic_id  = t.topic_id')
-											->join('nf_forum          f',  't.forum_id  = f.forum_id')
-											->join('nf_forum          f2', 'f.parent_id = f2.forum_id AND f.is_subforum = "1"')
-											->join('nf_user           u',  'm.user_id   = u.id AND u.deleted = "0"')
-											->join('nf_user_profile   up', 'u.id        = up.id')
+											->from('forum_messages m')
+											->join('forum_topics   t',  'm.topic_id  = t.topic_id')
+											->join('forum          f',  't.forum_id  = f.forum_id')
+											->join('forum          f2', 'f.parent_id = f2.forum_id AND f.is_subforum = "1"')
+											->join('user           u',  'm.user_id   = u.id AND u.deleted = "0"')
+											->join('user_profile   up', 'u.id        = up.id')
 											->where('m.user_id', $user_id)
 											->where('IFNULL(f2.parent_id, f.parent_id)', $categories)
 											->order_by('m.date DESC')

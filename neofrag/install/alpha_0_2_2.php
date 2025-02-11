@@ -90,13 +90,13 @@ class Alpha_0_2_2 extends Install
 
 		$this->db->execute('ALTER TABLE `nf_settings` CHANGE `value` `value` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL');
 
-		$this->db()->insert('nf_addon', [
+		$this->db()->insert('addon', [
 			'type_id' => 3,
 			'name'    => 'socials',
 			'data'    => 'a:1:{s:7:"enabled";b:1;}'
 		]);
 
-		foreach ($this->db()->select('widget_id', 'settings')->from('nf_widgets')->where('widget', 'header')->where('type', 'index')->get() as $widget)
+		foreach ($this->db()->select('widget_id', 'settings')->from('widgets')->where('widget', 'header')->where('type', 'index')->get() as $widget)
 		{
 			$settings = [];
 
@@ -106,12 +106,12 @@ class Alpha_0_2_2 extends Install
 			}
 
 			$this->db()	->where('widget_id', $widget['widget_id'])
-						->update('nf_widgets', [
+						->update('widgets', [
 							'settings' => serialize($settings)
 						]);
 		}
 
-		foreach ($this->db()->select('disposition_id', 'disposition')->from('nf_dispositions')->where('theme', 'azuro')->where('disposition LIKE', '%card-default%')->get() as $disposition)
+		foreach ($this->db()->select('disposition_id', 'disposition')->from('dispositions')->where('theme', 'azuro')->where('disposition LIKE', '%card-default%')->get() as $disposition)
 		{
 			$disposition['disposition'] = unserialize($disposition['disposition']);
 
@@ -132,7 +132,7 @@ class Alpha_0_2_2 extends Install
 			});
 
 			$this->db()	->where('disposition_id', $disposition['disposition_id'])
-						->update('nf_dispositions', [
+						->update('dispositions', [
 							'disposition' => serialize($disposition['disposition'])
 						]);
 		}

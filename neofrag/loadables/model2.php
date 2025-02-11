@@ -458,7 +458,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 		{
 			$this->__tracking = NeoFrag()	->db()
 											->select('COALESCE(model_id, 0)', 'date')
-											->from('nf_tracking')
+											->from('tracking')
 											->where('user_id',  NeoFrag()->user->id)
 											->where('model',    $this->__table)
 											->where('model_id', $this->id, 'OR', 'model_id', NULL)

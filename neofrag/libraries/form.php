@@ -733,7 +733,7 @@ class Form extends Library
 					$input = '	<div class="row">
 									<div class="col-3">
 										<div class="thumbnail">
-											<img src="'.url($this->db->select('path')->from('nf_file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
+											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
 											<div class="caption text-center">
 												<a class="btn btn-outline-danger btn-block btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.NeoFrag()->lang('Supprimer').'</a>
 											</div>

@@ -12,7 +12,7 @@ class Groups extends Model
 {
 	public function add_group($title, $color, $icon, $hidden, $lang)
 	{
-		$group_id = $this->db->insert('nf_groups', [
+		$group_id = $this->db->insert('groups', [
 			'name'   => url_title($title),
 			'color'  => $color,
 			'icon'   => $icon,
@@ -20,7 +20,7 @@ class Groups extends Model
 			'auto'   => FALSE
 		]);
 
-		$this->db->insert('nf_groups_lang', [
+		$this->db->insert('groups_lang', [
 			'group_id' => $group_id,
 			'lang'     => $lang,
 			'title'    => $title
@@ -40,13 +40,13 @@ class Groups extends Model
 			$group['name'] = url_title($title);
 
 			$this->db	->where('group_id', $group_id)
-						->update('nf_groups_lang', [
+						->update('groups_lang', [
 							'lang'  => $lang,
 							'title' => $title
 						]);
 		}
 
 		$this->db	->where('group_id', $group_id)
-					->update('nf_groups', $group);
+					->update('groups', $group);
 	}
 }

@@ -70,7 +70,7 @@ class Admin_Checker extends Module_Checker
 	{
 		$this->ajax();
 
-		if (!$this->db->from('nf_session')->where('id', $session_id)->empty())
+		if (!$this->db->from('session')->where('id', $session_id)->empty())
 		{
 			$this->ajax();
 

@@ -14,7 +14,7 @@ class Groups extends Core
 
 	public function __construct()
 	{
-		$users = $this->db->select('id', 'admin')->from('nf_user')->where('deleted', FALSE)->get();
+		$users = $this->db->select('id', 'admin')->from('user')->where('deleted', FALSE)->get();
 
 		$this->_groups = [
 			'admins' => [
@@ -47,8 +47,8 @@ class Groups extends Core
 		];
 
 		$groups = $this->db	->select('g.group_id', 'g.name', 'g.color', 'g.icon', 'g.hidden', 'IFNULL(gl.title, g.name) AS title', 'g.auto')
-							->from('nf_groups g')
-							->join('nf_groups_lang gl', 'gl.group_id = g.group_id')
+							->from('groups g')
+							->join('groups_lang gl', 'gl.group_id = g.group_id')
 							->where('gl.lang', $this->config->lang->info()->name, 'OR')
 							->where('gl.lang', NULL)
 							->order_by('g.order')
@@ -80,7 +80,7 @@ class Groups extends Core
 					'color'  => $group['color'],
 					'icon'   => $group['icon'],
 					'hidden' => (bool)$group['hidden'],
-					'users'  => $this->db()->select('u.id')->from('nf_users_groups ug')->join('nf_user u', 'ug.user_id = u.id', 'INNER')->where('ug.group_id', $group['group_id'])->where('u.deleted', FALSE)->get(),
+					'users'  => $this->db()->select('u.id')->from('users_groups ug')->join('user u', 'ug.user_id = u.id', 'INNER')->where('ug.group_id', $group['group_id'])->where('u.deleted', FALSE)->get(),
 					'auto'   => FALSE,
 					'order'  => $order++
 				];
@@ -240,7 +240,7 @@ class Groups extends Core
 			if (!empty($this->_groups[$group_id]['id']))
 			{
 				$this->db	->where('group_id', $this->_groups[$group_id]['id'])
-							->delete('nf_groups');
+							->delete('groups');
 			}
 
 			$this->access->revoke($group_id);

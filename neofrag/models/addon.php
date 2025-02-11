@@ -38,7 +38,7 @@ class Addon extends Model2
 		{
 			$types = $this	->db()
 							->select('name', 'id')
-							->from('nf_addon_type')
+							->from('addon_type')
 							->index();
 		}
 

@@ -12,9 +12,9 @@ class Access extends Model
 {
 	public function add($module, $action, $id, $type, $entities, $authorized)
 	{
-		if (!($access_id = $this->db->select('access_id')->from('nf_access')->where('module', $module)->where('action', $action)->where('id', $id)->row()))
+		if (!($access_id = $this->db->select('access_id')->from('access')->where('module', $module)->where('action', $action)->where('id', $id)->row()))
 		{
-			$access_id = $this->db->insert('nf_access', [
+			$access_id = $this->db->insert('access', [
 				'module' => $module,
 				'action' => $action,
 				'id'     => $id
@@ -23,7 +23,7 @@ class Access extends Model
 
 		foreach ((array)$entities as $entity)
 		{
-			$this->db->insert('nf_access_details', [
+			$this->db->insert('access_details', [
 				'access_id'  => $access_id,
 				'entity'     => $entity,
 				'type'       => $type,

@@ -13,7 +13,7 @@ class Live_Editor extends Model
 	public function get_disposition($disposition_id, &$theme, &$page, &$zone)
 	{
 		$disposition = $this->db	->select('disposition', 'theme', 'page', 'zone')
-									->from('nf_dispositions')
+									->from('dispositions')
 									->where('disposition_id', $disposition_id)
 									->row();
 
@@ -27,7 +27,7 @@ class Live_Editor extends Model
 	public function set_disposition($disposition_id, $disposition)
 	{
 		$this->db	->where('disposition_id', $disposition_id)
-					->update('nf_dispositions', [
+					->update('dispositions', [
 						'disposition' => serialize($disposition)
 					]);
 	}
@@ -50,13 +50,13 @@ class Live_Editor extends Model
 		if ($widgets)
 		{
 			$this->db	->where('widget_id', $widgets)
-						->delete('nf_widgets');
+						->delete('widgets');
 		}
 	}
 
 	public function check_widget($widget_id)
 	{
-		$widget = $this->db	->from('nf_widgets')
+		$widget = $this->db	->from('widgets')
 							->where('widget_id', $widget_id)
 							->row();
 

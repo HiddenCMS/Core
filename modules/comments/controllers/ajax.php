@@ -18,15 +18,15 @@ class Ajax extends Controller_Module
 
 		if ($this->form()->is_valid())
 		{
-			if ($this->db->select('id')->from('nf_comment')->where('module', $module)->where('module_id', $module_id)->order_by('id DESC')->row() == $comment_id)
+			if ($this->db->select('id')->from('comment')->where('module', $module)->where('module_id', $module_id)->order_by('id DESC')->row() == $comment_id)
 			{
 				$this->db	->where('id', $comment_id)
-							->delete('nf_comment');
+							->delete('comment');
 			}
 			else
 			{
 				$this->db	->where('id', $comment_id)
-							->update('nf_comment', [
+							->update('comment', [
 								'content' => NULL
 							]);
 			}

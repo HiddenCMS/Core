@@ -59,7 +59,7 @@ class Tab extends Library
 			else
 			{
 				$languages = $this->db	->select('code', 'name', 'flag')
-										->from('nf_settings_languages')
+										->from('settings_languages')
 										->order_by('order')
 										->get();
 

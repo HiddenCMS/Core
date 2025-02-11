@@ -162,7 +162,7 @@ class Admin extends Controller_Module
 			}
 			else
 			{
-				$this->db->insert('nf_groups', [
+				$this->db->insert('groups', [
 					'name'  => $name,
 					'color' => $post['color'],
 					'icon'  => $post['icon'],
@@ -190,7 +190,7 @@ class Admin extends Controller_Module
 		if ($this->form()->is_valid())
 		{
 			$this->db	->where('group_id', $group_id)
-						->delete('nf_groups');
+						->delete('groups');
 
 			$this->access->revoke($group_id);
 
@@ -218,7 +218,7 @@ class Admin extends Controller_Module
 		if ($this->form()->is_valid())
 		{
 			$this->db	->where('id', $session_id)
-						->delete('nf_session');
+						->delete('session');
 
 			return 'OK';
 		}

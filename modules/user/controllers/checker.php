@@ -42,7 +42,7 @@ class Checker extends Module_Checker
 	{
 		$this->error->unconnected();
 
-		if (!$this->db->from('nf_session')->where('user_id', $this->user->id)->where('id', $session_id)->empty())
+		if (!$this->db->from('session')->where('user_id', $this->user->id)->where('id', $session_id)->empty())
 		{
 			$this->ajax();
 
@@ -137,7 +137,7 @@ class Checker extends Module_Checker
 		{
 			if ($user_id && $username)
 			{
-				if (($user = $this->db->select('username')->from('nf_user')->where('id', $user_id)->where('username <>', NULL)->where('deleted', FALSE)->row()) && $username == url_title($user))
+				if (($user = $this->db->select('username')->from('user')->where('id', $user_id)->where('username <>', NULL)->where('deleted', FALSE)->row()) && $username == url_title($user))
 				{
 					$username = $user;
 				}

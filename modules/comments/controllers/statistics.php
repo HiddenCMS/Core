@@ -16,7 +16,7 @@ class Statistics extends Controller_Module
 			'comments' => [
 				'title' => 'Commentaires',
 				'data'  => function(){
-					$this->db->from('nf_comment');
+					$this->db->from('comment');
 					return 'date';
 				}
 			]

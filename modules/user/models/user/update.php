@@ -33,17 +33,17 @@ class Update extends \NF\NeoFrag\Actions\Update
 		if ($form_groups->is_valid($post))
 		{
 			$this->db	->where('user_id', $user->id)
-						->delete('nf_users_groups');
+						->delete('users_groups');
 
 			$this->db	->where('id', $user->id)
-						->update('nf_user', [
+						->update('user', [
 							'admin' => FALSE
 						]);
 
 			if (in_array('admins', $post['groups']))
 			{
 				$this->db	->where('id', $user->id)
-							->update('nf_user', [
+							->update('user', [
 								'admin' => TRUE
 							]);
 			}
@@ -55,7 +55,7 @@ class Update extends \NF\NeoFrag\Actions\Update
 					continue;
 				}
 
-				$this->db->insert('nf_users_groups', [
+				$this->db->insert('users_groups', [
 					'user_id'  => $user->id,
 					'group_id' => $group_id
 				]);

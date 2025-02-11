@@ -40,14 +40,14 @@ class Admin extends Controller_Module
 					'class'   => 'text-right'
 				]
 			])
-			->data($this->db->from('nf_user')->where('deleted', FALSE)->order_by('id DESC')->limit(5)->get())
+			->data($this->db->from('user')->where('deleted', FALSE)->order_by('id DESC')->limit(5)->get())
 			->display();
 
 		return $this->array(
 			$this->row(
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Actualité|Actualités', $count = $this->db->from('nf_news')->where('published', TRUE)->count()), 'far fa-newspaper', 'admin/news')
+							->heading($this->lang('Actualité|Actualités', $count = $this->db->from('news')->where('published', TRUE)->count()), 'far fa-newspaper', 'admin/news')
 							->body($count)
 							->color('bg-aqua')
 							->size('col-4 col-lg-2')
@@ -55,7 +55,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Membre|Membres', $count = $this->db->from('nf_user')->where('deleted', FALSE)->count()), 'fas fa-users', 'admin/user')
+							->heading($this->lang('Membre|Membres', $count = $this->db->from('user')->where('deleted', FALSE)->count()), 'fas fa-users', 'admin/user')
 							->body($count)
 							->color('bg-green')
 							->size('col-4 col-lg-2')
@@ -63,7 +63,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Événement|Événements', $count = $this->db->from('nf_events')->where('published', TRUE)->count()), 'fas fa-calendar-alt', 'admin/events')
+							->heading($this->lang('Événement|Événements', $count = $this->db->from('events')->where('published', TRUE)->count()), 'fas fa-calendar-alt', 'admin/events')
 							->body($count)
 							->color('bg-blue')
 							->size('col-4 col-lg-2')
@@ -71,7 +71,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Équipe|Équipes', $count = $this->db->from('nf_teams')->count()), 'fas fa-headset', 'admin/teams')
+							->heading($this->lang('Équipe|Équipes', $count = $this->db->from('teams')->count()), 'fas fa-headset', 'admin/teams')
 							->body($count)
 							->color('bg-red')
 							->size('col-4 col-lg-2')
@@ -79,7 +79,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Message|Messages', $count = $this->db->from('nf_forum_messages')->count()), 'fas fa-comments', 'admin/forum')
+							->heading($this->lang('Message|Messages', $count = $this->db->from('forum_messages')->count()), 'fas fa-comments', 'admin/forum')
 							->body($count)
 							->color('bg-teal')
 							->size('col-4 col-lg-2')
@@ -87,7 +87,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Commentaire|Commentaires', $count = $this->db->from('nf_comment')->count()), 'far fa-comments', 'admin/comments')
+							->heading($this->lang('Commentaire|Commentaires', $count = $this->db->from('comment')->count()), 'far fa-comments', 'admin/comments')
 							->body($count)
 							->color('bg-maroon')
 							->size('col-4 col-lg-2')
@@ -100,7 +100,7 @@ class Admin extends Controller_Module
 							$this	->panel()
 									->heading($this->lang('Utilisateurs connectés'), 'fas fa-globe')
 									->body($this->view('users_online', [
-										'currently' => $this->db->from('nf_session')->where('last_activity > DATE_SUB(NOW(), INTERVAL 5 MINUTE)')->count(),
+										'currently' => $this->db->from('session')->where('last_activity > DATE_SUB(NOW(), INTERVAL 5 MINUTE)')->count(),
 										'max'       => statistics('nf_sessions_max_simultaneous')
 									]))
 									->footer('<a href="'.url('admin/user/sessions').'">'.$this->lang('Voir toutes les sessions actives').'</a>'),

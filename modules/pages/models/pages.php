@@ -13,8 +13,8 @@ class Pages extends Model
 	public function get_pages()
 	{
 		return $this->db->select('p.page_id', 'p.name', 'p.published', 'pl.title', 'pl.subtitle')
-						->from('nf_pages p')
-						->join('nf_pages_lang pl', 'p.page_id = pl.page_id')
+						->from('pages p')
+						->join('pages_lang pl', 'p.page_id = pl.page_id')
 						->where('pl.lang', $this->config->lang->info()->name)
 						->order_by('pl.title ASC')
 						->get();
@@ -28,8 +28,8 @@ class Pages extends Model
 		}
 
 		$this->db	->select('p.*', 'pl.title', 'pl.subtitle', 'pl.content')
-					->from('nf_pages p')
-					->join('nf_pages_lang pl', 'p.page_id = pl.page_id')
+					->from('pages p')
+					->join('pages_lang pl', 'p.page_id = pl.page_id')
 					->where('p.page_id', $page_id);
 
 		if (!$all)
@@ -52,12 +52,12 @@ class Pages extends Model
 
 	public function add_page($name, $title, $published, $subtitle, $content)
 	{
-		$page_id = $this->db->insert('nf_pages', [
+		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
 			'published'      => $published
 		]);
 
-		$this->db->insert('nf_pages_lang', [
+		$this->db->insert('pages_lang', [
 			'page_id'        => $page_id,
 			'lang'           => $this->config->lang->info()->name,
 			'title'          => $title,
@@ -70,29 +70,29 @@ class Pages extends Model
 
 	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang)
 	{
-		if (!$this->db	->from('nf_pages p')
-						->join('nf_pages_lang l', 'p.page_id = l.page_id')
+		if (!$this->db	->from('pages p')
+						->join('pages_lang l', 'p.page_id = l.page_id')
 						->where('p.page_id', $page_id)
 						->where('l.lang', $lang)
 						->empty())
 		{
 			$this->db	->where('page_id', $page_id)
 						->where('lang', $lang)
-						->update('nf_pages_lang', [
+						->update('pages_lang', [
 							'title'    => $title,
 							'subtitle' => $subtitle,
 							'content'  => $content
 						]);
 
 			$this->db	->where('page_id', $page_id)
-						->update('nf_pages', [
+						->update('pages', [
 							'name'           => $name ?: url_title($title),
 							'published'      => $published
 						]);
 		}
 		else
 		{
-			$this->db	->insert('nf_pages_lang', [
+			$this->db	->insert('pages_lang', [
 							'page_id'  => $page_id,
 							'lang'     => $lang,
 							'title'    => $title,
@@ -101,7 +101,7 @@ class Pages extends Model
 						]);
 
 			$this->db	->where('page_id', $page_id)
-						->update('nf_pages', [
+						->update('pages', [
 							'name'           => $name ?: url_title($title),
 							'published'      => $published
 						]);
@@ -111,7 +111,7 @@ class Pages extends Model
 	public function delete_page($page_id)
 	{
 		$this->db	->where('page_id', $page_id)
-					->delete('nf_pages');
+					->delete('pages');
 
 		$this->access->delete('pages', $page_id);
 	}

@@ -40,7 +40,7 @@ class Admin_Ajax extends Controller_Module
 			$url = implode('/', $url);
 		}
 
-		if ($page == '*' || $this->db->from('nf_dispositions')->where('page', $url)->empty())
+		if ($page == '*' || $this->db->from('dispositions')->where('page', $url)->empty())
 		{
 			$traversal = function($array) use (&$traversal){
 				$array->each(function($a) use (&$traversal){
@@ -50,8 +50,8 @@ class Admin_Ajax extends Controller_Module
 					}
 					else
 					{
-						$a->widget_id($this->db->insert('nf_widgets', $this->db	->select('widget', 'type', 'title', 'settings')
-																				->from('nf_widgets')
+						$a->widget_id($this->db->insert('widgets', $this->db	->select('widget', 'type', 'title', 'settings')
+																				->from('widgets')
 																				->where('widget_id', $a->widget_id())
 																				->row()));
 					}
@@ -62,7 +62,7 @@ class Admin_Ajax extends Controller_Module
 
 			$traversal($disposition);
 
-			$id = $this->db->insert('nf_dispositions', $disposition = [
+			$id = $this->db->insert('dispositions', $disposition = [
 				'theme'       => $theme,
 				'page'        => $url,
 				'zone'        => $zone,
@@ -78,9 +78,9 @@ class Admin_Ajax extends Controller_Module
 			$this->model()->delete_widgets($disposition);
 
 			$this->db	->where('disposition_id', $disposition_id)
-						->delete('nf_dispositions');
+						->delete('dispositions');
 
-			$disposition = $this->db->from('nf_dispositions')
+			$disposition = $this->db->from('dispositions')
 									->where('theme', $theme)
 									->where('page', '*')
 									->where('zone', $zone)
@@ -145,7 +145,7 @@ class Admin_Ajax extends Controller_Module
 
 	public function widget_add($disposition_id, $disposition, $row_id, $col_id, $title, $widget_name, $type, $settings)
 	{
-		$widget_id = $this->db	->insert('nf_widgets', [
+		$widget_id = $this->db	->insert('widgets', [
 									'title'    => $title ? utf8_htmlentities($title) : NULL,
 									'widget'   => $widget_name,
 									'type'     => $type,
@@ -195,7 +195,7 @@ class Admin_Ajax extends Controller_Module
 		$settings = $this->widget($widget)->get_settings($type, $settings);
 
 		$this->db	->where('widget_id', $id)
-					->update('nf_widgets', [
+					->update('widgets', [
 						'title'    => $title ? utf8_htmlentities($title) : NULL,
 						'widget'   => $widget,
 						'type'     => $type,

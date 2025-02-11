@@ -50,7 +50,7 @@ class Default_ extends Theme
 		$header = function(){
 			return $this->row(
 					$this->col(
-						$this->widget($this->db->insert('nf_widgets', [
+						$this->widget($this->db->insert('widgets', [
 							'widget'   => 'header',
 							'type'     => 'index',
 							'settings' => serialize([
@@ -70,7 +70,7 @@ class Default_ extends Theme
 		$navbar = function(){
 			return $this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget'   => 'navigation',
 									'type'     => 'index',
 									'settings' => serialize([
@@ -105,7 +105,7 @@ class Default_ extends Theme
 								->size('col-7')
 					),
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'user',
 									'type'   => 'index_mini'
 								]))
@@ -118,14 +118,14 @@ class Default_ extends Theme
 		$breadcrumb = function($search = TRUE){
 			return $this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 										'widget' => 'breadcrumb',
 										'type'   => 'index'
 								]))
 								->size('col-8')
 					),
 					$search ? $this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'search',
 									'type'   => 'index'
 								]))
@@ -141,14 +141,14 @@ class Default_ extends Theme
 			$breadcrumb(),
 			$this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'module',
 									'type'   => 'index'
 								]))
 								->size('col-8')
 					),
 					$this	->col(
-								$this->widget($this->db->insert('nf_widgets', [
+								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'navigation',
 									'type'     => 'vertical',
 									'settings' => serialize([
@@ -180,7 +180,7 @@ class Default_ extends Theme
 										]
 									])
 								])),
-								$this	->widget($this->db->insert('nf_widgets', [
+								$this	->widget($this->db->insert('widgets', [
 											'widget' => 'partners',
 											'type'   => 'column',
 											'settings' => serialize([
@@ -188,23 +188,23 @@ class Default_ extends Theme
 											])
 										]))
 										->style('panel-default'),
-								$this	->widget($this->db->insert('nf_widgets', [
+								$this	->widget($this->db->insert('widgets', [
 											'widget' => 'user',
 											'type'   => 'index'
 										]))
 										->style('panel-default'),
-								$this->widget($this->db->insert('nf_widgets', [
+								$this->widget($this->db->insert('widgets', [
 									'widget' => 'news',
 									'type'   => 'categories'
 								])),
-								$this->widget($this->db->insert('nf_widgets', [
+								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'talks',
 									'type'     => 'index',
 									'settings' => serialize([
 										'talk_id' => 2
 									])
 								])),
-								$this	->widget($this->db->insert('nf_widgets', [
+								$this	->widget($this->db->insert('widgets', [
 											'widget' => 'members',
 											'type'   => 'online'
 										]))
@@ -218,14 +218,14 @@ class Default_ extends Theme
 		$dispositions->set('*', 'Avant-contenu', $this->array([
 			$this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'forum',
 									'type'   => 'topics'
 								]))
 								->size('col-4')
 					),
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'news',
 									'type'   => 'index'
 								]))
@@ -233,7 +233,7 @@ class Default_ extends Theme
 								->size('col-4')
 					),
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget' => 'members',
 									'type'   => 'index'
 								]))
@@ -252,7 +252,7 @@ class Default_ extends Theme
 		$dispositions->set('*', 'Haut', $this->array([
 			$this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget'   => 'navigation',
 									'type'     => 'index',
 									'settings' => serialize([
@@ -279,7 +279,7 @@ class Default_ extends Theme
 								->size('col-8')
 					),
 					$this->col(
-						$this->widget($this->db->insert('nf_widgets', [
+						$this->widget($this->db->insert('widgets', [
 							'widget' => 'members',
 							'type'   => 'online_mini'
 						]))
@@ -292,7 +292,7 @@ class Default_ extends Theme
 		$dispositions->set('*', 'Pied de page', $this->array([
 			$this->row(
 					$this->col(
-						$this	->widget($this->db->insert('nf_widgets', [
+						$this	->widget($this->db->insert('widgets', [
 									'widget'   => 'copyright',
 									'type'     => 'index'
 								]))
@@ -307,7 +307,7 @@ class Default_ extends Theme
 			$navbar(),
 			$this->row(
 					$this->col(
-						$this->widget($this->db->insert('nf_widgets', [
+						$this->widget($this->db->insert('widgets', [
 							'widget'   => 'slider',
 							'type'     => 'index'
 						]))
@@ -322,7 +322,7 @@ class Default_ extends Theme
 				$breadcrumb($page != 'search/*'),
 				$this	->row(
 							$this->col(
-								$this->widget($this->db->insert('nf_widgets', [
+								$this->widget($this->db->insert('widgets', [
 									'widget' => 'module',
 									'type'   => 'index'
 								]))
@@ -335,7 +335,7 @@ class Default_ extends Theme
 		$dispositions->set('forum/*', 'Post-contenu', $this->array([
 			$this	->row(
 						$this->col(
-							$this	->widget($this->db->insert('nf_widgets', [
+							$this	->widget($this->db->insert('widgets', [
 										'widget' => 'forum',
 										'type'   => 'statistics'
 									]))
@@ -343,7 +343,7 @@ class Default_ extends Theme
 									->size('col-4')
 						),
 						$this->col(
-							$this	->widget($this->db->insert('nf_widgets', [
+							$this	->widget($this->db->insert('widgets', [
 										'widget' => 'forum',
 										'type'   => 'activity'
 									]))

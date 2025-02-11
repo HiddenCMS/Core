@@ -16,7 +16,7 @@ class Config extends Core
 	{
 		$settings = [];
 
-		foreach ($this->db->select('site', 'lang', 'name', 'value', 'type')->from('nf_settings')->get() as $setting)
+		foreach ($this->db->select('site', 'lang', 'name', 'value', 'type')->from('settings')->get() as $setting)
 		{
 			if ($setting['type'] == 'array')
 			{
@@ -178,7 +178,7 @@ class Config extends Core
 				unset($this->_const[$args[0]]);
 
 				NeoFrag()->db	->where('name', $args[0])
-								->delete('nf_settings');
+								->delete('settings');
 			}
 
 			return $this;
@@ -198,21 +198,21 @@ class Config extends Core
 		if (array_key_exists($name, $this->_const))
 		{
 			NeoFrag()->db	->where('name', $name)
-							->update('nf_settings', [
+							->update('settings', [
 								'value' => $value
 							]);
 
 			if ($type)
 			{
 				NeoFrag()->db	->where('name', $name)
-								->update('nf_settings', [
+								->update('settings', [
 									'type' => $type
 								]);
 			}
 		}
 		else
 		{
-			NeoFrag()->db->insert('nf_settings', [
+			NeoFrag()->db->insert('settings', [
 				'name'  => $name,
 				'value' => $value,
 				'type'  => $type ?: 'string'

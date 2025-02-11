@@ -52,7 +52,7 @@ abstract class Theme extends Addon
 		{
 			foreach ($dispositions as $zone => $disposition)
 			{
-				$this->db->insert('nf_dispositions', [
+				$this->db->insert('dispositions', [
 					'theme'       => $this->info()->name,
 					'page'        => $page,
 					'zone'        => array_search($zone, $this->info()->zones),
@@ -68,12 +68,12 @@ abstract class Theme extends Addon
 
 	public function uninstall($remove = TRUE)
 	{
-		if ($dispositions = $this->db->select('disposition')->from('nf_dispositions')->where('theme', $this->info()->name)->get())
+		if ($dispositions = $this->db->select('disposition')->from('dispositions')->where('theme', $this->info()->name)->get())
 		{
 			$this->module('live_editor')->model()->delete_widgets($this->array($dispositions)->each('unserialize'));
 
 			$this->db	->where('theme', $this->info()->name)
-						->delete('nf_dispositions');
+						->delete('dispositions');
 		}
 
 		return parent::uninstall($remove);

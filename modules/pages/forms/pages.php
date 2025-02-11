@@ -28,7 +28,7 @@ $rules = [
 
 			$value = url_title($value);
 
-			if ($value != $name && !NeoFrag()->db->from('nf_pages')->where('name', $value)->empty())
+			if ($value != $name && !NeoFrag()->db->from('pages')->where('name', $value)->empty())
 			{
 				return $this->lang('Chemin d\'accès déjà utilisé');
 			}

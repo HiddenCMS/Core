@@ -22,8 +22,8 @@ class Access extends Core
 		$this->_access = [];
 
 		$all_access = $this->db()	->select('ad.entity', 'ad.type', 'ad.authorized', 'a.action', 'a.id', 'a.module')
-									->from('nf_access a')
-									->join('nf_access_details ad', 'a.access_id = ad.access_id')
+									->from('access a')
+									->join('access_details ad', 'a.access_id = ad.access_id')
 									->order_by('type <> "user"', 'authorized DESC')
 									->get();
 
@@ -122,7 +122,7 @@ class Access extends Core
 	{
 		$count = array_fill(0, 2, 0);
 
-		foreach ($this->db->select('id')->from('nf_user')->where('deleted', FALSE)->get() as $user_id)
+		foreach ($this->db->select('id')->from('user')->where('deleted', FALSE)->get() as $user_id)
 		{
 			$access = $this($module, $action, $id, NULL, $user_id);
 			$count[(int)$access]++;
@@ -157,7 +157,7 @@ class Access extends Core
 		{
 			foreach ($access['init'] as $action => $groups)
 			{
-				$access_id = $this->db->insert('nf_access', [
+				$access_id = $this->db->insert('access', [
 					'module' => $module_name,
 					'action' => $action,
 					'id'     => $id
@@ -167,7 +167,7 @@ class Access extends Core
 				{
 					list($entity, $authorized) = $group;
 
-					$this->db->insert('nf_access_details', [
+					$this->db->insert('access_details', [
 						'access_id'  => $access_id,
 						'entity'     => $entity,
 						'type'       => 'group',
@@ -186,7 +186,7 @@ class Access extends Core
 	{
 		$this->db	->where('module', $module)
 					->where('id', $id)
-					->delete('nf_access');
+					->delete('access');
 
 		return $this;
 	}
@@ -195,7 +195,7 @@ class Access extends Core
 	{
 		$this->db	->where('entity', $group_id)
 					->where('type', 'group')
-					->delete('nf_access_details');
+					->delete('access_details');
 
 		return $this;
 	}

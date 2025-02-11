@@ -60,8 +60,8 @@ class Index extends Controller_Widget
 		$unique_tags = [];
 
 		if ($tags = $this->db	->select('nl.tags')
-								->from('nf_news_lang nl')
-								->join('nf_news n', 'nl.news_id = n.news_id')
+								->from('news_lang nl')
+								->join('news n', 'nl.news_id = n.news_id')
 								->where('n.published', TRUE)
 								->get())
 		{

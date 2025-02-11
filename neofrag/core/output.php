@@ -400,7 +400,7 @@ class Output extends Core
 
 		if ($dispositions === NULL)
 		{
-			$this->db	->from('nf_dispositions')
+			$this->db	->from('dispositions')
 						->where('theme', $this->_theme->info()->name)
 						->order_by('page DESC');
 

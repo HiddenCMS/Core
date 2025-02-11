@@ -18,8 +18,8 @@ class Categories extends Model
 		}
 
 		return $this->db->select('c.category_id', 'cl.title', 'c.image_id', 'c.icon_id')
-						->from('nf_news_categories c')
-						->join('nf_news_categories_lang cl', 'c.category_id = cl.category_id')
+						->from('news_categories c')
+						->join('news_categories_lang cl', 'c.category_id = cl.category_id')
 						->where('c.category_id', $category_id)
 						->where('c.name', $name)
 						->where('cl.lang', $lang)
@@ -29,9 +29,9 @@ class Categories extends Model
 	public function get_categories()
 	{
 		return $this->db->select('c.category_id', 'c.icon_id', 'c.name', 'cl.title', 'COUNT(n.news_id) as nb_news')
-						->from('nf_news_categories c')
-						->join('nf_news_categories_lang cl', 'c.category_id = cl.category_id')
-						->join('nf_news n', 'c.category_id = n.category_id')
+						->from('news_categories c')
+						->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+						->join('news n', 'c.category_id = n.category_id')
 						->where('cl.lang', $this->config->lang->info()->name)
 						->group_by('c.category_id')
 						->order_by('cl.title')
@@ -54,13 +54,13 @@ class Categories extends Model
 
 	public function add_category($title, $image, $icon)
 	{
-		$category_id = $this->db->insert('nf_news_categories', [
+		$category_id = $this->db->insert('news_categories', [
 			'name'        => url_title($title),
 			'image_id'    => $image,
 			'icon_id'     => $icon
 		]);
 
-		$this->db->insert('nf_news_categories_lang', [
+		$this->db->insert('news_categories_lang', [
 			'category_id' => $category_id,
 			'lang'        => $this->config->lang->info()->name,
 			'title'       => $title
@@ -70,7 +70,7 @@ class Categories extends Model
 	public function edit_category($category_id, $title, $image_id, $icon_id)
 	{
 		$this->db	->where('category_id', $category_id)
-					->update('nf_news_categories', [
+					->update('news_categories', [
 						'image_id' => $image_id,
 						'icon_id'  => $icon_id,
 						'name'     => url_title($title)
@@ -78,7 +78,7 @@ class Categories extends Model
 
 		$this->db	->where('category_id', $category_id)
 					->where('lang', $this->config->lang->info()->name)
-					->update('nf_news_categories_lang', [
+					->update('news_categories_lang', [
 						'title'        => $title
 					]);
 	}
@@ -86,8 +86,8 @@ class Categories extends Model
 	public function delete_category($category_id)
 	{
 		$files = array_merge(
-			array_values($this->db->select('image_id', 'icon_id')->from('nf_news_categories')->where('category_id', $category_id)->row()),
-			$this->db->select('image_id')->from('nf_news')->where('category_id', $category_id)->get()
+			array_values($this->db->select('image_id', 'icon_id')->from('news_categories')->where('category_id', $category_id)->row()),
+			$this->db->select('image_id')->from('news')->where('category_id', $category_id)->get()
 		);
 
 		foreach ($files as $file)
@@ -96,6 +96,6 @@ class Categories extends Model
 		}
 
 		$this->db	->where('category_id', $category_id)
-					->delete('nf_news_categories');
+					->delete('news_categories');
 	}
 }

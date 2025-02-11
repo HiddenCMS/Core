@@ -108,7 +108,7 @@ class News extends Module
 	public function comments($news_id)
 	{
 		$news = $this->db	->select('title')
-							->from('nf_news_lang')
+							->from('news_lang')
 							->where('news_id', $news_id)
 							->where('lang', $this->config->lang->info()->name)
 							->row();

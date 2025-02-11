@@ -84,8 +84,8 @@
 			</div>
 			<?php
 			$pages = $this->db	->select('p.page_id', 'p.name', 'p.published', 'pl.title', 'pl.subtitle')
-							->from('nf_pages p')
-							->join('nf_pages_lang pl', 'p.page_id = pl.page_id')
+							->from('pages p')
+							->join('pages_lang pl', 'p.page_id = pl.page_id')
 							->where('p.published', TRUE)
 							->where('pl.lang', $this->config->lang->info()->name)
 							->order_by('pl.title ASC')

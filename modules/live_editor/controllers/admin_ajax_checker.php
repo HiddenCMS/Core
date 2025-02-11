@@ -85,7 +85,7 @@ class Admin_Ajax_Checker extends Module_Checker
 			$post = post();
 
 			if (!empty($post['widget_id']) && $widget = $this->db	->select('widget', 'type', 'settings')
-																	->from('nf_widgets')
+																	->from('widgets')
 																	->where('widget_id', $post['widget_id'])
 																	->row())
 			{

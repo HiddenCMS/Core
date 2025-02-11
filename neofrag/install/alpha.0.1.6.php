@@ -215,7 +215,7 @@ class i_0_1_6 extends Install
 
 		foreach (['facebook', 'twitter', 'google', 'battle_net', 'steam', 'twitch', 'github', 'linkedin'] as $i => $name)
 		{
-			$this->db->insert('nf_settings_authenticators', [
+			$this->db->insert('settings_authenticators', [
 				'name'     => $name,
 				'settings' => serialize([]),
 				'order'    => $i

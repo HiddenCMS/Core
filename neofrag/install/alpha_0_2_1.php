@@ -12,13 +12,13 @@ class Alpha_0_2_1 extends Install
 {
 	public function up()
 	{
-		$this->db()->insert('nf_addon', [
+		$this->db()->insert('addon', [
 			'type_id' => 1,
 			'name'    => 'tools',
 			'data'    => 'a:1:{s:7:"enabled";b:1;}'
 		]);
 
-		$this->db()->insert('nf_addon', [
+		$this->db()->insert('addon', [
 			'type_id' => 3,
 			'name'    => 'about',
 			'data'    => 'a:1:{s:7:"enabled";b:1;}'
@@ -32,7 +32,7 @@ class Alpha_0_2_1 extends Install
 
 		$this->config('images_per_page', 24, 'int');
 
-		$this->db()->insert('nf_addon', [
+		$this->db()->insert('addon', [
 			'type_id' => 2,
 			'name'    => 'azuro',
 			'data'    => ''
@@ -43,18 +43,18 @@ class Alpha_0_2_1 extends Install
 		$zones = [4, 3, 1, 0, 2, 5];
 
 		foreach ($this->db()->select('disposition_id', 'zone')
-							->from('nf_dispositions')
+							->from('dispositions')
 							->where('theme', 'default')
 							->get() as $disposition)
 		{
 			$this->db()	->where('disposition_id', $disposition['disposition_id'])
-						->update('nf_dispositions', [
+						->update('dispositions', [
 							'zone' => array_search($disposition['zone'], $zones) + 100
 						]);
 		}
 
 		$this->db()	->where('theme', 'default')
-					->update('nf_dispositions', 'zone = zone - 100');
+					->update('dispositions', 'zone = zone - 100');
 
 		foreach ([
 				'css/delete.css',

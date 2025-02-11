@@ -25,8 +25,8 @@ class Search extends Controller_Module
 	public function search()
 	{
 		$this->db	->select('p.page_id', 'p.name', 'pl.title', 'pl.subtitle', 'pl.content')
-					->from('nf_pages p')
-					->join('nf_pages_lang pl', 'p.page_id = pl.page_id')
+					->from('pages p')
+					->join('pages_lang pl', 'p.page_id = pl.page_id')
 					->where('p.published', TRUE)
 					->where('pl.lang', $this->config->lang->info()->name);
 

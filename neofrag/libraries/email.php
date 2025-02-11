@@ -54,7 +54,7 @@ class Email extends Library
 	{
 		if ($key === NULL)
 		{
-			$key = unique_id($this->db()->select('key')->from('nf_emailing_email_recipient')->get());
+			$key = unique_id($this->db()->select('key')->from('emailing_email_recipient')->get());
 		}
 
 		$this->_key = $key;

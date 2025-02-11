@@ -54,9 +54,9 @@ class i_0_2 extends NeoFrag
 		}
 
 		$this->db	->where('name', 'error')
-					->delete('nf_settings_addons');
+					->delete('settings_addons');
 
-		$this->db->insert('nf_settings_addons', [
+		$this->db->insert('settings_addons', [
 			'name' => 'admin',
 			'type' => 'theme'
 		]);
@@ -160,14 +160,14 @@ class i_0_2 extends NeoFrag
 			]
 		];
 
-		foreach ($this->db->from('nf_settings_addons')->order_by('type', 'name')->get() as $addon)
+		foreach ($this->db->from('settings_addons')->order_by('type', 'name')->get() as $addon)
 		{
 			if (!in_array($addon['name'], $allowed[$addon['type']]))
 			{
 				continue;
 			}
 
-			$this->db->insert('nf_addon', [
+			$this->db->insert('addon', [
 				'type_id' => $types[$addon['type']],
 				'name'    => $addon['name'],
 				'data'    => $addon['type'] != 'theme' ? serialize([
@@ -176,9 +176,9 @@ class i_0_2 extends NeoFrag
 			]);
 		}
 
-		foreach ($this->db->from('nf_settings_languages')->get() as $lang)
+		foreach ($this->db->from('settings_languages')->get() as $lang)
 		{
-			$this->db->insert('nf_addon', [
+			$this->db->insert('addon', [
 				'type_id' => 4,
 				'name'    => $lang['code'],
 				'data'    => serialize([
@@ -188,7 +188,7 @@ class i_0_2 extends NeoFrag
 			]);
 		}
 
-		foreach ($this->db->from('nf_settings_authenticators')->get() as $auth)
+		foreach ($this->db->from('settings_authenticators')->get() as $auth)
 		{
 			$settings = unserialize($auth['settings']);
 
@@ -197,7 +197,7 @@ class i_0_2 extends NeoFrag
 				$settings = $auth['name'] == 'steam' ? ['key' => ''] : ['id' => '', 'secret' => ''];
 			}
 
-			$this->db->insert('nf_addon', [
+			$this->db->insert('addon', [
 				'type_id' => 5,
 				'name'    => $auth['name'],
 				'data'    => serialize([
@@ -271,7 +271,7 @@ class i_0_2 extends NeoFrag
 		$this->db->execute('DROP TABLE nf_votes');
 
 		//Debug
-		$this->db->where('name', 'nf_debug')->delete('nf_settings');
+		$this->db->where('name', 'nf_debug')->delete('settings');
 
 		//Dispositions
 		$replacement = [
@@ -295,17 +295,17 @@ class i_0_2 extends NeoFrag
 			return unserialize($result = "O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";".$result."}") !== FALSE ? $result : $serialized;
 		};
 
-		foreach ($this->db->from('nf_dispositions')->get() as $disposition)
+		foreach ($this->db->from('dispositions')->get() as $disposition)
 		{
 			$this->db	->where('disposition_id', $disposition['disposition_id'])
-						->update('nf_dispositions', [
+						->update('dispositions', [
 							'disposition' => $update_disposition($disposition['disposition'])
 						]);
 		}
 
 		//Config
 		$this->db	->where('site', 'default')
-					->update('nf_settings', [
+					->update('settings', [
 						'site' => ''
 					]);
 
@@ -324,10 +324,10 @@ class i_0_2 extends NeoFrag
 					->execute('RENAME TABLE `nf_sessions_history` TO `nf_session_history`')
 					->execute('ALTER TABLE `nf_session_history` CHANGE `authenticator` `auth` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL AFTER user_agent');
 
-		foreach ($this->db->from('nf_session_history')->where('auth <>', '')->get() as $session)
+		foreach ($this->db->from('session_history')->where('auth <>', '')->get() as $session)
 		{
 			$this->db	->where('id', $session['id'])
-						->update('nf_session_history', [
+						->update('session_history', [
 							'auth' => serialize([
 								'authentificator' => $session['auth'],
 								'name'            => '',
@@ -363,11 +363,11 @@ class i_0_2 extends NeoFrag
 					  CONSTRAINT `nf_user_auth_ibfk_2` FOREIGN KEY (`authenticator_id`) REFERENCES `nf_addon` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 					) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8');
 
-		foreach ($this->db->from('nf_users_auth')->get() as $auth)
+		foreach ($this->db->from('users_auth')->get() as $auth)
 		{
-			$this->db	->insert('nf_user_auth', [
+			$this->db	->insert('user_auth', [
 							'user_id'          => $auth['user_id'],
-							'authenticator_id' => $this->db->select('id')->from('nf_addon')->where('name', $auth['authenticator'])->where('type_id', 5)->row(),
+							'authenticator_id' => $this->db->select('id')->from('addon')->where('name', $auth['authenticator'])->where('type_id', 5)->row(),
 							'key'              => $auth['id']
 						]);
 		}
@@ -388,10 +388,10 @@ class i_0_2 extends NeoFrag
 
 		//Admin
 		$this->db	->where('widget_id', 1)
-					->delete('nf_widgets');
+					->delete('widgets');
 
 		//Widget navigation
-		foreach ($this->db->from('nf_widgets')->where('widget', 'navigation')->get() as $nav)
+		foreach ($this->db->from('widgets')->where('widget', 'navigation')->get() as $nav)
 		{
 			$settings = unserialize($nav['settings']);
 			$display = $settings['display'];
@@ -407,12 +407,12 @@ class i_0_2 extends NeoFrag
 			}
 
 			$this->db	->where('widget_id', $nav['widget_id'])
-						->update('nf_widgets', $values);
+						->update('widgets', $values);
 		}
 
 		//Copyright
 		$this->config('nf_copyright', utf8_htmlentities('Copyright {copyright} {year} {name}, tous droits réservés <div class="pull-right">Propulsé par {neofrag}</div>'));
-		$this->db->insert('nf_addon', [
+		$this->db->insert('addon', [
 			'type_id' => 3,
 			'name'    => 'copyright',
 			'data'    => serialize([

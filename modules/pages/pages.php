@@ -61,10 +61,10 @@ class Pages extends Module
 			],
 			'page' => [
 				'get_all' => function(){
-					return NeoFrag()->db->select('p.page_id', 'CONCAT_WS(" ", "Page", pl.title)')->from('nf_pages p')->join('nf_pages_lang pl', 'p.page_id = pl.page_id')->where('pl.lang', $this->config->lang->info()->name)->get();
+					return NeoFrag()->db->select('p.page_id', 'CONCAT_WS(" ", "Page", pl.title)')->from('pages p')->join('pages_lang pl', 'p.page_id = pl.page_id')->where('pl.lang', $this->config->lang->info()->name)->get();
 				},
 				'check'   => function($page_id){
-					if (($page = NeoFrag()->db->select('title')->from('nf_pages_lang')->where('page_id', $page_id)->where('lang', $this->config->lang->info()->name)->row()) !== [])
+					if (($page = NeoFrag()->db->select('title')->from('pages_lang')->where('page_id', $page_id)->where('lang', $this->config->lang->info()->name)->row()) !== [])
 					{
 						return 'Page '.$page;
 					}

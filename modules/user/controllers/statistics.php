@@ -16,7 +16,7 @@ class Statistics extends Controller_Module
 			'registrations' => [
 				'title' => 'Inscriptions',
 				'data'  => function(){
-					$this->db	->from('nf_user')
+					$this->db	->from('user')
 								->where('deleted', FALSE);
 
 					return 'registration_date';
@@ -26,7 +26,7 @@ class Statistics extends Controller_Module
 				'title'    => 'Connections de membres',
 				'group_by' => 'COUNT(DISTINCT user_id)',
 				'data'     => function(){
-					$this->db->from('nf_session_history');
+					$this->db->from('session_history');
 					return 'date';
 				}
 			]

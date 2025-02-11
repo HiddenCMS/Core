@@ -8,10 +8,10 @@ class i_0_1_6_1 extends Install
 {
 	public function up()
 	{
-		foreach ($this->db->from('nf_dispositions')->get() as $disposition)
+		foreach ($this->db->from('dispositions')->get() as $disposition)
 		{
 			$this->db	->where('disposition_id', $disposition['disposition_id'])
-						->update('nf_dispositions', [
+						->update('dispositions', [
 							'disposition' => preg_replace_callback('/s:\d+:"((.)\*\2_color)";(.*?;)/', function($a){
 								$style = unserialize($a[3]);
 

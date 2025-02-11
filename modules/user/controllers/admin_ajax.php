@@ -19,7 +19,7 @@ class Admin_Ajax extends Controller_Module
 		array_walk($groups, function(&$a, $id){
 			if (empty($a['id']))
 			{
-				$a['id'] = $this->db->insert('nf_groups', [
+				$a['id'] = $this->db->insert('groups', [
 					'name'  => $id,
 					'color' => $a['color'],
 					'icon'  => $a['icon'],
@@ -39,7 +39,7 @@ class Admin_Ajax extends Controller_Module
 		foreach (array_merge(array_slice($groups, 0, --$position, TRUE), [$group['id']], array_slice($groups, $position, NULL, TRUE)) as $order => $group_id)
 		{
 			$this->db	->where('group_id', $group_id)
-						->update('nf_groups', [
+						->update('groups', [
 							'order' => $order
 						]);
 		}
