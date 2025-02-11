@@ -4,6 +4,9 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
+/** Init composer */
+require 'vendor/autoload.php';
+
 define('NEOFRAG_MEMORY',  memory_get_usage());
 define('NEOFRAG_TIME',    microtime(TRUE));
 define('NEOFRAG_CMS',     __DIR__);
