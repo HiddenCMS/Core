@@ -49,7 +49,7 @@ class Access extends Model
 		$this->db	->where('a.module', $module)
 					->where('a.action', $action)
 					->where('a.id', $id)
-					->delete('ad', 'nf_access_details ad INNER JOIN nf_access a ON a.access_id = ad.access_id');
+					->delete('ad', 'access_details ad INNER JOIN access a ON a.access_id = ad.access_id');
 
 		return $this;
 	}
