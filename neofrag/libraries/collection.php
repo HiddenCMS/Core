@@ -146,7 +146,7 @@ class Collection extends Library
 
 	public function delete()
 	{
-		return $this->_db->clone()->from('')->delete('_', 'nf_'.$this->_model->__table.' `_`');
+		return $this->_db->clone()->from('')->delete('_', $this->_model->__table.' `_`');
 	}
 
 	public function count()

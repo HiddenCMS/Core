@@ -721,7 +721,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 
 	protected function _table()
 	{
-		return 'nf_'.$this->__table;
+		return $this->__table;
 	}
 
 	protected function _data($values, $id)
