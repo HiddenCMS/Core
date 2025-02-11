@@ -84,7 +84,7 @@ class Api extends Controller_Module
 				echo $file."\n";
 			}
 
-			$this->config('nf_version_css', time());
+			$this->config('version_css', time());
 
 			return 'OK';
 		}

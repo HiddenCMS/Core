@@ -30,7 +30,7 @@ abstract class Theme extends Addon
 
 	public function is_enabled()
 	{
-		return $this->config->nf_default_theme == $this->info()->name;
+		return $this->config->default_theme == $this->info()->name;
 	}
 
 	public function is_deactivatable()

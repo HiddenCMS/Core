@@ -28,7 +28,7 @@ $this	->compact()
 			//TODO admin123
 			if ($user() && $user->password($data['password']))
 			{
-				if ($this->config->nf_registration_validation && !$user->last_activity_date)
+				if ($this->config->registration_validation && !$user->last_activity_date)
 				{
 					//Vous devez valider votre inscription, recevoir un nouveau mail de validation
 					//TODO

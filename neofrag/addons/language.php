@@ -45,12 +45,12 @@ abstract class Language extends Addon
 		{
 			return $result->value;
 		}
-		else if ($this->config->nf_translate_api)
+		else if ($this->config->translate_api)
 		{
 			$source = NeoFrag()->model2('addon')->get('language', $source);
 
 			$locale = $this	->network('https://i18n.neofr.ag')
-							->auth($this->config->nf_translate_api)
+							->auth($this->config->translate_api)
 							->post([
 								'source' => $source->info()->name,
 								'text'   => $text,

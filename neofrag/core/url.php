@@ -101,12 +101,12 @@ class Url extends Core
 			{
 				$this->output->asset($this->request);
 			}
-			else if ($this->config->nf_maintenance)
+			else if ($this->config->maintenance)
 			{
-				if ($this->config->nf_maintenance_opening && ($opening = $this->date($this->config->nf_maintenance_opening)) && $opening->diff() <= 0)
+				if ($this->config->maintenance_opening && ($opening = $this->date($this->config->maintenance_opening)) && $opening->diff() <= 0)
 				{
-					$this	->config('nf_maintenance', FALSE, 'bool')
-							->config('nf_maintenance_opening', '');
+					$this	->config('maintenance', FALSE, 'bool')
+							->config('maintenance_opening', '');
 				}
 				else if (!$this->user->admin && !preg_match('#(ajax/user/(lost-password|login)|user/lost-password/[a-z0-9]+|user/logout)#', $this->url->request))
 				{
@@ -229,7 +229,7 @@ class Url extends Core
 		{
 			$url = explode('/', $url);
 
-			if (current($url) == $this->config->nf_default_page)
+			if (current($url) == $this->config->default_page)
 			{
 				array_shift($url);
 			}

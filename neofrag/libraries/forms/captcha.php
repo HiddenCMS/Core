@@ -14,7 +14,7 @@ class Captcha extends Labelable
 
 	public function __invoke($name = '')
 	{
-		if (!$this->config->nf_captcha_public_key || !$this->config->nf_captcha_private_key)
+		if (!$this->config->captcha_public_key || !$this->config->captcha_private_key)
 		{
 			return;
 		}
@@ -28,7 +28,7 @@ class Captcha extends Labelable
 				{
 					$result = $this	->network('https://www.google.com/recaptcha/api/siteverify')
 									->get([
-										'secret'   => $this->config->nf_captcha_private_key,
+										'secret'   => $this->config->captcha_private_key,
 										'response' => $post[$this->_name],
 										'remoteip' => $_SERVER['REMOTE_ADDR']
 									]);

@@ -166,7 +166,7 @@ return [
 	'ddf5f639' => 'Non-existent method %s::%s',
 	'de6d4903' => 'The avatar must be a square',
 	'df4be726' => 'Your reply',
-	'df649a95' => 'Copyright © '.date('Y').' - '.$this->config->nf_name.' all rights reserved',
+	'df649a95' => 'Copyright © '.date('Y').' - '.$this->config->name.' all rights reserved',
 	'e0b79a88' => 'Please fill in a message',
 	'e1c7c197' => 'Authorized members',
 	'e1ca19e5' => 'Excluded members',

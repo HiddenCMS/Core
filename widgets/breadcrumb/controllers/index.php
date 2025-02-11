@@ -30,6 +30,6 @@ class Index extends Controller_Widget
 							->content('<a href="'.url($value[1]).'">'.($is_last && $value[2] !== '' ? icon($value[2]).' ' : '').$value[0].'</a>');
 		});
 
-		return '<ol class="breadcrumb"><li class="breadcrumb-item"><b>'.$this->config->nf_name.'</b></li>'.implode($links).'</ol>';
+		return '<ol class="breadcrumb"><li class="breadcrumb-item"><b>'.$this->config->name.'</b></li>'.implode($links).'</ol>';
 	}
 }

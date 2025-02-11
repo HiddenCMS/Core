@@ -33,7 +33,7 @@ class Index extends Controller_Widget
 
 			return $this->module('user')
 						->form2('login')
-						->button_prepend_if($this->config->nf_registration_status, $this->button()
+						->button_prepend_if($this->config->registration_status, $this->button()
 																						->title('Créer un compte')
 																						->color('secondary')
 																						->modal_ajax('ajax/user/register')

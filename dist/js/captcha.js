@@ -2,7 +2,7 @@ var onloadCallback = function(){
 	$(function(){
 		$('.g-recaptcha').each(function(index, captcha){
 			var data = {
-				sitekey: "<?php echo $this->config->nf_captcha_public_key ?>"
+				sitekey: "<?php echo $this->config->captcha_public_key ?>"
 			};
 
 			$.each(['theme', 'size'], function(_, key){

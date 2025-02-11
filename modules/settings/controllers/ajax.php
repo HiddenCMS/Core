@@ -12,12 +12,12 @@ class Ajax extends Controller_Module
 {
 	public function humans()
 	{
-		return $this->config->nf_humans_txt;
+		return $this->config->humans_txt;
 	}
 
 	public function robots()
 	{
-		return $this->config->nf_robots_txt;
+		return $this->config->robots_txt;
 	}
 
 	public function debug_bar()

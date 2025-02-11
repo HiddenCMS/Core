@@ -13,13 +13,13 @@ class Index extends Controller_Widget
 	public function index($settings = [])
 	{
 		$keywords = [
-			'name'      => '<a href="'.url().'">'.$this->config->nf_name.'</a>',
+			'name'      => '<a href="'.url().'">'.$this->config->name.'</a>',
 			'neofrag'   => '<a href="https://neofr.ag">NeoFrag</a>',
 			'year'      => date('Y'),
 			'copyright' => icon('far fa-copyright')
 		];
 
-		if (!in_string('{neofrag}', $copyright = utf8_html_entity_decode($this->config->nf_copyright)))
+		if (!in_string('{neofrag}', $copyright = utf8_html_entity_decode($this->config->copyright)))
 		{
 			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{neofrag}').'</div>';
 		}

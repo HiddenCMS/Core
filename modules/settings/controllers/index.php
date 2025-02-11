@@ -17,9 +17,9 @@ class Index extends Controller_Module
 			$this->error();
 		}
 
-		return $this->title($this->config->nf_maintenance_title ?: $this->lang('Site en maintenance'))
+		return $this->title($this->config->maintenance_title ?: $this->lang('Site en maintenance'))
 					->css('maintenance')
-					->exec_if($this->config->nf_maintenance_opening, function(){
+					->exec_if($this->config->maintenance_opening, function(){
 						$this	->css('jquery.countdown')
 								->js('jquery.countdown')
 								->js('maintenance');

@@ -153,7 +153,7 @@ class Messages extends Model
 
 			$reply_id = $this->db	->insert('users_messages_replies', [
 										'message_id' => $message_id,
-										'user_id'  => $author_id = $auto ? $this->config->nf_welcome_user_id : $this->user->id,
+										'user_id'  => $author_id = $auto ? $this->config->welcome_user_id : $this->user->id,
 										'message'  => $message
 									]);
 

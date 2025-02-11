@@ -53,17 +53,17 @@ class Admin extends Controller_Module
 				->add_rules([
 					'name' => [
 						'label'  => $this->lang('Titre du site'),
-						'value'  => $this->config->nf_name,
+						'value'  => $this->config->name,
 						'rules'  => 'required'
 					],
 					'description' => [
 						'label'  => $this->lang('Description du site'),
-						'value'  => $this->config->nf_description,
+						'value'  => $this->config->description,
 						'rules'  => 'required'
 					],
 					'favicon' => [
 						'label'  => $this->lang('Favicon du site'),
-						'value'  => $this->config->nf_favicon,
+						'value'  => $this->config->favicon,
 						'type'   => 'file',
 						'upload' => 'favicons',
 						'info'   => $this->lang(' d\'image (format carré min. %dpx et max. %d Mo)', 16, file_upload_max_size() / 1024 / 1024),
@@ -87,21 +87,21 @@ class Admin extends Controller_Module
 					],
 					'contact' => [
 						'label'  => $this->lang('Email de contact'),
-						'value'  => $this->config->nf_contact,
+						'value'  => $this->config->contact,
 						'type'   => 'email',
 						'rules'  => 'required'
 					],
 					'default_page' => [
 						'label'  => $this->lang('Page d\'accueil'),
 						'values' => $pages,
-						'value'  => $this->config->nf_default_page,
+						'value'  => $this->config->default_page,
 						'type'   => 'select',
 						'rules'  => 'required'
 					],
 					'analytics' => [
 						'label'       => '<a href="https://analytics.google.com" target="_blank">'.$this->lang('Code Google Analytics').'</a>',
 						'description' => 'Format UA-XXXXXXXXX-Y',
-						'value'       => $this->config->nf_analytics,
+						'value'       => $this->config->analytics,
 						'check'       => function($code){
 							if (!is_empty($code) && !preg_match('/^UA-\d+-\d+$/', $code))
 							{
@@ -112,12 +112,12 @@ class Admin extends Controller_Module
 					'humans_txt' => [
 						'label'  => '<a href="http://humanstxt.org" target="_blank">humans.txt</a>',
 						'type'   => 'textarea',
-						'value'  => $this->config->nf_humans_txt
+						'value'  => $this->config->humans_txt
 					],
 					'robots_txt' => [
 						'label'  => '<a href="http://www.robotstxt.org" target="_blank">robots.txt</a>',
 						'type'   => 'textarea',
-						'value'  => $this->config->nf_robots_txt
+						'value'  => $this->config->robots_txt
 					]
 				])
 				->add_submit($this->lang('Valider'))
@@ -127,7 +127,7 @@ class Admin extends Controller_Module
 		{
 			foreach ($post as $var => $value)
 			{
-				$this->config('nf_'.$var, $value);
+				$this->config(''.$var, $value);
 			}
 
 			notify('Préférences générales sauvegardées avec succès');
@@ -172,18 +172,18 @@ class Admin extends Controller_Module
 					'registration_status' => [
 						'label'   => 'Statut',
 						'type'    => 'radio',
-						'value'   => (int)$this->config->nf_registration_status,
+						'value'   => (int)$this->config->registration_status,
 						'values'  => ['Fermées', 'Ouvertes']
 					],
 					/*'registration_validation' => [
 						'label'   => 'Validation',
 						'type'    => 'radio',
-						'value'   => (int)$this->config->nf_registration_validation,
+						'value'   => (int)$this->config->registration_validation,
 						'values'  => ['Automatique', 'Confirmation par e-mail']
 					],*/
 					'registration_charte' => [
 						'label'   => 'Règlement',
-						'value'   => $this->config->nf_registration_charte,
+						'value'   => $this->config->registration_charte,
 						'type'    => 'editor'
 					],
 					[
@@ -192,24 +192,24 @@ class Admin extends Controller_Module
 					],
 					'welcome' => [
 						'type'    => 'checkbox',
-						'checked' => ['on' => $this->config->nf_welcome],
+						'checked' => ['on' => $this->config->welcome],
 						'values'  => ['on' => 'Envoyer un message privé aux nouveaux membres']
 					],
 					'welcome_user_id' => [
 						'label'   => 'Auteur du message',
 						'values'  => $list_users,
-						'value'   => $this->config->nf_welcome_user_id,
+						'value'   => $this->config->welcome_user_id,
 						'type'    => 'select',
 						'size'    => 'col-5'
 					],
 					'welcome_title' => [
 						'label'   => 'Titre du message',
-						'value'   => $this->config->nf_welcome_title,
+						'value'   => $this->config->welcome_title,
 						'type'    => 'text'
 					],
 					'welcome_content' => [
 						'label'   => 'Message de bienvenue',
-						'value'   => $this->config->nf_welcome_content,
+						'value'   => $this->config->welcome_content,
 						'type'    => 'editor',
 						'description' => 'Placez [pseudo] pour afficher automatiquement le pseudo du nouveau membre dans le message'
 					]
@@ -226,7 +226,7 @@ class Admin extends Controller_Module
 					$value = in_array('on', $value);
 				}
 
-				$this->config('nf_'.$var, $value);
+				$this->config(''.$var, $value);
 			}
 
 			notify('Gestion des inscriptions sauvegardée avec succès');
@@ -251,12 +251,12 @@ class Admin extends Controller_Module
 				->add_rules([
 					'team_name' => [
 						'label'       => 'Nom de l\'équipe',
-						'value'       => $this->config->nf_team_name,
+						'value'       => $this->config->team_name,
 						'type'        => 'text'
 					],
 					'team_logo' => [
 						'label'       => 'Logo',
-						'value'       => $this->config->nf_team_logo,
+						'value'       => $this->config->team_logo,
 						'type'        => 'file',
 						'upload'      => 'logos',
 						'info'        => ' d\'image (max. '.(file_upload_max_size() / 1024 / 1024).' Mo)',
@@ -270,20 +270,20 @@ class Admin extends Controller_Module
 					],
 					'team_type' => [
 						'label'       => 'Type de structure',
-						'value'       => $this->config->nf_team_type,
+						'value'       => $this->config->team_type,
 						'type'        => 'text',
 						'size'        => 'col-4',
 						'description' => '<b>Exemple:</b> Association, entreprise, marque, etc...'
 					],
 					'team_creation' => [
 						'label'       => 'Date de création',
-						'value'       => $this->config->nf_team_creation,
+						'value'       => $this->config->team_creation,
 						'type'        => 'date',
 						'size'        => 'col-4'
 					],
 					'team_biographie' => [
 						'label'       => 'Biographie',
-						'value'       => $this->config->nf_team_biographie,
+						'value'       => $this->config->team_biographie,
 						'type'        => 'textarea'
 					]
 				])
@@ -294,7 +294,7 @@ class Admin extends Controller_Module
 		{
 			foreach ($post as $var => $value)
 			{
-				$this->config('nf_'.$var, $value);
+				$this->config(''.$var, $value);
 			}
 
 			notify('Informations sauvegardées avec succès');
@@ -320,73 +320,73 @@ class Admin extends Controller_Module
 					'social_facebook' => [
 						'label' => 'Facebook',
 						'icon'  => 'fab fa-facebook-f',
-						'value' => $this->config->nf_social_facebook,
+						'value' => $this->config->social_facebook,
 						'type'  => 'url'
 					],
 					'social_twitter' => [
 						'label' => 'Twitter',
 						'icon'  => 'fab fa-twitter',
-						'value' => $this->config->nf_social_twitter,
+						'value' => $this->config->social_twitter,
 						'type'  => 'url'
 					],
 					'social_google' => [
 						'label' => 'Google+',
 						'icon'  => 'fab fa-google-plus-g',
-						'value' => $this->config->nf_social_google,
+						'value' => $this->config->social_google,
 						'type'  => 'url'
 					],
 					'social_steam' => [
 						'label' => 'Page Steam',
 						'icon'  => 'fab fa-steam',
-						'value' => $this->config->nf_social_steam,
+						'value' => $this->config->social_steam,
 						'type'  => 'url'
 					],
 					'social_twitch' => [
 						'label' => 'Twitch',
 						'icon'  => 'fab fa-twitch',
-						'value' => $this->config->nf_social_twitch,
+						'value' => $this->config->social_twitch,
 						'type'  => 'url'
 					],
 					'social_dribble' => [
 						'label' => 'Dribbble',
 						'icon'  => 'fab fa-dribbble',
-						'value' => $this->config->nf_social_dribble,
+						'value' => $this->config->social_dribble,
 						'type'  => 'url'
 					],
 					'social_behance' => [
 						'label' => 'Behance',
 						'icon'  => 'fab fa-behance',
-						'value' => $this->config->nf_social_behance,
+						'value' => $this->config->social_behance,
 						'type'  => 'url'
 					],
 					'social_deviantart' => [
 						'label' => 'DeviantArt',
 						'icon'  => 'fab fa-deviantart',
-						'value' => $this->config->nf_social_deviantart,
+						'value' => $this->config->social_deviantart,
 						'type'  => 'url'
 					],
 					'social_flickr' => [
 						'label' => 'Flickr',
 						'icon'  => 'fab fa-flickr',
-						'value' => $this->config->nf_social_flickr,
+						'value' => $this->config->social_flickr,
 						'type'  => 'url'
 					],
 					'social_github' => [
 						'label' => 'Github',
 						'icon'  => 'fab fa-github',
-						'value' => $this->config->nf_social_github,
+						'value' => $this->config->social_github,
 						'type'  => 'url'
 					],
 					'social_instagram' => [
 						'label' => 'Instagram',
 						'icon'  => 'fab fa-instagram',
-						'value' => $this->config->nf_social_instagram,
+						'value' => $this->config->social_instagram,
 						'type'  => 'url'
 					],
 					'social_youtube' => [
 						'label' => 'Youtube',
 						'icon'  => 'fab fa-youtube',
-						'value' => $this->config->nf_social_youtube,
+						'value' => $this->config->social_youtube,
 						'type'  => 'url'
 					]
 				])
@@ -397,7 +397,7 @@ class Admin extends Controller_Module
 		{
 			foreach ($post as $var => $value)
 			{
-				$this->config('nf_'.$var, $value);
+				$this->config(''.$var, $value);
 			}
 
 			notify('Réseaux sociaux sauvegardés avec succès');
@@ -422,12 +422,12 @@ class Admin extends Controller_Module
 				->add_rules([
 					'captcha_public_key' => [
 						'label' => 'Clé publique Google',
-						'value' => $this->config->nf_captcha_public_key,
+						'value' => $this->config->captcha_public_key,
 						'type'  => 'text'
 					],
 					'captcha_private_key' => [
 						'label' => 'Clé privée Google',
-						'value' => $this->config->nf_captcha_private_key,
+						'value' => $this->config->captcha_private_key,
 						'type'  => 'text'
 					]
 				])
@@ -438,7 +438,7 @@ class Admin extends Controller_Module
 		{
 			foreach ($post as $var => $value)
 			{
-				$this->config('nf_'.$var, $value);
+				$this->config(''.$var, $value);
 			}
 
 			notify('Configuration de Google reCAPTCHA sauvegardée avec succès');
@@ -465,30 +465,30 @@ class Admin extends Controller_Module
 			->add_rules([
 				'opening' => [
 					'type'  => 'datetime',
-					'value' => $this->config->nf_maintenance_opening
+					'value' => $this->config->maintenance_opening
 				]
 			])
 			->fast_mode()
 			->add_submit($this->lang('Valider'))
 			->save();
 
-		$position = explode(' ', $this->config->nf_maintenance_background_position);
+		$position = explode(' ', $this->config->maintenance_background_position);
 
 		$form_maintenance = $this->form()
 			->add_rules([
 				'title' => [
 					'label' => $this->lang('Titre'),
 					'type'  => 'text',
-					'value' => $this->config->nf_maintenance_title
+					'value' => $this->config->maintenance_title
 				],
 				'content' => [
 					'label' => $this->lang('Contenu'),
 					'type'  => 'textarea',
-					'value' => $this->config->nf_maintenance_content
+					'value' => $this->config->maintenance_content
 				],
 				'logo' => [
 					'label'  => $this->lang('Logo'),
-					'value'  => $this->config->nf_maintenance_logo,
+					'value'  => $this->config->maintenance_logo,
 					'type'   => 'file',
 					'upload' => 'maintenance',
 					'info'   => $this->lang(' d\'image (max. %d Mo)', file_upload_max_size() / 1024 / 1024),
@@ -501,7 +501,7 @@ class Admin extends Controller_Module
 				],
 				'background' => [
 					'label'  => $this->lang('Image de fond'),
-					'value'  => $this->config->nf_maintenance_background,
+					'value'  => $this->config->maintenance_background,
 					'type'   => 'file',
 					'upload' => 'maintenance',
 					'info'   => $this->lang(' d\'image (max. %d Mo)', file_upload_max_size() / 1024 / 1024),
@@ -514,7 +514,7 @@ class Admin extends Controller_Module
 				],
 				'repeat' => [
 					'label'  => $this->lang('Répéter l\'image'),
-					'value'  => $this->config->nf_maintenance_background_repeat ?: 'no-repeat',
+					'value'  => $this->config->maintenance_background_repeat ?: 'no-repeat',
 					'values' => [
 						'no-repeat' => $this->lang('Non'),
 						'repeat-x'  => $this->lang('Horizontalement'),
@@ -544,13 +544,13 @@ class Admin extends Controller_Module
 				],
 				'background_color' => [
 					'label' => $this->lang('Couleur de fond'),
-					'value' => $this->config->nf_maintenance_background_color ?: '#343a40',
+					'value' => $this->config->maintenance_background_color ?: '#343a40',
 					'type'  => 'colorpicker',
 					'size'  => 'col-4'
 				],
 				'text_color' => [
 					'label' => $this->lang('Couleur du texte'),
-					'value' => $this->config->nf_maintenance_text_color ?: '#fff',
+					'value' => $this->config->maintenance_text_color ?: '#fff',
 					'type'  => 'colorpicker',
 					'size'  => 'col-4'
 				]
@@ -560,19 +560,19 @@ class Admin extends Controller_Module
 
 		if ($form_opening->is_valid($post))
 		{
-			$this->config('nf_maintenance_opening', $post['opening']);
+			$this->config('maintenance_opening', $post['opening']);
 			refresh();
 		}
 		else if ($form_maintenance->is_valid($post))
 		{
-			$this	->config('nf_maintenance_title',               $post['title'])
-					->config('nf_maintenance_content',             $post['content'])
-					->config('nf_maintenance_logo',                $post['logo'], 'int')
-					->config('nf_maintenance_background',          $post['background'], 'int')
-					->config('nf_maintenance_background_repeat',   $post['repeat'])
-					->config('nf_maintenance_background_position', trim($post['positionX'].' '.$post['positionY']))
-					->config('nf_maintenance_background_color',    trim($post['background_color']))
-					->config('nf_maintenance_text_color',          trim($post['text_color']));
+			$this	->config('maintenance_title',               $post['title'])
+					->config('maintenance_content',             $post['content'])
+					->config('maintenance_logo',                $post['logo'], 'int')
+					->config('maintenance_background',          $post['background'], 'int')
+					->config('maintenance_background_repeat',   $post['repeat'])
+					->config('maintenance_background_position', trim($post['positionX'].' '.$post['positionY']))
+					->config('maintenance_background_color',    trim($post['background_color']))
+					->config('maintenance_text_color',          trim($post['text_color']));
 
 			$this->module('tools')->api()->scss();
 
@@ -616,9 +616,9 @@ class Admin extends Controller_Module
 																			<dd>{year}</dd>
 																	</dl>')
 											)
-											->rule('copyright', 'Copyright', $this->config->nf_copyright)
+											->rule('copyright', 'Copyright', $this->config->copyright)
 											->success(function($data){
-												$this->config('nf_copyright', $data['copyright']);
+												$this->config('copyright', $data['copyright']);
 												notify('Copyright modifié');
 												refresh();
 											})

@@ -36,7 +36,7 @@ class Js extends Library
 		{
 			$path = path($this->_file.'.js', 'js', $this->__caller);
 
-			if ($v = (int)$this->config->nf_version_css)
+			if ($v = (int)$this->config->version_css)
 			{
 				$path .= '?v='.$v;
 			}

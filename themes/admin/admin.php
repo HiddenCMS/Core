@@ -26,18 +26,18 @@ class Admin extends Theme
 
 	public function __init()
 	{
-		if ($this->config->nf_update_callback)
+		if ($this->config->update_callback)
 		{
-			$this->config('nf_update_callback', '');
+			$this->config('update_callback', '');
 
-			if ($patch = @NeoFrag()->install($this->config->nf_update_callback))
+			if ($patch = @NeoFrag()->install($this->config->update_callback))
 			{
 				if (method_exists($patch, 'post'))
 				{
 					$patch->post();
 				}
 
-				unlink('neofrag/install/'.$this->config->nf_update_callback.'.php');
+				unlink('neofrag/install/'.$this->config->update_callback.'.php');
 			}
 
 			refresh();
@@ -83,7 +83,7 @@ class Admin extends Theme
 		});
 
 		$customize = $this->array();
-		$theme     = NeoFrag()->model2('addon')->get('theme', $this->config->nf_default_theme, FALSE);
+		$theme     = NeoFrag()->model2('addon')->get('theme', $this->config->default_theme, FALSE);
 
 		if (@$theme->addon()->controller('admin'))
 		{

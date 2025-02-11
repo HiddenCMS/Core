@@ -19,7 +19,7 @@ $this->rule($this->form_text('subject')
 		$sent = $this	->anti_flood()
 						->email
 						->from($this->user->email ?: $data['email'])
-						->to($this->config->nf_contact)
+						->to($this->config->contact)
 						->subject($data['subject'])
 						->message(function() use ($data){
 							return [

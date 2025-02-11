@@ -28,7 +28,7 @@ class Theme extends Controller
 
 	public function enable($addon)
 	{
-		$this->config('nf_default_theme', $addon->info()->name);
+		$this->config('default_theme', $addon->info()->name);
 
 		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
 

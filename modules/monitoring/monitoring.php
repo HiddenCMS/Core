@@ -25,7 +25,7 @@ class Monitoring extends Module
 
 	public function need_checking()
 	{
-		return ($this->config->nf_monitoring_last_check < ($time = strtotime('01:00')) && time() > $time) || !file_exists('cache/monitoring/monitoring.json');
+		return ($this->config->monitoring_last_check < ($time = strtotime('01:00')) && time() > $time) || !file_exists('cache/monitoring/monitoring.json');
 	}
 
 	public function display()

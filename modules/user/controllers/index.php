@@ -63,7 +63,7 @@ class Index extends Controller_Module
 										$user->reset('password');
 									}
 
-									if ($user->has_changed('email') && $this->config->nf_registration_validation)
+									if ($user->has_changed('email') && $this->config->registration_validation)
 									{
 										//TODO
 									}

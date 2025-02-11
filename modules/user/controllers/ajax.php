@@ -36,7 +36,7 @@ class Ajax extends Controller_Module
 										->color('link')
 										->modal_ajax('ajax/user/lost-password')
 						)
-						->button_if($this->config->nf_registration_status, $this->button()
+						->button_if($this->config->registration_status, $this->button()
 																				->title('Créer un compte')
 																				->color('secondary')
 																				->modal_ajax('ajax/user/register')
@@ -57,7 +57,7 @@ class Ajax extends Controller_Module
 	{
 		return $this->form2('login')
 					->modal('Se connecter', 'fas fa-sign-in-alt')
-					->button_prepend_if($this->config->nf_registration_status, $this->button()
+					->button_prepend_if($this->config->registration_status, $this->button()
 																					->title('Créer un compte')
 																					->color('secondary')
 																					->modal_ajax('ajax/user/register')
@@ -71,11 +71,11 @@ class Ajax extends Controller_Module
 
 	public function register()
 	{
-		return $this->form2(!empty($this->config->nf_registration_charte) ? 'username password_required email charte' : 'username password_required email', $this->model2('user'))
+		return $this->form2(!empty($this->config->registration_charte) ? 'username password_required email charte' : 'username password_required email', $this->model2('user'))
 					->compact()
 					->captcha()
 					->success(function($user, $form){
-						if ($this->config->nf_registration_validation)
+						if ($this->config->registration_validation)
 						{
 							$sent = $this	->anti_flood()
 											->email
@@ -102,9 +102,9 @@ class Ajax extends Controller_Module
 
 						$user->set_password($user->password)->create();
 
-						if ($this->config->nf_welcome && $this->config->nf_welcome_user_id && !empty($this->config->nf_welcome_title) && !empty($this->config->nf_welcome_content))
+						if ($this->config->welcome && $this->config->welcome_user_id && !empty($this->config->welcome_title) && !empty($this->config->welcome_content))
 						{
-							$this->model('messages')->insert_message($user->username, $this->config->nf_welcome_title, str_replace('[pseudo]', '@'.$user->username, $this->config->nf_welcome_content), TRUE);
+							$this->model('messages')->insert_message($user->username, $this->config->welcome_title, str_replace('[pseudo]', '@'.$user->username, $this->config->welcome_content), TRUE);
 						}
 
 						notify('Votre compte à bien été créé, bienvenue !');

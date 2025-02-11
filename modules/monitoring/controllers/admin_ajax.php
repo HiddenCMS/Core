@@ -16,7 +16,7 @@ class Admin_Ajax extends Controller_Module
 	{
 		if ($refresh || $this->module->need_checking())
 		{
-			$this->config('nf_monitoring_last_check', time());
+			$this->config('monitoring_last_check', time());
 
 			//https://www.php.net/supported-versions.php
 			$current             = 7.4;
@@ -45,7 +45,7 @@ class Admin_Ajax extends Controller_Module
 
 			foreach (['version', 'checksum'] as $file)
 			{
-				if ($$file = $this	->network('https://neofr.ag/'.$file.'.json?v='.version_format(NEOFRAG_VERSION).($this->config->nf_update_beta ? '&beta=1' : ''))
+				if ($$file = $this	->network('https://neofr.ag/'.$file.'.json?v='.version_format(NEOFRAG_VERSION).($this->config->update_beta ? '&beta=1' : ''))
 									->type('text')
 									->get())
 				{
@@ -382,9 +382,9 @@ class Admin_Ajax extends Controller_Module
 						unlink($file);
 					}
 
-					if (!$this->config->nf_version)
+					if (!$this->config->version)
 					{
-						$this->config('nf_version', version_format(NEOFRAG_VERSION));
+						$this->config('version', version_format(NEOFRAG_VERSION));
 					}
 
 					if ($patch = @NeoFrag()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))
@@ -396,9 +396,9 @@ class Admin_Ajax extends Controller_Module
 
 					$this->module('tools')->api()->scss();
 
-					$this	->config('nf_update_callback',       $patch_name)
-							->config('nf_version',               version_format($version->version))
-							->config('nf_monitoring_last_check', 0);
+					$this	->config('update_callback',       $patch_name)
+							->config('version',               version_format($version->version))
+							->config('monitoring_last_check', 0);
 				}
 			});
 		}

@@ -56,7 +56,7 @@ class Admin extends Controller_Module
 			}
 		}
 
-		$theme = $this->theme($this->config->nf_default_theme);
+		$theme = $this->theme($this->config->default_theme);
 
 		return $this->view('index', [
 			'modules'       => $pages,

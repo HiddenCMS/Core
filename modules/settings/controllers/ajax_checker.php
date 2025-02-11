@@ -12,7 +12,7 @@ class Ajax_Checker extends Module_Checker
 {
 	public function humans()
 	{
-		if ($this->url->request == 'humans.txt' && $this->config->nf_humans_txt)
+		if ($this->url->request == 'humans.txt' && $this->config->humans_txt)
 		{
 			$this->extension('txt');
 			return [];
@@ -21,7 +21,7 @@ class Ajax_Checker extends Module_Checker
 
 	public function robots()
 	{
-		if ($this->url->request == 'robots.txt' && $this->config->nf_robots_txt)
+		if ($this->url->request == 'robots.txt' && $this->config->robots_txt)
 		{
 			$this->extension('txt');
 			return [];

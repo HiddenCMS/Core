@@ -12,10 +12,10 @@ class Admin_Ajax extends Controller_Module
 {
 	public function maintenance()
 	{
-		$this->config('nf_maintenance', (bool)post('closed'), 'bool');
+		$this->config('maintenance', (bool)post('closed'), 'bool');
 
 		return $this->json([
-			'status' => $this->config->nf_maintenance
+			'status' => $this->config->maintenance
 		]);
 	}
 }

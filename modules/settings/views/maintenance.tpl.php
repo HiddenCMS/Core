@@ -2,10 +2,10 @@
 	<header class="masthead mb-auto">
 		<div class="inner">
 			<h3 class="masthead-brand">
-				<?php if ($this->config->nf_maintenance_logo): ?>
-					<img src="<?php echo NeoFrag()->model2('file', $this->config->nf_maintenance_logo)->path() ?>" class="logo" alt="" />
+				<?php if ($this->config->maintenance_logo): ?>
+					<img src="<?php echo NeoFrag()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
 				<?php else: ?>
-					<?php echo $this->config->nf_name ?>
+					<?php echo $this->config->name ?>
 				<?php endif ?>
 			</h3>
 			<nav class="nav nav-masthead justify-content-center">
@@ -41,14 +41,14 @@
 		</div>
 	</header>
 	<main role="main" class="inner cover">
-		<?php if ($page_title = $this->config->nf_maintenance_title): ?>
+		<?php if ($page_title = $this->config->maintenance_title): ?>
 		<h1 class="cover-heading"><?php echo $page_title ?></h1>
 		<?php endif ?>
-		<?php if ($content = $this->config->nf_maintenance_content): ?>
+		<?php if ($content = $this->config->maintenance_content): ?>
 		<p class="lead"><?php echo bbcode($content) ?></p>
 		<?php endif ?>
-		<?php if ($this->config->nf_maintenance_opening): ?>
-			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $this->date($this->config->nf_maintenance_opening)->timestamp() ?>"></div>
+		<?php if ($this->config->maintenance_opening): ?>
+			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $this->date($this->config->maintenance_opening)->timestamp() ?>"></div>
 		<?php endif ?>
 	</main>
 	<footer class="mastfoot mt-auto">

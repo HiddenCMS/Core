@@ -29,16 +29,16 @@ class Session extends Core
 		}
 		else
 		{
-			if ($this->config->nf_cookie_expire)
+			if ($this->config->cookie_expire)
 			{
-				$expiration_date = $this->date()->sub($this->config->nf_cookie_expire);
+				$expiration_date = $this->date()->sub($this->config->cookie_expire);
 
 				$this->db	->where('remember', FALSE)
 							->where('last_activity <', $expiration_date->sql())
 							->delete('session');
 			}
 
-			$cookie_name = $this->config->nf_cookie_name;
+			$cookie_name = $this->config->cookie_name;
 
 			if ($this->url->https)
 			{

@@ -33,7 +33,7 @@ class Css extends Library
 		{
 			$path = path($this->_file.'.css', 'css', $this->__caller);
 
-			if ($v = (int)$this->config->nf_version_css)
+			if ($v = (int)$this->config->version_css)
 			{
 				$path .= '?v='.$v;
 			}
