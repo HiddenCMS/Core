@@ -55,7 +55,7 @@ class Form2 extends Library
 
 			foreach ($this->_rules as $rule)
 			{
-				if (method_exists($rule, 'bind') && ($callback = $rule->bind()))
+				if ((is_string($rule) || is_object($rule)) && method_exists($rule, 'bind') && ($callback = $rule->bind()))
 				{
 					$callback(array_key_exists($rule->name(), $post) ? $post[$rule->name()] : $this->_values->{$rule->name()}, $rule);
 				}
@@ -416,7 +416,7 @@ class Form2 extends Library
 		{
 			foreach ($this->_rules as $rule)
 			{
-				if (method_exists($rule, 'value'))
+				if ((is_string($rule) || is_object($rule)) && method_exists($rule, 'value'))
 				{
 					$name  = $rule->name();
 					$value = NULL;
@@ -455,7 +455,7 @@ class Form2 extends Library
 				$has_upload = TRUE;
 			}
 
-			if (method_exists($rule, 'form2'))
+			if ((is_string($rule) || is_object($rule)) && method_exists($rule, 'form2'))
 			{
 				$rule->form2($this);
 			}
@@ -484,7 +484,7 @@ class Form2 extends Library
 				$rule->$method();
 			}
 
-			if (method_exists($rule, 'size') && $rule->size())
+			if ((is_string($rule) || is_object($rule)) && method_exists($rule, 'size') && $rule->size())
 			{
 				$last = end($fields);
 
