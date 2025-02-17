@@ -63,31 +63,7 @@ class Admin extends Controller_Module
 				),
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('Événement|Événements', $count = $this->db->from('events')->where('published', TRUE)->count()), 'fas fa-calendar-alt', 'admin/events')
-							->body($count)
-							->color('bg-blue')
-							->size('col-4 col-lg-2')
-							->footer($this->lang('Gérer le calendrier').' '.icon('fas fa-arrow-circle-right'))
-				),
-				$this->col(
-					$this	->panel_box()
-							->heading($this->lang('Équipe|Équipes', $count = $this->db->from('teams')->count()), 'fas fa-headset', 'admin/teams')
-							->body($count)
-							->color('bg-red')
-							->size('col-4 col-lg-2')
-							->footer($this->lang('Gérer les équipes').' '.icon('fas fa-arrow-circle-right'))
-				),
-				$this->col(
-					$this	->panel_box()
-							->heading($this->lang('Message|Messages', $count = $this->db->from('forum_messages')->count()), 'fas fa-comments', 'admin/forum')
-							->body($count)
-							->color('bg-teal')
-							->size('col-4 col-lg-2')
-							->footer($this->lang('Gérer le forum').' '.icon('fas fa-arrow-circle-right'))
-				),
-				$this->col(
-					$this	->panel_box()
-							->heading($this->lang('Commentaire|Commentaires', $count = $this->db->from('comment')->count()), 'far fa-comments', 'admin/comments')
+							->heading($this->lang('Commentaire|Commentaires', $count = $this->db->from('comments')->count()), 'far fa-comments', 'admin/comments')
 							->body($count)
 							->color('bg-maroon')
 							->size('col-4 col-lg-2')
@@ -95,7 +71,6 @@ class Admin extends Controller_Module
 				)
 			),
 			$this->row(
-				$this->col('<div class="widget widget-talks">'.$this->widget('talks')->output('index', ['talk_id' => 1]).'</div>')->size('col-8'),
 				$this	->col(
 							$this	->panel()
 									->heading($this->lang('Utilisateurs connectés'), 'fas fa-globe')
