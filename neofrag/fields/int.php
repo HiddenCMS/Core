@@ -6,6 +6,7 @@
 
 namespace NF\NeoFrag\Fields;
 
+#[\AllowDynamicProperties]
 class Int_
 {
 	public function init($field)

@@ -6,6 +6,7 @@
 
 namespace NF\NeoFrag\Fields;
 
+#[\AllowDynamicProperties]
 class Datetime
 {
 	public function init($field)

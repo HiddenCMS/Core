@@ -6,6 +6,7 @@
 
 namespace NF\NeoFrag\Fields;
 
+#[\AllowDynamicProperties]
 class Date extends DateTime
 {
 	public function raw($value)
