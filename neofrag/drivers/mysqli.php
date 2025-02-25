@@ -8,6 +8,7 @@ namespace NF\NeoFrag\Drivers;
 
 use NF\NeoFrag\Driver;
 
+#[\AllowDynamicProperties]
 class Mysqli extends Driver
 {
 	protected $db;
