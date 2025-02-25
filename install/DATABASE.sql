@@ -124,8 +124,20 @@ CREATE TABLE `dispositions` (
   UNIQUE KEY `theme` (`theme`,`page`,`zone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `files`;
-CREATE TABLE `files` (
+INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposition`) VALUES
+(1, 'azuro', '*', 0, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:2:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:1;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-7\";}}s:8:\"\0*\0_size\";s:5:\"col-9\";}i:1;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:2;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-3\";}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
+(2, 'azuro', '*', 1, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:27;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
+(3, 'azuro', '*', 2, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:2:{i:1;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:26;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-7\";}i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:5;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-7\";}}s:8:\"\0*\0_size\";s:5:\"col-5\";}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
+(4, 'azuro', '*', 5, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:2:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:28;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-8\";}i:1;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:3:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:8;s:9:\"\0*\0_style\";s:9:\"card-dark\";s:8:\"\0*\0_size\";N;}i:1;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:9;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}i:3;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:11;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-4\";}}s:9:\"\0*\0_style\";N;}}}'),
+(5, 'azuro', '*', 7, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:29;s:9:\"\0*\0_style\";s:16:\"card-transparent\";s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";N;}}}'),
+(6, 'azuro', '*', 3, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
+(7, 'azuro', '*', 4, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
+(8, 'azuro', '*', 6, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
+(13, 'azuro', 'news/_news/*', 5, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:20;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";N;}}}'),
+(17, 'azuro', 'user/*', 5, 'O:27:\"NF\\NeoFrag\\Libraries\\Array_\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Row\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:27:\"NF\\NeoFrag\\Displayables\\Col\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:30:\"NF\\NeoFrag\\Displayables\\Widget\":3:{s:10:\"\0*\0_widget\";i:33;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:6:\"col-12\";}}s:9:\"\0*\0_style\";N;}}}');
+
+DROP TABLE IF EXISTS `file`;
+CREATE TABLE `file` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(100) NOT NULL,
@@ -134,10 +146,10 @@ CREATE TABLE `files` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `path` (`path`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `files_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `file_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
-INSERT INTO `files` (`id`, `user_id`, `name`, `path`, `date`) VALUES
+INSERT INTO `file` (`id`, `user_id`, `name`, `path`, `date`) VALUES
 (1, 1, 'Sans-titre-2.jpg', './upload/news/categories/ubfuejdfooirqya0pyltfeklja4ew4sn.jpg', '2015-05-30 00:34:16'),
 (2, 1, 'logo.png', 'upload/partners/zwvmsjijfljaka4rdblgvlype1lnbwaw.png', '2016-05-07 18:51:53'),
 (3, 1, 'logo_black.png', 'upload/partners/y4ofwq2ekppwnfpmnrmnafeivszlg5bd.png', '2016-05-07 18:51:53');
