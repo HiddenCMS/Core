@@ -10,7 +10,7 @@ use NF\NeoFrag\Loadables\Model2;
 
 class Comment extends Model2
 {
-	public $__table = 'comment';
+	public $__table = 'comments';
 
 	static public function __schema()
 	{
