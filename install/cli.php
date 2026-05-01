@@ -71,7 +71,7 @@ function main($argv)
 	configure_site($mysqli, $config);
 	configure_admin($mysqli, $config);
 	write_htaccess($config);
-	touch_install_marker();
+	mark_install_complete();
 
 	if ($config['remove_install'])
 	{
@@ -84,7 +84,8 @@ function main($argv)
 
 	if (!$config['remove_install'])
 	{
-		line('The install directory was kept. Use --remove-installer if you want the CLI installer to delete it after installation.');
+		line('The install directory was kept for CLI reuse and the web installer was disabled.');
+		line('Use --remove-installer if you want the CLI installer to delete it after installation.');
 	}
 }
 
@@ -521,11 +522,16 @@ function normalize_base($base)
 	return rtrim($base, '/').'/';
 }
 
-function touch_install_marker()
+function mark_install_complete()
 {
 	if (is_dir(NEOFRAG_ROOT.'/install'))
 	{
-		touch(NEOFRAG_ROOT.'/install/db.txt');
+		if (is_file(NEOFRAG_ROOT.'/install/db.txt'))
+		{
+			unlink(NEOFRAG_ROOT.'/install/db.txt');
+		}
+
+		touch(NEOFRAG_ROOT.'/install/installed.txt');
 	}
 }
 

@@ -18,7 +18,7 @@ ini_set('error_log',       'logs/php.log');
 ini_set('display_errors',  TRUE);
 ini_set('default_charset', 'UTF-8');
 
-if (file_exists('install/index.php'))
+if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
 {
 	if (file_exists('install/db.txt'))
 	{

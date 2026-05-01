@@ -35,6 +35,8 @@ Le mode interactif est aussi disponible :
 php install/cli.php
 ```
 
+Quand le dossier `install/` est conservé, l'installation CLI écrit `install/installed.txt` pour désactiver l'installateur web.
+
 ## Installation web
 
 L'installateur web historique reste disponible en ouvrant le projet dans un navigateur tant que le dossier `install/` est présent.

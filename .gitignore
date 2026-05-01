@@ -1,0 +1,4 @@
+composer.lock
+.gitignore
+install/db.txt
+install/installed.txt
