@@ -3,7 +3,7 @@
 		<div class="sidebar-header">
 			<a class="logo" href="<?php echo url('admin') ?>">
 				<svg><use xlink:href="#logo"></use></svg>
-				<span class="badge badge-primary"><?php echo NEOFRAG_VERSION ?></span>
+				<span class="badge badge-primary">HiddenCMS</span>
 			</a>
 		</div>
 		<?php if ($update = $this->__caller->update()): ?>
@@ -12,7 +12,7 @@
 				<?php echo icon('far fa-bell fa-2x mb-2') ?>
 				<h6 class="mb-3">
 					Nouvelle mise à jour !<br />
-					<small class="text-muted">NeoFrag <?php echo $update->version ?></small>
+					<small class="text-muted">HiddenCMS <?php echo $update->version ?></small>
 				</h6>
 				<a href="#" class="btn btn-primary btn-block" data-modal-ajax="<?php echo url('admin/monitoring/update') ?>">Installer !</a>
 			</div>
@@ -79,15 +79,11 @@
 			<div class="module module-admin module-error"><?php echo $error ?></div>
 		<?php endif ?>
 		<footer class="footer">
-			<span class="text-muted"><?php echo $this->lang('Propulsé par').' NeoFrag '.NEOFRAG_VERSION ?></span>
+			<span class="text-muted"><?php echo $this->lang('Propulsé par').' HiddenCMS' ?></span>
 			<ul class="mb-0 list-inline float-right">
 				<?php
 				foreach ([
-					[$this->lang('Fonctionnalités'), 'https://neofr.ag/#features'],
-					[$this->lang('Thèmes & Addons'), 'https://addons.neofr.ag'],
-					[$this->lang('Documentation'),   'https://docs.neofr.ag'],
-					[$this->lang('Forum'),           'https://neofr.ag/forum'],
-					[$this->lang('Blog'),            'https://neofr.ag/blog']
+					[$this->lang('Projet'), 'https://github.com/HiddenCMS/Core']
 				] as list($title, $url)): ?>
 					<li class="list-inline-item">
 						<a href="<?php echo $url ?>" target="_blank"><?php echo $title ?></a>

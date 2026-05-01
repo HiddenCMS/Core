@@ -17,8 +17,7 @@ class User extends Model2
 		return [
 			'id'                 => self::field()->primary(),
 			'username'           => self::field()->text(100),
-			'password'           => self::field()->text(34),
-			'salt'               => self::field()->text(32),
+			'password'           => self::field()->text(255),
 			'email'              => self::field()->text(100),
 			'registration_date'  => self::field()->datetime(),
 			'last_activity_date' => self::field()->datetime()->null(),
@@ -124,12 +123,11 @@ class User extends Model2
 
 	public function password($password)
 	{
-		if (NeoFrag()->password->is_valid($password.$this->salt, $this->password, $salt = $this->salt !== ''))
+		if (NeoFrag()->password->is_valid($password, $this->password))
 		{
-			if (!$salt)
+			if (NeoFrag()->password->needs_rehash($this->password))
 			{
-				$this	->set('password', NeoFrag()->password->encrypt($password.($salt = unique_id())))
-						->set('salt', $salt)
+				$this	->set('password', NeoFrag()->password->encrypt($password))
 						->update();
 			}
 
@@ -141,8 +139,7 @@ class User extends Model2
 
 	public function set_password($password)
 	{
-		$this	->set('password', NeoFrag()->password->encrypt($password.($salt = unique_id())))
-				->set('salt', $salt);
+		$this->set('password', NeoFrag()->password->encrypt($password));
 
 		if ($this())
 		{

@@ -19,6 +19,7 @@ class Search extends Module
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
+			'front'       => TRUE,
 			'routes'      => [
 				'(?:(.+?){pages})?' => 'index'
 			]

@@ -19,6 +19,7 @@ class Contact extends Module
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
+			'front'       => TRUE,
 			'version'     => '1.0',
 			'depends'     => [
 				'neofrag' => 'Alpha 0.2'

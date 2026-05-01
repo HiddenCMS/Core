@@ -606,8 +606,8 @@ class Admin extends Controller_Module
 														->attr('class', 'alert alert-primary')
 														->content('	<h5 class="alert-heading">Mots magiques</h5>
 																	<dl>
-																		<dt>Lien vers NeoFrag</dt>
-																			<dd>{neofrag}</dd>
+																		<dt>Lien vers HiddenCMS</dt>
+																			<dd>{hiddencms}</dd>
 																		<dt>Nom du site</dt>
 																			<dd>{name}</dd>
 																		<dt>Symbole '.icon('far fa-copyright').'</dt>

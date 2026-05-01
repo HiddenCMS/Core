@@ -79,20 +79,24 @@ class Admin extends Controller_Module
 		$this	->subtitle($this->lang('Ajouter une page'))
 				->form()
 				->add_rules('pages', [
-					'modules' => $this->model()->get_page_modules()
+					'modules'         => $this->model()->get_page_modules(),
+					'news_categories' => $this->model()->get_news_categories()
 				])
 				->add_submit($this->lang('Ajouter'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
 		{
+			$instance = $this->model()->build_instance($post);
+
 			$this->model()->add_page(	$post['name'],
 										$post['title'],
 										in_array('on', $post['published']),
 										$post['subtitle'],
 										$post['content'],
-										isset($post['module']) ? $post['module'] : '',
-										isset($post['module_route']) ? $post['module_route'] : '');
+										$instance['module'],
+										$instance['route'],
+										$instance['settings']);
 
 			notify($this->lang('Page ajoutée avec succès'));
 
@@ -107,6 +111,7 @@ class Admin extends Controller_Module
 	public function _edit($page_id, $name, $published, $title, $subtitle, $content, $tab)
 	{
 		$instance = $this->model()->get_instance($page_id) ?: [];
+		$instance_values = $this->model()->get_instance_form_values($instance);
 
 		$this	->subtitle($title)
 				->form()
@@ -117,14 +122,17 @@ class Admin extends Controller_Module
 					'content'        => $content,
 					'published'      => $published,
 					'modules'        => $this->model()->get_page_modules(),
-					'module'         => isset($instance['module']) ? $instance['module'] : '',
-					'module_route'   => isset($instance['route']) ? $instance['route'] : ''
+					'news_categories' => $this->model()->get_news_categories(),
+					'module'         => $instance_values['module'],
+					'news_category'  => $instance_values['news_category']
 				])
 				->add_submit($this->lang('Éditer'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
 		{
+			$instance = $this->model()->build_instance($post);
+
 			$this->model()->edit_page(	$page_id,
 										$post['name'],
 										$post['title'],
@@ -132,8 +140,9 @@ class Admin extends Controller_Module
 										$post['subtitle'],
 										$post['content'],
 										$this->config->lang->info()->name,
-										isset($post['module']) ? $post['module'] : '',
-										isset($post['module_route']) ? $post['module_route'] : '');
+										$instance['module'],
+										$instance['route'],
+										$instance['settings']);
 
 			notify($this->lang('Page éditée avec succès'));
 

@@ -79,7 +79,7 @@ class Pages extends Model
 
 		foreach (NeoFrag()->model2('addon')->get('module') as $module)
 		{
-			if ($module->is_enabled() && $module->info()->name != 'pages')
+			if ($module->is_enabled() && $module->is_front())
 			{
 				$modules[$module->info()->name] = $module->info()->title;
 			}
@@ -88,6 +88,87 @@ class Pages extends Model
 		array_natsort($modules);
 
 		return $modules;
+	}
+
+	public function get_news_categories()
+	{
+		$categories = ['' => $this->lang('Toutes les actualités')];
+
+		foreach ($this->db	->select('c.category_id', 'cl.title')
+							->from('news_categories c')
+							->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+							->where('cl.lang', $this->config->lang->info()->name)
+							->order_by('cl.title')
+							->get() as $category)
+		{
+			$categories[$category['category_id']] = $category['title'];
+		}
+
+		return $categories;
+	}
+
+	public function get_instance_form_values($instance)
+	{
+		$values = [
+			'module'        => '',
+			'news_category' => ''
+		];
+
+		if ($instance)
+		{
+			$values['module'] = $instance['module'];
+
+			if ($instance['module'] == 'news')
+			{
+				if (isset($instance['settings']['category_id']))
+				{
+					$values['news_category'] = $instance['settings']['category_id'];
+				}
+				else if (preg_match('#^category/([0-9]+)(?:/|$)#', $instance['route'], $match))
+				{
+					$values['news_category'] = $match[1];
+				}
+			}
+		}
+
+		return $values;
+	}
+
+	public function build_instance($post)
+	{
+		$module = isset($post['module']) ? $post['module'] : '';
+
+		if (!$module)
+		{
+			return [
+				'module'   => '',
+				'route'    => '',
+				'settings' => []
+			];
+		}
+
+		$route = '';
+		$settings = [];
+
+		if ($module == 'news' && !empty($post['news_category']))
+		{
+			$category = $this->db	->select('c.category_id', 'c.name')
+									->from('news_categories c')
+									->where('c.category_id', $post['news_category'])
+									->row();
+
+			if ($category)
+			{
+				$route = 'category/'.$category['category_id'].'/'.$category['name'];
+				$settings['category_id'] = $category['category_id'];
+			}
+		}
+
+		return [
+			'module'   => $module,
+			'route'    => $route,
+			'settings' => $settings
+		];
 	}
 
 	public function get_pages()
@@ -130,7 +211,7 @@ class Pages extends Model
 		}
 	}
 
-	public function add_page($name, $title, $published, $subtitle, $content, $module = '', $route = '')
+	public function add_page($name, $title, $published, $subtitle, $content, $module = '', $route = '', $settings = [])
 	{
 		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
@@ -147,10 +228,10 @@ class Pages extends Model
 
 		$this->access->init('pages', 'page', $page_id);
 
-		$this->save_instance($page_id, $module, $route);
+		$this->save_instance($page_id, $module, $route, $settings);
 	}
 
-	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $module = '', $route = '')
+	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $module = '', $route = '', $settings = [])
 	{
 		if (!$this->db	->from('pages p')
 						->join('pages_lang l', 'p.page_id = l.page_id')
@@ -189,7 +270,7 @@ class Pages extends Model
 						]);
 		}
 
-		$this->save_instance($page_id, $module, $route);
+		$this->save_instance($page_id, $module, $route, $settings);
 	}
 
 	public function delete_page($page_id)

@@ -41,7 +41,7 @@ if ($step == 'check')
 	}
 
 	$checks[] = function(){
-		if (@mail('test@neofr.ag', 'email_check', ''))
+		if (@mail('test@hiddencms.local', 'email_check', ''))
 		{
 			$icon = 'success';
 			$info = [lang('OK')];
@@ -134,7 +134,7 @@ if ($step == 'check')
 				if ($content && $content->neofrag->version != NEOFRAG_VERSION)
 				{
 					$output[] =[
-						'title' => 'NeoFrag '.NEOFRAG_VERSION,
+						'title' => 'HiddenCMS',
 						'info'  => [
 							lang('Dernière version') => $content->neofrag->version
 						],
@@ -164,7 +164,7 @@ if ($step == 'check')
 			}
 
 			return array_merge([[
-				'title' => lang('Liaison avec https://neofr.ag'),
+				'title' => lang('Vérification des mises à jour'),
 				'info'  => $info,
 				'icon'  => $icon
 			]], $output);
@@ -353,7 +353,7 @@ else if ($step == 'db')
 				$output['errors']['host']     = 'ok';
 				$output['errors']['user']     = 'ok';
 				$output['errors']['password'] = 'ok';
-				$output['errors']['dbname']   = lang('Cette base de données contient déjà une installation NeoFrag');
+				$output['errors']['dbname']   = lang('Cette base de données contient déjà une installation HiddenCMS');
 			}
 			else
 			{
@@ -425,10 +425,12 @@ else if ($step == 'user')
 	{
 		$user = NeoFrag()	->module('user')
 							->model2('user', 1)
+							->set('id', 1)
 							->set_password($password)
 							->set('username', utf8_htmlentities($username))
 							->set('email',    utf8_htmlentities($email))
-							->update();
+							->set('admin',    TRUE)
+							->commit();
 
 		NeoFrag()->session->login($user);
 

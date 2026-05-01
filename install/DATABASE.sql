@@ -308,17 +308,17 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('analytics', '', '', '', 'string'),
 ('captcha_private_key', '', '', '', 'string'),
 ('captcha_public_key', '', '', '', 'string'),
-('contact', '', '', 'noreply@hidden.com', 'string'),
+('contact', '', '', 'noreply@hiddencms.local', 'string'),
 ('cookie_expire', '', '', '1 hour', 'string'),
 ('cookie_name', '', '', 'session', 'string'),
-('copyright', '', '', 'Copyright {copyright} {year} {name}, tous droits r&eacute;serv&eacute;s &lt;div class=&quot;float-right&quot;&gt;Propuls&eacute; par {hidden}&lt;/div&gt;', 'string'),
+('copyright', '', '', 'Copyright {copyright} {year} {name}, tous droits r&eacute;serv&eacute;s &lt;div class=&quot;float-right&quot;&gt;Propuls&eacute; par {hiddencms}&lt;/div&gt;', 'string'),
 ('default_page', '', '', 'news', 'string'),
 ('default_theme', '', '', 'azuro', 'string'),
-('description', '', '', 'ALPHA 0.2.3', 'string'),
+('description', '', '', 'HiddenCMS', 'string'),
 ('favicon', '', '', '0', 'int'),
 ('http_authentication', '', '', '0', 'bool'),
 ('http_authentication_name', '', '', '', 'string'),
-('humans_txt', '', '', '/* TEAM */\n	Hidden CMS for gamers\n	Contact: contact [at] hidden.com\n	Twitter: @HiddenCMS\n', 'string'),
+('humans_txt', '', '', '/* TEAM */\n	HiddenCMS\n	Contact: contact [at] hiddencms.local\n', 'string'),
 ('maintenance', '', '', '0', 'bool'),
 ('maintenance_background', '', '', '0', 'int'),
 ('maintenance_background_color', '', '', '', 'string'),
@@ -330,7 +330,7 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('maintenance_text_color', '', '', '', 'string'),
 ('maintenance_title', '', '', '', 'string'),
 ('monitoring_last_check', '', '', '0', 'int'),
-('name', '', '', 'Hidden', 'string'),
+('name', '', '', 'HiddenCMS', 'string'),
 ('registration_charte', '', '', '', 'string'),
 ('registration_status', '', '', '1', 'bool'),
 ('robots_txt', '', '', 'User-agent: *\r\nDisallow:', 'string'),
@@ -445,8 +445,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
-  `password` varchar(34) NOT NULL,
-  `salt` varchar(32) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_activity_date` timestamp NULL DEFAULT NULL,
@@ -460,10 +459,7 @@ CREATE TABLE `user` (
   KEY `language` (`language`),
   KEY `deleted` (`deleted`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`language`) REFERENCES `addon` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-INSERT INTO `user` (`id`, `username`, `password`, `salt`, `email`, `registration_date`, `last_activity_date`, `admin`, `language`, `data`, `deleted`) VALUES
-(1, 'admin', '$H$92EwygSmbdXunbIvoo/V91MWcnHqzX/', '', 'noreply@hiddenblob.com', CURRENT_TIMESTAMP, NULL, '1', NULL, '', '0');
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user_auth`;
 CREATE TABLE `user_auth` (

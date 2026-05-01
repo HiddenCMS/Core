@@ -14,14 +14,15 @@ class Index extends Controller_Widget
 	{
 		$keywords = [
 			'name'      => '<a href="'.url().'">'.$this->config->name.'</a>',
-			'neofrag'   => '<a href="https://neofr.ag">NeoFrag</a>',
+			'hiddencms' => '<a href="https://github.com/HiddenCMS/Core">HiddenCMS</a>',
+			'neofrag'   => '<a href="https://github.com/HiddenCMS/Core">HiddenCMS</a>',
 			'year'      => date('Y'),
 			'copyright' => icon('far fa-copyright')
 		];
 
-		if (!in_string('{neofrag}', $copyright = utf8_html_entity_decode($this->config->copyright)))
+		if (!in_string('{hiddencms}', $copyright = utf8_html_entity_decode($this->config->copyright)) && !in_string('{neofrag}', $copyright))
 		{
-			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{neofrag}').'</div>';
+			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{hiddencms}').'</div>';
 		}
 
 		return $this->panel()

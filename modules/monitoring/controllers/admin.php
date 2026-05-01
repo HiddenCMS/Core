@@ -54,7 +54,7 @@ class Admin extends Controller_Module
 						$this->row(
 							$this->col(
 								$this	->panel()
-										->heading('Votre installation NeoFrag', 'fas fa-heartbeat')
+										->heading('Votre installation HiddenCMS', 'fas fa-heartbeat')
 										->body('<div id="tree"></div>', FALSE)
 							)
 						)
@@ -67,7 +67,7 @@ class Admin extends Controller_Module
 	{
 		$this->theme('admin')->js('update');
 
-		return $this->modal('Mise à jour de NeoFrag', 'fas fa-rocket')
+		return $this->modal('Mise à jour de HiddenCMS', 'fas fa-rocket')
 					->large()
 					->set_id('modal-update')
 					->body('<div class="update-features">

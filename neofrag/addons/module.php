@@ -138,6 +138,11 @@ abstract class Module extends Addon
 		return FALSE;
 	}
 
+	public function is_front()
+	{
+		return !empty($this->info()->front);
+	}
+
 	public function is_authorized()
 	{
 		static $allowed = [];
