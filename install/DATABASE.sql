@@ -236,6 +236,21 @@ CREATE TABLE `pages_lang` (
   CONSTRAINT `pages_lang_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `pages_instances`;
+CREATE TABLE `pages_instances` (
+  `instance_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `page_id` int(11) unsigned NOT NULL,
+  `module` varchar(100) NOT NULL,
+  `route` varchar(255) NOT NULL,
+  `settings` text NOT NULL,
+  `position` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `enabled` enum('0','1') NOT NULL DEFAULT '1',
+  PRIMARY KEY (`instance_id`),
+  KEY `page_id` (`page_id`),
+  KEY `enabled` (`enabled`),
+  CONSTRAINT `pages_instances_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (
   `keyword` varchar(100) NOT NULL,

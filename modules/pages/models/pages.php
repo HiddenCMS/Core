@@ -10,6 +10,86 @@ use NF\NeoFrag\Loadables\Model;
 
 class Pages extends Model
 {
+	public function resolve($segments, $lang = 'default', $all = FALSE)
+	{
+		if ($lang == 'default')
+		{
+			$lang = $this->config->lang->info()->name;
+		}
+
+		$segments = array_values(array_filter($segments, function($segment){
+			return $segment !== '';
+		}));
+
+		if (!$segments)
+		{
+			$segments = explode('/', $this->config->default_page);
+		}
+
+		for ($i = count($segments); $i > 0; $i--)
+		{
+			$name = implode('/', array_slice($segments, 0, $i));
+
+			$this->db	->select('p.*', 'pl.title', 'pl.subtitle', 'pl.content')
+						->from('pages p')
+						->join('pages_lang pl', 'p.page_id = pl.page_id')
+						->where('p.name', $name)
+						->where('pl.lang', $lang);
+
+			if (!$all)
+			{
+				$this->db->where('p.published', TRUE);
+			}
+
+			if ($page = $this->db->row())
+			{
+				return [
+					'page'     => $page,
+					'instance' => $this->get_instance($page['page_id']),
+					'segments' => array_slice($segments, $i)
+				];
+			}
+		}
+
+		return FALSE;
+	}
+
+	public function get_instance($page_id)
+	{
+		$instance = $this->db	->select('*')
+								->from('pages_instances')
+								->where('page_id', $page_id)
+								->where('enabled', TRUE)
+								->order_by('position ASC')
+								->row();
+
+		if (!$instance)
+		{
+			return FALSE;
+		}
+
+		$instance['settings'] = $instance['settings'] ? @unserialize($instance['settings']) : [];
+
+		return $instance;
+	}
+
+	public function get_page_modules()
+	{
+		$modules = ['' => $this->lang('Contenu statique')];
+
+		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		{
+			if ($module->is_enabled() && $module->info()->name != 'pages')
+			{
+				$modules[$module->info()->name] = $module->info()->title;
+			}
+		}
+
+		array_natsort($modules);
+
+		return $modules;
+	}
+
 	public function get_pages()
 	{
 		return $this->db->select('p.page_id', 'p.name', 'p.published', 'pl.title', 'pl.subtitle')
@@ -50,7 +130,7 @@ class Pages extends Model
 		}
 	}
 
-	public function add_page($name, $title, $published, $subtitle, $content)
+	public function add_page($name, $title, $published, $subtitle, $content, $module = '', $route = '')
 	{
 		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
@@ -66,9 +146,11 @@ class Pages extends Model
 		]);
 
 		$this->access->init('pages', 'page', $page_id);
+
+		$this->save_instance($page_id, $module, $route);
 	}
 
-	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang)
+	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $module = '', $route = '')
 	{
 		if (!$this->db	->from('pages p')
 						->join('pages_lang l', 'p.page_id = l.page_id')
@@ -106,6 +188,8 @@ class Pages extends Model
 							'published'      => $published
 						]);
 		}
+
+		$this->save_instance($page_id, $module, $route);
 	}
 
 	public function delete_page($page_id)
@@ -114,5 +198,37 @@ class Pages extends Model
 					->delete('pages');
 
 		$this->access->delete('pages', $page_id);
+	}
+
+	public function save_instance($page_id, $module = '', $route = '', $settings = [])
+	{
+		if (!$module)
+		{
+			$this->db	->where('page_id', $page_id)
+						->delete('pages_instances');
+
+			return $this;
+		}
+
+		$data = [
+			'page_id'  => $page_id,
+			'module'   => $module,
+			'route'    => trim($route, '/'),
+			'settings' => serialize($settings),
+			'position' => 0,
+			'enabled'  => TRUE
+		];
+
+		if ($this->db->from('pages_instances')->where('page_id', $page_id)->empty())
+		{
+			$this->db->insert('pages_instances', $data);
+		}
+		else
+		{
+			$this->db	->where('page_id', $page_id)
+						->update('pages_instances', $data);
+		}
+
+		return $this;
 	}
 }

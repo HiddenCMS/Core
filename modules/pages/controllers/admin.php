@@ -78,7 +78,9 @@ class Admin extends Controller_Module
 	{
 		$this	->subtitle($this->lang('Ajouter une page'))
 				->form()
-				->add_rules('pages')
+				->add_rules('pages', [
+					'modules' => $this->model()->get_page_modules()
+				])
 				->add_submit($this->lang('Ajouter'))
 				->add_back('admin/pages');
 
@@ -88,7 +90,9 @@ class Admin extends Controller_Module
 										$post['title'],
 										in_array('on', $post['published']),
 										$post['subtitle'],
-										$post['content']);
+										$post['content'],
+										isset($post['module']) ? $post['module'] : '',
+										isset($post['module_route']) ? $post['module_route'] : '');
 
 			notify($this->lang('Page ajoutée avec succès'));
 
@@ -102,6 +106,8 @@ class Admin extends Controller_Module
 
 	public function _edit($page_id, $name, $published, $title, $subtitle, $content, $tab)
 	{
+		$instance = $this->model()->get_instance($page_id) ?: [];
+
 		$this	->subtitle($title)
 				->form()
 				->add_rules('pages', [
@@ -109,7 +115,10 @@ class Admin extends Controller_Module
 					'subtitle'       => $subtitle,
 					'name'           => $name,
 					'content'        => $content,
-					'published'      => $published
+					'published'      => $published,
+					'modules'        => $this->model()->get_page_modules(),
+					'module'         => isset($instance['module']) ? $instance['module'] : '',
+					'module_route'   => isset($instance['route']) ? $instance['route'] : ''
 				])
 				->add_submit($this->lang('Éditer'))
 				->add_back('admin/pages');
@@ -122,7 +131,9 @@ class Admin extends Controller_Module
 										in_array('on', $post['published']),
 										$post['subtitle'],
 										$post['content'],
-										$this->config->lang->info()->name);
+										$this->config->lang->info()->name,
+										isset($post['module']) ? $post['module'] : '',
+										isset($post['module_route']) ? $post['module_route'] : '');
 
 			notify($this->lang('Page éditée avec succès'));
 

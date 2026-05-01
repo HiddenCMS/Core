@@ -119,6 +119,54 @@ class Output extends Core
 					}
 				}
 
+				if (!$this->url->admin && !$this->url->ajax && !$this->url->cli)
+				{
+					if (!($module = @parent::module('pages')) || !$module->is_enabled())
+					{
+						parent::error();
+					}
+
+					$this->_module = $module;
+
+					$this->data->set('module', 'title', $this->_module->info()->title);
+					$this->data->set('module', 'icon',  $this->_module->info()->icon);
+
+					$module->__init();
+
+					if (!($resolved = $module->model()->resolve($segments)))
+					{
+						parent::error();
+					}
+
+					if (!$this->access('pages', 'access_page', $resolved['page']['page_id']))
+					{
+						$this->error->unauthorized();
+					}
+
+					if ($resolved['instance'])
+					{
+						$this->data->set('module', 'title', $resolved['page']['title']);
+						$this->data->set('module', 'icon',  $this->_module->info()->icon);
+
+						return $this->module_content($resolved['instance']['module'], array_merge(strtoarray('/', $resolved['instance']['route']), $resolved['segments']), FALSE);
+					}
+
+					if (!empty($resolved['segments']))
+					{
+						parent::error();
+					}
+
+					$this->data->set('module', 'controller', 'index');
+					$this->data->set('module', 'method',     '_index');
+
+					if (($controller = @$module->controller('index')) && $controller->has_method('_index'))
+					{
+						return $controller->_index($resolved['page']);
+					}
+
+					parent::error();
+				}
+
 				if (!$this->url->admin && $this->url->ajax && $segments[0] == 'theme')
 				{
 					$module = $this->_theme = parent::theme($this->config->default_theme);
@@ -353,6 +401,116 @@ class Output extends Core
 		}
 
 		$this->trigger('output', $output);
+	}
+
+	public function module_content($module, $segments = [], $set_module = TRUE)
+	{
+		if (is_string($module))
+		{
+			$module = @parent::module(str_replace('-', '_', $module));
+		}
+
+		if (!$module || !$module->is_enabled())
+		{
+			parent::error();
+		}
+
+		if ($set_module)
+		{
+			$this->_module = $module;
+
+			$this->data->set('module', 'title', $module->info()->title);
+			$this->data->set('module', 'icon',  $module->info()->icon);
+		}
+
+		$module->__init();
+
+		$segments = array_values(array_filter($segments, function($segment){
+			return $segment !== '';
+		}));
+
+		if (empty($segments))
+		{
+			$method = 'index';
+		}
+		else if (strpos($segments[0], '_') === 0)
+		{
+			parent::error();
+		}
+		else if (!empty($module->info()->routes))
+		{
+			$method = $module->get_method($segments);
+		}
+
+		if (!isset($method))
+		{
+			if (	array_key_exists(3, $segments) &&
+					($model = @$module->model2($segments[0], $segments[2])) &&
+					$model->check($segments[3]) &&
+					($action = @$model->action(str_replace('-', '_', $segments[1]))) &&
+					$action->__check()
+				)
+			{
+				return $action;
+			}
+			else if (	array_key_exists(1, $segments) &&
+						$segments[1] == 'create' &&
+						($model = @$module->model2($segments[0])) &&
+						($action = @$model->action(str_replace('-', '_', $segments[1]))) &&
+						$action->__check()
+				)
+			{
+				return $action;
+			}
+
+			$method = str_replace('-', '_', array_shift($segments));
+		}
+
+		$name = function($default = ''){
+			$name = [];
+
+			if ($this->url->cli)
+			{
+				$name[] = 'api';
+			}
+			else
+			{
+				if ($this->url->admin)
+				{
+					$name[] = 'admin';
+				}
+
+				if ($this->url->ajax)
+				{
+					$name[] = 'ajax';
+				}
+			}
+
+			if ($default)
+			{
+				$name[] = $default;
+			}
+
+			return implode('_', $name);
+		};
+
+		$this->data->set('module', 'controller', $controller = $name());
+		$this->data->set('module', 'method',     $method);
+
+		if ($has_checker = ($checker = @$module->controller($name('checker'))) && $checker->has_method($method))
+		{
+			$segments = call_user_func_array([$checker, $method], $segments);
+		}
+
+		if ((!$has_checker && $this->url->extension == '') || ($has_checker && $checker->valid() && is_array($segments)))
+		{
+			if (($controller = @$module->controller($controller ?: 'index')) && $controller->has_method($method))
+			{
+				return call_user_func_array([$controller, $method], $segments);
+			}
+		}
+
+		parent::error();
 	}
 
 	public function module()

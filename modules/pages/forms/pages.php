@@ -38,7 +38,32 @@ $rules = [
 		'label'			=> $this->lang('Contenu'),
 		'value'			=> $this->form()->value('content'),
 		'type'			=> 'editor'
-	],
+	]
+];
+
+if ($modules = $this->form()->value('modules'))
+{
+	$rules += [
+		[
+			'label' => $this->lang('Instance de module'),
+			'type'  => 'legend'
+		],
+		'module' => [
+			'label'  => $this->lang('Module principal'),
+			'value'  => $this->form()->value('module'),
+			'values' => $modules,
+			'type'   => 'select'
+		],
+		'module_route' => [
+			'label'       => $this->lang('Route interne'),
+			'value'       => $this->form()->value('module_route'),
+			'type'        => 'text',
+			'description' => $this->lang('Exemple: category/2/esport pour afficher une catÃ©gorie d\'actualitÃ©s')
+		]
+	];
+}
+
+$rules += [
 	'published' => [
 		'type'			=> 'checkbox',
 		'checked'		=> ['on' => $this->form()->value('published')],

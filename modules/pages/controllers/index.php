@@ -10,8 +10,20 @@ use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
-	public function _index($page_id, $title, $subtitle, $content)
+	public function _index($page, $title = NULL, $subtitle = NULL, $content = NULL)
 	{
+		if (is_array($page))
+		{
+			$page_id  = $page['page_id'];
+			$title    = $page['title'];
+			$subtitle = $page['subtitle'];
+			$content  = $page['content'];
+		}
+		else
+		{
+			$page_id = $page;
+		}
+
 		$this	->title($title)
 				->breadcrumb($title);
 
