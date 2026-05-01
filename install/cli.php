@@ -551,16 +551,52 @@ function remove_directory($dir)
 	{
 		if ($item->isDir())
 		{
-			rmdir($item->getPathname());
+			remove_path($item->getPathname(), TRUE);
 		}
 		else
 		{
-			unlink($item->getPathname());
+			remove_path($item->getPathname(), FALSE);
 		}
 	}
 
-	rmdir($dir);
-	line('Removed install directory');
+	unset($items);
+
+	for ($i = 0; $i < 3 && is_dir($dir); $i++)
+	{
+		remove_path($dir, TRUE);
+
+		if (is_dir($dir))
+		{
+			usleep(100000);
+			clearstatcache(TRUE, $dir);
+		}
+	}
+
+	if (is_dir($dir))
+	{
+		line('The install directory could not be fully removed. You can delete it manually.');
+	}
+	else
+	{
+		line('Removed install directory');
+	}
+}
+
+function remove_path($path, $directory)
+{
+	if (!file_exists($path) && !is_dir($path))
+	{
+		return TRUE;
+	}
+
+	@chmod($path, 0777);
+
+	if ($directory)
+	{
+		return @rmdir($path) || !is_dir($path);
+	}
+
+	return @unlink($path) || !file_exists($path);
 }
 
 function prompt($question, $default = NULL)
