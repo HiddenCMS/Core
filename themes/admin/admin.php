@@ -108,12 +108,15 @@ class Admin extends Theme
 					'url'    => 'admin/settings'
 				],
 				[
-					'title'  => 'Thèmes & addons',
-					'icon'   => 'fas fa-puzzle-piece',
-					'access' => $this->user->admin,
-					'url'    => 'admin/addons'
+					'title' => 'Contenu',
+					'icon'  => 'fas fa-edit',
+					'url'   => $content_submenu['default']
 				],
-				$customize->__toArray(),
+				[
+					'title' => 'Gaming',
+					'icon'  => 'fas fa-gamepad',
+					'url'   => $content_submenu['gaming']
+				],
 				[
 					'title' => 'Utilisateurs',
 					'icon'  => 'fas fa-users',
@@ -125,15 +128,16 @@ class Admin extends Theme
 					]
 				],
 				[
-					'title' => 'Contenu',
-					'icon'  => 'fas fa-edit',
-					'url'   => $content_submenu['default']
+					'title'  => 'Thèmes & addons',
+					'icon'   => 'fas fa-puzzle-piece',
+					'access' => $this->user->admin,
+					'url'   => [
+						['title' => 'Thèmes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
+						['title' => 'Modules',    	'icon'  => 'fas fa-cube',        'access' => $this->user->admin, 'url' => 'admin/addons/modules'],
+						['title' => 'Widgets',     	'icon'  => 'fas fa-cubes',   'access' => $this->user->admin, 'url' => 'admin/addons/widgets']
+					]
 				],
-				[
-					'title' => 'Gaming',
-					'icon'  => 'fas fa-gamepad',
-					'url'   => $content_submenu['gaming']
-				],
+				$customize->__toArray(),
 				[
 					'title' => 'Live Editor',
 					'icon'  => 'fas fa-desktop',
