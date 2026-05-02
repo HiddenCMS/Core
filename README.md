@@ -1,19 +1,19 @@
 # HiddenCMS
 
-HiddenCMS est un CMS PHP/MySQL orienté contenus, modules et personnalisation de pages.
+HiddenCMS est un CMS PHP/MySQL oriente contenus, modules et personnalisation de pages.
 
-Ce projet est issu d'un fork de NeoFrag, mais son développement reprend désormais avec une direction propre : compatibilité PHP moderne, installation plus simple, routage centré sur les pages, meilleure séparation entre contenus statiques et instances de modules.
+Ce projet est issu d'un fork de NeoFrag, mais son developpement reprend desormais avec une direction propre : compatibilite PHP moderne, installation plus simple, routage centre sur les pages, meilleure separation entre contenus statiques et instances de modules.
 
-## Prérequis
+## Prerequis
 
-- PHP 8.3 ou supérieur recommandé
+- PHP 8.3 ou superieur recommande
 - Extensions PHP : curl, gd, intl, mbstring, mysqli, zip
 - MySQL ou MariaDB
-- Apache avec `rewrite_module` activé
+- Apache avec `rewrite_module` active
 
 ## Installation CLI
 
-L'installation peut être lancée en ligne de commande :
+L'installation peut etre lancee en ligne de commande :
 
 ```powershell
 php install/cli.php `
@@ -25,7 +25,7 @@ php install/cli.php `
   --admin-user=admin `
   --admin-pass=admin123 `
   --admin-email=admin@example.test `
-  --base=/hNeoFrag/ `
+  --base=/hHiddenCMS/ `
   --yes
 ```
 
@@ -35,12 +35,12 @@ Le mode interactif est aussi disponible :
 php install/cli.php
 ```
 
-Quand le dossier `install/` est conservé, l'installation CLI écrit `install/installed.txt` pour désactiver l'installateur web.
+Quand le dossier `install/` est conserve, l'installation CLI ecrit `install/installed.txt` pour desactiver l'installateur web.
 
 ## Installation web
 
-L'installateur web historique reste disponible en ouvrant le projet dans un navigateur tant que le dossier `install/` est présent.
+L'installateur web historique reste disponible en ouvrant le projet dans un navigateur tant que le dossier `install/` est present.
 
-## Héritage
+## Heritage
 
-HiddenCMS est basé sur NeoFrag Alpha 0.2.3. Les crédits et licences d'origine sont conservés dans les fichiers sources et les fichiers de licence.
+HiddenCMS est base sur NeoFrag Alpha 0.2.3. Les credits et licences d'origine sont conserves dans les fichiers sources et les fichiers de licence.

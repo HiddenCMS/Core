@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Widgets\Copyright\Controllers;
+namespace HB\Widgets\Copyright\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 
@@ -15,12 +15,12 @@ class Index extends Controller_Widget
 		$keywords = [
 			'name'      => '<a href="'.url().'">'.$this->config->name.'</a>',
 			'hiddencms' => '<a href="https://github.com/HiddenCMS/Core">HiddenCMS</a>',
-			'neofrag'   => '<a href="https://github.com/HiddenCMS/Core">HiddenCMS</a>',
+			'HiddenCMS'   => '<a href="https://github.com/HiddenCMS/Core">HiddenCMS</a>',
 			'year'      => date('Y'),
 			'copyright' => icon('far fa-copyright')
 		];
 
-		if (!in_string('{hiddencms}', $copyright = utf8_html_entity_decode($this->config->copyright)) && !in_string('{neofrag}', $copyright))
+		if (!in_string('{hiddencms}', $copyright = utf8_html_entity_decode($this->config->copyright)) && !in_string('{HiddenCMS}', $copyright))
 		{
 			$copyright .= '<div class="float-right">'.$this->lang('PropulsÃ© par %s', '{hiddencms}').'</div>';
 		}

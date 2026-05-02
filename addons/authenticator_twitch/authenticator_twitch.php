@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Twitch;
+namespace HB\Addons\Authenticator_Twitch;
 
 use HB\HiddenCMS\Addons\Authenticator;
 

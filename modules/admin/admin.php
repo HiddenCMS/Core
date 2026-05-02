@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Admin;
+namespace HB\Modules\Admin;
 
 use HB\HiddenCMS\Addons\Module;
 
@@ -17,7 +17,7 @@ class Admin extends Module
 			'description' => '',
 			'icon'        => 'fas fa-tachometer-alt',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE
 		];

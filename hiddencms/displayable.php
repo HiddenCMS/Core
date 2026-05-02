@@ -1,0 +1,27 @@
+<?php
+/**
+ * https://neofr.ag
+ * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
+ */
+
+namespace HB\HiddenCMS;
+
+use HB\HiddenCMS\Libraries\Array_ as Array_;
+
+abstract class Displayable extends Array_
+{
+	protected $_id;
+
+	public function __construct()
+	{
+		parent::__construct(HB());
+	}
+
+	public function id($id)
+	{
+		$this->_id = $id;
+		return $this;
+	}
+}
+
+

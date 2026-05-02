@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Controllers;
+namespace HB\Modules\User\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
@@ -12,7 +12,7 @@ class Admin_Ajax_Checker extends Module_Checker
 {
 	public function _groups_sort()
 	{
-		if (($check = post_check('id', 'position')) && ($group = $this->groups->check_group([$check['id']])) && $group['auto'] != 'neofrag')
+		if (($check = post_check('id', 'position')) && ($group = $this->groups->check_group([$check['id']])) && $group['auto'] != 'HiddenCMS')
 		{
 			return $check;
 		}

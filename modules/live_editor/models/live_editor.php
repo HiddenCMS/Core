@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Live_Editor\Models;
+namespace HB\Modules\Live_Editor\Models;
 
 use HB\HiddenCMS\Loadables\Model;
 

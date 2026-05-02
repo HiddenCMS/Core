@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Widgets\Breadcrumb\Controllers;
+namespace HB\Widgets\Breadcrumb\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 

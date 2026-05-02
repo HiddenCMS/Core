@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Github;
+namespace HB\Addons\Authenticator_Github;
 
 use HB\HiddenCMS\Addons\Authenticator;
 

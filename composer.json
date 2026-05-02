@@ -15,9 +15,6 @@
             "email": "contact@hiddenblob.com"
         }
     ],
-    "replace": {
-        "neofrag/core": "self.version"
-    },
     "support": {
         "source": "https://github.com/HiddenCMS/Core"
     },

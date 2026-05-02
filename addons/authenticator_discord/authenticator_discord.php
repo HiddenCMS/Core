@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Discord;
+namespace HB\Addons\Authenticator_Discord;
 
 use HB\HiddenCMS\Addons\Authenticator;
 

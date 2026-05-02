@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Widgets\Html;
+namespace HB\Widgets\Html;
 
 use HB\HiddenCMS\Addons\Widget;
 
@@ -16,7 +16,7 @@ class Html extends Widget
 			'title'       => $this->lang('Contenu libre / Code HTML'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
 				'index' => $this->lang('Contenu libre'),

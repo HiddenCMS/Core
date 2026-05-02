@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 /** Init composer */
@@ -11,11 +11,6 @@ define('HIDDENCMS_MEMORY',  memory_get_usage());
 define('HIDDENCMS_TIME',    microtime(TRUE));
 define('HIDDENCMS_CMS',     __DIR__);
 define('HIDDENCMS_VERSION', 'Alpha 0.2.3');
-
-define('NEOFRAG_MEMORY',  HIDDENCMS_MEMORY);
-define('NEOFRAG_TIME',    HIDDENCMS_TIME);
-define('NEOFRAG_CMS',     HIDDENCMS_CMS);
-define('NEOFRAG_VERSION', HIDDENCMS_VERSION);
 
 error_reporting(E_ALL);
 
@@ -28,7 +23,6 @@ if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
 	if (file_exists('install/db.txt'))
 	{
 		define('HIDDENCMS_INSTALL', TRUE);
-		define('NEOFRAG_INSTALL', TRUE);
 	}
 	else
 	{
@@ -43,16 +37,6 @@ require_once 'config/hiddencms.php';
 
 function class_name($name)
 {
-	if (strpos($name, 'HB\\') === 0)
-	{
-		$name = 'NF\\'.substr($name, strlen('HB\\'));
-	}
-
-	if (strpos($name, 'NF\\HiddenCMS\\') === 0)
-	{
-		$name = 'NF\\NeoFrag\\'.substr($name, strlen('NF\\HiddenCMS\\'));
-	}
-
 	$name = explode('\\', $name);
 
 	array_walk($name, function(&$a){
@@ -65,9 +49,9 @@ function class_name($name)
 	return implode('\\', $name);
 }
 
-function NeoFrag()
+function HiddenCMS()
 {
-	static $NeoFrag;
+	static $HiddenCMS;
 
 	if ($args = func_get_args())
 	{
@@ -96,22 +80,17 @@ function NeoFrag()
 			];
 		}
 
-		if (!$NeoFrag)
+		if (!$HiddenCMS)
 		{
-			$NeoFrag = $object;
+			$HiddenCMS = $object;
 		}
 
 		return $object;
 	}
 	else
 	{
-		return $NeoFrag;
+		return $HiddenCMS;
 	}
-}
-
-function HiddenCMS()
-{
-	return call_user_func_array('NeoFrag', func_get_args());
 }
 
 function HB()
@@ -168,39 +147,13 @@ foreach ([
 		] as $helper
 	)
 {
-	require_once 'neofrag/helpers/'.$helper.'.php';
+	require_once 'hiddencms/helpers/'.$helper.'.php';
 }
 
 spl_autoload_register(function($name){
-	$alias = NULL;
-
-	if (strpos($name, 'HB\\') === 0)
-	{
-		$alias = $name;
-		$name  = 'NF\\'.substr($name, strlen('HB\\'));
-
-		if (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE))
-		{
-			class_alias($name, $alias);
-			return;
-		}
-	}
-
-	if (strpos($name, 'NF\\HiddenCMS\\') === 0)
-	{
-		$alias = $alias ?: $name;
-		$name  = 'NF\\NeoFrag\\'.substr($name, strlen('NF\\HiddenCMS\\'));
-
-		if (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE))
-		{
-			class_alias($name, $alias);
-			return;
-		}
-	}
-
 	$namespace = explode('\\', $name);
 
-	if (array_shift($namespace) == 'NF' && $namespace)
+	if (array_shift($namespace) == 'HB' && $namespace)
 	{
 		array_walk($namespace, function(&$a){
 			$a = strtolower(rtrim($a, '_'));
@@ -211,14 +164,9 @@ spl_autoload_register(function($name){
 			require_once $file;
 		}
 	}
-
-	if ($alias && (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE)))
-	{
-		class_alias($name, $alias);
-	}
 });
 
-HB('HB\HiddenCMS\NeoFrag')->__path(function($caller, $type, $file){
+HB('HB\HiddenCMS\HiddenCMS')->__path(function($caller, $type, $file){
 	$file = [$file];
 
 	if (!in_array($type, ['addons', 'assets']))
@@ -228,7 +176,7 @@ HB('HB\HiddenCMS\NeoFrag')->__path(function($caller, $type, $file){
 			array_unshift($file, $type);
 		}
 
-		array_unshift($file, 'neofrag');
+		array_unshift($file, 'hiddencms');
 	}
 
 	$file = implode('/', $file);
@@ -263,13 +211,10 @@ foreach ([
 }
 
 define('HIDDENCMS_CORE', TRUE);
-define('NEOFRAG_CORE', TRUE);
 
-if (defined('HIDDENCMS_INSTALL') || defined('NEOFRAG_INSTALL'))
+if (defined('HIDDENCMS_INSTALL'))
 {
 	require_once 'install/index.php';
 }
 
 HB()->output();
-
-

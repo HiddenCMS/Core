@@ -4,7 +4,7 @@
  * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace NF\Themes\Azuro\Controllers;
+namespace HB\Themes\Azuro\Controllers;
 
 use HB\HiddenCMS\Loadables\Controller;
 

@@ -1,10 +1,10 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\NeoFrag\Models;
+namespace HB\HiddenCMS\Models;
 
 use HB\HiddenCMS\Loadables\Model2;
 

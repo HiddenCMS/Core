@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Battle_Net;
+namespace HB\Addons\Authenticator_Battle_Net;
 
 use HB\HiddenCMS\Addons\Authenticator;
 

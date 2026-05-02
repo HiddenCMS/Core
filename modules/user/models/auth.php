@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Models;
+namespace HB\Modules\User\Models;
 
 use HB\HiddenCMS\Loadables\Model2;
 

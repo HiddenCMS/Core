@@ -4,7 +4,7 @@
  * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace NF\Widgets\Socials;
+namespace HB\Widgets\Socials;
 
 use HB\HiddenCMS\Addons\Widget;
 
@@ -20,7 +20,7 @@ class Socials extends Widget
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0',
 			'depends'     => [
-				'neofrag' => 'Alpha 0.2.2'
+				'HiddenCMS' => 'Alpha 0.2.2'
 			]
 		];
 	}

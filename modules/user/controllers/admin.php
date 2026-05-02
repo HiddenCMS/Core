@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Controllers;
+namespace HB\Modules\User\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
@@ -20,7 +20,7 @@ class Admin extends Controller_Module
 			->add_columns([
 				[
 					'content' => function($data){
-						return $data['auto'] != 'neofrag' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
+						return $data['auto'] != 'HiddenCMS' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
 					},
 					'size'    => TRUE
 				],

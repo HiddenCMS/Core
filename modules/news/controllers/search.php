@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\News\Controllers;
+namespace HB\Modules\News\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 

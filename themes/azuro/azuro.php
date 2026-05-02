@@ -4,7 +4,7 @@
  * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace NF\Themes\Azuro;
+namespace HB\Themes\Azuro;
 
 use HB\HiddenCMS\Addons\Theme;
 
@@ -20,7 +20,7 @@ class Azuro extends Theme
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0.0',
 			'depends' => [
-				'neofrag' => 'Alpha 0.2.1'
+				'HiddenCMS' => 'Alpha 0.2.1'
 			],
 			'zones'       => ['Haut', 'EntÃªte', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];

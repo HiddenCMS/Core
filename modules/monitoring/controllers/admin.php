@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Monitoring\Controllers;
+namespace HB\Modules\Monitoring\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 

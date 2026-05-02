@@ -7,8 +7,6 @@ if (PHP_SAPI != 'cli')
 
 define('HIDDENCMS_CLI_INSTALLER', TRUE);
 define('HIDDENCMS_ROOT', dirname(__DIR__));
-define('NEOFRAG_CLI_INSTALLER', HIDDENCMS_CLI_INSTALLER);
-define('NEOFRAG_ROOT', HIDDENCMS_ROOT);
 
 chdir(HIDDENCMS_ROOT);
 
@@ -697,7 +695,7 @@ function print_usage()
 	line('  --admin-email=mail        Admin email');
 	line('');
 	line('Site options:');
-	line('  --base=/hNeoFrag/         Apache RewriteBase');
+	line('  --base=/hHiddenCMS/       Apache RewriteBase');
 	line('  --site-name=HiddenCMS     Site name');
 	line('  --site-contact=mail       Site contact email');
 	line('');

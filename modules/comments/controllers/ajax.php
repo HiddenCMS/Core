@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Comments\Controllers;
+namespace HB\Modules\Comments\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 

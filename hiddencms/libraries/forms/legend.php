@@ -1,0 +1,31 @@
+<?php
+/**
+ * https://neofr.ag
+ * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ */
+
+namespace HB\HiddenCMS\Libraries\Forms;
+
+use HB\HiddenCMS\Library;
+
+class Legend extends Library
+{
+	protected $_label;
+
+	public function __invoke($label, $icon = '')
+	{
+		$this->_label = is_a($label, 'HB\HiddenCMS\Libraries\Label') ? $label : $this->label($label, $icon);
+		return $this;
+	}
+
+	public function __toString()
+	{
+		return '<legend>
+					<div class="form-legend">
+						'.$this->_label.'
+					</div>
+				</legend>';
+	}
+}
+
+

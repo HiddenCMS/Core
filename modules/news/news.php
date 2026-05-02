@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\News;
+namespace HB\Modules\News;
 
 use HB\HiddenCMS\Addons\Module;
 
@@ -17,13 +17,13 @@ class News extends Module
 			'description' => '',
 			'icon'        => 'far fa-file-alt',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'front'       => TRUE,
 			'version'     => '1.0',
 			'depends'     => [
-				'neofrag' => 'Alpha 0.2'
+				'HiddenCMS' => 'Alpha 0.2'
 			],
 			'routes'      => [
 				//Index

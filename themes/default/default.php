@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Themes\Default_;
+namespace HB\Themes\Default_;
 
 use HB\HiddenCMS\Addons\Theme;
 
@@ -14,9 +14,9 @@ class Default_ extends Theme
 	{
 		return [
 			'title'       => 'ThÃ¨me par dÃ©faut',
-			'description' => 'Base de dÃ©veloppement pour la crÃ©ation d\'un thÃ¨me NeoFrag',
+			'description' => 'Base de dÃ©veloppement pour la crÃ©ation d\'un thÃ¨me HiddenCMS',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => ['Haut', 'EntÃªte', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];

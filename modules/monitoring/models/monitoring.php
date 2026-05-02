@@ -4,13 +4,13 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Monitoring\Models;
+namespace HB\Modules\Monitoring\Models;
 
 use HB\HiddenCMS\Loadables\Model;
 
 class Monitoring extends Model
 {
-	public $folders = ['addons', 'backups', 'cache', 'config', 'css', 'fonts', 'images', 'js', 'lib', 'logs', 'modules', 'neofrag', 'overrides', 'themes', 'upload', 'widgets'];
+	public $folders = ['addons', 'backups', 'cache', 'config', 'css', 'fonts', 'images', 'js', 'lib', 'logs', 'modules', 'HiddenCMS', 'overrides', 'themes', 'upload', 'widgets'];
 
 	public function get_info()
 	{

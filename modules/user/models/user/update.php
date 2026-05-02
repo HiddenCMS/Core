@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Models\User;
+namespace HB\Modules\User\Models\User;
 
 class Update extends \HB\HiddenCMS\Actions\Update
 {
@@ -23,7 +23,7 @@ class Update extends \HB\HiddenCMS\Actions\Update
 				'groups' => [
 					'type'   => 'checkbox',
 					'values' => array_filter($this->groups(), function($group){
-						return !$group['auto'] || $group['auto'] == 'neofrag' || $group['users'] !== NULL;
+						return !$group['auto'] || $group['auto'] == 'HiddenCMS' || $group['users'] !== NULL;
 					}),
 					'rules'  => 'required'
 				]

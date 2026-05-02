@@ -1,0 +1,23 @@
+<?php
+/**
+ * https://neofr.ag
+ * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ */
+
+namespace HB\HiddenCMS\Core;
+
+use HB\HiddenCMS\Core;
+
+class Input extends Core
+{
+	public $get;
+	public $post;
+
+	public function __construct()
+	{
+		$this->get  = $this->array($_GET);
+		$this->post = $this->array($_POST);
+	}
+}
+
+

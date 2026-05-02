@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Models\User;
+namespace HB\Modules\User\Models\User;
 
 class Delete extends \HB\HiddenCMS\Actions\Delete
 {

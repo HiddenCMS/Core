@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Language_Pt;
+namespace HB\Addons\Language_Pt;
 
 use HB\HiddenCMS\Addons\Language;
 
@@ -17,7 +17,7 @@ class Language_Pt extends Language
 			'icon'    => 'ðŸ‡µðŸ‡¹',
 			'version' => '1.0',
 			'depends' => [
-				'neofrag' => 'Alpha 0.2'
+				'HiddenCMS' => 'Alpha 0.2'
 			]
 		];
 	}

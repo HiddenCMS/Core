@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Controllers;
+namespace HB\Modules\User\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 

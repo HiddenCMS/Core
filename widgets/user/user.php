@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Widgets\User;
+namespace HB\Widgets\User;
 
 use HB\HiddenCMS\Addons\Widget;
 
@@ -16,7 +16,7 @@ class User extends Widget
 			'title'       => $this->lang('Espace membre'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
 				'index'          => $this->lang('Espace membre'),

@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Widgets\User\Controllers;
+namespace HB\Widgets\User\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 

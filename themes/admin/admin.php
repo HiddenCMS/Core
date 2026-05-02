@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Themes\Admin;
+namespace HB\Themes\Admin;
 
 use HB\HiddenCMS\Addons\Theme;
 
@@ -18,7 +18,7 @@ class Admin extends Theme
 			'title'       => 'Administration',
 			'description' => 'Panel d\'administration',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
 		];
@@ -37,7 +37,7 @@ class Admin extends Theme
 					$patch->post();
 				}
 
-				unlink('neofrag/install/'.$this->config->update_callback.'.php');
+				unlink('HiddenCMS/install/'.$this->config->update_callback.'.php');
 			}
 
 			refresh();
@@ -169,7 +169,7 @@ class Admin extends Theme
 		if (file_exists($file = 'cache/monitoring/version.json'))
 		{
 			$versions = json_decode(file_get_contents($file));
-			$version  = isset($versions->hiddencms) ? $versions->hiddencms : (isset($versions->neofrag) ? $versions->neofrag : NULL);
+			$version  = isset($versions->hiddencms) ? $versions->hiddencms : (isset($versions->HiddenCMS) ? $versions->HiddenCMS : NULL);
 
 			if ($version && version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
 			{

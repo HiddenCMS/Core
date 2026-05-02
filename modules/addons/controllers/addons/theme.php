@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Addons\Controllers\Addons;
+namespace HB\Modules\Addons\Controllers\Addons;
 
 use HB\HiddenCMS\Loadables\Controller;
 

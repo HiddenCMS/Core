@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator;
+namespace HB\Addons\Authenticator;
 
 use HB\HiddenCMS\Loadables\Addon;
 
@@ -17,7 +17,7 @@ class Authenticator extends Addon
 			'icon'    => 'fas fa-sign-in-alt',
 			'version' => '1.0',
 			'depends' => [
-				'neofrag' => 'Alpha 0.2'
+				'HiddenCMS' => 'Alpha 0.2'
 			]
 		];
 	}

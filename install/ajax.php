@@ -1,4 +1,4 @@
-<?php if (!defined('HIDDENCMS_CMS') && !defined('NEOFRAG_CMS')) exit;
+<?php if (!defined('HIDDENCMS_CMS')) exit;
 
 $step = array_key_exists('step', $_GET) ? $_GET['step'] : '';
 $output = [];
@@ -133,7 +133,7 @@ if ($step == 'check')
 
 				if ($content)
 				{
-					$version = isset($content->hiddencms) ? $content->hiddencms : (isset($content->neofrag) ? $content->neofrag : NULL);
+					$version = isset($content->hiddencms) ? $content->hiddencms : (isset($content->HiddenCMS) ? $content->HiddenCMS : NULL);
 
 					if ($version && isset($version->version) && $version->version != HIDDENCMS_VERSION)
 					{
@@ -439,7 +439,7 @@ else if ($step == 'user')
 
 		HiddenCMS()->session->login($user);
 
-		require_once 'neofrag/helpers/dir.php';
+		require_once 'HiddenCMS/helpers/dir.php';
 		unlink('.htaccess');
 		rename('.htaccess_tmp', '.htaccess');
 		dir_remove('install');

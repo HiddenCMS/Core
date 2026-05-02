@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Addons\Controllers;
+namespace HB\Modules\Addons\Controllers;
 
 use HB\HiddenCMS\Core\Debug;
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
@@ -47,15 +47,15 @@ class Admin_Ajax extends Controller_Module
 								{
 									if (!is_dir($file = $dir.'/'.$filename) &&
 										preg_match('/^(.+?)\.php$/', $filename, $match) &&
-										preg_match('/use NF\\\NeoFrag\\\Addons\\\('.implode('|', $types).');/m', $content = file_get_contents($file), $match2))
+										preg_match('/use HB\\\\HiddenCMS\\\Addons\\\('.implode('|', $types).');/m', $content = file_get_contents($file), $match2))
 									{
-										file_put_contents($file, preg_replace('/^(namespace )NF\\\/m', '\1NF_Temp\\', $content));
+										file_put_contents($file, preg_replace('/^(namespace )HB\\\/m', '\1HB_Temp\\', $content));
 
 										require_once $file;
 
 										try
 										{
-											$class = new \ReflectionClass('NF_Temp\\'.$match2[1].'s\\'.$match[1].'\\'.$match[1]);
+											$class = new \ReflectionClass('HB_Temp\\'.$match2[1].'s\\'.$match[1].'\\'.$match[1]);
 										}
 										catch (\ReflectionException $e)
 										{
@@ -67,7 +67,7 @@ class Admin_Ajax extends Controller_Module
 										$version = $addon->info()->version;
 										$depends = $addon->info()->depends;
 
-										$nf_version = $depends['neofrag'];
+										$nf_version = $depends['HiddenCMS'];
 
 										if (!empty($version) && !empty($nf_version))
 										{

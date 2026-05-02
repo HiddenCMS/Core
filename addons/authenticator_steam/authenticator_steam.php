@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Steam;
+namespace HB\Addons\Authenticator_Steam;
 
 use HB\HiddenCMS\Addons\Authenticator;
 

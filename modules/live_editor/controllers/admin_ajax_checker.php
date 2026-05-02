@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Live_Editor\Controllers;
+namespace HB\Modules\Live_Editor\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 

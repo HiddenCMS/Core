@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\Monitoring\Controllers;
+namespace HB\Modules\Monitoring\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
@@ -375,8 +375,8 @@ class Admin_Ajax extends Controller_Module
 
 					unlink($file);
 
-					foreach (array_diff(array_keys(dir_scan('neofrag')), array_filter($files, function($a){
-						return preg_match('_^neofrag/_', $a);
+					foreach (array_diff(array_keys(dir_scan('HiddenCMS')), array_filter($files, function($a){
+						return preg_match('_^HiddenCMS/_', $a);
 					})) as $file)
 					{
 						unlink($file);

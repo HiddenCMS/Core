@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\News\Models;
+namespace HB\Modules\News\Models;
 
 use HB\HiddenCMS\Loadables\Model;
 

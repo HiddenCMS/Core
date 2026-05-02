@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Modules\User\Controllers;
+namespace HB\Modules\User\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
@@ -13,7 +13,7 @@ class Admin_Ajax extends Controller_Module
 	public function _groups_sort($group_id, $position)
 	{
 		$groups = array_filter($this->groups(), function($a){
-			return $a['auto'] != 'neofrag';
+			return $a['auto'] != 'HiddenCMS';
 		});
 
 		array_walk($groups, function(&$a, $id){

@@ -5,15 +5,6 @@ define('HIDDENCMS_SAFE_MODE',  FALSE);
 define('HIDDENCMS_LOGS',       FALSE);
 define('HIDDENCMS_LOGS_DB',    FALSE);
 define('HIDDENCMS_LOGS_I18N',  FALSE);
-define('HIDDENCMS_UPDATE_BASE',      'https://neofr.ag');
-define('HIDDENCMS_DOWNLOAD_BASE',    'https://neofrag.download');
-define('HIDDENCMS_VERSION_CHECK_URL','https://vc.nf.hiddenblob.com/version.json');
-
-define('NEOFRAG_DEBUG_BAR', HIDDENCMS_DEBUG_BAR);
-define('NEOFRAG_SAFE_MODE', HIDDENCMS_SAFE_MODE);
-define('NEOFRAG_LOGS',      HIDDENCMS_LOGS);
-define('NEOFRAG_LOGS_DB',   HIDDENCMS_LOGS_DB);
-define('NEOFRAG_LOGS_I18N', HIDDENCMS_LOGS_I18N);
-define('NEOFRAG_UPDATE_BASE',       HIDDENCMS_UPDATE_BASE);
-define('NEOFRAG_DOWNLOAD_BASE',     HIDDENCMS_DOWNLOAD_BASE);
-define('NEOFRAG_VERSION_CHECK_URL', HIDDENCMS_VERSION_CHECK_URL);
+define('HIDDENCMS_UPDATE_BASE',       'https://github.com/HiddenCMS/Core');
+define('HIDDENCMS_DOWNLOAD_BASE',     'https://github.com/HiddenCMS/Core/releases/download');
+define('HIDDENCMS_VERSION_CHECK_URL', 'https://vc.nf.hiddenblob.com/version.json');

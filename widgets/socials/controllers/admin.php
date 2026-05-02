@@ -4,7 +4,7 @@
  * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
-namespace NF\Widgets\Socials\Controllers;
+namespace HB\Widgets\Socials\Controllers;
 
 use HB\HiddenCMS\Loadables\Controller;
 

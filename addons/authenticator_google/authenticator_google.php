@@ -4,7 +4,7 @@
  * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace NF\Addons\Authenticator_Google;
+namespace HB\Addons\Authenticator_Google;
 
 use HB\HiddenCMS\Addons\Authenticator;
 
