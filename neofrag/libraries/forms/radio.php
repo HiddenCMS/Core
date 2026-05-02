@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
@@ -41,7 +41,7 @@ class Radio extends Multiple
 					$input->attr('data-bind');
 				}
 
-				$output[] = '<div class="form-check'.($this->_inline || ($this->_form->display() & \NF\NeoFrag\Libraries\Form2::FORM_INLINE) ? ' form-check-inline' : '').'">
+				$output[] = '<div class="form-check'.($this->_inline || ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_INLINE) ? ' form-check-inline' : '').'">
 								'.$input.'
 								<label class="form-check-label" for="'.$id.'">'.$label.'</label>
 							</div>';
@@ -64,3 +64,5 @@ class Radio extends Multiple
 		$input->attr_if((string)$this->_value === (string)$value, 'checked');
 	}
 }
+
+

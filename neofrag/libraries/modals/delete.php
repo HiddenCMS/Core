@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Modals;
 
-use NF\NeoFrag\Libraries\Modal;
+use HB\HiddenCMS\Libraries\Modal;
 
 class Delete extends Modal
 {
@@ -17,3 +17,5 @@ class Delete extends Modal
 						->cancel();
 	}
 }
+
+

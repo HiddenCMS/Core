@@ -1,14 +1,14 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Actions;
 
-class Update extends \NF\NeoFrag\Action
+class Update extends \HB\HiddenCMS\Action
 {
-	protected $_title = 'Éditer';
+	protected $_title = 'Ã‰diter';
 	protected $_icon  = 'fas fa-pencil-alt';
 	protected $_color = 'primary';
 
@@ -46,6 +46,8 @@ class Update extends \NF\NeoFrag\Action
 
 	protected function title($model)
 	{
-		return $this->lang('Édition de %s', $model);
+		return $this->lang('Ã‰dition de %s', $model);
 	}
 }
+
+

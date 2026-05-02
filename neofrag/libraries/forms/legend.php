@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Legend extends Library
 {
@@ -14,7 +14,7 @@ class Legend extends Library
 
 	public function __invoke($label, $icon = '')
 	{
-		$this->_label = is_a($label, 'NF\NeoFrag\Libraries\Label') ? $label : $this->label($label, $icon);
+		$this->_label = is_a($label, 'HB\HiddenCMS\Libraries\Label') ? $label : $this->label($label, $icon);
 		return $this;
 	}
 
@@ -27,3 +27,5 @@ class Legend extends Library
 				</legend>';
 	}
 }
+
+

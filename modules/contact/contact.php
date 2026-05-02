@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Contact;
 
-use NF\NeoFrag\Addons\Module;
+use HB\HiddenCMS\Addons\Module;
 
 class Contact extends Module
 {
@@ -17,7 +17,7 @@ class Contact extends Module
 			'description' => '',
 			'icon'        => 'far fa-envelope',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'front'       => TRUE,
 			'version'     => '1.0',
@@ -27,3 +27,5 @@ class Contact extends Module
 		];
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
 
-use NF\NeoFrag\NeoFrag;
+use HB\HiddenCMS\NeoFrag;
 
 abstract class Action extends NeoFrag
 {
@@ -88,3 +88,5 @@ abstract class Action extends NeoFrag
 					->implode('/');
 	}
 }
+
+

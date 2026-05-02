@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Pages\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class Pages extends Model
 {
@@ -92,7 +92,7 @@ class Pages extends Model
 
 	public function get_news_categories()
 	{
-		$categories = ['' => $this->lang('Toutes les actualités')];
+		$categories = ['' => $this->lang('Toutes les actualitÃ©s')];
 
 		foreach ($this->db	->select('c.category_id', 'cl.title')
 							->from('news_categories c')
@@ -313,3 +313,5 @@ class Pages extends Model
 		return $this;
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
 
-use NF\NeoFrag\Core\Debug;
+use HB\HiddenCMS\Core\Debug;
 
 class File extends Labelable
 {
@@ -41,20 +41,20 @@ class File extends Labelable
 				if (!empty($_FILES[$this->_name]['error']))
 				{
 					$errors = [
-						1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
-						2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
-						3 => 'Le fichier n\'a été que partiellement téléchargé',
-						4 => 'Aucun fichier n\'a été téléchargé',
+						1 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de upload_max_filesize, configurÃ©e dans le php.ini',
+						2 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de MAX_FILE_SIZE, qui a Ã©tÃ© spÃ©cifiÃ©e dans le formulaire HTML',
+						3 => 'Le fichier n\'a Ã©tÃ© que partiellement tÃ©lÃ©chargÃ©',
+						4 => 'Aucun fichier n\'a Ã©tÃ© tÃ©lÃ©chargÃ©',
 						6 => 'Un dossier temporaire est manquant',
-						7 => 'Échec de l\'écriture du fichier sur le disque',
-						8 => 'Une extension PHP a arrêté l\'envoi de fichier'
+						7 => 'Ã‰chec de l\'Ã©criture du fichier sur le disque',
+						8 => 'Une extension PHP a arrÃªtÃ© l\'envoi de fichier'
 					];
 
 					$this->_errors[] = $this->lang($errors[$_FILES[$this->_name]['error']]);
 				}
 				else if ($this->_mimes && !in_array($_FILES[$this->_name]['type'], $this->_mimes))
 				{
-					$this->_errors[] = NeoFrag()->lang('Type de fichier non autorisé');
+					$this->_errors[] = HB()->lang('Type de fichier non autorisÃ©');
 				}
 				else if (!empty($_FILES[$this->_name]['tmp_name']))
 				{
@@ -64,7 +64,7 @@ class File extends Labelable
 					}
 					else if (!$this->_errors)
 					{
-						$data[$this->_name] = NeoFrag()->model2('file')->static_uploaded_file($_FILES[$this->_name], $upload_dir, $this->_value ? $this->_value->id : NULL);
+						$data[$this->_name] = HB()->model2('file')->static_uploaded_file($_FILES[$this->_name], $upload_dir, $this->_value ? $this->_value->id : NULL);
 
 						if ($data[$this->_name]->path())
 						{
@@ -75,7 +75,7 @@ class File extends Labelable
 						}
 						else
 						{
-							$this->_errors[] = NeoFrag()->lang('Erreur de transfert');
+							$this->_errors[] = HB()->lang('Erreur de transfert');
 						}
 					}
 				}
@@ -87,7 +87,7 @@ class File extends Labelable
 
 	public function value($file, $erase = FALSE)
 	{
-		if (!is_a($file, 'NF/NeoFrag/Models/File') && ($file = NeoFrag()->model2('file', $file)) && !$file())
+		if (!is_a($file, 'NF/NeoFrag/Models/File') && ($file = HB()->model2('file', $file)) && !$file())
 		{
 			$file = NULL;
 		}
@@ -113,3 +113,5 @@ class File extends Labelable
 		return $this;
 	}
 }
+
+

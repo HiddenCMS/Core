@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace NF\Widgets\Socials\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
@@ -27,3 +27,5 @@ class Index extends Controller_Widget
 		]);
 	}
 }
+
+

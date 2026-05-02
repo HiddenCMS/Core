@@ -1,20 +1,20 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Addons\Language_Fr;
 
-use NF\NeoFrag\Addons\Language;
+use HB\HiddenCMS\Addons\Language;
 
 class Language_Fr extends Language
 {
 	protected function __info()
 	{
 		return [
-			'title'   => 'Français',
-			'icon'    => '🇫🇷',
+			'title'   => 'FranÃ§ais',
+			'icon'    => 'ðŸ‡«ðŸ‡·',
 			'version' => '1.0',
 			'depends' => [
 				'neofrag' => 'Alpha 0.2'
@@ -69,3 +69,5 @@ class Language_Fr extends Language
 		}
 	}
 }
+
+

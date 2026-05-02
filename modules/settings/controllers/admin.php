@@ -1,23 +1,23 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Settings\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
 	public function index()
 	{
-		$this	->subtitle($this->lang('Préférences générales'))
+		$this	->subtitle($this->lang('PrÃ©fÃ©rences gÃ©nÃ©rales'))
 				->icon('fas fa-cog');
 
 		$modules = $pages = [];
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HB()->model2('addon')->get('module') as $module)
 		{
 			if (@$module->controller('index') && !in_array($module->info()->name, ['settings', 'user']))
 			{
@@ -66,7 +66,7 @@ class Admin extends Controller_Module
 						'value'  => $this->config->favicon,
 						'type'   => 'file',
 						'upload' => 'favicons',
-						'info'   => $this->lang(' d\'image (format carré min. %dpx et max. %d Mo)', 16, file_upload_max_size() / 1024 / 1024),
+						'info'   => $this->lang(' d\'image (format carrÃ© min. %dpx et max. %d Mo)', 16, file_upload_max_size() / 1024 / 1024),
 						'check'  => function($filename, $ext){
 							if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png', 'ico']))
 							{
@@ -77,7 +77,7 @@ class Admin extends Controller_Module
 
 							if ($w != $h)
 							{
-								return $this->lang('L\'image doit être carré');
+								return $this->lang('L\'image doit Ãªtre carrÃ©');
 							}
 							else if ($w < 16)
 							{
@@ -130,14 +130,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Préférences générales sauvegardées avec succès');
+			notify('PrÃ©fÃ©rences gÃ©nÃ©rales sauvegardÃ©es avec succÃ¨s');
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading($this->lang('Préférences générales'), 'fas fa-cog')
+								->heading($this->lang('PrÃ©fÃ©rences gÃ©nÃ©rales'), 'fas fa-cog')
 								->body($this->form()->display())
 			);
 		});
@@ -173,7 +173,7 @@ class Admin extends Controller_Module
 						'label'   => 'Statut',
 						'type'    => 'radio',
 						'value'   => (int)$this->config->registration_status,
-						'values'  => ['Fermées', 'Ouvertes']
+						'values'  => ['FermÃ©es', 'Ouvertes']
 					],
 					/*'registration_validation' => [
 						'label'   => 'Validation',
@@ -182,7 +182,7 @@ class Admin extends Controller_Module
 						'values'  => ['Automatique', 'Confirmation par e-mail']
 					],*/
 					'registration_charte' => [
-						'label'   => 'Règlement',
+						'label'   => 'RÃ¨glement',
 						'value'   => $this->config->registration_charte,
 						'type'    => 'editor'
 					],
@@ -193,7 +193,7 @@ class Admin extends Controller_Module
 					'welcome' => [
 						'type'    => 'checkbox',
 						'checked' => ['on' => $this->config->welcome],
-						'values'  => ['on' => 'Envoyer un message privé aux nouveaux membres']
+						'values'  => ['on' => 'Envoyer un message privÃ© aux nouveaux membres']
 					],
 					'welcome_user_id' => [
 						'label'   => 'Auteur du message',
@@ -229,7 +229,7 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Gestion des inscriptions sauvegardée avec succès');
+			notify('Gestion des inscriptions sauvegardÃ©e avec succÃ¨s');
 
 			refresh();
 		}
@@ -250,7 +250,7 @@ class Admin extends Controller_Module
 		$this	->form()
 				->add_rules([
 					'team_name' => [
-						'label'       => 'Nom de l\'équipe',
+						'label'       => 'Nom de l\'Ã©quipe',
 						'value'       => $this->config->team_name,
 						'type'        => 'text'
 					],
@@ -266,7 +266,7 @@ class Admin extends Controller_Module
 								return 'Veuiller choisir un fichier d\'image';
 							}
 						},
-						'description' => 'Le logo pourra être affiché dans le widget type <b>header</b> <i>(en remplacement du titre et slogan)</i>.'
+						'description' => 'Le logo pourra Ãªtre affichÃ© dans le widget type <b>header</b> <i>(en remplacement du titre et slogan)</i>.'
 					],
 					'team_type' => [
 						'label'       => 'Type de structure',
@@ -276,7 +276,7 @@ class Admin extends Controller_Module
 						'description' => '<b>Exemple:</b> Association, entreprise, marque, etc...'
 					],
 					'team_creation' => [
-						'label'       => 'Date de création',
+						'label'       => 'Date de crÃ©ation',
 						'value'       => $this->config->team_creation,
 						'type'        => 'date',
 						'size'        => 'col-4'
@@ -297,7 +297,7 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Informations sauvegardées avec succès');
+			notify('Informations sauvegardÃ©es avec succÃ¨s');
 
 			refresh();
 		}
@@ -312,7 +312,7 @@ class Admin extends Controller_Module
 
 	public function socials()
 	{
-		$this	->subtitle('Réseaux sociaux')
+		$this	->subtitle('RÃ©seaux sociaux')
 				->icon('fas fa-globe');
 
 		$this	->form()
@@ -400,14 +400,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Réseaux sociaux sauvegardés avec succès');
+			notify('RÃ©seaux sociaux sauvegardÃ©s avec succÃ¨s');
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Réseaux sociaux', 'fas fa-globe')
+								->heading('RÃ©seaux sociaux', 'fas fa-globe')
 								->body($this->form()->display())
 			);
 		});
@@ -415,18 +415,18 @@ class Admin extends Controller_Module
 
 	public function captcha()
 	{
-		$this	->subtitle('Sécurité anti-bots')
+		$this	->subtitle('SÃ©curitÃ© anti-bots')
 				->icon('fas fa-shield-alt');
 
 		$this	->form()
 				->add_rules([
 					'captcha_public_key' => [
-						'label' => 'Clé publique Google',
+						'label' => 'ClÃ© publique Google',
 						'value' => $this->config->captcha_public_key,
 						'type'  => 'text'
 					],
 					'captcha_private_key' => [
-						'label' => 'Clé privée Google',
+						'label' => 'ClÃ© privÃ©e Google',
 						'value' => $this->config->captcha_private_key,
 						'type'  => 'text'
 					]
@@ -441,7 +441,7 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Configuration de Google reCAPTCHA sauvegardée avec succès');
+			notify('Configuration de Google reCAPTCHA sauvegardÃ©e avec succÃ¨s');
 
 			refresh();
 		}
@@ -513,7 +513,7 @@ class Admin extends Controller_Module
 					}
 				],
 				'repeat' => [
-					'label'  => $this->lang('Répéter l\'image'),
+					'label'  => $this->lang('RÃ©pÃ©ter l\'image'),
 					'value'  => $this->config->maintenance_background_repeat ?: 'no-repeat',
 					'values' => [
 						'no-repeat' => $this->lang('Non'),
@@ -528,7 +528,7 @@ class Admin extends Controller_Module
 					'value'  => isset($position[0]) ? $position[0] : 'center',
 					'values' => [
 						'left'   => $this->lang('Gauche'),
-						'center' => $this->lang('Centré'),
+						'center' => $this->lang('CentrÃ©'),
 						'right'  => $this->lang('Droite')
 					],
 					'type'   => 'radio'
@@ -590,7 +590,7 @@ class Admin extends Controller_Module
 									->body($this->view('admin/maintenance'))
 					)
 					->append($this	->panel()
-									->heading($this->lang('Ouverture programmée'), 'far fa-clock')
+									->heading($this->lang('Ouverture programmÃ©e'), 'far fa-clock')
 									->body($form_opening->display())
 					);
 		});
@@ -612,14 +612,14 @@ class Admin extends Controller_Module
 																			<dd>{name}</dd>
 																		<dt>Symbole '.icon('far fa-copyright').'</dt>
 																			<dd>{copyright}</dd>
-																		<dt>Année</dt>
+																		<dt>AnnÃ©e</dt>
 																			<dd>{year}</dd>
 																	</dl>')
 											)
 											->rule('copyright', 'Copyright', $this->config->copyright)
 											->success(function($data){
 												$this->config('copyright', $data['copyright']);
-												notify('Copyright modifié');
+												notify('Copyright modifiÃ©');
 												refresh();
 											})
 											->panel()
@@ -633,12 +633,12 @@ class Admin extends Controller_Module
 		$menu = $this->widget('navigation')->output('vertical', [
 			'links' => [
 				[
-					'title' => 'Préférences générales',
+					'title' => 'PrÃ©fÃ©rences gÃ©nÃ©rales',
 					'icon'  => 'fas fa-cog',
 					'url'   => 'admin/settings'
 				],
 				[
-					'title' => 'Thèmes & addons',
+					'title' => 'ThÃ¨mes & addons',
 					'icon'  => 'fas fa-puzzle-piece',
 					'url'   => 'admin/addons'
 				],
@@ -658,12 +658,12 @@ class Admin extends Controller_Module
 					'url'   => 'admin/settings/team'
 				],
 				[
-					'title' => 'Réseaux sociaux',
+					'title' => 'RÃ©seaux sociaux',
 					'icon'  => 'fas fa-globe',
 					'url'   => 'admin/settings/socials'
 				],
 				[
-					'title' => 'Sécurité anti-bots',
+					'title' => 'SÃ©curitÃ© anti-bots',
 					'icon'  => 'fas fa-shield-alt',
 					'url'   => 'admin/settings/captcha'
 				],
@@ -685,3 +685,5 @@ class Admin extends Controller_Module
 		return $row;
 	}
 }
+
+

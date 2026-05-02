@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\User\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module_Checker;
+use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
@@ -63,7 +63,7 @@ class Admin_Checker extends Module_Checker
 
 	public function _sessions($page = '')
 	{
-		return [NeoFrag()->collection('session')->order_by('_.last_activity DESC')->paginate($page)];
+		return [HB()->collection('session')->order_by('_.last_activity DESC')->paginate($page)];
 	}
 
 	public function _sessions_delete($session_id)
@@ -78,3 +78,5 @@ class Admin_Checker extends Module_Checker
 		}
 	}
 }
+
+

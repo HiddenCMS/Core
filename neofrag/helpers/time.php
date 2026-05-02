@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 function now($timestamp = NULL)
@@ -36,10 +36,12 @@ function timetostr($format, $timestamp = NULL)
 
 function time_span($timestamp)
 {
-	if (!is_a($timestamp, 'NF\NeoFrag\Libraries\Date') && !is_numeric($timestamp))
+	if (!is_a($timestamp, 'HB\HiddenCMS\Libraries\Date') && !is_numeric($timestamp))
 	{
 		$timestamp = strtotime($timestamp);
 	}
 
 	return (string)HiddenCMS()->date($timestamp);
 }
+
+

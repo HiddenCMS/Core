@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Live_Editor\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
@@ -44,7 +44,7 @@ class Admin_Ajax extends Controller_Module
 		{
 			$traversal = function($array) use (&$traversal){
 				$array->each(function($a) use (&$traversal){
-					if (is_a($a, 'NF\NeoFrag\Libraries\Array_') && !is_a($a, 'NF\NeoFrag\Displayables\Widget'))
+					if (is_a($a, 'HB\HiddenCMS\Libraries\Array_') && !is_a($a, 'HB\HiddenCMS\Displayables\Widget'))
 					{
 						$traversal($a);
 					}
@@ -212,3 +212,5 @@ class Admin_Ajax extends Controller_Module
 		$this->model()->set_disposition($disposition_id, $disposition);
 	}
 }
+
+

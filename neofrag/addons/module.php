@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Addons;
 
-use NF\NeoFrag\Loadables\Addon;
+use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Module extends Addon
 {
@@ -197,7 +197,7 @@ abstract class Module extends Addon
 
 	public function add_action($url, $title = '', $icon = '')
 	{
-		if (!is_a($url, 'NF\NeoFrag\Libraries\Html'))
+		if (!is_a($url, 'HB\HiddenCMS\Libraries\Html'))
 		{
 			$url = $this->button($title, $icon, 'primary', $url);
 		}
@@ -216,7 +216,9 @@ abstract class Module extends Addon
 	{
 		if ($controller = $this->controller('api'))
 		{
-			return NeoFrag()->___load('', 'api', [$controller]);
+			return HB()->___load('', 'api', [$controller]);
 		}
 	}
 }
+
+

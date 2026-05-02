@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Lang extends Library
 {
@@ -20,7 +20,7 @@ class Lang extends Library
 		{
 			$locales[$caller_name][$key] = NULL;
 
-			foreach (NeoFrag()->config->langs ?: [NeoFrag()->config->lang] as $lang)
+			foreach (HB()->config->langs ?: [HB()->config->lang] as $lang)
 			{
 				$result = NULL;
 
@@ -72,7 +72,7 @@ class Lang extends Library
 		{
 			$locale   = $this->_name;
 			$args     = $this->_args;
-			$language = isset($this->__caller) && is_a($this->__caller, 'NF\NeoFrag\Loadables\Addon') && !empty($this->__caller->info()->language) ? $this->__caller->info()->language : 'fr';
+			$language = isset($this->__caller) && is_a($this->__caller, 'HB\HiddenCMS\Loadables\Addon') && !empty($this->__caller->info()->language) ? $this->__caller->info()->language : 'fr';
 			$key      = hash('crc32b', $locale);
 
 			if ($result = static::_get($this->__caller, $language, $locale, $key))
@@ -83,7 +83,7 @@ class Lang extends Library
 			{
 				if (HIDDENCMS_LOGS_I18N && $this->db()->from('log_i18n')->where('language', $language)->where('key', $key)->where('file', $class = get_class($this->__caller))->empty())
 				{
-					NeoFrag()->model2('log_i18n')->set('language', $language)->set('key', $key)->set('locale', $locale)->set('file', $class)->create();
+					HB()->model2('log_i18n')->set('language', $language)->set('key', $key)->set('locale', $locale)->set('file', $class)->create();
 				}
 
 				trigger_error('Unfound lang: '.$locale, E_USER_WARNING);
@@ -155,7 +155,7 @@ class Lang extends Library
 			{
 				if (!isset($lang))
 				{
-					$lang = NeoFrag()->model2('addon')->get('language', $language);
+					$lang = HB()->model2('addon')->get('language', $language);
 				}
 
 				$locale = $lang->info()->icon.$locale;
@@ -167,3 +167,5 @@ class Lang extends Library
 		return $this->_locale;
 	}
 }
+
+

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Fields;
@@ -11,20 +11,20 @@ class Datetime
 {
 	public function init($field)
 	{
-		$field->default(NeoFrag()->date()->sql());
+		$field->default(HB()->date()->sql());
 	}
 
 	public function value($value)
 	{
 		if ($value)
 		{
-			return NeoFrag()->date($value);
+			return HB()->date($value);
 		}
 	}
 
 	public function raw($value)
 	{
-		if (is_a($value, 'NF\NeoFrag\Libraries\Date'))
+		if (is_a($value, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			$value = $value->sql();
 		}
@@ -32,3 +32,5 @@ class Datetime
 		return $value;
 	}
 }
+
+

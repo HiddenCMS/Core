@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\News\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
@@ -27,8 +27,8 @@ class Index extends Controller_Module
 		if ($panels->empty())
 		{
 			$panels->append($this	->panel()
-									->heading($this->lang('Actualités'), 'far fa-file-alt')
-									->body('<div class="text-center">'.$this->lang('Aucune actualité n\'a été publiée pour le moment').'</div>')
+									->heading($this->lang('ActualitÃ©s'), 'far fa-file-alt')
+									->body('<div class="text-center">'.$this->lang('Aucune actualitÃ© n\'a Ã©tÃ© publiÃ©e pour le moment').'</div>')
 									->color('info'));
 		}
 
@@ -45,15 +45,15 @@ class Index extends Controller_Module
 
 	public function _category($title, $news)
 	{
-		$this->subtitle($this->lang('Catégorie %s', $title));
-		return $this->_filter($news, $this->lang('Catégorie').' <small>'.$title.'</small>');
+		$this->subtitle($this->lang('CatÃ©gorie %s', $title));
+		return $this->_filter($news, $this->lang('CatÃ©gorie').' <small>'.$title.'</small>');
 	}
 
 	private function _filter($news, $filter)
 	{
 		$news = $this->index($news);
 
-		$news->prepend($this->panel()->body('<h3 class="m-0">'.$filter.$this->button()->tooltip($this->lang('Voir toutes les actualités'))->icon('fas fa-times')->url('news')->color('danger float-right')->compact()->outline().'</h3>'));
+		$news->prepend($this->panel()->body('<h3 class="m-0">'.$filter.$this->button()->tooltip($this->lang('Voir toutes les actualitÃ©s'))->icon('fas fa-times')->url('news')->color('danger float-right')->compact()->outline().'</h3>'));
 
 		return $news;
 	}
@@ -108,3 +108,5 @@ class Index extends Controller_Module
 					});
 	}
 }
+
+

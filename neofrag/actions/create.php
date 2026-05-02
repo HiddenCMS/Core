@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Actions;
 
-class Create extends \NF\NeoFrag\Action
+class Create extends \HB\HiddenCMS\Action
 {
 	protected $_is_create = TRUE;
 
@@ -56,3 +56,5 @@ class Create extends \NF\NeoFrag\Action
 		}
 	}
 }
+
+

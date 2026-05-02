@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Models;
 
-use NF\NeoFrag\Loadables\Model2;
+use HB\HiddenCMS\Loadables\Model2;
 
 class I18n extends Model2
 {
@@ -39,3 +39,5 @@ class I18n extends Model2
 		return $prefix.$this->value;
 	}
 }
+
+

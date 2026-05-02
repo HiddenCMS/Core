@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Access\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
@@ -16,7 +16,7 @@ class Admin_Ajax extends Controller_Module
 
 		foreach (array_keys($this->groups()) as $group_id)
 		{
-			$groups[$group_id] = NeoFrag()->access($module_name, $action, $id, $group_id);
+			$groups[$group_id] = HB()->access($module_name, $action, $id, $group_id);
 		}
 
 		return $this->col(
@@ -77,7 +77,7 @@ class Admin_Ajax extends Controller_Module
 						[
 						'title'   => $this->lang('Membre'),
 						'content' => function($data){
-							return NeoFrag()->user->link($data['user_id'], $data['username']).'<span data-user-id="'.$data['user_id'].'"></span>';
+							return HB()->user->link($data['user_id'], $data['username']).'<span data-user-id="'.$data['user_id'].'"></span>';
 						},
 						'sort'    => function($data){
 							return $data['username'];
@@ -89,13 +89,13 @@ class Admin_Ajax extends Controller_Module
 					[
 						'title'   => $this->lang('Groupes'),
 						'content' => function($data){
-							return NeoFrag()->groups->user_groups($data['user_id']);
+							return HB()->groups->user_groups($data['user_id']);
 						},
 						'sort'    => function($data){
-							return NeoFrag()->groups->user_groups($data['user_id'], FALSE);
+							return HB()->groups->user_groups($data['user_id'], FALSE);
 						},
 						'search'  => function($data){
-							return NeoFrag()->groups->user_groups($data['user_id'], FALSE);
+							return HB()->groups->user_groups($data['user_id'], FALSE);
 						}
 					],
 					[
@@ -116,7 +116,7 @@ class Admin_Ajax extends Controller_Module
 						'td'      => FALSE
 					],
 					[
-						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autorisé').'">'.icon('fas fa-check').'</i></div>',
+						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autorisÃ©').'">'.icon('fas fa-check').'</i></div>',
 						'content' => function($data){
 							return $this->view('radio', [
 								'class'  => 'success',
@@ -132,7 +132,7 @@ class Admin_Ajax extends Controller_Module
 
 							if ($admins === NULL)
 							{
-								$admins = NeoFrag()->groups()['admins']['users'];
+								$admins = HB()->groups()['admins']['users'];
 							}
 
 							return in_array($data['user_id'], $admins) ? '<td></td>' : $this->view('radio', [
@@ -145,7 +145,7 @@ class Admin_Ajax extends Controller_Module
 				])
 				->data($this->db->select('id as user_id', 'username')->from('user')->where('deleted', FALSE)->get())
 				->preprocessing(function($row) use ($module_name, $action, $id){
-					$row['active'] = NeoFrag()->access($module_name, $action, $id, NULL, $row['user_id']);
+					$row['active'] = HB()->access($module_name, $action, $id, NULL, $row['user_id']);
 					return $row;
 				})
 				->sort_by(3, SORT_DESC)
@@ -165,3 +165,5 @@ class Admin_Ajax extends Controller_Module
 						->init($module, $type, $id);
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Addons\Authenticator_Github;
 
-use NF\NeoFrag\Addons\Authenticator;
+use HB\HiddenCMS\Addons\Authenticator;
 
 class Authenticator_Github extends Authenticator
 {
@@ -40,3 +40,5 @@ class Authenticator_Github extends Authenticator
 		}
 	}
 }
+
+

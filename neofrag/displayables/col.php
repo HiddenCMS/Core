@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Displayables;
 
-use NF\NeoFrag\Displayable;
+use HB\HiddenCMS\Displayable;
 
 class Col extends Displayable
 {
@@ -50,15 +50,15 @@ class Col extends Displayable
 
 		$output = parent::__toString();
 
-		if ($this->_id !== NULL && NeoFrag()->output->live_editor() & \NF\NeoFrag\Core\Output::COLS)
+		if ($this->_id !== NULL && HB()->output->live_editor() & \HB\HiddenCMS\Core\Output::COLS)
 		{
 			$output = '<div class="live-editor-col">
 							<div class="btn-group">
-								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="-1" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Réduire').'">'.icon('fas fa-compress fa-rotate-45').'</button>
-								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="1" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Augmenter').'">'.icon('fas fa-expand fa-rotate-45').'</button>
-								<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
+								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="-1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('RÃ©duire').'">'.icon('fas fa-compress fa-rotate-45').'</button>
+								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Augmenter').'">'.icon('fas fa-expand fa-rotate-45').'</button>
+								<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
 							</div>
-							<h3>'.NeoFrag()->lang('Col').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-widget" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Nouveau Widget').'">'.icon('fas fa-plus').'</button></div></h3>
+							<h3>'.HB()->lang('Col').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-widget" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Nouveau Widget').'">'.icon('fas fa-plus').'</button></div></h3>
 							'.$output.'
 						</div>';
 		}
@@ -66,3 +66,5 @@ class Col extends Displayable
 		return '<div class="'.($size ?: 'col-12').'"'.($this->_id !== NULL ? ' data-col-id="'.$this->_id.'"' : '').'>'.$output.'</div>';
 	}
 }
+
+

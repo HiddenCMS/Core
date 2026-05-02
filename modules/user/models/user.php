@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Models;
 
-use NF\NeoFrag\Loadables\Model2;
+use HB\HiddenCMS\Loadables\Model2;
 
 class User extends Model2
 {
@@ -123,11 +123,11 @@ class User extends Model2
 
 	public function password($password)
 	{
-		if (NeoFrag()->password->is_valid($password, $this->password))
+		if (HB()->password->is_valid($password, $this->password))
 		{
-			if (NeoFrag()->password->needs_rehash($this->password))
+			if (HB()->password->needs_rehash($this->password))
 			{
-				$this	->set('password', NeoFrag()->password->encrypt($password))
+				$this	->set('password', HB()->password->encrypt($password))
 						->update();
 			}
 
@@ -139,12 +139,12 @@ class User extends Model2
 
 	public function set_password($password)
 	{
-		$this->set('password', NeoFrag()->password->encrypt($password));
+		$this->set('password', HB()->password->encrypt($password));
 
 		if ($this())
 		{
 			$this	->sessions()
-					->where_if(NeoFrag()->user() && NeoFrag()->user->id == $this->id, 'id <>', NeoFrag()->session->id)
+					->where_if(HB()->user() && HB()->user->id == $this->id, 'id <>', HB()->session->id)
 					->update([
 						'user_id' => NULL
 					]);
@@ -155,7 +155,7 @@ class User extends Model2
 
 	public function sessions()
 	{
-		return NeoFrag()->collection('session')
+		return HB()->collection('session')
 						->where('_.user_id', $this->id);
 	}
 
@@ -176,3 +176,5 @@ class User extends Model2
 		return $this;
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\User;
 
-use NF\NeoFrag\Addons\Widget;
+use HB\HiddenCMS\Addons\Widget;
 
 class User extends Widget
 {
@@ -16,7 +16,7 @@ class User extends Widget
 			'title'       => $this->lang('Espace membre'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
 				'index'          => $this->lang('Espace membre'),
@@ -26,3 +26,5 @@ class User extends Widget
 		];
 	}
 }
+
+

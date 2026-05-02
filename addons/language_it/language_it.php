@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Addons\Language_It;
 
-use NF\NeoFrag\Addons\Language;
+use HB\HiddenCMS\Addons\Language;
 
 class Language_It extends Language
 {
@@ -14,7 +14,7 @@ class Language_It extends Language
 	{
 		return [
 			'title'   => 'Italiano',
-			'icon'    => '🇮🇹',
+			'icon'    => 'ðŸ‡®ðŸ‡¹',
 			'version' => '1.0',
 			'depends' => [
 				'neofrag' => 'Alpha 0.2'
@@ -69,3 +69,5 @@ class Language_It extends Language
 		}
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\About\Controllers;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 class Checker extends Controller
 {
@@ -36,3 +36,5 @@ class Checker extends Controller
 		];
 	}
 }
+
+

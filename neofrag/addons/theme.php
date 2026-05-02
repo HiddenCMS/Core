@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Addons;
 
-use NF\NeoFrag\Loadables\Addon;
+use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Theme extends Addon
 {
@@ -35,7 +35,7 @@ abstract class Theme extends Addon
 
 	public function is_deactivatable()
 	{
-		return parent::is_deactivatable() && NeoFrag()->model2('addon')->get('theme')->count() > 2;
+		return parent::is_deactivatable() && HB()->model2('addon')->get('theme')->count() > 2;
 	}
 
 	public function install($dispositions = [])
@@ -79,3 +79,5 @@ abstract class Theme extends Addon
 		return parent::uninstall($remove);
 	}
 }
+
+

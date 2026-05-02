@@ -11,7 +11,7 @@
 <?php if ($this->config->humans_txt): ?>
 <link rel="author" href="<?php echo url('humans.txt') ?>" type="text/plain">
 <?php endif ?>
-<link rel="shortcut icon" href="<?php echo $path = ($this->config->favicon && ($favicon = NeoFrag()->model2('file', $this->config->favicon)->path())) ? $favicon : image('favicon.png') ?>" type="<?php echo get_mime_by_extension(extension($path)) ?>">
+<link rel="shortcut icon" href="<?php echo $path = ($this->config->favicon && ($favicon = HB()->model2('file', $this->config->favicon)->path())) ? $favicon : image('favicon.png') ?>" type="<?php echo get_mime_by_extension(extension($path)) ?>">
 <?php echo $this->output->css() ?>
 <?php foreach ($this->config->langs as $lang): ?>
 <link rel="alternate" href="<?php echo $this->url->base.implode('/', array_merge([$lang->info()->name], $this->url->segments)).$this->url->query ?>" hreflang="<?php echo $lang->info()->name ?>">
@@ -23,7 +23,7 @@
 	<div class="bg-danger py-2">
 		<div class="container">
 			<div class="row align-items-center">
-				<div class="col-6 text-white"><?php echo icon('fas fa-power-off').' '.$this->lang('Site en opération de maintenance') ?></div>
+				<div class="col-6 text-white"><?php echo icon('fas fa-power-off').' '.$this->lang('Site en opÃ©ration de maintenance') ?></div>
 				<div class="col-6 text-right"><a href="<?php echo url('admin/settings/maintenance') ?>" class="btn btn-outline-light"><?php echo $this->lang('Ouvrir le site') ?></a></div>
 			</div>
 		</div>
@@ -51,3 +51,4 @@ $(function(){
 </script>
 </body>
 </html>
+

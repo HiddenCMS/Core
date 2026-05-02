@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Addons\Controllers\Addons;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 class Authenticator extends Controller
 {
@@ -18,7 +18,7 @@ class Authenticator extends Controller
 					->set('enable', ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
 						return !$addon->is_enabled();
 					}])
-					->set('disable', ['Désactiver', 'fas fa-times', 'muted', TRUE, function($addon){
+					->set('disable', ['DÃ©sactiver', 'fas fa-times', 'muted', TRUE, function($addon){
 						return $addon->is_enabled();
 					}])
 					->set('order', ['Ordre', 'fas fa-sort', 'info', TRUE])
@@ -29,7 +29,7 @@ class Authenticator extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', TRUE))->update();
 
-		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> activÃ©', $addon->info()->title));
 
 		refresh();
 	}
@@ -38,7 +38,7 @@ class Authenticator extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', FALSE))->update();
 
-		notify($this->lang('<b>%s</b> désactivé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> dÃ©sactivÃ©', $addon->info()->title));
 
 		refresh();
 	}
@@ -47,7 +47,7 @@ class Authenticator extends Controller
 	{
 		$authenticators = [];
 
-		foreach (NeoFrag()->collection('addon')->where('type_id', NeoFrag()->collection('addon_type')->where('name', 'authenticator')->row()->id)->get() as $authenticator)
+		foreach (HB()->collection('addon')->where('type_id', HB()->collection('addon_type')->where('name', 'authenticator')->row()->id)->get() as $authenticator)
 		{
 			if ($authenticator->data->get('enabled'))
 			{
@@ -99,7 +99,7 @@ class Authenticator extends Controller
 								</dl>
 							</div>')
 					->exec(function($form) use ($auth){
-						foreach (['dev' => 'Développement', 'prod' => 'Production'] as $type => $legend)
+						foreach (['dev' => 'DÃ©veloppement', 'prod' => 'Production'] as $type => $legend)
 						{
 							$form	->legend($legend)
 									->exec(function($form) use ($type, $auth){
@@ -123,7 +123,7 @@ class Authenticator extends Controller
 
 						$auth->__addon->set('data', $auth->__addon->data)->update();
 
-						notify($this->lang('Configuration de <b>%s</b> modifiée', $auth->info()->title));
+						notify($this->lang('Configuration de <b>%s</b> modifiÃ©e', $auth->info()->title));
 
 						refresh();
 					})
@@ -131,3 +131,5 @@ class Authenticator extends Controller
 					->cancel();
 	}
 }
+
+

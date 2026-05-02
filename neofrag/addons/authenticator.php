@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Addons;
 
-use NF\NeoFrag\Loadables\Addon;
+use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Authenticator extends Addon
 {
@@ -17,7 +17,7 @@ abstract class Authenticator extends Addon
 
 	static public function url()
 	{
-		return (NeoFrag()->url->https ? 'https' : 'http').'://'.NeoFrag()->url->host.NeoFrag()->url->base.'user/auth';
+		return (HB()->url->https ? 'https' : 'http').'://'.HB()->url->host.HB()->url->base.'user/auth';
 	}
 
 	protected function __info()
@@ -72,3 +72,5 @@ abstract class Authenticator extends Addon
 		];
 	}
 }
+
+

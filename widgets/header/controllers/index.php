@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\Header\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
@@ -15,3 +15,5 @@ class Index extends Controller_Widget
 		return $this->view('index', $settings);
 	}
 }
+
+

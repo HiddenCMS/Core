@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace NF\Themes\Azuro;
 
-use NF\NeoFrag\Addons\Theme;
+use HB\HiddenCMS\Addons\Theme;
 
 class Azuro extends Theme
 {
@@ -14,15 +14,15 @@ class Azuro extends Theme
 	{
 		return [
 			'title'       => 'Azuro',
-			'description' => 'Thème gaming',
+			'description' => 'ThÃ¨me gaming',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Jérémy VALENTIN <jeremy.valentin@neofr.ag>',
+			'author'      => 'JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0.0',
 			'depends' => [
 				'neofrag' => 'Alpha 0.2.1'
 			],
-			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
+			'zones'       => ['Haut', 'EntÃªte', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];
 	}
 
@@ -100,7 +100,7 @@ class Azuro extends Theme
 												'url'   => 'forum'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Équipes')),
+												'title' => utf8_htmlentities($this->lang('Ã‰quipes')),
 												'url'   => 'teams'
 											],
 											[
@@ -112,7 +112,7 @@ class Azuro extends Theme
 												'url'   => 'partners'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Palmarès')),
+												'title' => utf8_htmlentities($this->lang('PalmarÃ¨s')),
 												'url'   => 'awards'
 											]
 										]
@@ -180,7 +180,7 @@ class Azuro extends Theme
 			->style('align-items-center')
 		]));
 
-		$dispositions->set('*', 'Entête', $this->array([
+		$dispositions->set('*', 'EntÃªte', $this->array([
 			$header()
 		]));
 
@@ -204,7 +204,7 @@ class Azuro extends Theme
 									'settings' => serialize([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Actualités')),
+												'title' => utf8_htmlentities($this->lang('ActualitÃ©s')),
 												'url'   => 'news'
 											],
 											[
@@ -220,7 +220,7 @@ class Azuro extends Theme
 												'url'   => 'gallery'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Événements')),
+												'title' => utf8_htmlentities($this->lang('Ã‰vÃ©nements')),
 												'url'   => 'events'
 											],
 											[
@@ -354,7 +354,7 @@ class Azuro extends Theme
 
 	public function uninstall($remove = TRUE)
 	{
-		NeoFrag()->model2('file', $this->config->azuro_background)->delete();
+		HB()->model2('file', $this->config->azuro_background)->delete();
 
 		$this	->config->unset('azuro_background')
 				->config->unset('azuro_background_repeat')
@@ -368,3 +368,5 @@ class Azuro extends Theme
 		return parent::uninstall($remove);
 	}
 }
+
+

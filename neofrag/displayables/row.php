@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Displayables;
 
-use NF\NeoFrag\Displayable;
+use HB\HiddenCMS\Displayable;
 
 class Row extends Displayable
 {
@@ -36,14 +36,14 @@ class Row extends Displayable
 				$child->id($i);
 			}
 
-			if ($live_editor = NeoFrag()->output->live_editor() & \NF\NeoFrag\Core\Output::ROWS)
+			if ($live_editor = HB()->output->live_editor() & \HB\HiddenCMS\Core\Output::ROWS)
 			{
 				$output .= '<div class="live-editor-row-header">
 								<div class="btn-group">
-									<button type="button" class="btn btn-sm btn-info live-editor-style" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Apparence').'">'.icon('fas fa-paint-brush').'</button>
-									<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
+									<button type="button" class="btn btn-sm btn-info live-editor-style" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Apparence').'">'.icon('fas fa-paint-brush').'</button>
+									<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
 								</div>
-								<h3>'.NeoFrag()->lang('Row').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-col" data-toggle="tooltip" data-container="body" title="'.NeoFrag()->lang('Nouveau Col').'">'.icon('fas fa-plus').'</button></div></h3>
+								<h3>'.HB()->lang('Row').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-col" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Nouveau Col').'">'.icon('fas fa-plus').'</button></div></h3>
 							</div>';
 			}
 		}
@@ -55,3 +55,5 @@ class Row extends Displayable
 		return $live_editor ? '<div class="live-editor-row">'.$output.'</div>' : $output;
 	}
 }
+
+

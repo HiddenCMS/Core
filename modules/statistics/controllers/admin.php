@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Statistics\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -18,7 +18,7 @@ class Admin extends Controller_Module
 		return $this->row(
 			$this	->col(
 						$this	->panel()
-								->heading('Période', 'fas fa-calendar-alt')
+								->heading('PÃ©riode', 'fas fa-calendar-alt')
 								->body($this	->form()
 												->set_id('sq6fswkfb81n0lu4cb7eyb3tuixcovla')
 												->add_rules('statistics')
@@ -31,3 +31,5 @@ class Admin extends Controller_Module
 		);
 	}
 }
+
+

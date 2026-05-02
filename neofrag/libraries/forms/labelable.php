@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 abstract class Labelable extends Library
 {
@@ -101,14 +101,14 @@ abstract class Labelable extends Library
 						->append_attr_if($this->_errors, 'class', 'has-danger')
 						->append_attr_if($this->_size, 'class', $this->_size)
 						->content($this	->array
-										->append_if(($label = (string)$this->_label()) && !($display & \NF\NeoFrag\Libraries\Form2::FORM_COMPACT), function() use ($label){
-											return parent	::html(($multiple = is_a($this, 'NF\NeoFrag\Libraries\Forms\Multiple')) ? 'legend' : 'label')
+										->append_if(($label = (string)$this->_label()) && !($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT), function() use ($label){
+											return parent	::html(($multiple = is_a($this, 'HB\HiddenCMS\Libraries\Forms\Multiple')) ? 'legend' : 'label')
 															->attr('class', 'col-form-label')
 															->attr_if(!$multiple, 'for', $this->_form->token().'_'.$this->_name)
 															->content($label);
 										})
 										->append($input)
-										->append_if($this->_errors && ($display & \NF\NeoFrag\Libraries\Form2::FORM_COMPACT), function(){
+										->append_if($this->_errors && ($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT), function(){
 											return $this->label(implode('<br />', $this->_errors), 'fas fa-exclamation-triangle')->attr('class', 'text-danger');
 										})
 						)
@@ -284,9 +284,11 @@ abstract class Labelable extends Library
 	{
 		$input->attr_if($this->_placeholder, $placeholder, $this->_placeholder);
 
-		if ($this->_form && ($this->_form->display() & \NF\NeoFrag\Libraries\Form2::FORM_COMPACT))
+		if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
 		{
 			$input->attr($placeholder, $this->_title ?: $this->_placeholder);
 		}
 	}
 }
+
+

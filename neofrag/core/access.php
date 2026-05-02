@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Core;
 
-use NF\NeoFrag\Core;
+use HB\HiddenCMS\Core;
 
 class Access extends Core
 {
@@ -132,7 +132,7 @@ class Access extends Core
 
 		if (!empty($count[1]))
 		{
-			$output[] = '<span class="text-success" data-toggle="tooltip" title="'.$this->lang('Membres autorisés').'" data-original-title="">'.icon('fas fa-check').' '.$count[1].'</span>';
+			$output[] = '<span class="text-success" data-toggle="tooltip" title="'.$this->lang('Membres autorisÃ©s').'" data-original-title="">'.icon('fas fa-check').' '.$count[1].'</span>';
 		}
 
 		if (!empty($count[0]))
@@ -228,3 +228,5 @@ class Access extends Core
 		return $allowed;
 	}
 }
+
+

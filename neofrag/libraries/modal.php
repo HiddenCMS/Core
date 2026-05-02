@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Modal extends Library
 {
@@ -22,7 +22,7 @@ class Modal extends Library
 	{
 		$this->id = $this->__id();
 
-		$this->_header = is_a($title, 'NF\NeoFrag\Libraries\Label') ? $title : $this->label($title, $icon);
+		$this->_header = is_a($title, 'HB\HiddenCMS\Libraries\Label') ? $title : $this->label($title, $icon);
 
 		$this->output->data->append('modals', $this);
 
@@ -128,7 +128,7 @@ class Modal extends Library
 
 	public function primary($button = '', $color = 'primary')
 	{
-		if (!is_a($button, 'NF\NeoFrag\Libraries\Button'))
+		if (!is_a($button, 'HB\HiddenCMS\Libraries\Button'))
 		{
 			$button = parent::button()
 							->title($button ?: $this->lang('Valider'))
@@ -142,7 +142,7 @@ class Modal extends Library
 
 	public function submit($button = '', $color = 'primary')
 	{
-		if (!is_a($button, 'NF\NeoFrag\Libraries\Button'))
+		if (!is_a($button, 'HB\HiddenCMS\Libraries\Button'))
 		{
 			$button = parent::button_submit()
 							->title($button ?: $this->lang('Valider'))
@@ -178,7 +178,7 @@ class Modal extends Library
 
 	public function open()
 	{
-		NeoFrag()->js_load('$(\'#'.$this->id.'\').modal(\'show\');');
+		HB()->js_load('$(\'#'.$this->id.'\').modal(\'show\');');
 		return $this;
 	}
 
@@ -199,7 +199,7 @@ class Modal extends Library
 
 	public function callback($callback)
 	{
-		if (!is_a($callback, 'NF\NeoFrag\Libraries\Form2'))
+		if (!is_a($callback, 'HB\HiddenCMS\Libraries\Form2'))
 		{
 			$callback = $this	->form2()
 								->success(function() use ($callback){
@@ -218,3 +218,5 @@ class Modal extends Library
 		return $this;
 	}
 }
+
+

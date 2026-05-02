@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\News\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class News extends Model
 {
@@ -136,7 +136,7 @@ class News extends Model
 
 	public function delete_news($news_id)
 	{
-		NeoFrag()->model2('file', $this->db->select('image_id')->from('news')->where('news_id', $news_id)->row())->delete();
+		HB()->model2('file', $this->db->select('image_id')->from('news')->where('news_id', $news_id)->row())->delete();
 
 		if ($comments = $this->module('comments'))
 		{
@@ -152,3 +152,5 @@ class News extends Model
 		return implode(',', array_unique(array_map('trim', preg_split('/[ ,;]+/', $tags, -1, PREG_SPLIT_NO_EMPTY))));
 	}
 }
+
+

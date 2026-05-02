@@ -9,7 +9,7 @@ var modal_style = function(title, $element, styles, callback){
 				<div class="modal-content">\
 					<div class="modal-header">\
 						<h5 class="modal-title"><?php echo icon('fas fa-paint-brush') ?> '+title+'</h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">Ã—</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
 					</div>\
 					<div class="modal-body">\
 						'+$(styles).html()+'\
@@ -85,7 +85,7 @@ var modal_settings = function(title, settings, callback){
 				<div class="modal-content">\
 					<div class="modal-header">\
 						<h5 class="modal-title"><?php echo icon('fas fa-cogs') ?> '+title+'</h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">Ã—</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
 					</div>\
 					<div class="modal-body">\
 						'+settings+'\
@@ -201,11 +201,11 @@ var modal_fork = function(callback){
 			<div class="modal-dialog">\
 				<div class="modal-content">\
 					<div class="modal-header">\
-						<h5 class="modal-title"><?php echo $this->lang('Revenir à la disposition commune') ?></h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
+						<h5 class="modal-title"><?php echo $this->lang('Revenir Ã  la disposition commune') ?></h5>\
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">Ã—</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
 					</div>\
 					<div class="modal-body">\
-						<?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?>\
+						<?php echo $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir revenir Ã  la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associÃ©s Ã  cette zone seront perdus.') ?>\
 					</div>\
 					<div class="modal-footer">\
 						<button type="button" class="btn btn-dark" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
@@ -236,7 +236,7 @@ var modal_delete = function(message, callback){
 				<div class="modal-content">\
 					<div class="modal-header">\
 						<h5 class="modal-title"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?></h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">Ã—</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
 					</div>\
 					<div class="modal-body">\
 						'+message+'\
@@ -260,7 +260,7 @@ var modal_delete = function(message, callback){
 };
 
 $(function(){
-	var $widgets = $('[data-mode="<?php echo \NF\NeoFrag\Core\Output::WIDGETS ?>"]');
+	var $widgets = $('[data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"]');
 
 	$('form[target="live-editor-iframe"]').submit();
 
@@ -284,7 +284,7 @@ $(function(){
 	$('.live-editor-mode').click(function(){
 		$(this).toggleClass('active');
 
-		if ($(this).data('mode') == <?php echo \NF\NeoFrag\Core\Output::WIDGETS ?>){
+		if ($(this).data('mode') == <?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>){
 			return;
 		}
 
@@ -391,7 +391,7 @@ $(function(){
 				disposition_id: $this.data('disposition-id'),
 				live_editor: $('input[type="hidden"][name="live_editor"]').val()
 			}, function(data){
-				var $rows_button = $('.live-editor-mode[data-mode="<?php echo \NF\NeoFrag\Core\Output::ROWS ?>"]');
+				var $rows_button = $('.live-editor-mode[data-mode="<?php echo \HB\HiddenCMS\Core\Output::ROWS ?>"]');
 
 				if (!$rows_button.hasClass('active')){
 					$rows_button.trigger('click');
@@ -452,7 +452,7 @@ $(function(){
 		$iframe.on('click', '.live-editor-row-header .live-editor-delete', function(){
 			var $this = $(this);
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>ligne</b> ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> contenus seront également supprimés.') ?>', function(){
+			modal_delete('<?php echo $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer cette <b>ligne</b> ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> contenus seront Ã©galement supprimÃ©s.') ?>', function(){
 				var $row = $this.parents('.live-editor-row-header:first').next('.row');
 
 				$('.live-editor-save').show();
@@ -478,7 +478,7 @@ $(function(){
 				row_id: $row.data('row-id'),
 				live_editor: $('input[type="hidden"][name="live_editor"]').val()
 			}, function(data){
-				var $cols_button = $('.live-editor-mode[data-mode="<?php echo \NF\NeoFrag\Core\Output::COLS ?>"]');
+				var $cols_button = $('.live-editor-mode[data-mode="<?php echo \HB\HiddenCMS\Core\Output::COLS ?>"]');
 
 				if (!$cols_button.hasClass('active')){
 					$cols_button.trigger('click');
@@ -554,7 +554,7 @@ $(function(){
 			var $this = $(this);
 			var $col  = $(this).parents('[data-col-id]:first');
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>colonne</b> ?<br />Tous les <b>widgets</b> contenus seront également supprimés.') ?>', function(){
+			modal_delete('<?php echo $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer cette <b>colonne</b> ?<br />Tous les <b>widgets</b> contenus seront Ã©galement supprimÃ©s.') ?>', function(){
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/col-delete') ?>', {
@@ -688,7 +688,7 @@ $(function(){
 			var $this = $(this);
 			var $widget = $this.parents('[data-widget-id]:first');
 
-			//data doit être construit avant l'appel à la modal
+			//data doit Ãªtre construit avant l'appel Ã  la modal
 			var data  = {
 				disposition_id: $this.parents('[data-disposition-id]:first').data('disposition-id'),
 				row_id: $this.parents('[data-row-id]:first').data('row-id'),
@@ -696,7 +696,7 @@ $(function(){
 				widget_id: $widget.data('widget-id')
 			};
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer ce <b>widget</b> ?') ?>', function(){
+			modal_delete('<?php echo $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer ce <b>widget</b> ?') ?>', function(){
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/widget-delete') ?>', data, function(){
@@ -721,3 +721,5 @@ $('[data-typer]').attr('data-typer', function(i, txt){
 		setTimeout(typeIt, ~~(Math.random() * (pauseMax - pauseMin + 1) + pauseMin));
 	}());
 });
+
+

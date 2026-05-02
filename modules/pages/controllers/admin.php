@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Pages\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -16,7 +16,7 @@ class Admin extends Controller_Module
 				->add_columns([
 					[
 						'content' => function($data){
-							return $data['published'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('Publiée').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('En attente de publication').'" style="color: #535353;"></i>';
+							return $data['published'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('PubliÃ©e').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('En attente de publication').'" style="color: #535353;"></i>';
 						},
 						'sort'    => function($data){
 							return $data['published'];
@@ -36,7 +36,7 @@ class Admin extends Controller_Module
 						}
 					],
 					[
-						'title'   => $this->lang('Chemin d\'accès'),
+						'title'   => $this->lang('Chemin d\'accÃ¨s'),
 						'content' => function($data){
 							return '<code>/'.$data['name'].'</code>';
 						},
@@ -71,7 +71,7 @@ class Admin extends Controller_Module
 		return $this->panel()
 					->heading($this->lang('Liste des pages'), 'fas fa-bars')
 					->body($this->table()->display())
-					->footer_if($this->is_authorized('add_pages'), $this->button_create('admin/pages/add', $this->lang('Créer une page')));
+					->footer_if($this->is_authorized('add_pages'), $this->button_create('admin/pages/add', $this->lang('CrÃ©er une page')));
 	}
 
 	public function add()
@@ -98,7 +98,7 @@ class Admin extends Controller_Module
 										$instance['route'],
 										$instance['settings']);
 
-			notify($this->lang('Page ajoutée avec succès'));
+			notify($this->lang('Page ajoutÃ©e avec succÃ¨s'));
 
 			redirect_back('admin/pages');
 		}
@@ -126,7 +126,7 @@ class Admin extends Controller_Module
 					'module'         => $instance_values['module'],
 					'news_category'  => $instance_values['news_category']
 				])
-				->add_submit($this->lang('Éditer'))
+				->add_submit($this->lang('Ã‰diter'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
@@ -144,13 +144,13 @@ class Admin extends Controller_Module
 										$instance['route'],
 										$instance['settings']);
 
-			notify($this->lang('Page éditée avec succès'));
+			notify($this->lang('Page Ã©ditÃ©e avec succÃ¨s'));
 
 			redirect_back('admin/pages');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Édition de la page'), 'fas fa-align-left')
+					->heading($this->lang('Ã‰dition de la page'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
@@ -159,7 +159,7 @@ class Admin extends Controller_Module
 		$this	->title($this->lang('Suppression d\'une page'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la page <b>%s</b> ?', $title));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer la page <b>%s</b> ?', $title));
 
 		if ($this->form()->is_valid())
 		{
@@ -171,3 +171,5 @@ class Admin extends Controller_Module
 		return $this->form()->display();
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Loadables\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers;
+use HB\HiddenCMS\Loadables\Controllers;
 
 abstract class Module_Checker extends Module
 {
@@ -38,3 +38,5 @@ abstract class Module_Checker extends Module
 		return $this->_extension_allowed;
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Date extends Library
 {
@@ -17,7 +17,7 @@ class Date extends Library
 
 	public function __invoke($datetime = NULL, $format = '', $timezone = NULL)
 	{
-		if (is_a($datetime, 'NF\NeoFrag\Libraries\Date'))
+		if (is_a($datetime, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			return $datetime;
 		}
@@ -73,116 +73,116 @@ class Date extends Library
 
 		if ($this->_format == 'Y-m-d')
 		{
-			$output = NeoFrag()->lang('Le %s', $this->short_date());
+			$output = HB()->lang('Le %s', $this->short_date());
 
 			if ($diff < 0)
 			{
 				if ($timestamp < strtotime('+2 days midnight'))
 				{
-					$output = NeoFrag()->lang('Demain');
+					$output = HB()->lang('Demain');
 				}
 				else if ($timestamp < strtotime('+8 days midnight'))
 				{
-					$output = NeoFrag()->lang('%s prochain', ucfirst($this->locale('l')));
+					$output = HB()->lang('%s prochain', ucfirst($this->locale('l')));
 				}
 				else if ($timestamp < strtotime('+22 days midnight'))
 				{
-					$output = NeoFrag()->lang('Dans %d jours', floor($diff / 87840 * -1));
+					$output = HB()->lang('Dans %d jours', floor($diff / 87840 * -1));
 				}
 			}
 			else if ($diff > 0)
 			{
 				if ($timestamp >= strtotime('yesterday midnight'))
 				{
-					$output = NeoFrag()->lang('Hier');
+					$output = HB()->lang('Hier');
 				}
 				else if ($timestamp >= strtotime('7 days ago midnight'))
 				{
-					$output = NeoFrag()->lang('%s dernier', ucfirst($this->locale('l')));
+					$output = HB()->lang('%s dernier', ucfirst($this->locale('l')));
 				}
 				else if ($timestamp >= strtotime('20 days ago midnight'))
 				{
-					$output = NeoFrag()->lang('Il y a %d jours', floor($diff / 87840));
+					$output = HB()->lang('Il y a %d jours', floor($diff / 87840));
 				}
 			}
 			else
 			{
-				$output = NeoFrag()->lang('Aujourd\'hui');
+				$output = HB()->lang('Aujourd\'hui');
 			}
 		}
 		else
 		{
-			$output = NeoFrag()->lang('Le %s à %s', $this->short_date(), $this->short_time());
+			$output = HB()->lang('Le %s Ã  %s', $this->short_date(), $this->short_time());
 
 			if ($diff < 0)
 			{
 				if ($timestamp < strtotime('+1 days midnight'))
 				{
-					$output = NeoFrag()->lang('Aujourd\'hui à %s', $this->short_time());
+					$output = HB()->lang('Aujourd\'hui Ã  %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+2 days midnight'))
 				{
-					$output = NeoFrag()->lang('Demain à %s', $this->short_time());
+					$output = HB()->lang('Demain Ã  %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+8 days midnight'))
 				{
-					$output = NeoFrag()->lang('%s prochain à %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('%s prochain Ã  %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 				else if ($timestamp < strtotime('+22 days midnight'))
 				{
-					$output = NeoFrag()->lang('Dans %d jours à %s', floor($diff / 87840 * -1), $this->short_time());
+					$output = HB()->lang('Dans %d jours Ã  %s', floor($diff / 87840 * -1), $this->short_time());
 				}
 			}
 			else if ($diff > 0)
 			{
 				if ($diff == strtoseconds('1 seconds'))
 				{
-					$output = NeoFrag()->lang('Il y a une seconde|Il y a %d secondes', 1);
+					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 1);
 				}
 				else if ($diff <= strtoseconds('30 seconds'))
 				{
-					$output = NeoFrag()->lang('Il y a une seconde|Il y a %d secondes', $diff, $diff);
+					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', $diff, $diff);
 				}
 				else if ($diff < strtoseconds('45 seconds'))
 				{
-					$output = NeoFrag()->lang('Il y a une seconde|Il y a %d secondes', 30, 30);
+					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 30, 30);
 				}
 				else if ($diff < strtoseconds('50 seconds'))
 				{
-					$output = NeoFrag()->lang('Il y a une seconde|Il y a %d secondes', 45, 45);
+					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 45, 45);
 				}
 				else if ($diff < strtoseconds('55 seconds'))
 				{
-					$output = NeoFrag()->lang('Il y a une seconde|Il y a %d secondes', 50, 50);
+					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 50, 50);
 				}
 				else if ($diff < strtoseconds('2 minutes'))
 				{
-					$output = NeoFrag()->lang('Il y a environ une minute|Il y a %d minutes', 1);
+					$output = HB()->lang('Il y a environ une minute|Il y a %d minutes', 1);
 				}
 				else if ($diff <= strtoseconds('59 minutes'))
 				{
-					$output = NeoFrag()->lang('Il y a environ une minute|Il y a %d minutes', $diff = floor($diff / 60), $diff);
+					$output = HB()->lang('Il y a environ une minute|Il y a %d minutes', $diff = floor($diff / 60), $diff);
 				}
 				else if ($diff < strtoseconds('2 hours'))
 				{
-					$output = NeoFrag()->lang('Il y a environ une heure|Il y a %d heures', 1);
+					$output = HB()->lang('Il y a environ une heure|Il y a %d heures', 1);
 				}
 				else if ($diff <= strtoseconds('23 hours'))
 				{
-					$output = NeoFrag()->lang('Il y a environ une heure|Il y a %d heures', $diff = floor($diff / 3660), $diff);
+					$output = HB()->lang('Il y a environ une heure|Il y a %d heures', $diff = floor($diff / 3660), $diff);
 				}
 				else if ($timestamp >= strtotime('yesterday'))
 				{
-					$output = NeoFrag()->lang('Hier à %s', $this->short_time());
+					$output = HB()->lang('Hier Ã  %s', $this->short_time());
 				}
 				else if ($timestamp >= strtotime('6 days ago midnight'))
 				{
-					$output = NeoFrag()->lang('%s dernier à %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('%s dernier Ã  %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 			}
 			else
 			{
-				$output = NeoFrag()->lang('À l\'instant');
+				$output = HB()->lang('Ã€ l\'instant');
 			}
 		}
 
@@ -234,7 +234,7 @@ class Date extends Library
 
 	public function diff($date = NULL)
 	{
-		if (!is_a($date, 'NF\NeoFrag\Libraries\Date'))
+		if (!is_a($date, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			$date = $this->date($date, $this->_format, $this->_datetime->getTimezone());
 		}
@@ -255,12 +255,12 @@ class Date extends Library
 
 	public function between($start, $end)
 	{
-		if (!is_a($start, 'NF\NeoFrag\Libraries\Date'))
+		if (!is_a($start, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			$start = $this->date($start);
 		}
 
-		if (!is_a($end, 'NF\NeoFrag\Libraries\Date'))
+		if (!is_a($end, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			$end = $this->date($end);
 		}
@@ -275,7 +275,7 @@ class Date extends Library
 
 	public function interval($date = NULL)
 	{
-		if (!is_a($date, 'NF\NeoFrag\Libraries\Date'))
+		if (!is_a($date, 'HB\HiddenCMS\Libraries\Date'))
 		{
 			$date = $this->date($date, $this->_format, $this->_datetime->getTimezone());
 		}
@@ -349,3 +349,5 @@ class Date extends Library
 		}
 	}
 }
+
+

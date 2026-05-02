@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\News\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class Categories extends Model
 {
@@ -92,10 +92,12 @@ class Categories extends Model
 
 		foreach ($files as $file)
 		{
-			NeoFrag()->model2('file', $file)->delete();
+			HB()->model2('file', $file)->delete();
 		}
 
 		$this->db	->where('category_id', $category_id)
 					->delete('news_categories');
 	}
 }
+
+

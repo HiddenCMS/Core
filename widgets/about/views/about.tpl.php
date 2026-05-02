@@ -22,7 +22,7 @@
 	<?php endif ?>
 	<?php if ($settings['display_logo'] == 'oui' && $this->config->team_logo): ?>
 		<div class="<?php echo $settings['logo_align'] ?> mb-3">
-			<img src="<?php echo NeoFrag()->model2('file', $this->config->team_logo)->path() ?>" style="max-width: <?php echo $settings['logo_width'] ?>px;" alt="" />
+			<img src="<?php echo HB()->model2('file', $this->config->team_logo)->path() ?>" style="max-width: <?php echo $settings['logo_width'] ?>px;" alt="" />
 		</div>
 	<?php endif ?>
 	<?php if ($settings['display_biographie'] == 'oui' && $this->config->team_biographie): ?>
@@ -31,3 +31,4 @@
 		</div>
 	<?php endif ?>
 </div>
+

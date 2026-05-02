@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Pagination extends Library
 {
@@ -22,7 +22,7 @@ class Pagination extends Library
 	{
 		parent::__construct($caller);
 
-		if (is_a($caller, 'NF\NeoFrag\Addons\Module'))//TODO
+		if (is_a($caller, 'HB\HiddenCMS\Addons\Module'))//TODO
 		{
 			$caller->pagination = $this;
 		}
@@ -247,3 +247,5 @@ class Pagination extends Library
 		return $this->_data;
 	}
 }
+
+

@@ -2,7 +2,7 @@
 <div class="media">
 	<?php if ($news['image']): ?>
 	<div class="media-left">
-		<div class="img-cover" style="background-image: url(<?php echo NeoFrag()->model2('file', $news['image'])->path() ?>);"></div>
+		<div class="img-cover" style="background-image: url(<?php echo HB()->model2('file', $news['image'])->path() ?>);"></div>
 	</div>
 	<?php endif ?>
 	<div class="media-body">
@@ -11,3 +11,4 @@
 	</div>
 </div>
 <?php endforeach ?>
+

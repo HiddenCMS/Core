@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Displayables;
 
-use NF\NeoFrag\Displayable;
+use HB\HiddenCMS\Displayable;
 
 class Widget extends Displayable
 {
@@ -17,7 +17,7 @@ class Widget extends Displayable
 
 	public function __invoke($widget = 0)
 	{
-		return is_int($widget) ? $this->widget_id($widget) : forward_static_call_array('NF\NeoFrag\Addons\Widget::__load', [NeoFrag(), func_get_args()]);
+		return is_int($widget) ? $this->widget_id($widget) : forward_static_call_array('HB\HiddenCMS\Addons\Widget::__load', [HB(), func_get_args()]);
 	}
 
 	public function __sleep()
@@ -72,18 +72,18 @@ class Widget extends Displayable
 
 	public function __toString()
 	{
-		$widget_data = NeoFrag()->db->from('widgets')
+		$widget_data = HB()->db->from('widgets')
 									->where('widget_id', $this->_widget)
 									->row();
 
-		if ($widget_data && ($widget = NeoFrag()->widget($widget_data['widget'])) && $widget->is_enabled())
+		if ($widget_data && ($widget = HB()->widget($widget_data['widget'])) && $widget->is_enabled())
 		{
-			$widget->data = NeoFrag()->array;
+			$widget->data = HB()->array;
 			
 			$output = $widget->output($widget_data['type'], ($widget_data['settings'] && is_array($settings = unserialize($widget_data['settings']))) ? $settings : []);
 
 			$style = function($output) use ($widget_data){
-				if (is_a($output, 'NF\NeoFrag\Libraries\Panel'))
+				if (is_a($output, 'HB\HiddenCMS\Libraries\Panel'))
 				{
 					if (!empty($widget_data['title']))
 					{
@@ -109,7 +109,7 @@ class Widget extends Displayable
 			if ($widget_data['widget'] == 'module')
 			{
 				$type   = 'module';
-				$module = NeoFrag()->output->module();
+				$module = HB()->output->module();
 				$name   = $module->info()->name;
 			}
 			else
@@ -124,3 +124,5 @@ class Widget extends Displayable
 		return '';
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Live_Editor\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -20,7 +20,7 @@ class Admin extends Controller_Module
 
 		$modules = $pages = [];
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HB()->model2('addon')->get('module') as $module)
 		{
 			if (@$module->controller('index') && !in_array($module->info()->name, ['settings']))
 			{
@@ -33,7 +33,7 @@ class Admin extends Controller_Module
 		});
 
 		$pages = array_merge([
-			'index' => NeoFrag()->lang('Accueil')
+			'index' => HB()->lang('Accueil')
 		], $pages);
 
 		foreach ($modules as $module)
@@ -65,3 +65,5 @@ class Admin extends Controller_Module
 		]);
 	}
 }
+
+

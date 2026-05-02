@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Panels;
 
-use NF\NeoFrag\Libraries\Panel;
+use HB\HiddenCMS\Libraries\Panel;
 
 class Back extends Panel
 {
@@ -26,3 +26,5 @@ class Back extends Panel
 					->__toString();
 	}
 }
+
+

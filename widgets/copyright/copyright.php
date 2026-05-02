@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\Copyright;
 
-use NF\NeoFrag\Addons\Widget;
+use HB\HiddenCMS\Addons\Widget;
 
 class Copyright extends Widget
 {
@@ -16,7 +16,7 @@ class Copyright extends Widget
 			'title'       => 'Copyright',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0',
 			'depends'     => [
@@ -25,3 +25,5 @@ class Copyright extends Widget
 		];
 	}
 }
+
+

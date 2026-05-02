@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Table_Col extends Library
 {
@@ -197,3 +197,5 @@ class Table_Col extends Library
 		}
 	}
 }
+
+

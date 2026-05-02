@@ -1,14 +1,14 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Loadables;
 
-use NF\NeoFrag\NeoFrag;
+use HB\HiddenCMS\NeoFrag;
 
-abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
+abstract class Model2 extends NeoFrag implements \HB\HiddenCMS\Loadable
 {
 	static protected $__schemas = [];
 	static protected $__objects = [];
@@ -96,7 +96,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 
 	static protected function field()
 	{
-		return new \NF\NeoFrag\Field;
+		return new \HB\HiddenCMS\Field;
 	}
 
 	public $__name      = '';
@@ -223,11 +223,11 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 
 		foreach ($values as &$value)
 		{
-			if (is_a($value, 'NF\NeoFrag\Libraries\Date'))
+			if (is_a($value, 'HB\HiddenCMS\Libraries\Date'))
 			{
 				$value = $value->sql();
 			}
-			else if (is_a($value, 'NF\NeoFrag\Loadables\Model2') && !$value())
+			else if (is_a($value, 'HB\HiddenCMS\Loadables\Model2') && !$value())
 			{
 				$value = NULL;
 			}
@@ -431,9 +431,9 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 	{
 		$caller = $this->__caller;
 
-		if ($caller == NeoFrag() && $this->__name == 'user')
+		if ($caller == HB() && $this->__name == 'user')
 		{
-			$caller = NeoFrag()->module($this->__name);
+			$caller = HB()->module($this->__name);
 		}
 
 		return $caller->___load('models', $this->__name.'/'.$action, [$this, $action]);
@@ -456,16 +456,16 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 	{
 		if (!isset($this->__tracking))
 		{
-			$this->__tracking = NeoFrag()	->db()
+			$this->__tracking = HB()	->db()
 											->select('COALESCE(model_id, 0)', 'date')
 											->from('tracking')
-											->where('user_id',  NeoFrag()->user->id)
+											->where('user_id',  HB()->user->id)
 											->where('model',    $this->__table)
 											->where('model_id', $this->id, 'OR', 'model_id', NULL)
 											->index();
 		}
 
-		if (!array_key_exists($this->id, $this->__tracking) && $this->date->diff(NeoFrag()->user->registration_date) > 0 && (!array_key_exists(0, $this->__tracking) || $this->date->diff($this->__tracking[0]) > 0))
+		if (!array_key_exists($this->id, $this->__tracking) && $this->date->diff(HB()->user->registration_date) > 0 && (!array_key_exists(0, $this->__tracking) || $this->date->diff($this->__tracking[0]) > 0))
 		{
 			$unread = TRUE;
 
@@ -473,7 +473,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 			{
 				$this->__tracking[$this->id] = parent::date()->sql();
 
-				NeoFrag()	->model2('tracking')
+				HB()	->model2('tracking')
 							->set('model',    $this->__table)
 							->set('model_id', $this->id)
 							->create();
@@ -503,7 +503,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 				{
 					if ($field->is_i18n() && array_key_exists($field->i, $this->_updates) && !is_empty($this->_updates[$field->i]))
 					{
-						$this->_data[$field->i] = NeoFrag()	->model2('i18n')
+						$this->_data[$field->i] = HB()	->model2('i18n')
 															->set('lang',     $this->config->lang->__addon)
 															->set('model',    $this->__table)
 															->set('model_id', $auto_id)
@@ -656,7 +656,7 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 
 	protected function _db()
 	{
-		return NeoFrag()->db(defined('static::DB') ? static::DB : 'default');
+		return HB()->db(defined('static::DB') ? static::DB : 'default');
 	}
 
 	protected function _get_by_primaries(&$primaries = [])
@@ -776,3 +776,5 @@ abstract class Model2 extends NeoFrag implements \NF\NeoFrag\Loadable
 		}
 	}
 }
+
+

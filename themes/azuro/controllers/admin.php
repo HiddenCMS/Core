@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace NF\Themes\Azuro\Controllers;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 class Admin extends Controller
 {
@@ -30,7 +30,7 @@ class Admin extends Controller
 										}
 									],
 									'repeat' => [
-										'label'  => $this->lang('Répéter l\'image'),
+										'label'  => $this->lang('RÃ©pÃ©ter l\'image'),
 										'value'  => $this->config->{'azuro_background_repeat'},
 										'values' => [
 											'no-repeat' => $this->lang('Non'),
@@ -46,7 +46,7 @@ class Admin extends Controller
 										'value'  => explode(' ', $this->config->{'azuro_background_position'})[0],
 										'values' => [
 											'left'   => $this->lang('Gauche'),
-											'center' => $this->lang('Centré'),
+											'center' => $this->lang('CentrÃ©'),
 											'right'  => $this->lang('Droite')
 										],
 										'type'   => 'radio',
@@ -123,7 +123,7 @@ class Admin extends Controller
 
 			$this->module('tools')->api()->scss();
 
-			notify($this->lang('Arrière plan de l\'entête mis à jour !'));
+			notify($this->lang('ArriÃ¨re plan de l\'entÃªte mis Ã  jour !'));
 
 			redirect($this->url->location.'#background');
 		}
@@ -135,7 +135,7 @@ class Admin extends Controller
 
 			$this->module('tools')->api()->scss();
 
-			notify($this->lang('Couleurs du thème mises à jour !'));
+			notify($this->lang('Couleurs du thÃ¨me mises Ã  jour !'));
 
 			redirect($this->url->location.'#colors');
 		}
@@ -159,3 +159,5 @@ class Admin extends Controller
 		);
 	}
 }
+
+

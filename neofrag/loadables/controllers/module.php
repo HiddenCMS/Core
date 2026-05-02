@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Loadables\Controllers;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 abstract class Module extends Controller
 {
@@ -26,3 +26,5 @@ abstract class Module extends Controller
 		return parent::__call($name, $args);
 	}
 }
+
+

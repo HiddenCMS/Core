@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
@@ -16,11 +16,11 @@ class Button extends Label
 
 	static public function footer($buttons, $default = 'left')
 	{
-		$output = NeoFrag()->html();
+		$output = HB()->html();
 
 		if ($buttons)
 		{
-			$footers = NeoFrag()->array();
+			$footers = HB()->array();
 
 			foreach ($buttons as $footer)
 			{
@@ -41,7 +41,7 @@ class Button extends Label
 			else
 			{
 				$footers->each(function($buttons, $align){
-					return NeoFrag()->html()->attr('class', 'float-'.$align)->content($buttons);
+					return HB()->html()->attr('class', 'float-'.$align)->content($buttons);
 				});
 			}
 
@@ -151,7 +151,7 @@ class Button extends Label
 
 	public function modal($title, $icon = '')
 	{
-		$modal = is_a($title, 'NF\NeoFrag\Libraries\Modal') ? $title : parent::modal($title, $icon);
+		$modal = is_a($title, 'HB\HiddenCMS\Libraries\Modal') ? $title : parent::modal($title, $icon);
 
 		return $this->url('#')
 					->data([
@@ -170,3 +170,5 @@ class Button extends Label
 					]);
 	}
 }
+
+

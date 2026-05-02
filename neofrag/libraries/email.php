@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Email extends Library
 {
@@ -126,7 +126,7 @@ class Email extends Library
 
 	public function attachment($file, $name = '')
 	{
-		if (is_a($file, 'NF\NeoFrag\Models\File'))
+		if (is_a($file, 'HB\HiddenCMS\Models\File'))
 		{
 			if ($name === '')
 			{
@@ -258,3 +258,5 @@ class Email extends Library
 		return $sent;
 	}
 }
+
+

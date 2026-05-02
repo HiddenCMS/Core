@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\Header\Controllers;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 class Admin extends Controller
 {
@@ -15,3 +15,5 @@ class Admin extends Controller
 		return $this->view('admin', $settings);
 	}
 }
+
+

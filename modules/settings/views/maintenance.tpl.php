@@ -3,7 +3,7 @@
 		<div class="inner">
 			<h3 class="masthead-brand">
 				<?php if ($this->config->maintenance_logo): ?>
-					<img src="<?php echo NeoFrag()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
+					<img src="<?php echo HB()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
 				<?php else: ?>
 					<?php echo $this->config->name ?>
 				<?php endif ?>
@@ -36,7 +36,7 @@
 					<?php echo $this->user->username ?>
 				</div>
 				<?php endif ?>
-				<?php echo $this->user() ? '<a href="'.url('user/logout').'" class="nav-link">'.icon('fas fa-times').' Déconnexion'.'</a>' : '<a href="#" class="nav-link ml-5" data-modal-ajax="'.url('ajax/user/login').'">'.icon('fas fa-sign-in-alt').' Se connecter'.'</a>' ?>
+				<?php echo $this->user() ? '<a href="'.url('user/logout').'" class="nav-link">'.icon('fas fa-times').' DÃ©connexion'.'</a>' : '<a href="#" class="nav-link ml-5" data-modal-ajax="'.url('ajax/user/login').'">'.icon('fas fa-sign-in-alt').' Se connecter'.'</a>' ?>
 			</nav>
 		</div>
 	</header>
@@ -57,3 +57,4 @@
 		</div>
 	</footer>
 </div>
+

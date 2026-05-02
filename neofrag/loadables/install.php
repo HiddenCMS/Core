@@ -1,14 +1,14 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Loadables;
 
-use NF\NeoFrag\NeoFrag;
+use HB\HiddenCMS\NeoFrag;
 
-abstract class Install extends NeoFrag implements \NF\NeoFrag\Loadable
+abstract class Install extends NeoFrag implements \HB\HiddenCMS\Loadable
 {
 	static protected $_objects = [];
 
@@ -31,3 +31,5 @@ abstract class Install extends NeoFrag implements \NF\NeoFrag\Loadable
 
 	abstract public function up();
 }
+
+

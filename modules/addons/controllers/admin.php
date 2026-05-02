@@ -1,18 +1,18 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Addons\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
 	public function index()
 	{
-		$addons = array_filter(NeoFrag()->collection('addon')->get(), function($addon){
+		$addons = array_filter(HB()->collection('addon')->get(), function($addon){
 			$object = $addon->addon();
 
 			if ($object && ($controller = $addon->controller()))
@@ -72,3 +72,5 @@ class Admin extends Controller_Module
 		return $controller->$action($addon, $this);
 	}
 }
+
+

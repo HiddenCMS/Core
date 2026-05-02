@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\User\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module_Checker;
+use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Checker extends Module_Checker
 {
@@ -35,7 +35,7 @@ class Checker extends Module_Checker
 	{
 		$this->error->unconnected();
 
-		return [NeoFrag()->collection('session_history')->where('_.user_id', $this->user->id)->order_by('_.date DESC')->paginate($page)];
+		return [HB()->collection('session_history')->where('_.user_id', $this->user->id)->order_by('_.date DESC')->paginate($page)];
 	}
 
 	public function _session_delete($session_id)
@@ -169,3 +169,5 @@ class Checker extends Module_Checker
 		}
 	}
 }
+
+

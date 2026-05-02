@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
@@ -73,7 +73,7 @@ abstract class Driver
 
 			if ($debug)
 			{
-				NeoFrag()->debug('DB_QUERY', sprintf('%.3f', $request->time * 1000).'ms', $request->sql.(!empty($request->bind) ? ' '.json_encode($request->bind) : ''));
+				HB()->debug('DB_QUERY', sprintf('%.3f', $request->time * 1000).'ms', $request->sql.(!empty($request->bind) ? ' '.json_encode($request->bind) : ''));
 			}
 			else
 			{
@@ -84,3 +84,4 @@ abstract class Driver
 		return $request;
 	}
 }
+

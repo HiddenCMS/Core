@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\User\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Ajax extends Controller_Module
 {
@@ -17,7 +17,7 @@ class Ajax extends Controller_Module
 
 	public function auth()
 	{
-		$authenticators = NeoFrag()	->model2('addon')
+		$authenticators = HB()	->model2('addon')
 									->get('authenticator')
 									->filter('is_setup')
 									->sort(function($a, $b){
@@ -32,12 +32,12 @@ class Ajax extends Controller_Module
 							'authenticators' => $authenticators
 						]))
 						->button($this	->button()
-										->title('Mot de passe oublié ?')
+										->title('Mot de passe oubliÃ© ?')
 										->color('link')
 										->modal_ajax('ajax/user/lost-password')
 						)
 						->button_if($this->config->registration_status, $this->button()
-																				->title('Créer un compte')
+																				->title('CrÃ©er un compte')
 																				->color('secondary')
 																				->modal_ajax('ajax/user/register')
 						)
@@ -58,12 +58,12 @@ class Ajax extends Controller_Module
 		return $this->form2('login')
 					->modal('Se connecter', 'fas fa-sign-in-alt')
 					->button_prepend_if($this->config->registration_status, $this->button()
-																					->title('Créer un compte')
+																					->title('CrÃ©er un compte')
 																					->color('secondary')
 																					->modal_ajax('ajax/user/register')
 					)
 					->button_prepend($this	->button()
-											->title('Mot de passe oublié ?')
+											->title('Mot de passe oubliÃ© ?')
 											->color('link')
 											->modal_ajax('ajax/user/lost-password')
 					);
@@ -90,7 +90,7 @@ class Ajax extends Controller_Module
 
 							if ($sent)
 							{
-								notify('Message envoyé');
+								notify('Message envoyÃ©');
 								$this->modal->dispose();
 							}
 							else
@@ -107,13 +107,13 @@ class Ajax extends Controller_Module
 							$this->model('messages')->insert_message($user->username, $this->config->welcome_title, str_replace('[pseudo]', '@'.$user->username, $this->config->welcome_content), TRUE);
 						}
 
-						notify('Votre compte à bien été créé, bienvenue !');
+						notify('Votre compte Ã  bien Ã©tÃ© crÃ©Ã©, bienvenue !');
 
 						$this->session->login($user);
 
 						refresh();
 					})
-					->modal('Créer un compte', 'fas fa-sign-in-alt fa-rotate-90')
+					->modal('CrÃ©er un compte', 'fas fa-sign-in-alt fa-rotate-90')
 					->cancel();
 	}
 
@@ -140,17 +140,17 @@ class Ajax extends Controller_Module
 							$sent = $this	->anti_flood()
 											->email
 											->to($data['email'])
-											->subject('Réinitialisation de mot de passe')
+											->subject('RÃ©initialisation de mot de passe')
 											->message(function() use ($user){
 												return [
-													'content' => 'Bonjour '.$user->username.',<br /><br />Vous avez demandé à réinitialiser votre mot de passe. Il vous suffit de cliquer sur le bouton ci-dessous pour choisir un nouveau mot de passe.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/lost-password/'.$user->token()).'">'.$this->lang('Réinitialisation de votre mot de passe').'</a></div>'
+													'content' => 'Bonjour '.$user->username.',<br /><br />Vous avez demandÃ© Ã  rÃ©initialiser votre mot de passe. Il vous suffit de cliquer sur le bouton ci-dessous pour choisir un nouveau mot de passe.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/lost-password/'.$user->token()).'">'.$this->lang('RÃ©initialisation de votre mot de passe').'</a></div>'
 												];
 											})
 											->send();
 
 							if ($sent)
 							{
-								notify('Message envoyé');
+								notify('Message envoyÃ©');
 								$this->modal->dispose();
 							}
 							else
@@ -159,7 +159,7 @@ class Ajax extends Controller_Module
 							}
 						}
 					})
-					->modal('Récupération de mot de passe', 'fas fa-unlock-alt')
+					->modal('RÃ©cupÃ©ration de mot de passe', 'fas fa-unlock-alt')
 					->cancel();
 	}
 
@@ -173,13 +173,15 @@ class Ajax extends Controller_Module
 								->set_password($data['password'])
 								->update();
 
-						notify('Nouveau mot de passe enregistré');
+						notify('Nouveau mot de passe enregistrÃ©');
 
 						$this->session->login($token->user);
 
 						refresh();
 					})
-					->modal('Réinitialisation de mot de passe', 'fas fa-unlock-alt')
+					->modal('RÃ©initialisation de mot de passe', 'fas fa-unlock-alt')
 					->cancel();
 	}
 }
+
+

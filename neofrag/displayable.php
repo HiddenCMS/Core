@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
 
-use NF\NeoFrag\Libraries\Array_ as Array_;
+use HB\HiddenCMS\Libraries\Array_ as Array_;
 
 abstract class Displayable extends Array_
 {
@@ -14,7 +14,7 @@ abstract class Displayable extends Array_
 
 	public function __construct()
 	{
-		parent::__construct(NeoFrag());
+		parent::__construct(HB());
 	}
 
 	public function id($id)
@@ -23,3 +23,5 @@ abstract class Displayable extends Array_
 		return $this;
 	}
 }
+
+

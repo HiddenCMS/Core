@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace NF\Widgets\Socials\Controllers;
 
-use NF\NeoFrag\Loadables\Controller;
+use HB\HiddenCMS\Loadables\Controller;
 
 class Admin extends Controller
 {
@@ -29,3 +29,5 @@ class Admin extends Controller
 		], $settings));
 	}
 }
+
+

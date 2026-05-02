@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Search\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
@@ -47,7 +47,7 @@ class Index extends Controller_Module
 					[$keywords,     'LIKE',     'OR']
 				];
 
-				foreach (NeoFrag()->model2('addon')->get('module') as $module)
+				foreach (HB()->model2('addon')->get('module') as $module)
 				{
 					if (($search_controller = @$module->controller('search')) && ($columns = $search_controller->search()))
 					{
@@ -114,7 +114,7 @@ class Index extends Controller_Module
 												->heading($result[0]->info()->title, $result[0]->info()->icon, 'search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 												->body(implode('<hr />', $content))
 												->footer_if(!$details && $result[3] > 3, $this	->button()
-																								->title($this->lang('Voir l\'ensemble des résultats'))
+																								->title($this->lang('Voir l\'ensemble des rÃ©sultats'))
 																								->url('search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 																								->color('light')
 																								->align('center')
@@ -163,3 +163,5 @@ class Index extends Controller_Module
 		);
 	}
 }
+
+

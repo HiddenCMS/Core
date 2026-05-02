@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Themes\Admin;
 
-use NF\NeoFrag\Addons\Theme;
+use HB\HiddenCMS\Addons\Theme;
 
 class Admin extends Theme
 {
@@ -18,7 +18,7 @@ class Admin extends Theme
 			'title'       => 'Administration',
 			'description' => 'Panel d\'administration',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
 		];
@@ -102,7 +102,7 @@ class Admin extends Theme
 					'url'   => 'admin'
 				],
 				[
-					'title'  => 'Paramètres',
+					'title'  => 'ParamÃ¨tres',
 					'icon'   => 'fas fa-cogs',
 					'access' => $this->user->admin,
 					'url'    => 'admin/settings'
@@ -128,11 +128,11 @@ class Admin extends Theme
 					]
 				],
 				[
-					'title'  => 'Thèmes & addons',
+					'title'  => 'ThÃ¨mes & addons',
 					'icon'   => 'fas fa-puzzle-piece',
 					'access' => $this->user->admin,
 					'url'   => [
-						['title' => 'Thèmes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
+						['title' => 'ThÃ¨mes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
 						['title' => 'Modules',    	'icon'  => 'fas fa-cube',        'access' => $this->user->admin, 'url' => 'admin/addons/modules'],
 						['title' => 'Widgets',     	'icon'  => 'fas fa-cubes',   'access' => $this->user->admin, 'url' => 'admin/addons/widgets']
 					]
@@ -178,3 +178,5 @@ class Admin extends Theme
 		}
 	}
 }
+
+

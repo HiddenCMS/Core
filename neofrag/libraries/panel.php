@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Panel extends Library
 {
@@ -77,7 +77,7 @@ class Panel extends Library
 	{
 		if (func_num_args())
 		{
-			if (!is_a($label, 'NF\NeoFrag\Libraries\Html'))
+			if (!is_a($label, 'HB\HiddenCMS\Libraries\Html'))
 			{
 				$label = $this	->button()
 								->title($label)
@@ -129,7 +129,7 @@ class Panel extends Library
 
 	public function footer($footer = '', $align = 'center')
 	{
-		if (!is_a($footer, 'NF\NeoFrag\Libraries\Html'))
+		if (!is_a($footer, 'HB\HiddenCMS\Libraries\Html'))
 		{
 			$footer = $this	->button()
 							->title($footer)
@@ -180,3 +180,5 @@ class Panel extends Library
 		}
 	}
 }
+
+

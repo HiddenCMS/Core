@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\News\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Widget as Controller_Widget;
+use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
@@ -21,17 +21,17 @@ class Index extends Controller_Widget
 		if (!empty($news))
 		{
 			return $this->panel()
-						->heading($this->lang('Actualités récentes'))
+						->heading($this->lang('ActualitÃ©s rÃ©centes'))
 						->body($this->view('index', [
 							'news' => array_slice($news, 0, 3)
 						]))
-						->footer('<a href="'.url('news').'">'.icon('far fa-arrow-alt-circle-right').' '.$this->lang('Voir toutes les actualités').'</a>', 'right');
+						->footer('<a href="'.url('news').'">'.icon('far fa-arrow-alt-circle-right').' '.$this->lang('Voir toutes les actualitÃ©s').'</a>', 'right');
 		}
 		else
 		{
 			return $this->panel()
-						->heading($this->lang('Actualités récentes'))
-						->body($this->lang('Aucune actualité pour le moment'));
+						->heading($this->lang('ActualitÃ©s rÃ©centes'))
+						->body($this->lang('Aucune actualitÃ© pour le moment'));
 		}
 	}
 
@@ -42,7 +42,7 @@ class Index extends Controller_Widget
 		if (!empty($categories))
 		{
 			return $this->panel()
-						->heading($this->lang('Catégories'))
+						->heading($this->lang('CatÃ©gories'))
 						->body($this->view('categories', [
 							'categories' => $categories
 						]), FALSE);
@@ -50,8 +50,8 @@ class Index extends Controller_Widget
 		else
 		{
 			return $this->panel()
-						->heading($this->lang('Catégories'))
-						->body($this->lang('Aucune catégorie pour le moment'));
+						->heading($this->lang('CatÃ©gories'))
+						->body($this->lang('Aucune catÃ©gorie pour le moment'));
 		}
 	}
 
@@ -89,3 +89,5 @@ class Index extends Controller_Widget
 		}
 	}
 }
+
+

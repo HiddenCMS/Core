@@ -1,24 +1,24 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Themes\Default_;
 
-use NF\NeoFrag\Addons\Theme;
+use HB\HiddenCMS\Addons\Theme;
 
 class Default_ extends Theme
 {
 	protected function __info()
 	{
 		return [
-			'title'       => 'Thème par défaut',
-			'description' => 'Base de développement pour la création d\'un thème NeoFrag',
+			'title'       => 'ThÃ¨me par dÃ©faut',
+			'description' => 'Base de dÃ©veloppement pour la crÃ©ation d\'un thÃ¨me NeoFrag',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
-			'zones'       => ['Haut', 'Entête', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
+			'zones'       => ['Haut', 'EntÃªte', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];
 	}
 
@@ -84,7 +84,7 @@ class Default_ extends Theme
 												'url'   => 'forum'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Équipes')),
+												'title' => utf8_htmlentities($this->lang('Ã‰quipes')),
 												'url'   => 'teams'
 											],
 											[
@@ -96,7 +96,7 @@ class Default_ extends Theme
 												'url'   => 'partners'
 											],
 											[
-												'title' => utf8_htmlentities('Palmarès'),
+												'title' => utf8_htmlentities('PalmarÃ¨s'),
 												'url'   => 'awards'
 											]
 										]
@@ -154,7 +154,7 @@ class Default_ extends Theme
 									'settings' => serialize([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Actualités')),
+												'title' => utf8_htmlentities($this->lang('ActualitÃ©s')),
 												'url'   => 'news'
 											],
 											[
@@ -244,7 +244,7 @@ class Default_ extends Theme
 				->style('row-default')
 		]));
 
-		$dispositions->set('*', 'Entête', $this->array([
+		$dispositions->set('*', 'EntÃªte', $this->array([
 			$header(),
 			$navbar()
 		]));
@@ -302,7 +302,7 @@ class Default_ extends Theme
 				->style('row-default')
 		]));
 
-		$dispositions->set('/', 'Entête', $this->array([
+		$dispositions->set('/', 'EntÃªte', $this->array([
 			$header(),
 			$navbar(),
 			$this->row(
@@ -362,3 +362,5 @@ class Default_ extends Theme
 		return parent::uninstall($remove);
 	}
 }
+
+

@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Access\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module_Checker;
+use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
@@ -14,7 +14,7 @@ class Admin_Checker extends Module_Checker
 	{
 		$modules = $objects = [];
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HB()->model2('addon')->get('module') as $module)
 		{
 			foreach ($module->get_permissions() as $type => $access)
 			{
@@ -68,3 +68,5 @@ class Admin_Checker extends Module_Checker
 		}
 	}
 }
+
+

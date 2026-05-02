@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Models;
 
-use NF\NeoFrag\Loadables\Model2;
+use HB\HiddenCMS\Loadables\Model2;
 
 class Addon extends Model2
 {
@@ -27,7 +27,7 @@ class Addon extends Model2
 
 	public function addon()
 	{
-		return @NeoFrag()->{$this->type() ? $this->type->name : 'addon'}($this->name, $this);
+		return @HB()->{$this->type() ? $this->type->name : 'addon'}($this->name, $this);
 	}
 
 	public function get($type, $name = NULL, $load = TRUE)
@@ -64,3 +64,5 @@ class Addon extends Model2
 		}
 	}
 }
+
+

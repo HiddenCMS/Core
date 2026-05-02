@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Fields;
@@ -21,9 +21,9 @@ class I18n
 
 	public function value($value, $model, $field)
 	{
-		foreach (NeoFrag()->config->langs as $lang)
+		foreach (HB()->config->langs as $lang)
 		{
-			$value = NeoFrag()	->collection('i18n')
+			$value = HB()	->collection('i18n')
 								->where('lang_id',  $lang->__addon->id)
 								->where('model',    $model->__table)
 								->where('model_id', $model->id)
@@ -39,3 +39,4 @@ class I18n
 		return $value;
 	}
 }
+

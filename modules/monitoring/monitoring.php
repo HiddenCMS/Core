@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Monitoring;
 
-use NF\NeoFrag\Addons\Module;
+use HB\HiddenCMS\Addons\Module;
 
 class Monitoring extends Module
 {
@@ -17,7 +17,7 @@ class Monitoring extends Module
 			'description' => '',
 			'icon'        => 'fas fa-heartbeat',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE
 		];
@@ -46,3 +46,5 @@ class Monitoring extends Module
 		return '';
 	}
 }
+
+

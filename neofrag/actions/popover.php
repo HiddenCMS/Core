@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Actions;
 
-class Popover extends \NF\NeoFrag\Action
+class Popover extends \HB\HiddenCMS\Action
 {
 	protected function button($model)
 	{
@@ -20,3 +20,5 @@ class Popover extends \NF\NeoFrag\Action
 		return $model->view('popovers/'.$model->__name);
 	}
 }
+
+

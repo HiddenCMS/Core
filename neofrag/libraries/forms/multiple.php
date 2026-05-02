@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
@@ -58,7 +58,7 @@ abstract class Multiple extends Labelable
 
 	public function data($data)
 	{
-		if (is_a($data, 'NF\NeoFrag\Libraries\Collection'))
+		if (is_a($data, 'HB\HiddenCMS\Libraries\Collection'))
 		{
 			$this->_data = [];
 
@@ -83,3 +83,5 @@ abstract class Multiple extends Labelable
 		return $this;
 	}
 }
+
+

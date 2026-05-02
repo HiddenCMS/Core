@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
@@ -30,7 +30,7 @@ abstract class Library extends NeoFrag
 
 	public function __wakeup()
 	{
-		$this->__caller = NeoFrag();
+		$this->__caller = HB();
 	}
 
 	public function __id($id = NULL)
@@ -52,3 +52,4 @@ abstract class Library extends NeoFrag
 		return $this->__id;
 	}
 }
+

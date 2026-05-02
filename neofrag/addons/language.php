@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Addons;
 
-use NF\NeoFrag\Loadables\Addon;
+use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Language extends Addon
 {
@@ -41,13 +41,13 @@ abstract class Language extends Addon
 		{
 			return $locale;
 		}
-		else if (($result = NeoFrag()->collection('i18n')->where('lang_id', $this->__addon->id)->where('model', NULL)->where('name', $key)->row()) && $result())
+		else if (($result = HB()->collection('i18n')->where('lang_id', $this->__addon->id)->where('model', NULL)->where('name', $key)->row()) && $result())
 		{
 			return $result->value;
 		}
 		else if ($this->config->translate_api)
 		{
-			$source = NeoFrag()->model2('addon')->get('language', $source);
+			$source = HB()->model2('addon')->get('language', $source);
 
 			$locale = $this	->network('https://i18n.neofr.ag')
 							->auth($this->config->translate_api)
@@ -59,15 +59,15 @@ abstract class Language extends Addon
 
 			if (!empty($locale->success))
 			{
-				NeoFrag()	->model2('i18n')
+				HB()	->model2('i18n')
 							->set('lang',  $this->__addon->id)
 							->set('name',  $key)
 							->set('value', $locale->success)
 							->create();
 
-				if (($result = NeoFrag()->collection('i18n')->where('lang_id', $lang = $source->__addon->id)->where('model', NULL)->where('name', $key)->row()) && !$result())
+				if (($result = HB()->collection('i18n')->where('lang_id', $lang = $source->__addon->id)->where('model', NULL)->where('name', $key)->row()) && !$result())
 				{
-					NeoFrag()	->model2('i18n')
+					HB()	->model2('i18n')
 								->set('lang',  $lang)
 								->set('name',  $key)
 								->set('value', $text)
@@ -81,3 +81,5 @@ abstract class Language extends Addon
 		trigger_error('Unfound lang: '.$key.' in paths ['.implode(';', $paths).']', E_USER_WARNING);
 	}
 }
+
+

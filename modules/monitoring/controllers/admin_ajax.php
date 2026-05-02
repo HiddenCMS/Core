@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Monitoring\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
@@ -25,20 +25,20 @@ class Admin_Ajax extends Controller_Module
 
 			if (version_compare(PHP_VERSION, $last_end_of_life, '<='))
 			{
-				$this->_notify('Cette version de PHP est obsolète, veuillez mettre à jour votre serveur', 'error');
+				$this->_notify('Cette version de PHP est obsolÃ¨te, veuillez mettre Ã  jour votre serveur', 'error');
 			}
 			else if (version_compare(PHP_VERSION, $security_fixes_only, '<='))
 			{
-				$this->_notify('Cette version de PHP est sera bientôt obsolète, il est recommandé de mettre à jour votre serveur', 'warning');
+				$this->_notify('Cette version de PHP est sera bientÃ´t obsolÃ¨te, il est recommandÃ© de mettre Ã  jour votre serveur', 'warning');
 			}
 			else if (version_compare(PHP_VERSION, $current, '<'))
 			{
-				$this->_notify('Il est recommandé d\'utiliser PHP '.$current, 'info');
+				$this->_notify('Il est recommandÃ© d\'utiliser PHP '.$current, 'info');
 			}
 
 			if ($this->db->get_info('driver') != 'mysqli')
 			{
-				$this->_notify('Il est recommandé d\'utiliser MySQLi', 'info');
+				$this->_notify('Il est recommandÃ© d\'utiliser MySQLi', 'info');
 			}
 
 			dir_create('cache/monitoring');
@@ -173,8 +173,8 @@ class Admin_Ajax extends Controller_Module
 
 							if (file_exists($dir.$name) && !is_writable($dir.$name))
 							{
-								$tags[] = 'Protégé en écriture';
-								$this->_notify('Le dossier <code>'.$dir.$name.'</code> est protégé en écriture', 'warning');
+								$tags[] = 'ProtÃ©gÃ© en Ã©criture';
+								$this->_notify('Le dossier <code>'.$dir.$name.'</code> est protÃ©gÃ© en Ã©criture', 'warning');
 							}
 
 							$output[] = [
@@ -201,7 +201,7 @@ class Admin_Ajax extends Controller_Module
 								if (!preg_match('#^(?:modules|themes|widgets)/#', $dir))
 								{
 									$tags[] = 'Inconnu';
-									$this->_notify('Le fichier <code>'.$dir.$name.'</code> ne devrait pas se trouver là', 'error');
+									$this->_notify('Le fichier <code>'.$dir.$name.'</code> ne devrait pas se trouver lÃ ', 'error');
 								}
 							}
 							else if ($md5 === '')
@@ -217,8 +217,8 @@ class Admin_Ajax extends Controller_Module
 
 							if ($md5 !== '' && !is_writable($dir.$name))
 							{
-								$tags[] = 'Protégé en écriture';
-								$this->_notify('Le fichier <code>'.$dir.$name.'</code> est protégé en écriture', 'warning');
+								$tags[] = 'ProtÃ©gÃ© en Ã©criture';
+								$this->_notify('Le fichier <code>'.$dir.$name.'</code> est protÃ©gÃ© en Ã©criture', 'warning');
 							}
 
 							$output[] = [
@@ -235,11 +235,11 @@ class Admin_Ajax extends Controller_Module
 			{
 				if (!($cainfo = ini_get('curl.cainfo')) || !file_exists($cainfo))
 				{
-					$this->_notify('Problème de téléchargement, veuillez configurer <a href="http://php.net/manual/fr/curl.configuration.php#ini.curl.cainfo" target="_blank">curl.cainfo</a>', 'error');
+					$this->_notify('ProblÃ¨me de tÃ©lÃ©chargement, veuillez configurer <a href="http://php.net/manual/fr/curl.configuration.php#ini.curl.cainfo" target="_blank">curl.cainfo</a>', 'error');
 				}
 				else
 				{
-					$this->_notify('Problème de téléchargement, erreur inconnue', 'error');
+					$this->_notify('ProblÃ¨me de tÃ©lÃ©chargement, erreur inconnue', 'error');
 				}
 			}
 
@@ -309,7 +309,7 @@ class Admin_Ajax extends Controller_Module
 		}
 
 		return $this->css('phpinfo')
-					->modal('Informations détaillée')
+					->modal('Informations dÃ©taillÃ©e')
 					->body($phpinfo)
 					->large();
 	}
@@ -481,3 +481,5 @@ class Admin_Ajax extends Controller_Module
 		$this->_notifications[] = [$message, get_colors($type) ? $type : 'danger'];
 	}
 }
+
+

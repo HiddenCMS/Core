@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Form2 extends Library
 {
@@ -149,7 +149,7 @@ class Form2 extends Library
 
 					if ($this->_success)
 					{
-						if (is_a($this->_values, 'NF\NeoFrag\Loadables\Model2'))
+						if (is_a($this->_values, 'HB\HiddenCMS\Loadables\Model2'))
 						{
 							foreach ($data as $key => $value)
 							{
@@ -227,7 +227,7 @@ class Form2 extends Library
 	public function form(...$args)
 	{
 		$model = array_pop($args);
-		$this->_is_model = is_a($model, 'NF\NeoFrag\Loadables\Model2');
+		$this->_is_model = is_a($model, 'HB\HiddenCMS\Loadables\Model2');
 
 		if ($this->_is_model || is_array($model))
 		{
@@ -256,7 +256,7 @@ class Form2 extends Library
 
 	public function model($rule = NULL)
 	{
-		if (is_a($this->_values, 'NF\NeoFrag\Loadables\Model2'))
+		if (is_a($this->_values, 'HB\HiddenCMS\Loadables\Model2'))
 		{
 			return $rule ? $this->_values->{$rule->name()} : $this->_values;
 		}
@@ -264,13 +264,13 @@ class Form2 extends Library
 
 	public function legend($legend, $icon = '')
 	{
-		$this->_rules[] = is_a($legend, 'NF\NeoFrag\Libraries\Forms\Legend') ? $legend : $this->form_legend($legend, $icon);
+		$this->_rules[] = is_a($legend, 'HB\HiddenCMS\Libraries\Forms\Legend') ? $legend : $this->form_legend($legend, $icon);
 		return $this;
 	}
 
 	public function info($info)
 	{
-		$this->_rules[] = is_a($info, 'NF\NeoFrag\Libraries\Forms\Content') ? $info : $this->form_info($info);
+		$this->_rules[] = is_a($info, 'HB\HiddenCMS\Libraries\Forms\Content') ? $info : $this->form_info($info);
 		return $this;
 	}
 
@@ -401,7 +401,7 @@ class Form2 extends Library
 	{
 		foreach ($this->_buttons as $button)
 		{
-			if (is_a($button, 'NF\NeoFrag\Libraries\Buttons\Submit'))
+			if (is_a($button, 'HB\HiddenCMS\Libraries\Buttons\Submit'))
 			{
 				return TRUE;
 			}
@@ -430,7 +430,7 @@ class Form2 extends Library
 						$value = $this->_values[$name];
 					}
 
-					if (is_a($value, 'NF\NeoFrag\Loadables\Model2') && !is_a($value, 'NF\NeoFrag\Models\I18n'))
+					if (is_a($value, 'HB\HiddenCMS\Loadables\Model2') && !is_a($value, 'HB\HiddenCMS\Models\I18n'))
 					{
 						$value = $value->id;
 					}
@@ -450,7 +450,7 @@ class Form2 extends Library
 
 		foreach ($rules as $rule)
 		{
-			if (!$has_upload && is_a($rule, 'NF\NeoFrag\Libraries\Forms\File'))
+			if (!$has_upload && is_a($rule, 'HB\HiddenCMS\Libraries\Forms\File'))
 			{
 				$has_upload = TRUE;
 			}
@@ -488,7 +488,7 @@ class Form2 extends Library
 			{
 				$last = end($fields);
 
-				if (!is_a($last, 'NF\NeoFrag\Libraries\Html'))
+				if (!is_a($last, 'HB\HiddenCMS\Libraries\Html'))
 				{
 					$fields[] = $last = $this->html()->attr('class', 'form-row');
 				}
@@ -525,3 +525,5 @@ class Form2 extends Library
 					->content(call_user_func($this->_template, array_merge($errors, $fields)));
 	}
 }
+
+

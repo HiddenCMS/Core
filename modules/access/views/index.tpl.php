@@ -6,7 +6,7 @@
 		<thead>
 			<tr>
 				<th class="col-8"><?php echo icon($category['icon']).' '.$category['title'] ?></th>
-				<th class="col-8 col-sm-4" colspan="2"><?php echo icon('fas fa-key').' '.$this->lang('Accès') ?></th>
+				<th class="col-8 col-sm-4" colspan="2"><?php echo icon('fas fa-key').' '.$this->lang('AccÃ¨s') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -14,10 +14,11 @@
 			<tr data-action="<?php echo $name ?>">
 				<td class="text-primary"><?php echo icon($access['icon']).' '.$access['title'] ?></td>
 				<td class="access-count">
-					<?php echo NeoFrag()->access->count($module, $name, $id) ?>
+					<?php echo HB()->access->count($module, $name, $id) ?>
 				</td>
 			</tr>
 			<?php endforeach ?>
 		</tbody>
 	</table>
 <?php endforeach ?>
+

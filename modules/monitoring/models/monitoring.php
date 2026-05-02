@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Monitoring\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class Monitoring extends Model
 {
@@ -36,7 +36,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!extension_loaded('curl'))
 							{
-								$errors[] = ['L\'extension cURL doit être activée', 'danger'];
+								$errors[] = ['L\'extension cURL doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -48,7 +48,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!extension_loaded('gd'))
 							{
-								$errors[] = ['L\'extension GD doit être activée', 'danger'];
+								$errors[] = ['L\'extension GD doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -60,7 +60,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!extension_loaded('json'))
 							{
-								$errors[] = ['L\'extension JSON doit être activée', 'danger'];
+								$errors[] = ['L\'extension JSON doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -72,7 +72,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!extension_loaded('mbstring'))
 							{
-								$errors[] = ['L\'extension mbstring doit être activée', 'danger'];
+								$errors[] = ['L\'extension mbstring doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -84,7 +84,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!extension_loaded('zip'))
 							{
-								$errors[] = ['L\'extension Zip doit être activée', 'danger'];
+								$errors[] = ['L\'extension Zip doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -102,7 +102,7 @@ class Monitoring extends Model
 						'check' => function(&$errors){
 							if (!1)
 							{
-								$errors[] = ['L\'option de réécriture d\'URL doit être activée', 'danger'];
+								$errors[] = ['L\'option de rÃ©Ã©criture d\'URL doit Ãªtre activÃ©e', 'danger'];
 								return FALSE;
 							}
 
@@ -120,7 +120,7 @@ class Monitoring extends Model
 						'check' => function(&$errors) use ($server){
 							if (!$server['databases_innodb'])
 							{
-								$errors[] = ['Le moteur de stockage InnoDB doit être activé', 'danger'];
+								$errors[] = ['Le moteur de stockage InnoDB doit Ãªtre activÃ©', 'danger'];
 								return FALSE;
 							}
 
@@ -138,8 +138,8 @@ class Monitoring extends Model
 						'check' => function(&$errors, &$title){
 							if (!$this->email->to('test@neofr.ag')->subject('email_check')->message('default', ['content' => ''])->send())
 							{
-								$errors[] = ['Le serveur d\'envoi d\'email doit être configuré', 'danger'];
-								$title = 'Échec';
+								$errors[] = ['Le serveur d\'envoi d\'email doit Ãªtre configurÃ©', 'danger'];
+								$title = 'Ã‰chec';
 								return FALSE;
 							}
 
@@ -152,3 +152,5 @@ class Monitoring extends Model
 		];
 	}
 }
+
+

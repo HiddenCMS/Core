@@ -1,18 +1,18 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Error extends Library
 {
 	public function __invoke()
 	{
-		throw NeoFrag()->___load('', 'exception', [function(){
+		throw HB()->___load('', 'exception', [function(){
 			header('HTTP/1.0 404 Not Found');
 			return $this->view('errors/unfound');
 		}]);
@@ -22,7 +22,7 @@ class Error extends Library
 	{
 		if ($name == 'throw')
 		{
-			throw NeoFrag()->___load('', 'exception', $args);
+			throw HB()->___load('', 'exception', $args);
 		}
 
 		return parent::__call($name, $args);
@@ -30,7 +30,7 @@ class Error extends Library
 
 	public function unauthorized()
 	{
-		throw NeoFrag()->___load('', 'exception', [function(){
+		throw HB()->___load('', 'exception', [function(){
 			header('HTTP/1.0 403 Forbidden');
 			return $this->view('errors/unauthorized');
 		}]);
@@ -40,7 +40,7 @@ class Error extends Library
 	{
 		if (!$this->user())
 		{
-			throw NeoFrag()->___load('', 'exception', [function(){
+			throw HB()->___load('', 'exception', [function(){
 				header('HTTP/1.0 401 Unauthorized');
 				$this->session->append('modals', 'ajax/user/login');
 				redirect();
@@ -48,3 +48,5 @@ class Error extends Library
 		}
 	}
 }
+
+

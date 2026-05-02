@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\User\Models\User;
 
-class Update extends \NF\NeoFrag\Actions\Update
+class Update extends \HB\HiddenCMS\Actions\Update
 {
 	protected $_ajax = FALSE;
 
@@ -61,12 +61,12 @@ class Update extends \NF\NeoFrag\Actions\Update
 				]);
 			}
 
-			notify('Groupes du membre édités');
+			notify('Groupes du membre Ã©ditÃ©s');
 
 			redirect_back('admin/user');
 		}
 
-		$this->module()	->title($this->lang('Édition du membre'))
+		$this->module()	->title($this->lang('Ã‰dition du membre'))
 						->subtitle($user->username)
 						->css('groups')
 						->js('groups');
@@ -85,7 +85,7 @@ class Update extends \NF\NeoFrag\Actions\Update
 
 												$user->update();
 
-												notify($this->lang('Membre modifié'));
+												notify($this->lang('Membre modifiÃ©'));
 												redirect('admin/user/user/update/'.$user->url());
 											})
 											->panel()
@@ -131,3 +131,5 @@ class Update extends \NF\NeoFrag\Actions\Update
 					);
 	}
 }
+
+

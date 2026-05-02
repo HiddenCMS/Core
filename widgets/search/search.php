@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Widgets\Search;
 
-use NF\NeoFrag\Addons\Widget;
+use HB\HiddenCMS\Addons\Widget;
 
 class Search extends Widget
 {
@@ -16,8 +16,10 @@ class Search extends Widget
 			'title'       => $this->lang('Rechercher'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>'
 		];
 	}
 }
+
+

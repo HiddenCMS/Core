@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Core;
 
-use NF\NeoFrag\Core;
+use HB\HiddenCMS\Core;
 
 class Session extends Core
 {
@@ -160,3 +160,5 @@ class Session extends Core
 						->where('_.last_activity > DATE_SUB(NOW(), INTERVAL 5 MINUTE)');
 	}
 }
+
+

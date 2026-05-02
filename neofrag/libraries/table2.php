@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Table2 extends Library
 {
@@ -39,15 +39,15 @@ class Table2 extends Library
 
 		$data = array_shift($args);
 
-		if (is_a($data, 'NF\NeoFrag\Libraries\Collection'))
+		if (is_a($data, 'HB\HiddenCMS\Libraries\Collection'))
 		{
 			$this->_collection = $data;
 		}
-		else if (is_a($data, 'NF\NeoFrag\Loadables\Model2'))
+		else if (is_a($data, 'HB\HiddenCMS\Loadables\Model2'))
 		{
 			$this->_collection = $data->collection();
 		}
-		else if (is_a($data, 'NF\NeoFrag\Libraries\Array_'))
+		else if (is_a($data, 'HB\HiddenCMS\Libraries\Array_'))
 		{
 			$this->_data = $data->values();
 		}
@@ -79,7 +79,7 @@ class Table2 extends Library
 
 		if (!$args)
 		{
-			if (is_a($content, 'NF\NeoFrag\Libraries\Table_col'))
+			if (is_a($content, 'HB\HiddenCMS\Libraries\Table_col'))
 			{
 				$this->_columns[] = $content;
 			}
@@ -188,7 +188,7 @@ class Table2 extends Library
 							$output = $this	->button('Filtrer', 'fas fa-filter', 'light btn-sm')
 											->align('right')
 											->modal($this	->_filters
-															->info('<small>Le caractère % permet des recherches partielles</small>')
+															->info('<small>Le caractÃ¨re % permet des recherches partielles</small>')
 															->submit('Filtrer')
 															->modal('Filtrer', 'fas fa-filter')
 															->close()
@@ -338,14 +338,14 @@ class Table2 extends Library
 
 		if (!$ajax)
 		{
-			NeoFrag()->css('table2');
+			HB()->css('table2');
 		}
 
 		if ($data)
 		{
 			if (!$ajax)
 			{
-				NeoFrag()->js('table2');
+				HB()->js('table2');
 			}
 
 			$columns = $this->_columns;
@@ -409,11 +409,11 @@ class Table2 extends Library
 							->exec(function($html){
 								if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
 								{
-									$html->content(NeoFrag()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger btn-sm'));
+									$html->content(HB()->lang('Aucun rÃ©sultat trouvÃ©').$this->_filters_reset()->outline()->color('danger btn-sm'));
 								}
 								else
 								{
-									$html->content(NeoFrag()->lang($this->_no_data ?: 'Il n\'y a rien ici pour le moment'));
+									$html->content(HB()->lang($this->_no_data ?: 'Il n\'y a rien ici pour le moment'));
 								}
 							});
 		}
@@ -452,3 +452,5 @@ class Table2 extends Library
 																])));
 	}
 }
+
+

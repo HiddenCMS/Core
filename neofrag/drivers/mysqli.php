@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Drivers;
 
-use NF\NeoFrag\Driver;
+use HB\HiddenCMS\Driver;
 
 #[\AllowDynamicProperties]
 class Mysqli extends Driver
@@ -296,3 +296,5 @@ class Mysqli extends Driver
 		return $return ?: [];
 	}
 }
+
+

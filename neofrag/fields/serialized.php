@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Fields;
@@ -16,12 +16,12 @@ class Serialized
 
 	public function value($value)
 	{
-		if (is_a($value, 'NF\NeoFrag\Libraries\Array_'))
+		if (is_a($value, 'HB\HiddenCMS\Libraries\Array_'))
 		{
 			return $value;
 		}
 
-		return $value ? NeoFrag()->array(unserialize($value)) : NeoFrag()->array;
+		return $value ? HB()->array(unserialize($value)) : HB()->array;
 	}
 
 	public function raw($value)
@@ -33,7 +33,7 @@ class Serialized
 
 				array_walk($value, $convert);
 			}
-			else if (is_a($value, 'NF\NeoFrag\Libraries\Date'))
+			else if (is_a($value, 'HB\HiddenCMS\Libraries\Date'))
 			{
 				$value = $value->sql();
 			}
@@ -44,3 +44,5 @@ class Serialized
 		return $value ? serialize($value) : '';
 	}
 }
+
+

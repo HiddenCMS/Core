@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
@@ -57,7 +57,7 @@ class Date extends Text
 	{
 		if ($value)
 		{
-			if (!is_a($value, 'NF\NeoFrag\Libraries\Date'))
+			if (!is_a($value, 'HB\HiddenCMS\Libraries\Date'))
 			{
 				$value = $this->date($value);
 			}
@@ -68,3 +68,5 @@ class Date extends Text
 		return parent::value($value, $erase);
 	}
 }
+
+

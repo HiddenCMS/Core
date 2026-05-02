@@ -1,19 +1,19 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Buttons;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Update extends Library
 {
 	public function __invoke($url = '', $title = '')
 	{
 		return $this->button()
-					->tooltip($title ?: $this->lang('Éditer'))
+					->tooltip($title ?: $this->lang('Ã‰diter'))
 					->url($url)
 					->icon('fas fa-pencil-alt')
 					->color('info')
@@ -21,3 +21,5 @@ class Update extends Library
 					->outline();
 	}
 }
+
+

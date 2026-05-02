@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Password extends Library
 {
@@ -30,3 +30,5 @@ class Password extends Library
 		return password_needs_rehash($stored_hash, PASSWORD_DEFAULT);
 	}
 }
+
+

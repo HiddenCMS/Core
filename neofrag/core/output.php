@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Core;
 
-use NF\NeoFrag\Core;
+use HB\HiddenCMS\Core;
 
 class Output extends Core
 {
@@ -197,7 +197,7 @@ class Output extends Core
 
 				$module->__init();
 
-				//Méthode par défault
+				//MÃ©thode par dÃ©fault
 				if (empty($segments))
 				{
 					$method = 'index';
@@ -206,7 +206,7 @@ class Output extends Core
 				{
 					parent::error();
 				}
-				//Méthode définie par routage
+				//MÃ©thode dÃ©finie par routage
 				else if (!empty($module->info()->routes))
 				{
 					$method = $module->get_method($segments);
@@ -306,7 +306,7 @@ class Output extends Core
 								->append($output);
 			}
 		}
-		catch (\NF\NeoFrag\Exception $e)
+		catch (\HB\HiddenCMS\Exception $e)
 		{
 			$error = TRUE;
 			$this->_error = (string)$e;
@@ -695,3 +695,5 @@ class Output extends Core
 		}
 	}
 }
+
+

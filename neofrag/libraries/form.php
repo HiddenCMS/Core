@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Form extends Library
 {
@@ -49,12 +49,12 @@ class Form extends Library
 
 		if ($tokens === NULL)
 		{
-			$tokens = NeoFrag()->session('form') ?: [];
+			$tokens = HB()->session('form') ?: [];
 		}
 
 		if (empty($tokens[$id]))
 		{
-			NeoFrag()->session->set('form', $id, $tokens[$id] = unique_id(array_merge([$id], $tokens)));
+			HB()->session->set('form', $id, $tokens[$id] = unique_id(array_merge([$id], $tokens)));
 		}
 
 		return $tokens[$id];
@@ -115,7 +115,7 @@ class Form extends Library
 	public function add_back($url)
 	{
 		array_unshift($this->_buttons, [
-			'label'  => NeoFrag()->lang('Retour'),
+			'label'  => HB()->lang('Retour'),
 			'action' => $this->url->back() ?: $url
 		]);
 
@@ -230,15 +230,15 @@ class Form extends Library
 					{
 						if (!empty($post[$var]) && $post[$var] == 'delete' && !empty($options['value']))
 						{
-							NeoFrag()->model2('file', $options['value'])->delete();
+							HB()->model2('file', $options['value'])->delete();
 							$options['value'] = $post[$var] = 0;
 						}
 
 						if (!empty($files['tmp_name'][$var]))
 						{
-							if (!($post[$var] = NeoFrag()->model2('file')->static_uploaded_file($files, isset($options['upload']) ? $options['upload'] : NULL, isset($options['value']) ? $options['value'] : NULL, $var)->id))
+							if (!($post[$var] = HB()->model2('file')->static_uploaded_file($files, isset($options['upload']) ? $options['upload'] : NULL, isset($options['value']) ? $options['value'] : NULL, $var)->id))
 							{
-								$this->_errors[$var] = NeoFrag()->lang('Erreur de transfert');
+								$this->_errors[$var] = HB()->lang('Erreur de transfert');
 								return FALSE;
 							}
 							else if (isset($options['post_upload']) && is_callable($options['post_upload']))
@@ -285,7 +285,7 @@ class Form extends Library
 			array_diff(array_filter($post[$var]), array_map('utf8_htmlentities', array_keys($options['values'])))
 		)
 		{
-			return NeoFrag()->lang('La valeur sélectionnée n\'est pas valide|Les valeurs sélectionnées ne sont pas valides', count($post[$var]));
+			return HB()->lang('La valeur sÃ©lectionnÃ©e n\'est pas valide|Les valeurs sÃ©lectionnÃ©es ne sont pas valides', count($post[$var]));
 		}
 
 		$is_file = !empty($options['type']) && $options['type'] == 'file';
@@ -298,22 +298,22 @@ class Form extends Library
 				)
 			)
 		{
-			return NeoFrag()->lang('Veuillez remplir ce champ');
+			return HB()->lang('Veuillez remplir ce champ');
 		}
 
 		if ($is_file && !empty($_FILES[$this->token()]['error'][$var]) && $_FILES[$this->token()]['error'][$var] != 4)
 		{
 			$errors = [
-				1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
-				2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
-				3 => 'Le fichier n\'a été que partiellement téléchargé',
-				4 => 'Aucun fichier n\'a été téléchargé',
+				1 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de upload_max_filesize, configurÃ©e dans le php.ini',
+				2 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de MAX_FILE_SIZE, qui a Ã©tÃ© spÃ©cifiÃ©e dans le formulaire HTML',
+				3 => 'Le fichier n\'a Ã©tÃ© que partiellement tÃ©lÃ©chargÃ©',
+				4 => 'Aucun fichier n\'a Ã©tÃ© tÃ©lÃ©chargÃ©',
 				6 => 'Un dossier temporaire est manquant',
-				7 => 'Échec de l\'écriture du fichier sur le disque',
-				8 => 'Une extension PHP a arrêté l\'envoi de fichier'
+				7 => 'Ã‰chec de l\'Ã©criture du fichier sur le disque',
+				8 => 'Une extension PHP a arrÃªtÃ© l\'envoi de fichier'
 			];
 
-			return NeoFrag()->lang($errors[$_FILES[$this->token()]['error'][$var]]);
+			return HB()->lang($errors[$_FILES[$this->token()]['error'][$var]]);
 		}
 
 		if (isset($options['check']) && is_callable($options['check']))
@@ -358,7 +358,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !is_valid_email($post[$var]))
 		{
-			return NeoFrag()->lang('Veuillez entrer une adresse email valide');
+			return HB()->lang('Veuillez entrer une adresse email valide');
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -368,7 +368,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !is_valid_url($post[$var]))
 		{
-			return NeoFrag()->lang('Veuillez entrer une adresse url valide');
+			return HB()->lang('Veuillez entrer une adresse url valide');
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -388,7 +388,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !preg_match('/^0[1-9]([. ]?)\d{2}(?:\1\d{2}){3}$/', $post[$var], $match))
 		{
-			return 'Numéro de téléphone invalide';
+			return 'NumÃ©ro de tÃ©lÃ©phone invalide';
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -428,14 +428,14 @@ class Form extends Library
 			{
 				return '<div class="modal-header">
 							<h5 class="modal-title">'.$title.'</h5>
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">'.NeoFrag()->lang('Fermer').'</span></button>
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">'.HB()->lang('Fermer').'</span></button>
 						</div>
 						<div class="modal-body">
 							'.$message.'
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">'.NeoFrag()->lang('Annuler').'</button>
-							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">'.NeoFrag()->lang('Supprimer').'</a>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">'.HB()->lang('Annuler').'</button>
+							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">'.HB()->lang('Supprimer').'</a>
 						</div>';
 			}
 			else
@@ -502,13 +502,13 @@ class Form extends Library
 
 		if ($this->_display_captcha)
 		{
-			NeoFrag()->js('https://www.google.com/recaptcha/api.js?hl='.$this->config->lang->info()->name.'&_=');
+			HB()->js('https://www.google.com/recaptcha/api.js?hl='.$this->config->lang->info()->name.'&_=');
 			$output .= '<div class="form-group row"><div class="'.($this->_fast_mode ? 'input-group' : 'offset-3 col-9').'">'.$this->captcha->display().'</div></div>';
 		}
 
 		if ($this->_display_required)
 		{
-			$output .= '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.NeoFrag()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>';
+			$output .= '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquÃ©es d\'une Ã©toile sont requises').'</em></div></div>';
 		}
 
 		if (!empty($this->_buttons))
@@ -629,7 +629,7 @@ class Form extends Library
 		{
 			$types = ['date' => 'L', 'datetime' => 'L LT', 'time' => 'LT'];
 
-			NeoFrag()	->css('bootstrap-datetimepicker.min')
+			HB()	->css('bootstrap-datetimepicker.min')
 								->js('bootstrap-datetimepicker/moment.min')
 								->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
 								->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
@@ -679,7 +679,7 @@ class Form extends Library
 
 			$options['icon'] = FALSE;
 
-			NeoFrag()	->css('bootstrap-colorpicker.min')
+			HB()	->css('bootstrap-colorpicker.min')
 						->js('bootstrap-colorpicker.min')
 						->js('colorpicker');
 		}
@@ -720,7 +720,7 @@ class Form extends Library
 		{
 			$post = post();
 
-			$input = '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.NeoFrag()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
+			$input = '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('TÃ©lÃ©charger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
 
 			if (!empty($options['value']))
 			{
@@ -735,7 +735,7 @@ class Form extends Library
 										<div class="thumbnail">
 											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
 											<div class="caption text-center">
-												<a class="btn btn-outline-danger btn-block btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.NeoFrag()->lang('Supprimer').'</a>
+												<a class="btn btn-outline-danger btn-block btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
 											</div>
 										</div>
 									</div>
@@ -764,7 +764,7 @@ class Form extends Library
 
 	private function _display_iconpicker($var, $options, $post)
 	{
-		NeoFrag()	->css('bootstrap-iconpicker.min')
+		HB()	->css('bootstrap-iconpicker.min')
 					->js('bootstrap-iconpicker.bundle.min')
 					->js_load('	$(".btn.iconpicker").iconpicker({
 									arrowPrevIconClass: "fas fa-caret-left",
@@ -772,9 +772,9 @@ class Form extends Library
 									cols: 10,
 									rows: 5,
 									iconset: "fontawesome",
-									labelHeader: "'.NeoFrag()->lang('{0} sur {1} pages').'",
-									labelFooter: "<div class=\"float-right\">'.NeoFrag()->lang('{2} icônes').'</div>",
-									searchText: "'.NeoFrag()->lang('Rechercher...').'",
+									labelHeader: "'.HB()->lang('{0} sur {1} pages').'",
+									labelFooter: "<div class=\"float-right\">'.HB()->lang('{2} icÃ´nes').'</div>",
+									searchText: "'.HB()->lang('Rechercher...').'",
 									selectedClass: "btn-primary",
 									unselectedClass: ""
 								});');
@@ -796,7 +796,7 @@ class Form extends Library
 	{
 		if (isset($options['value']) && $options['value'] !== '')
 		{
-			$options['value'] = timetostr(NeoFrag()->lang('d/m/Y'), $options['value']);
+			$options['value'] = timetostr(HB()->lang('d/m/Y'), $options['value']);
 		}
 		else
 		{
@@ -810,7 +810,7 @@ class Form extends Library
 	{
 		if (isset($options['value']) && $options['value'] !== '')
 		{
-			$options['value'] = timetostr(NeoFrag()->lang('d/m/Y H:i'), $options['value']);
+			$options['value'] = timetostr(HB()->lang('d/m/Y H:i'), $options['value']);
 		}
 		else
 		{
@@ -824,7 +824,7 @@ class Form extends Library
 	{
 		if (isset($options['value']) && $options['value'] !== '' && $options['value'] !== '00:00:00')
 		{
-			$options['value'] = timetostr(NeoFrag()->lang('H:i'), $options['value']);
+			$options['value'] = timetostr(HB()->lang('H:i'), $options['value']);
 		}
 		else
 		{
@@ -962,3 +962,5 @@ class Form extends Library
 		return FALSE;
 	}
 }
+
+

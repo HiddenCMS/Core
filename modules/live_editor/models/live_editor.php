@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Live_Editor\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class Live_Editor extends Model
 {
@@ -37,7 +37,7 @@ class Live_Editor extends Model
 		$widgets = [];
 
 		$disposition->each($f = function($a) use (&$f, &$widgets){
-			if (is_a($a, 'NF\NeoFrag\Displayables\Widget'))
+			if (is_a($a, 'HB\HiddenCMS\Displayables\Widget'))
 			{
 				$widgets[] = $a->widget_id();
 			}
@@ -77,7 +77,7 @@ class Live_Editor extends Model
 
 	public function get_widgets(&$widgets, &$types)
 	{
-		foreach (NeoFrag()->model2('addon')->get('widget') as $widget)
+		foreach (HB()->model2('addon')->get('widget') as $widget)
 		{
 			$widgets[$name = $widget->info()->name] = $widget->info()->title;
 
@@ -91,3 +91,5 @@ class Live_Editor extends Model
 		array_natsort($widgets);
 	}
 }
+
+

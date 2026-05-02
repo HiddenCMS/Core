@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 /**
@@ -14,7 +14,7 @@
  */
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Mysqldump extends Library
 {
@@ -225,3 +225,5 @@ class Mysqldump extends Library
 		return '`'.str_replace('`', '``', $s).'`';
 	}
 }
+
+

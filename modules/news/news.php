@@ -1,23 +1,23 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\News;
 
-use NF\NeoFrag\Addons\Module;
+use HB\HiddenCMS\Addons\Module;
 
 class News extends Module
 {
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Actualités'),
+			'title'       => $this->lang('ActualitÃ©s'),
 			'description' => '',
 			'icon'        => 'far fa-file-alt',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'front'       => TRUE,
@@ -42,12 +42,12 @@ class News extends Module
 			'settings'    => function(){
 				return $this->form2()
 							->rule($this->form_number('news_per_page')
-										->title('Actualités par page')
+										->title('ActualitÃ©s par page')
 										->value($this->config->news_per_page)
 							)
 							->success(function($data){
 								$this->config('news_per_page', $data['news_per_page']);
-								notify('Configuration modifiée');
+								notify('Configuration modifiÃ©e');
 								refresh();
 							});
 			}
@@ -60,7 +60,7 @@ class News extends Module
 			'default' => [
 				'access'  => [
 					[
-						'title'  => 'Actualités',
+						'title'  => 'ActualitÃ©s',
 						'icon'   => 'far fa-file-alt',
 						'access' => [
 							'add_news' => [
@@ -81,21 +81,21 @@ class News extends Module
 						]
 					],
 					[
-						'title'  => 'Catégories',
+						'title'  => 'CatÃ©gories',
 						'icon'   => 'fas fa-align-left',
 						'access' => [
 							'add_news_category' => [
-								'title' => 'Ajouter une catégorie',
+								'title' => 'Ajouter une catÃ©gorie',
 								'icon'  => 'fas fa-plus',
 								'admin' => TRUE
 							],
 							'modify_news_category' => [
-								'title' => 'Modifier une catégorie',
+								'title' => 'Modifier une catÃ©gorie',
 								'icon'  => 'fas fa-edit',
 								'admin' => TRUE
 							],
 							'delete_news_category' => [
-								'title' => 'Supprimer une catégorie',
+								'title' => 'Supprimer une catÃ©gorie',
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
 							]
@@ -123,3 +123,5 @@ class News extends Module
 		}
 	}
 }
+
+

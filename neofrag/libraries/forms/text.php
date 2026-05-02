@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries\Forms;
@@ -22,7 +22,7 @@ class Text extends Labelable
 							->attr_if($this->_value !== '', 'value', $this->_value)
 							->attr_if($this->_disabled,     'disabled')
 							->attr_if($this->_read_only,    'readonly')
-							->attr_if(is_a($this, 'NF\NeoFrag\Libraries\Forms\Password'), 'autocomplete');
+							->attr_if(is_a($this, 'HB\HiddenCMS\Libraries\Forms\Password'), 'autocomplete');
 
 			$this->_placeholder($input);
 
@@ -120,7 +120,7 @@ class Text extends Labelable
 
 	public function addon($label, $align = 'prepend')
 	{
-		if (!is_a($label, 'NF\NeoFrag\Libraries\Label'))
+		if (!is_a($label, 'HB\HiddenCMS\Libraries\Label'))
 		{
 			$label = $this	->label()
 							->icon($label)
@@ -137,3 +137,5 @@ class Text extends Labelable
 		return $this;
 	}
 }
+
+

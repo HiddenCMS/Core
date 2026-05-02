@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Statistics\Models;
 
-use NF\NeoFrag\Loadables\Model;
+use HB\HiddenCMS\Loadables\Model;
 
 class Statistics extends Model
 {
@@ -17,7 +17,7 @@ class Statistics extends Model
 
 		$i = 0;
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HB()->model2('addon')->get('module') as $module)
 		{
 			if ($controller = @$module->controller('statistics'))
 			{
@@ -39,3 +39,5 @@ class Statistics extends Model
 		return $statistics;
 	}
 }
+
+

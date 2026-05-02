@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Array_ extends Library implements \Iterator, \ArrayAccess
 {
@@ -19,7 +19,7 @@ class Array_ extends Library implements \Iterator, \ArrayAccess
 		{
 			$array = func_get_args();
 		}
-		else if (is_a($array, 'NF\NeoFrag\Libraries\Array_') && !is_a($this, 'NF\NeoFrag\Displayable'))
+		else if (is_a($array, 'HB\HiddenCMS\Libraries\Array_') && !is_a($this, 'HB\HiddenCMS\Displayable'))
 		{
 			return $array;
 		}
@@ -48,7 +48,7 @@ class Array_ extends Library implements \Iterator, \ArrayAccess
 	{
 		if (is_array($value = $this->get($name)))
 		{
-			$value = NeoFrag()->array($value);
+			$value = HB()->array($value);
 		}
 
 		return $value;
@@ -66,7 +66,7 @@ class Array_ extends Library implements \Iterator, \ArrayAccess
 
 		foreach ($this->_array as $row)
 		{
-			if (is_a($row, 'NF\NeoFrag\Loadables\Model2'))
+			if (is_a($row, 'HB\HiddenCMS\Loadables\Model2'))
 			{
 				$list[$row->{$key === NULL ? 'id' : $key}] = $row;
 			}
@@ -388,7 +388,7 @@ class Array_ extends Library implements \Iterator, \ArrayAccess
 				$node[$name] = [];
 			}
 
-			if (is_a($node[$name], 'NF\NeoFrag\Libraries\Array_'))
+			if (is_a($node[$name], 'HB\HiddenCMS\Libraries\Array_'))
 			{
 				$node = &$node[$name]->_array;
 			}
@@ -458,3 +458,5 @@ class Array_ extends Library implements \Iterator, \ArrayAccess
 		}
 	}
 }
+
+

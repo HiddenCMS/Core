@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Core;
 
-use NF\NeoFrag\Core;
+use HB\HiddenCMS\Core;
 
 class Groups extends Core
 {
@@ -251,3 +251,5 @@ class Groups extends Core
 		return $this;
 	}
 }
+
+

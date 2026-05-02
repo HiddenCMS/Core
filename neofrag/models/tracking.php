@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Models;
 
-use NF\NeoFrag\Loadables\Model2;
+use HB\HiddenCMS\Loadables\Model2;
 
 class Tracking extends Model2
 {
@@ -14,10 +14,12 @@ class Tracking extends Model2
 	{
 		return [
 			'id'       => self::field()->primary(),
-			'user'     => self::field()->depends('user/user')->default(NeoFrag()->user),
+			'user'     => self::field()->depends('user/user')->default(HB()->user),
 			'model'    => self::field()->text(100)->null(),
 			'model_id' => self::field()->int()->null(),
 			'date'     => self::field()->datetime()
 		];
 	}
 }
+
+

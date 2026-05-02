@@ -1,6 +1,6 @@
 html,
 body {
-	background-image: url("<?php echo NeoFrag()->model2('file', $this->config->maintenance_background)->path() ?: image('maintenance.jpg') ?>");
+	background-image: url("<?php echo HB()->model2('file', $this->config->maintenance_background)->path() ?: image('maintenance.jpg') ?>");
 	background-position: <?php echo $this->config->maintenance_background_position ?: 'center top' ?>;
 	background-repeat: <?php echo $this->config->maintenance_background_repeat ?: 'no-repeat' ?>;
 	background-attachment: scroll;
@@ -92,3 +92,4 @@ header, main, footer {
 .mastfoot {
 	color: rgba(255, 255, 255, .5);
 }
+

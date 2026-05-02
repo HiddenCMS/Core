@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
@@ -248,6 +248,7 @@ class Driver_Query
 
 	public function debug()
 	{
-		return \SqlFormatter::format(\SqlFormatter::compress($this->sql)).(!empty($this->bind) ? '<br />'.NeoFrag()->debug->table($this->bind) : '').(!empty($this->error) ? '<div class="alert alert-danger">'.$this->error.'</div>' : '');
+		return \SqlFormatter::format(\SqlFormatter::compress($this->sql)).(!empty($this->bind) ? '<br />'.HB()->debug->table($this->bind) : '').(!empty($this->error) ? '<div class="alert alert-danger">'.$this->error.'</div>' : '');
 	}
 }
+

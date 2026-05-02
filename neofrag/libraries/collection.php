@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Libraries;
 
-use NF\NeoFrag\Library;
+use HB\HiddenCMS\Library;
 
 class Collection extends Library
 {
@@ -21,7 +21,7 @@ class Collection extends Library
 	{
 		if ($model)
 		{
-			if (!is_a($model, 'NF\NeoFrag\Loadables\Model2'))
+			if (!is_a($model, 'HB\HiddenCMS\Loadables\Model2'))
 			{
 				$model = $this->__caller->model2($model);
 			}
@@ -39,7 +39,7 @@ class Collection extends Library
 		{
 			if ($name == 'array')
 			{
-				return NeoFrag()->array($this->get());
+				return HB()->array($this->get());
 			}
 			else if (method_exists($this->array, $name))
 			{
@@ -48,7 +48,7 @@ class Collection extends Library
 			else
 			{
 				$result = call_user_func_array([$this->_db, $name], $args);
-				return is_a($result, 'NF\NeoFrag\NeoFrag') ? $this : $result;
+				return is_a($result, 'HB\HiddenCMS\NeoFrag') ? $this : $result;
 			}
 		}
 
@@ -114,7 +114,7 @@ class Collection extends Library
 			$this->_filters->check(TRUE);
 		}
 
-		$this->pagination = NeoFrag()->pagination($this->_db, $page, $limit);
+		$this->pagination = HB()->pagination($this->_db, $page, $limit);
 
 		return $this;
 	}
@@ -172,14 +172,14 @@ class Collection extends Library
 			}
 		}
 
-		if ($count && !$total_unread && NeoFrag()->db()->from('tracking')->where('user_id', NeoFrag()->user->id)->where('model', $this->_model->__table)->count() > 1)
+		if ($count && !$total_unread && HB()->db()->from('tracking')->where('user_id', HB()->user->id)->where('model', $this->_model->__table)->count() > 1)
 		{
-			NeoFrag()	->collection('tracking')
-						->where('user_id', NeoFrag()->user->id)
+			HB()	->collection('tracking')
+						->where('user_id', HB()->user->id)
 						->where('model',   $this->_model->__table)
 						->delete();
 
-			NeoFrag()	->model2('tracking')
+			HB()	->model2('tracking')
 						->set('model',    $this->_model->__table)
 						->set('model_id', NULL)
 						->create();
@@ -228,3 +228,5 @@ class Collection extends Library
 		return $data;
 	}
 }
+
+

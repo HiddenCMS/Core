@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
@@ -26,7 +26,7 @@ class Field
 				return isset($this->_fields[$match[1]]);
 			}
 
-			if (method_exists($field = $this->_fields[$name] = NeoFrag()->___load('fields', $name, $args), 'init'))
+			if (method_exists($field = $this->_fields[$name] = HB()->___load('fields', $name, $args), 'init'))
 			{
 				$field->init($this);
 			}
@@ -85,3 +85,4 @@ class Field
 		return $this->_default !== NULL && !$this->_nullable ? $this->_default : NULL;
 	}
 }
+

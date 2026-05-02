@@ -1,6 +1,6 @@
 <?php if ($image): ?>
 	<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>">
-		<img class="card-img-top" src="<?php echo NeoFrag()->model2('file', $image)->path() ?>" alt="" />
+		<img class="card-img-top" src="<?php echo HB()->model2('file', $image)->path() ?>" alt="" />
 	</a>
 <?php endif ?>
 <div class="card-body">
@@ -28,7 +28,8 @@
 		</ul>
 	<?php endif ?>
 	<?php if ($content): ?>
-		<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer à lire') ?></a>
+		<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer Ã  lire') ?></a>
 	<?php endif ?>
 </div>
 <?php endif ?>
+

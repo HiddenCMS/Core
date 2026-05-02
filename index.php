@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 /** Init composer */
@@ -43,6 +43,16 @@ require_once 'config/hiddencms.php';
 
 function class_name($name)
 {
+	if (strpos($name, 'HB\\') === 0)
+	{
+		$name = 'NF\\'.substr($name, strlen('HB\\'));
+	}
+
+	if (strpos($name, 'NF\\HiddenCMS\\') === 0)
+	{
+		$name = 'NF\\NeoFrag\\'.substr($name, strlen('NF\\HiddenCMS\\'));
+	}
+
 	$name = explode('\\', $name);
 
 	array_walk($name, function(&$a){
@@ -104,6 +114,11 @@ function HiddenCMS()
 	return call_user_func_array('NeoFrag', func_get_args());
 }
 
+function HB()
+{
+	return call_user_func_array('HiddenCMS', func_get_args());
+}
+
 function check_file($dir, $force = FALSE)
 {
 	if ($dir === '')
@@ -157,6 +172,32 @@ foreach ([
 }
 
 spl_autoload_register(function($name){
+	$alias = NULL;
+
+	if (strpos($name, 'HB\\') === 0)
+	{
+		$alias = $name;
+		$name  = 'NF\\'.substr($name, strlen('HB\\'));
+
+		if (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE))
+		{
+			class_alias($name, $alias);
+			return;
+		}
+	}
+
+	if (strpos($name, 'NF\\HiddenCMS\\') === 0)
+	{
+		$alias = $alias ?: $name;
+		$name  = 'NF\\NeoFrag\\'.substr($name, strlen('NF\\HiddenCMS\\'));
+
+		if (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE))
+		{
+			class_alias($name, $alias);
+			return;
+		}
+	}
+
 	$namespace = explode('\\', $name);
 
 	if (array_shift($namespace) == 'NF' && $namespace)
@@ -170,9 +211,14 @@ spl_autoload_register(function($name){
 			require_once $file;
 		}
 	}
+
+	if ($alias && (class_exists($name, FALSE) || interface_exists($name, FALSE) || trait_exists($name, FALSE)))
+	{
+		class_alias($name, $alias);
+	}
 });
 
-NeoFrag('NF\NeoFrag\NeoFrag')->__path(function($caller, $type, $file){
+HB('HB\HiddenCMS\NeoFrag')->__path(function($caller, $type, $file){
 	$file = [$file];
 
 	if (!in_array($type, ['addons', 'assets']))
@@ -213,7 +259,7 @@ foreach ([
 		] as $core
 	)
 {
-	NeoFrag()->{'core_'.$core};
+	HB()->{'core_'.$core};
 }
 
 define('HIDDENCMS_CORE', TRUE);
@@ -224,4 +270,6 @@ if (defined('HIDDENCMS_INSTALL') || defined('NEOFRAG_INSTALL'))
 	require_once 'install/index.php';
 }
 
-NeoFrag()->output();
+HB()->output();
+
+

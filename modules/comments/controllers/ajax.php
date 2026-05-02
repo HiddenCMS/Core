@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Comments\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Ajax extends Controller_Module
 {
@@ -14,7 +14,7 @@ class Ajax extends Controller_Module
 	{
 		$this	->title($this->lang('Confirmation de suppression'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer ce commentaire ?'));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer ce commentaire ?'));
 
 		if ($this->form()->is_valid())
 		{
@@ -37,3 +37,5 @@ class Ajax extends Controller_Module
 		return $this->form()->display();
 	}
 }
+
+

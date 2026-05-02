@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Addons;
 
-use NF\NeoFrag\Loadables\Addon;
+use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Widget extends Addon
 {
@@ -66,3 +66,5 @@ abstract class Widget extends Addon
 		}
 	}
 }
+
+

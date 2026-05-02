@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Comments;
 
-use NF\NeoFrag\Addons\Module;
+use HB\HiddenCMS\Addons\Module;
 
 class Comments extends Module
 {
@@ -17,7 +17,7 @@ class Comments extends Module
 			'description' => '',
 			'icon'        => 'far fa-comments',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@neofrag.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@neofrag.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'routes'      => [
@@ -28,7 +28,7 @@ class Comments extends Module
 
 	public function __invoke($module, $module_id = 0)
 	{
-		if (is_a($module, 'NF\NeoFrag\Loadables\Model2'))
+		if (is_a($module, 'HB\HiddenCMS\Loadables\Model2'))
 		{
 			$module_id = $module->id;
 			$module    = $module->__table;
@@ -50,7 +50,7 @@ class Comments extends Module
 											->set('content',   $data['comment'])
 											->create();
 
-									notify('Commentaire envoyé');
+									notify('Commentaire envoyÃ©');
 
 									refresh();
 								})
@@ -59,7 +59,7 @@ class Comments extends Module
 		}
 		else
 		{
-			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('Vous devez être identifié pour pouvoir poster un commentaire').'</div>';
+			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('Vous devez Ãªtre identifiÃ© pour pouvoir poster un commentaire').'</div>';
 		}
 
 		return $this->css('comments')
@@ -111,3 +111,5 @@ class Comments extends Module
 		return $comments[$module][$module_id];
 	}
 }
+
+

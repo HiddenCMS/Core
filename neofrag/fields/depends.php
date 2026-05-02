@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag\Fields;
@@ -25,25 +25,27 @@ class Depends
 
 	public function raw($value)
 	{
-		return (is_a($value, 'NF\NeoFrag\Loadables\Model2') ? $value->id : $value) ?: NULL;
+		return (is_a($value, 'HB\HiddenCMS\Loadables\Model2') ? $value->id : $value) ?: NULL;
 	}
 
 	public function value($value)
 	{
-		if (is_a($value, 'NF\NeoFrag\Loadables\Model2'))
+		if (is_a($value, 'HB\HiddenCMS\Loadables\Model2'))
 		{
 			return $value;
 		}
 
 		if (isset($this->_model[1]))
 		{
-			$value = NeoFrag()->module($this->_model[0])->model2($this->_model[1], $value);
+			$value = HB()->module($this->_model[0])->model2($this->_model[1], $value);
 		}
 		else
 		{
-			$value = NeoFrag()->model2($this->_model[0], $value);
+			$value = HB()->model2($this->_model[0], $value);
 		}
 
 		return $value;
 	}
 }
+
+

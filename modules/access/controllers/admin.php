@@ -1,12 +1,12 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\Modules\Access\Controllers;
 
-use NF\NeoFrag\Loadables\Controllers\Module as Controller_Module;
+use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin extends Controller_Module
 {
@@ -16,7 +16,7 @@ class Admin extends Controller_Module
 		{
 			return $this->panel()
 						->heading($this->lang('Permissions'), 'fas fa-unlock-alt')
-						->body($this->lang('Il n\'y a aucune permission à administrer'));
+						->body($this->lang('Il n\'y a aucune permission Ã  administrer'));
 		}
 
 		$this->js('access');
@@ -63,14 +63,14 @@ class Admin extends Controller_Module
 								[
 									'content' => [
 										function($data) use ($module, $type){
-											return $this->button()->tooltip($this->lang('Réinitialiser'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
+											return $this->button()->tooltip($this->lang('RÃ©initialiser'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 												'module' => $module->info()->name,
 												'type'   => $type,
 												'id'     => $data['id']
 											]);
 										},
 										function($data) use ($module, $type){
-											return $this->button_access($data['id'], $type, $module->info()->name, $this->lang('Éditer'));
+											return $this->button_access($data['id'], $type, $module->info()->name, $this->lang('Ã‰diter'));
 										}
 									]
 								]
@@ -88,7 +88,7 @@ class Admin extends Controller_Module
 		$this	->title($module->info()->title)
 				->subtitle($title ?: $this->lang('Gestion des permissions'))
 				->icon($module->info()->icon)
-				->add_action('admin/'.$module->info()->name, $this->lang('Accéder au module %s', $module->info()->title), $module->info()->icon)
+				->add_action('admin/'.$module->info()->name, $this->lang('AccÃ©der au module %s', $module->info()->title), $module->info()->icon)
 				->css('access')
 				->js('access')
 				->css('table')
@@ -99,7 +99,7 @@ class Admin extends Controller_Module
 						$this->row(
 							$this->col(
 								$this	->panel()
-										->heading($this->lang('Liste des permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('Réinitialiser toutes les permissions'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
+										->heading($this->lang('Liste des permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('RÃ©initialiser toutes les permissions'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 											'module' => $module->info()->name,
 											'type'   => $type,
 											'id'     => $id
@@ -118,3 +118,5 @@ class Admin extends Controller_Module
 					->append($this->panel_back());
 	}
 }
+
+

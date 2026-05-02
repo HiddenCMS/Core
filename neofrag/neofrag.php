@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace NF\NeoFrag;
@@ -33,7 +33,7 @@ class NeoFrag
 		{
 			if ($callback($path))
 			{
-				if ((HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS) && isset($this->debug) && !is_a($path, 'NF\NeoFrag\Libraries\Date'))
+				if ((HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS) && isset($this->debug) && !is_a($path, 'HB\HiddenCMS\Libraries\Date'))
 				{
 					$this->debug(strtoupper($type), get_class($this), is_object($path) ? get_class($path) : $path);
 				}
@@ -44,7 +44,7 @@ class NeoFrag
 			$dir[] = $path;
 		}
 
-		if ($this != ($NeoFrag = NeoFrag()))
+		if ($this != ($NeoFrag = HB()))
 		{
 			return $NeoFrag->__path($type, $file, $dir, $callback);
 		}
@@ -57,7 +57,7 @@ class NeoFrag
 		$callback = function(&$path) use ($args){
 			if (class_exists($path = class_name('NF\\'.str_replace('/', '\\', $path))))
 			{
-				$path = NeoFrag($path, $args);
+				$path = HB($path, $args);
 				return TRUE;
 			}
 		};
@@ -72,14 +72,14 @@ class NeoFrag
 
 	public function __isset($name)
 	{
-		return isset(NeoFrag()->$name);
+		return isset(HB()->$name);
 	}
 
 	public function __get($name)
 	{
-		if (isset(NeoFrag()->$name))
+		if (isset(HB()->$name))
 		{
-			return NeoFrag()->$name;
+			return HB()->$name;
 		}
 		else
 		{
@@ -92,7 +92,7 @@ class NeoFrag
 			else
 			{
 				$type = 'libraries';
-				$args = [property_exists($this, '__caller') ? $this->__caller : (is_a($this, 'NF\NeoFrag\Loadables\Addon') ? $this : NeoFrag())];
+				$args = [property_exists($this, '__caller') ? $this->__caller : (is_a($this, 'HB\HiddenCMS\Loadables\Addon') ? $this : HB())];
 			}
 
 			$$name = NULL;
@@ -102,7 +102,7 @@ class NeoFrag
 				$args[] = $$name;
 			}
 
-			if (!is_null($name) && !($object = @NeoFrag()->___load($type, $name, $args)))
+			if (!is_null($name) && !($object = @HB()->___load($type, $name, $args)))
 			{
 				$class = explode('_', $name, 2);
 
@@ -111,7 +111,7 @@ class NeoFrag
 					$class[0] .= 's';
 				}
 
-				$object = @NeoFrag()->___load($type, implode('\\', $class), $args);
+				$object = @HB()->___load($type, implode('\\', $class), $args);
 			}
 
 			if ($type == 'core')
@@ -164,17 +164,17 @@ class NeoFrag
 		{
 			return forward_static_call_array($callback ?: [$this, $match[1]], $args);
 		}
-		else if (is_a($class = 'NF\NeoFrag\Displayables\\'.$name, 'NF\NeoFrag\Displayable', TRUE))
+		else if (is_a($class = 'HB\HiddenCMS\Displayables\\'.$name, 'HB\HiddenCMS\Displayable', TRUE))
 		{
-			$callback = NeoFrag($class);
+			$callback = HB($class);
 		}
-		else if (is_a($class = 'NF\NeoFrag\Addons\\'.$name, 'NF\NeoFrag\Loadable', TRUE))
+		else if (is_a($class = 'HB\HiddenCMS\Addons\\'.$name, 'HB\HiddenCMS\Loadable', TRUE))
 		{
-			return forward_static_call_array($class.'::__load', [NeoFrag(), $args]);
+			return forward_static_call_array($class.'::__load', [HB(), $args]);
 		}
-		else if (is_a($class = 'NF\NeoFrag\Loadables\\'.$name, 'NF\NeoFrag\Loadable', TRUE))
+		else if (is_a($class = 'HB\HiddenCMS\Loadables\\'.$name, 'HB\HiddenCMS\Loadable', TRUE))
 		{
-			return forward_static_call_array($class.'::__load', [property_exists($this, '__caller') ? $this->__caller : (is_a($this, 'NF\NeoFrag\Loadables\Addon') ? $this : NeoFrag()), $args]);
+			return forward_static_call_array($class.'::__load', [property_exists($this, '__caller') ? $this->__caller : (is_a($this, 'HB\HiddenCMS\Loadables\Addon') ? $this : HB()), $args]);
 		}
 		else if (!$callback && is_callable($library = $this->$name))
 		{
@@ -207,3 +207,5 @@ class NeoFrag
 		return $properties;
 	}
 }
+
+

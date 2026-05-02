@@ -1,5 +1,5 @@
 <form target="live-editor-iframe" action="<?php echo url() ?>" method="post">
-	<input type="hidden" name="live_editor" value="<?php echo $live_editor = $this->session('live_editor') ?: $this->output->live_editor() ^ \NF\NeoFrag\Core\Output::WIDGETS ?>" />
+	<input type="hidden" name="live_editor" value="<?php echo $live_editor = $this->session('live_editor') ?: $this->output->live_editor() ^ \HB\HiddenCMS\Core\Output::WIDGETS ?>" />
 	<nav class="live-editor-navbar navbar navbar-expand-lg navbar-light bg-light py-2">
 		<a class="navbar-brand" href="<?php echo url('admin/live-editor') ?>"><?php echo icon('fas fa-desktop') ?> <b>Live</b><span data-typer="Editor"></span></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#modules-links-collapse" aria-controls="modules-links-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,10 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
 					<div class="btn-group">
-						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \NF\NeoFrag\Core\Output::ZONES ? ' active' : '' ?>" data-mode="<?php echo \NF\NeoFrag\Core\Output::ZONES ?>"><?php echo icon('far fa-square').' '.$this->lang('Zones') ?></button>
-						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \NF\NeoFrag\Core\Output::ROWS ? ' active' : '' ?>" data-mode="<?php echo \NF\NeoFrag\Core\Output::ROWS ?>"><?php echo icon('fas fa-columns fa-rotate-270').' '.$this->lang('Lignes') ?></button>
-						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \NF\NeoFrag\Core\Output::COLS ? ' active' : '' ?>" data-mode="<?php echo \NF\NeoFrag\Core\Output::COLS ?>"><?php echo icon('fas fa-columns').' '.$this->lang('Colonnes') ?></button>
-						<button type="button" class="btn btn-light live-editor-mode active" data-mode="<?php echo \NF\NeoFrag\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
+						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ZONES ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ZONES ?>"><?php echo icon('far fa-square').' '.$this->lang('Zones') ?></button>
+						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ROWS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ROWS ?>"><?php echo icon('fas fa-columns fa-rotate-270').' '.$this->lang('Lignes') ?></button>
+						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::COLS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::COLS ?>"><?php echo icon('fas fa-columns').' '.$this->lang('Colonnes') ?></button>
+						<button type="button" class="btn btn-light live-editor-mode active" data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
 					</div>
 				</li>
 				<li class="nav-item dropdown ml-2">
@@ -63,3 +63,5 @@
 <div class="live-editor-iframe">
 	<iframe name="live-editor-iframe" src=""></iframe>
 </div>
+
+
