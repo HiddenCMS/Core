@@ -170,16 +170,16 @@ var modal_settings = function(title, settings, callback){
 
 		settings.settings = null;
 
-		$.each($('#live-editor-settings-form').serializeArray(), function(){
-			if (settings[this.name] !== undefined){
-				if (!settings[this.name].push){
-					settings[this.name] = [settings[this.name]];
+		(new FormData($('#live-editor-settings-form')[0])).forEach(function(value, name){
+			if (settings[name] !== undefined){
+				if (!settings[name].push){
+					settings[name] = [settings[name]];
 				}
 
-				settings[this.name].push(this.value || '');
+				settings[name].push(value || '');
 			}
 			else {
-				settings[this.name] = this.value || '';
+				settings[name] = value || '';
 			}
 		});
 

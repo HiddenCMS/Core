@@ -41,7 +41,7 @@ abstract class Model2 extends HiddenCMS implements \HB\HiddenCMS\Loadable
 	{
 		if (array_key_exists(1, $args))
 		{
-			$id = serialize($args);
+			$id = HB()->storage->key($args);
 		}
 		else if ($args)
 		{
@@ -770,7 +770,7 @@ abstract class Model2 extends HiddenCMS implements \HB\HiddenCMS\Loadable
 			$this	->model2('log_db')
 					->action($actions[$action])
 					->model($this->__table)
-					->primaries(count($primaries) == 1 && isset($primaries['id']) ? $primaries['id'] : serialize($primaries))
+					->primaries(count($primaries) == 1 && isset($primaries['id']) ? $primaries['id'] : $this->storage->encode($primaries))
 					->data($data)
 					->create();
 		}

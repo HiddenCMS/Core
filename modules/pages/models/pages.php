@@ -68,7 +68,7 @@ class Pages extends Model
 			return FALSE;
 		}
 
-		$instance['settings'] = $instance['settings'] ? @unserialize($instance['settings']) : [];
+		$instance['settings'] = $this->storage->decode($instance['settings']);
 
 		return $instance;
 	}
@@ -295,7 +295,7 @@ class Pages extends Model
 			'page_id'  => $page_id,
 			'module'   => $module,
 			'route'    => trim($route, '/'),
-			'settings' => serialize($settings),
+			'settings' => $this->storage->encode($settings),
 			'position' => 0,
 			'enabled'  => TRUE
 		];

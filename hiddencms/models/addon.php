@@ -16,7 +16,7 @@ class Addon extends Model2
 			'id'   => self::field()->primary(),
 			'type' => self::field()->depends('addon_type')->null(),
 			'name' => self::field()->text(100),
-			'data' => self::field()->serialized()
+			'data' => self::field()->json()
 		];
 	}
 

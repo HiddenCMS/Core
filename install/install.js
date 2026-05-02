@@ -116,7 +116,9 @@ $(function(){
 		var d2 = $.ajax({
 			url: 'index.php?step='+step+(install ? '&install=true' : ''),
 			type: 'POST',
-			data: $form.serialize()
+			data: new FormData($form[0]),
+			processData: false,
+			contentType: false
 		});
 
 		var valid_input = function($input){

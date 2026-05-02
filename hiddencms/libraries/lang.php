@@ -55,7 +55,7 @@ class Lang extends Library
 			}
 		});
 
-		if (!isset(static::$_objects[$caller = get_class($this->__caller)][$key = serialize($args)]))
+		if (!isset(static::$_objects[$caller = get_class($this->__caller)][$key = $this->storage->key($args)]))
 		{
 			$this->_args = $args;
 			$this->_name = array_shift($this->_args);

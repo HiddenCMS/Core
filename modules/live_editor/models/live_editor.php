@@ -21,14 +21,14 @@ class Live_Editor extends Model
 		$page  = $disposition['page'];
 		$zone  = $disposition['zone'];
 
-		return unserialize($disposition['disposition']);
+		return $this->disposition->decode($disposition['disposition']);
 	}
 
 	public function set_disposition($disposition_id, $disposition)
 	{
 		$this->db	->where('disposition_id', $disposition_id)
 					->update('dispositions', [
-						'disposition' => serialize($disposition)
+						'disposition' => $this->disposition->encode($disposition)
 					]);
 	}
 
@@ -64,7 +64,7 @@ class Live_Editor extends Model
 		{
 			if ($widget['settings'] !== NULL)
 			{
-				$widget['settings'] = serialize($widget['settings']);
+				$widget['settings'] = $this->storage->encode($widget['settings']);
 			}
 
 			return $widget;

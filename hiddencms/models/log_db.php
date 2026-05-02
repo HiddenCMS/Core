@@ -21,7 +21,7 @@ class Log_Db extends Model2
 			'action'    => self::field()->enum(0, 1, 2),//create - update - delete
 			'model'     => self::field()->text(100),
 			'primaries' => self::field()->text(100)->null(),
-			'data'      => self::field()->serialized()
+			'data'      => self::field()->json()
 		];
 	}
 }

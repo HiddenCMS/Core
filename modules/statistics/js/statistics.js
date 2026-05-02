@@ -10,16 +10,16 @@ $(function(){
 
 		var data = {};
 
-		$.each($('form').serializeArray(), function(){
-			if (data[this.name] !== undefined){
-				if (!data[this.name].push){
-					data[this.name] = [data[this.name]];
+		(new FormData($('form')[0])).forEach(function(value, name){
+			if (data[name] !== undefined){
+				if (!data[name].push){
+					data[name] = [data[name]];
 				}
 
-				data[this.name].push(this.value || '');
+				data[name].push(value || '');
 			}
 			else {
-				data[this.name] = this.value || '';
+				data[name] = value || '';
 			}
 		});
 

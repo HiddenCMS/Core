@@ -69,7 +69,7 @@ class Azuro extends Theme
 						$this->widget($this->db->insert('widgets', [
 							'widget'   => 'header',
 							'type'     => 'index',
-							'settings' => serialize([
+							'settings' => $this->storage->encode([
 								'display'           => 'logo',
 								'align'             => 'text-center',
 								'title'             => '',
@@ -89,7 +89,7 @@ class Azuro extends Theme
 						$this	->widget($this->db->insert('widgets', [
 									'widget'   => 'navigation',
 									'type'     => 'index',
-									'settings' => serialize([
+									'settings' => $this->storage->encode([
 										'links'   => [
 											[
 												'title' => utf8_htmlentities($this->lang('Accueil')),
@@ -139,7 +139,7 @@ class Azuro extends Theme
 					$this	->widget($this->db->insert('widgets', [
 								'widget'   => 'navigation',
 								'type'     => 'index',
-								'settings' => serialize([
+								'settings' => $this->storage->encode([
 									'links'   => [
 										[
 											'title' => 'Facebook',
@@ -201,7 +201,7 @@ class Azuro extends Theme
 								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'navigation',
 									'type'     => 'vertical',
-									'settings' => serialize([
+									'settings' => $this->storage->encode([
 										'links'   => [
 											[
 												'title' => utf8_htmlentities($this->lang('Actualités')),
@@ -237,7 +237,7 @@ class Azuro extends Theme
 								$this->widget($this->db->insert('widgets', [
 									'widget' => 'partners',
 									'type'   => 'column',
-									'settings' => serialize([
+									'settings' => $this->storage->encode([
 										'display_style' => 'dark'
 									])
 								])),
@@ -252,7 +252,7 @@ class Azuro extends Theme
 								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'talks',
 									'type'     => 'index',
-									'settings' => serialize([
+									'settings' => $this->storage->encode([
 										'talk_id' => 2
 									])
 								])),

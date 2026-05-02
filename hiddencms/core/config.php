@@ -20,7 +20,7 @@ class Config extends Core
 		{
 			if ($setting['type'] == 'array')
 			{
-				$value = unserialize(utf8_html_entity_decode($setting['value']));
+				$value = $this->storage->decode(utf8_html_entity_decode($setting['value']));
 			}
 			else if ($setting['type'] == 'list')
 			{

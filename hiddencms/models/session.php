@@ -17,7 +17,7 @@ class Session extends Model2
 			'user'          => self::field()->depends('user/user')->null(),
 			'remember'      => self::field()->bool(),
 			'last_activity' => self::field()->datetime(),
-			'data'          => self::field()->serialized()
+			'data'          => self::field()->json()
 		];
 	}
 }

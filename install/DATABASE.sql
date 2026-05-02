@@ -42,47 +42,47 @@ CREATE TABLE `addon` (
 
 INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (1, NULL, 'authenticator', NULL),
-(2, 1, 'access', 'a:1:{s:7:\"enabled\";b:1;}'),
-(3, 1, 'addons', 'a:1:{s:7:\"enabled\";b:1;}'),
-(4, 1, 'admin', 'a:1:{s:7:\"enabled\";b:1;}'),
-(5, 1, 'comments', 'a:1:{s:7:\"enabled\";b:1;}'),
-(6, 1, 'contact', 'a:1:{s:7:\"enabled\";b:1;}'),
-(7, 1, 'live_editor', 'a:1:{s:7:\"enabled\";b:1;}'),
-(8, 1, 'monitoring', 'a:1:{s:7:\"enabled\";b:1;}'),
-(9, 1, 'news', 'a:1:{s:7:\"enabled\";b:1;}'),
-(10, 1, 'pages', 'a:1:{s:7:\"enabled\";b:1;}'),
-(11, 1, 'search', 'a:1:{s:7:\"enabled\";b:1;}'),
-(12, 1, 'settings', 'a:1:{s:7:\"enabled\";b:1;}'),
-(13, 1, 'statistics', 'a:1:{s:7:\"enabled\";b:1;}'),
-(14, 1, 'user', 'a:1:{s:7:\"enabled\";b:1;}'),
+(2, 1, 'access', '{"enabled":true}'),
+(3, 1, 'addons', '{"enabled":true}'),
+(4, 1, 'admin', '{"enabled":true}'),
+(5, 1, 'comments', '{"enabled":true}'),
+(6, 1, 'contact', '{"enabled":true}'),
+(7, 1, 'live_editor', '{"enabled":true}'),
+(8, 1, 'monitoring', '{"enabled":true}'),
+(9, 1, 'news', '{"enabled":true}'),
+(10, 1, 'pages', '{"enabled":true}'),
+(11, 1, 'search', '{"enabled":true}'),
+(12, 1, 'settings', '{"enabled":true}'),
+(13, 1, 'statistics', '{"enabled":true}'),
+(14, 1, 'user', '{"enabled":true}'),
 (15, 2, 'admin', NULL),
 (16, 2, 'azuro', NULL),
-(17, 3, 'breadcrumb', 'a:1:{s:7:\"enabled\";b:1;}'),
-(18, 3, 'header', 'a:1:{s:7:\"enabled\";b:1;}'),
-(19, 3, 'html', 'a:1:{s:7:\"enabled\";b:1;}'),
-(20, 3, 'module', 'a:1:{s:7:\"enabled\";b:1;}'),
-(21, 3, 'navigation', 'a:1:{s:7:\"enabled\";b:1;}'),
-(22, 3, 'news', 'a:1:{s:7:\"enabled\";b:1;}'),
-(23, 3, 'search', 'a:1:{s:7:\"enabled\";b:1;}'),
-(24, 3, 'user', 'a:1:{s:7:\"enabled\";b:1;}'),
-(25, 4, 'de', 'a:2:{s:5:\"order\";i:3;s:7:\"enabled\";b:1;}'),
-(26, 4, 'en', 'a:2:{s:5:\"order\";i:2;s:7:\"enabled\";b:1;}'),
-(27, 4, 'es', 'a:2:{s:5:\"order\";i:4;s:7:\"enabled\";b:1;}'),
-(28, 4, 'fr', 'a:2:{s:5:\"order\";i:1;s:7:\"enabled\";b:1;}'),
-(29, 4, 'it', 'a:2:{s:5:\"order\";i:5;s:7:\"enabled\";b:1;}'),
-(30, 4, 'pt', 'a:2:{s:5:\"order\";i:6;s:7:\"enabled\";b:1;}'),
-(31, 5, '_battle_net', 'a:4:{s:5:\"order\";i:3;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(32, 5, 'facebook', 'a:4:{s:5:\"order\";i:0;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(33, 5, 'github', 'a:4:{s:5:\"order\";i:6;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(34, 5, 'google', 'a:4:{s:5:\"order\";i:2;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(35, 5, '_linkedin', 'a:4:{s:5:\"order\";i:7;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(36, 5, 'steam', 'a:4:{s:5:\"order\";i:4;s:7:\"enabled\";b:0;s:3:\"dev\";a:1:{s:3:\"key\";s:0:\"\";}s:4:\"prod\";a:1:{s:3:\"key\";s:0:\"\";}}'),
-(37, 5, '_twitch', 'a:4:{s:5:\"order\";i:5;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(38, 5, '_twitter', 'a:4:{s:5:\"order\";i:1;s:7:\"enabled\";b:0;s:3:\"dev\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}s:4:\"prod\";a:2:{s:2:\"id\";s:0:\"\";s:6:\"secret\";s:0:\"\";}}'),
-(39, 3, 'copyright', 'a:1:{s:7:\"enabled\";b:1;}'),
-(40, 1, 'tools', 'a:1:{s:7:\"enabled\";b:1;}'),
-(41, 3, 'about', 'a:1:{s:7:\"enabled\";b:1;}'),
-(42, 3, 'socials', 'a:1:{s:7:\"enabled\";b:1;}');
+(17, 3, 'breadcrumb', '{"enabled":true}'),
+(18, 3, 'header', '{"enabled":true}'),
+(19, 3, 'html', '{"enabled":true}'),
+(20, 3, 'module', '{"enabled":true}'),
+(21, 3, 'navigation', '{"enabled":true}'),
+(22, 3, 'news', '{"enabled":true}'),
+(23, 3, 'search', '{"enabled":true}'),
+(24, 3, 'user', '{"enabled":true}'),
+(25, 4, 'de', '{"order":3,"enabled":true}'),
+(26, 4, 'en', '{"order":2,"enabled":true}'),
+(27, 4, 'es', '{"order":4,"enabled":true}'),
+(28, 4, 'fr', '{"order":1,"enabled":true}'),
+(29, 4, 'it', '{"order":5,"enabled":true}'),
+(30, 4, 'pt', '{"order":6,"enabled":true}'),
+(31, 5, '_battle_net', '{"order":3,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(32, 5, 'facebook', '{"order":0,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(33, 5, 'github', '{"order":6,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(34, 5, 'google', '{"order":2,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(35, 5, '_linkedin', '{"order":7,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(36, 5, 'steam', '{"order":4,"enabled":false,"dev":{"key":""},"prod":{"key":""}}'),
+(37, 5, '_twitch', '{"order":5,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(38, 5, '_twitter', '{"order":1,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
+(39, 3, 'copyright', '{"enabled":true}'),
+(40, 1, 'tools', '{"enabled":true}'),
+(41, 3, 'about', '{"enabled":true}'),
+(42, 3, 'socials', '{"enabled":true}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (
@@ -127,16 +127,16 @@ CREATE TABLE `dispositions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposition`) VALUES
-(1, 'azuro', '*', 0, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:2:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:1;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-7\";}}s:8:\"\0*\0_size\";s:5:\"col-9\";}i:1;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:2;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-3\";}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
-(2, 'azuro', '*', 1, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:27;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
-(3, 'azuro', '*', 2, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:2:{i:1;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:26;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-7\";}i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:5;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";s:5:\"col-7\";}}s:8:\"\0*\0_size\";s:5:\"col-5\";}}s:9:\"\0*\0_style\";s:18:\"align-items-center\";}}}'),
-(4, 'azuro', '*', 5, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:2:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:28;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-8\";}i:1;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:3:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:8;s:9:\"\0*\0_style\";s:9:\"card-dark\";s:8:\"\0*\0_size\";N;}i:1;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:9;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}i:3;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:11;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:5:\"col-4\";}}s:9:\"\0*\0_style\";N;}}}'),
-(5, 'azuro', '*', 7, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:29;s:9:\"\0*\0_style\";s:16:\"card-transparent\";s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";N;}}}'),
-(6, 'azuro', '*', 3, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
-(7, 'azuro', '*', 4, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
-(8, 'azuro', '*', 6, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:0:{}}'),
-(13, 'azuro', 'news/_news/*', 5, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:20;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";N;}}s:9:\"\0*\0_style\";N;}}}'),
-(17, 'azuro', 'user/*', 5, 'O:32:\\"HB\\HiddenCMS\\Libraries\\Array_\\":1:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Row\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:32:\\"HB\\HiddenCMS\\Displayables\\Col\\":2:{s:9:\"\0*\0_array\";a:1:{i:0;O:35:\\"HB\\HiddenCMS\\Displayables\\Widget\\":3:{s:10:\"\0*\0_widget\";i:33;s:9:\"\0*\0_style\";N;s:8:\"\0*\0_size\";N;}}s:8:\"\0*\0_size\";s:6:\"col-12\";}}s:9:\"\0*\0_style\";N;}}}');
+(1, 'azuro', '*', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":"col-7"}]},{"size":null,"widgets":[{"id":2,"style":null,"size":"col-3"}]}]}]'),
+(2, 'azuro', '*', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":27,"style":null,"size":null}]}]}]'),
+(3, 'azuro', '*', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":26,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":"col-7"}]}]}]'),
+(4, 'azuro', '*', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":28,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":"card-dark","size":null},{"id":9,"style":null,"size":null},{"id":11,"style":null,"size":null}]}]}]'),
+(5, 'azuro', '*', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":29,"style":"card-transparent","size":null}]}]}]'),
+(6, 'azuro', '*', 3, '[]'),
+(7, 'azuro', '*', 4, '[]'),
+(8, 'azuro', '*', 6, '[]'),
+(13, 'azuro', 'news/_news/*', 5, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":20,"style":null,"size":null}]}]}]'),
+(17, 'azuro', 'user/*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":33,"style":null,"size":null}]}]}]');
 
 DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
@@ -260,7 +260,7 @@ CREATE TABLE `pages_instances` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `pages_instances` (`instance_id`, `page_id`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
-(1, 1, 'news', '', 'a:0:{}', 0, '1');
+(1, 1, 'news', '', '[]', 0, '1');
 
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (
@@ -583,13 +583,13 @@ CREATE TABLE `widgets` (
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUES
-(1, 'navigation', 'index', NULL, 'a:1:{s:5:\"links\";a:4:{i:0;a:2:{s:5:\"title\";s:8:\"Facebook\";s:3:\"url\";s:1:\"#\";}i:1;a:2:{s:5:\"title\";s:7:\"Twitter\";s:3:\"url\";s:1:\"#\";}i:2;a:2:{s:5:\"title\";s:6:\"Origin\";s:3:\"url\";s:1:\"#\";}i:3;a:2:{s:5:\"title\";s:5:\"Steam\";s:3:\"url\";s:1:\"#\";}}}'),
+(1, 'navigation', 'index', NULL, '{"links":[{"title":"Facebook","url":"#"},{"title":"Twitter","url":"#"},{"title":"Origin","url":"#"},{"title":"Steam","url":"#"}]}'),
 (2, 'search', 'index', NULL, NULL),
-(3, 'header', 'index', NULL, 'a:6:{s:7:\"display\";s:4:\"logo\";s:5:\"align\";s:11:\"text-center\";s:5:\"title\";s:0:\"\";s:11:\"description\";s:0:\"\";s:11:\"color_title\";s:4:\"#fff\";s:17:\"color_description\";s:7:\"#a4b5c5\";}'),
-(4, 'navigation', 'index', NULL, 'a:1:{s:5:\"links\";a:6:{i:0;a:2:{s:5:\"title\";s:7:\"Accueil\";s:3:\"url\";s:0:\"\";}i:1;a:2:{s:5:\"title\";s:5:\"Forum\";s:3:\"url\";s:5:\"forum\";}i:2;a:2:{s:5:\"title\";s:14:\"&Eacute;quipes\";s:3:\"url\";s:5:\"teams\";}i:3;a:2:{s:5:\"title\";s:6:\"Matchs\";s:3:\"url\";s:14:\"events/matches\";}i:4;a:2:{s:5:\"title\";s:11:\"Partenaires\";s:3:\"url\";s:8:\"partners\";}i:5;a:2:{s:5:\"title\";s:15:\"Palmar&egrave;s\";s:3:\"url\";s:6:\"awards\";}}}'),
+(3, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"#fff","color_description":"#a4b5c5"}'),
+(4, 'navigation', 'index', NULL, '{"links":[{"title":"Accueil","url":""},{"title":"Forum","url":"forum"},{"title":"&Eacute;quipes","url":"teams"},{"title":"Matchs","url":"events/matches"},{"title":"Partenaires","url":"partners"},{"title":"Palmar&egrave;s","url":"awards"}]}'),
 (5, 'user', 'index_mini', NULL, NULL),
 (6, 'module', 'index', NULL, NULL),
-(7, 'navigation', 'vertical', NULL, 'a:1:{s:5:\"links\";a:7:{i:0;a:2:{s:5:\"title\";s:17:\"Actualit&eacute;s\";s:3:\"url\";s:4:\"news\";}i:1;a:2:{s:5:\"title\";s:7:\"Membres\";s:3:\"url\";s:7:\"members\";}i:2;a:2:{s:5:\"title\";s:11:\"Recrutement\";s:3:\"url\";s:8:\"recruits\";}i:3;a:2:{s:5:\"title\";s:6:\"Photos\";s:3:\"url\";s:7:\"gallery\";}i:4;a:2:{s:5:\"title\";s:24:\"&Eacute;v&eacute;nements\";s:3:\"url\";s:6:\"events\";}i:5;a:2:{s:5:\"title\";s:10:\"Rechercher\";s:3:\"url\";s:6:\"search\";}i:6;a:2:{s:5:\"title\";s:7:\"Contact\";s:3:\"url\";s:7:\"contact\";}}}'),
+(7, 'navigation', 'vertical', NULL, '{"links":[{"title":"Actualit&eacute;s","url":"news"},{"title":"Membres","url":"members"},{"title":"Recrutement","url":"recruits"},{"title":"Photos","url":"gallery"},{"title":"&Eacute;v&eacute;nements","url":"events"},{"title":"Rechercher","url":"search"},{"title":"Contact","url":"contact"}]}'),
 (8, 'user', 'index', NULL, NULL),
 (9, 'news', 'categories', NULL, NULL),
 (10, 'copyright', 'index', NULL, NULL),

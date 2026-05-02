@@ -23,7 +23,7 @@ class User extends Model2
 			'last_activity_date' => self::field()->datetime()->null(),
 			'admin'              => self::field()->bool(),
 			'language'           => self::field()->depends('addon', '')->null(),
-			'data'               => self::field()->serialized(),
+			'data'               => self::field()->json(),
 			'deleted'            => self::field()->bool()
 		];
 	}
