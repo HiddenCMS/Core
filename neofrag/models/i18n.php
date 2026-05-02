@@ -31,7 +31,7 @@ class I18n extends Model2
 	{
 		$prefix = '';
 
-		if (NEOFRAG_LOGS_I18N && $this->lang())
+		if (HIDDENCMS_LOGS_I18N && $this->lang())
 		{
 			$prefix = $this->lang->addon()->info()->icon;
 		}

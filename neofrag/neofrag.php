@@ -33,7 +33,7 @@ class NeoFrag
 		{
 			if ($callback($path))
 			{
-				if ((NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS) && isset($this->debug) && !is_a($path, 'NF\NeoFrag\Libraries\Date'))
+				if ((HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS) && isset($this->debug) && !is_a($path, 'NF\NeoFrag\Libraries\Date'))
 				{
 					$this->debug(strtoupper($type), get_class($this), is_object($path) ? get_class($path) : $path);
 				}
@@ -83,7 +83,7 @@ class NeoFrag
 		}
 		else
 		{
-			if (!defined('NEOFRAG_CORE') && substr($name, 0, 5) == 'core_')
+			if (!defined('HIDDENCMS_CORE') && !defined('NEOFRAG_CORE') && substr($name, 0, 5) == 'core_')
 			{
 				$type = 'core';
 				$name = substr($name, 5);

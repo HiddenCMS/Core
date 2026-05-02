@@ -70,7 +70,7 @@ function NeoFrag()
 			return;
 		}
 
-		if ($debug = NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+		if ($debug = HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 		{
 			$memory = memory_get_usage();
 			$time   = microtime(TRUE);
@@ -187,7 +187,7 @@ NeoFrag('NF\NeoFrag\NeoFrag')->__path(function($caller, $type, $file){
 
 	$file = implode('/', $file);
 
-	if (!NEOFRAG_SAFE_MODE)
+	if (!HIDDENCMS_SAFE_MODE)
 	{
 		yield 'overrides/'.$file;
 

@@ -49,7 +49,7 @@ abstract class Driver
 			$this->check_foreign_keys($check_foreign_keys = FALSE);
 		}
 
-		if ($debug = NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+		if ($debug = HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 		{
 			$time = microtime(TRUE);
 		}

@@ -66,7 +66,7 @@ class Output extends Core
 						echo "\n";
 					}
 
-					if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+					if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 					{
 						$this->debug('OUTPUT', 'HTTP_HEADER', json_encode(headers_list()));
 					}
@@ -689,7 +689,7 @@ class Output extends Core
 				exit($content);
 			}
 		}
-		else if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+		else if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 		{
 			$this->debug('INFO', 'ASSET', 'Not exists on disk');
 		}

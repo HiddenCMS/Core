@@ -62,7 +62,7 @@ class Admin_Ajax extends Controller_Module
 											break;
 										}
 
-										$addon = $class->newInstanceArgs([NeoFrag()]);
+										$addon = $class->newInstanceArgs([HiddenCMS()]);
 
 										$version = $addon->info()->version;
 										$depends = $addon->info()->depends;
@@ -73,7 +73,7 @@ class Admin_Ajax extends Controller_Module
 										{
 											$type = strtolower($match2[1]);
 
-											$addon = NeoFrag()->$type($name = strtolower($match[1]));
+											$addon = HiddenCMS()->$type($name = strtolower($match[1]));
 
 											if ($addon)
 											{
@@ -93,14 +93,14 @@ class Admin_Ajax extends Controller_Module
 												}
 											}
 
-											if (($cmp = version_compare($nf_version, version_format(NEOFRAG_VERSION))) !== 1)
+											if (($cmp = version_compare($nf_version, version_format(HIDDENCMS_VERSION))) !== 1)
 											{
 												file_put_contents($file, $content);
 												dir_copy($dir, $type.'s/'.$name);
 
-												if (!NeoFrag()->collection('addon')->where('name', $name)->where('type_id', $type_id = NeoFrag()->collection('addon_type')->where('name', $type)->row()->id)->row()->id)
+												if (!HiddenCMS()->collection('addon')->where('name', $name)->where('type_id', $type_id = HiddenCMS()->collection('addon_type')->where('name', $type)->row()->id)->row()->id)
 												{
-													NeoFrag()	->model2('addon')
+													HiddenCMS()	->model2('addon')
 																->set('name', $name)
 																->set('type', $type_id)
 																->set('data', [
@@ -109,7 +109,7 @@ class Admin_Ajax extends Controller_Module
 																->create();
 												}
 
-												if ($addon = NeoFrag()->$type($name))
+												if ($addon = HiddenCMS()->$type($name))
 												{
 													$addon->reset();
 
@@ -124,7 +124,7 @@ class Admin_Ajax extends Controller_Module
 											}
 
 											return [
-												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$nf_version.' de NeoFrag, veuillez mettre jour votre site'
+												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$nf_version.' de HiddenCMS, veuillez mettre jour votre site'
 											];
 										}
 

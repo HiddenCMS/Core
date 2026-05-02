@@ -88,8 +88,8 @@ class Mysqldump extends Library
 
 		$tables = array_filter($tables);
 
-		fwrite($handle, '-- NeoFrag '.NEOFRAG_VERSION.PHP_EOL.
-						'-- https://neofr.ag'.PHP_EOL.
+		fwrite($handle, '-- HiddenCMS '.HIDDENCMS_VERSION.PHP_EOL.
+						'-- https://github.com/HiddenCMS/Core'.PHP_EOL.
 						'--'.PHP_EOL.
 						'-- Host: '.$_SERVER['HTTP_HOST'].PHP_EOL.
 						'-- Generation Time: '.date('r').PHP_EOL.

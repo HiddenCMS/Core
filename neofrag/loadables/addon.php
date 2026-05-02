@@ -45,7 +45,7 @@ abstract class Addon extends NeoFrag implements \NF\NeoFrag\Loadable
 
 					$file = $dir.'/'.$caller->info()->name.'/'.implode('/', $file);
 
-					if (!NEOFRAG_SAFE_MODE)
+					if (!HIDDENCMS_SAFE_MODE)
 					{
 						yield 'overrides/'.$file;
 

@@ -440,7 +440,7 @@ class Db extends Core
 
 								self::$_drivers[$config['type']] = $driver;
 
-								if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+								if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 								{
 									$this->debug('DB', 'Connection established '.$config['type'].' / '.$config['hostname'].' / '.$config['database'].' ('.$config['driver'].')');
 								}
@@ -470,7 +470,7 @@ class Db extends Core
 
 		$this->_request = [];
 
-		if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+		if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 		{
 			self::$_requests[] = $request;
 		}
