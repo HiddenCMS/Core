@@ -143,6 +143,11 @@ class Output extends Core
 						$this->error->unauthorized();
 					}
 
+					$this->data->set('page', 'id',       $resolved['page']['page_id']);
+					$this->data->set('page', 'name',     $resolved['page']['name']);
+					$this->data->set('page', 'title',    $resolved['page']['title']);
+					$this->data->set('page', 'subtitle', $resolved['page']['subtitle']);
+
 					if (!empty($resolved['segments']))
 					{
 						if (count($resolved['blocks']) == 1 && empty($resolved['page']['content']) && !empty($resolved['blocks'][0]['module']))
@@ -550,6 +555,25 @@ class Output extends Core
 		{
 			return implode("\n", array_unique(array_map('strval', $js_load)))."\n";
 		}
+	}
+
+	public function region($region, $fallback_zone_id = NULL)
+	{
+		if (!$this->url->admin && !$this->url->ajax && !$this->url->cli && ($page_id = $this->data->get('page', 'id')))
+		{
+			if (($module = @parent::module('pages')) && $module->is_enabled())
+			{
+				$module->__init();
+				$blocks = $module->model()->get_blocks($page_id, $region);
+
+				if ($blocks && ($controller = @$module->controller('index')) && $controller->has_method('blocks'))
+				{
+					return $controller->blocks($blocks);
+				}
+			}
+		}
+
+		return $fallback_zone_id !== NULL ? $this->zone($fallback_zone_id) : '';
 	}
 
 	public function zone($zone_id)

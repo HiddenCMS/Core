@@ -18,7 +18,15 @@ class Default_ extends Theme
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
-			'zones'       => ['Haut', 'Entête', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
+			'zones'       => ['Haut', 'Entête', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page'],
+			'regions'     => [
+				'top'            => 'Haut',
+				'header'         => 'Entête',
+				'before_content' => 'Avant-contenu',
+				'content'        => 'Contenu',
+				'after_content'  => 'Post-contenu',
+				'footer'         => 'Pied de page'
+			]
 		];
 	}
 

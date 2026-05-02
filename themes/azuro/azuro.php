@@ -22,7 +22,17 @@ class Azuro extends Theme
 			'depends' => [
 				'HiddenCMS' => 'Alpha 0.2.1'
 			],
-			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
+			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page'],
+			'regions'     => [
+				'top'            => 'Haut',
+				'header'         => 'Entête',
+				'navigation'     => 'Menu',
+				'slider'         => 'Slider',
+				'before_content' => 'Avant-contenu',
+				'content'        => 'Contenu',
+				'after_content'  => 'Post-contenu',
+				'footer'         => 'Pied de page'
+			]
 		];
 	}
 

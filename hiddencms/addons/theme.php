@@ -38,6 +38,30 @@ abstract class Theme extends Addon
 		return parent::is_deactivatable() && HB()->model2('addon')->get('theme')->count() > 2;
 	}
 
+	public function regions()
+	{
+		if (!empty($this->info()->regions))
+		{
+			$regions = [];
+
+			foreach ($this->info()->regions as $name => $title)
+			{
+				$regions[$name] = (string)$title;
+			}
+
+			return $regions;
+		}
+
+		$regions = [];
+
+		foreach ($this->info()->zones as $zone)
+		{
+			$regions[url_title($zone)] = (string)$zone;
+		}
+
+		return $regions;
+	}
+
 	public function install($dispositions = [])
 	{
 		foreach ($this->info()->zones as $zone)

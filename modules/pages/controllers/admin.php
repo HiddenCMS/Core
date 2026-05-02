@@ -80,7 +80,7 @@ class Admin extends Controller_Module
 				->form()
 				->add_rules('pages', [
 					'modules'         => $this->model()->get_page_modules(),
-					'news_categories' => $this->model()->get_news_categories(),
+					'regions'         => $this->model()->get_regions(),
 					'blocks'          => $this->storage->encode([])
 				])
 				->add_submit($this->lang('Ajouter'))
@@ -117,7 +117,7 @@ class Admin extends Controller_Module
 					'name'           => $name,
 					'published'      => $published,
 					'modules'        => $this->model()->get_page_modules(),
-					'news_categories' => $this->model()->get_news_categories(),
+					'regions'        => $this->model()->get_regions(),
 					'blocks'         => $this->model()->get_blocks_form_value($page_id, $content)
 				])
 				->add_submit($this->lang('Éditer'))

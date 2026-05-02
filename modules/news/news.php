@@ -106,6 +106,87 @@ class News extends Module
 		];
 	}
 
+	public function page_blocks()
+	{
+		return [
+			'index' => [
+				'title'  => (string)$this->lang('Toutes les actualités'),
+				'fields' => []
+			],
+			'category' => [
+				'title'  => (string)$this->lang('Catégorie d\'actualités'),
+				'fields' => [
+					'category_id' => [
+						'label'  => (string)$this->lang('Catégorie'),
+						'type'   => 'select',
+						'values' => $this->page_block_categories()
+					]
+				]
+			]
+		];
+	}
+
+	public function page_block($block = 'index', $settings = [])
+	{
+		if ($block == 'category' && !empty($settings['category_id']))
+		{
+			$category = $this->db	->select('category_id', 'name')
+									->from('news_categories')
+									->where('category_id', $settings['category_id'])
+									->row();
+
+			if ($category)
+			{
+				return [
+					'route'    => 'category/'.$category['category_id'].'/'.$category['name'],
+					'settings' => [
+						'block'       => 'category',
+						'category_id' => $category['category_id']
+					]
+				];
+			}
+		}
+
+		return [
+			'route'    => '',
+			'settings' => [
+				'block' => 'index'
+			]
+		];
+	}
+
+	public function page_block_form_value($block)
+	{
+		$settings = !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : [];
+		$type = !empty($settings['block']) ? $settings['block'] : (!empty($settings['category_id']) ? 'category' : 'index');
+
+		return [
+			'type'     => 'module',
+			'module'   => $this->info()->name,
+			'block'    => $type,
+			'settings' => [
+				'category_id' => isset($settings['category_id']) ? $settings['category_id'] : ''
+			]
+		];
+	}
+
+	private function page_block_categories()
+	{
+		$categories = ['' => (string)$this->lang('Toutes les actualités')];
+
+		foreach ($this->db	->select('c.category_id', 'cl.title')
+							->from('news_categories c')
+							->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+							->where('cl.lang', $this->config->lang->info()->name)
+							->order_by('cl.title')
+							->get() as $category)
+		{
+			$categories[$category['category_id']] = (string)$category['title'];
+		}
+
+		return $categories;
+	}
+
 	public function comments($news_id)
 	{
 		$news = $this->db	->select('title')

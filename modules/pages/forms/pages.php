@@ -55,17 +55,16 @@ $rules = [
 ];
 
 $modules = $this->form()->value('modules') ?: [];
-$news_categories = $this->form()->value('news_categories') ?: [];
-
-unset($modules['']);
+$regions = $this->form()->value('regions') ?: ['content' => 'Contenu'];
 
 $labels = [
-	'static'        => (string)$this->lang('Contenu statique'),
-	'module'        => (string)$this->lang('Module'),
-	'module_type'   => (string)$this->lang('Type de module'),
-	'news_category' => (string)$this->lang('Catégorie d\'actualités'),
-	'add_static'    => (string)$this->lang('Ajouter du contenu'),
-	'add_module'    => (string)$this->lang('Ajouter un module')
+	'static'      => (string)$this->lang('Contenu statique'),
+	'module'      => (string)$this->lang('Module'),
+	'region'      => (string)$this->lang('Région'),
+	'module_type' => (string)$this->lang('Type de module'),
+	'block_type'  => (string)$this->lang('Affichage'),
+	'add_static'  => (string)$this->lang('Ajouter du contenu'),
+	'add_module'  => (string)$this->lang('Ajouter un module')
 ];
 
 $icons = [
@@ -81,7 +80,7 @@ if ($modules)
 	$this->js_load('
 		(function(){
 			var modules = '.json_encode($modules, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
-			var newsCategories = '.json_encode($news_categories, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
+			var regions = '.json_encode($regions, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var labels = '.json_encode($labels, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var icons = '.json_encode($icons, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var $field = $("[name$=\"[blocks]\"]");
@@ -98,24 +97,49 @@ if ($modules)
 			}
 
 			var option = function(value, label, selected){
-				return $("<option />").attr("value", value).prop("selected", String(value) == String(selected)).text(label);
+				var selectedValues = $.isArray(selected) ? $.map(selected, String) : [String(selected)];
+
+				return $("<option />").attr("value", value).prop("selected", $.inArray(String(value), selectedValues) !== -1).text(label);
+			};
+
+			var firstKey = function(object){
+				for (var key in object){
+					return key;
+				}
+				return "";
 			};
 
 			var moduleSelect = function(selected){
 				var $select = $("<select />").addClass("form-control form-control-sm page-block-module");
 
-				$.each(modules, function(value, label){
-					$select.append(option(value, label, selected));
+				$.each(modules, function(value, module){
+					$select.append(option(value, module.title, selected));
 				});
 
 				return $select;
 			};
 
-			var categorySelect = function(selected){
-				var $select = $("<select />").addClass("form-control form-control-sm page-block-news-category");
+			var regionSelect = function(selected){
+				var $select = $("<select />").addClass("form-control form-control-sm page-block-region");
 
-				$.each(newsCategories, function(value, label){
-					$select.append(option(value, label, selected));
+				$.each(regions, function(value, label){
+					$select.append(option(value, label, selected || "content"));
+				});
+
+				return $select;
+			};
+
+			var blockSelect = function(moduleName, selected){
+				var $select = $("<select />").addClass("form-control form-control-sm page-block-type");
+				var module = modules[moduleName] || {blocks: {}};
+				var blocks = module.blocks || {};
+
+				if (!selected || !blocks[selected]){
+					selected = firstKey(blocks);
+				}
+
+				$.each(blocks, function(value, block){
+					$select.append(option(value, block.title, selected));
 				});
 
 				return $select;
@@ -130,14 +154,28 @@ if ($modules)
 					if ($block.data("type") == "static"){
 						blocks.push({
 							type: "static",
+							region: $block.find(".page-block-region").val() || "content",
 							content: $block.find(".page-block-content").val() || ""
 						});
 					}
 					else {
+						var settings = {};
+
+						$block.find(".page-block-setting").each(function(){
+							if ($(this).attr("type") == "checkbox"){
+								settings[$(this).data("field")] = $(this).is(":checked");
+							}
+							else {
+								settings[$(this).data("field")] = $(this).val() || "";
+							}
+						});
+
 						blocks.push({
 							type: "module",
+							region: $block.find(".page-block-region").val() || "content",
 							module: $block.find(".page-block-module").val() || "",
-							news_category: $block.find(".page-block-news-category").val() || ""
+							block: $block.find(".page-block-type").val() || "index",
+							settings: settings
 						});
 					}
 				});
@@ -145,8 +183,48 @@ if ($modules)
 				$field.val(JSON.stringify(blocks));
 			};
 
-			var refreshBlock = function($block){
-				$block.find(".page-block-news").toggle($block.find(".page-block-module").val() == "news");
+			var renderSettings = function($block, values){
+				var moduleName = $block.find(".page-block-module").val();
+				var blockName = $block.find(".page-block-type").val();
+				var fields = (((modules[moduleName] || {}).blocks || {})[blockName] || {}).fields || {};
+				var $settings = $block.find(".page-block-settings").empty();
+
+				$.each(fields, function(name, field){
+					var $group = $("<div />").addClass("mt-2");
+					var value = values && values[name] !== undefined ? values[name] : "";
+					var $input;
+
+					$group.append($("<label />").addClass("mb-1").text(field.label));
+
+					if (field.type == "boolean" || field.type == "bool"){
+						$input = $("<input />").attr("type", "checkbox").addClass("page-block-setting").attr("data-field", name).prop("checked", value === true || value == "1");
+					}
+					else if (field.type == "select" || field.type == "multiselect" || field.type == "multi-select"){
+						$input = $("<select />").addClass("form-control form-control-sm page-block-setting").attr("data-field", name);
+
+						if (field.type == "multiselect" || field.type == "multi-select"){
+							$input.attr("multiple", "multiple");
+						}
+
+						$.each(field.values || {}, function(optionValue, optionLabel){
+							$input.append(option(optionValue, optionLabel, value));
+						});
+					}
+					else {
+						$input = $("<input />").attr("type", "text").addClass("form-control form-control-sm page-block-setting").attr("data-field", name).val(value);
+					}
+
+					$settings.append($group.append($input));
+				});
+			};
+
+			var refreshBlock = function($block, values){
+				var moduleName = $block.find(".page-block-module").val();
+				var selected = $block.find(".page-block-type").val();
+				var $type = blockSelect(moduleName, selected);
+
+				$block.find(".page-block-type").replaceWith($type);
+				renderSettings($block, values || {});
 				read();
 			};
 
@@ -161,27 +239,52 @@ if ($modules)
 				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "static").data("type", "static");
 				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.static));
 				var $body = $("<div />").addClass("card-body p-2");
+				var $region = regionSelect(block && block.region ? block.region : "content");
 				var $content = $("<textarea />").addClass("form-control page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
-				$body.append($content);
+				$body	.append($("<label />").addClass("mb-1").text(labels.region))
+						.append($region)
+						.append($("<label />").addClass("mb-1 mt-2").text(labels.static))
+						.append($content);
 				$list.append($block.append($header).append($body));
 				read();
 			};
 
+			var normalizeModuleBlock = function(block){
+				block = block || {};
+				block.region = block.region || "content";
+				block.module = block.module || firstKey(modules);
+				block.settings = block.settings || {};
+
+				block.block = block.block || "index";
+
+				return block;
+			};
+
 			var addModule = function(block){
+				block = normalizeModuleBlock(block);
+
 				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "module").data("type", "module");
 				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.module));
 				var $body = $("<div />").addClass("card-body p-2");
-				var $module = moduleSelect(block && block.module ? block.module : Object.keys(modules)[0]);
-				var $news = $("<div />").addClass("page-block-news mt-2")
-					.append($("<label />").addClass("mb-1").text(labels.news_category))
-					.append(categorySelect(block && block.news_category ? block.news_category : ""));
+				var $region = regionSelect(block.region);
+				var $module = moduleSelect(block.module);
+				var $type = blockSelect(block.module, block.block);
+				var $settings = $("<div />").addClass("page-block-settings");
 
 				$header.append(controls());
-				$body.append($("<label />").addClass("mb-1").text(labels.module_type)).append($module).append($news);
+				$body	.append($("<label />").addClass("mb-1").text(labels.region))
+						.append($region)
+						.append($("<label />").addClass("mb-1 mt-2").text(labels.module_type))
+						.append($module)
+						.append($("<label />").addClass("mb-1 mt-2").text(labels.block_type))
+						.append($type)
+						.append($settings);
+
 				$list.append($block.append($header).append($body));
-				refreshBlock($block);
+				renderSettings($block, block.settings);
+				read();
 			};
 
 			var $composer = $("<div />").addClass("page-composer");
@@ -233,9 +336,16 @@ if ($modules)
 				read();
 			});
 
-			$composer.on("change keyup", "select, textarea", function(){
-				refreshBlock($(this).closest(".page-block"));
+			$composer.on("change", ".page-block-module", function(){
+				refreshBlock($(this).closest(".page-block"), {});
 			});
+
+			$composer.on("change", ".page-block-type", function(){
+				renderSettings($(this).closest(".page-block"), {});
+				read();
+			});
+
+			$composer.on("change keyup", ".page-block-region, .page-block-content, .page-block-setting", read);
 
 			$form.on("submit", read);
 			read();

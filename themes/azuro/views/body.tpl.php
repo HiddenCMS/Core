@@ -1,19 +1,19 @@
 <header class="header">
-	<?php if ($zone = (string)$this->output->zone(0)): ?>
+	<?php if ($zone = (string)$this->output->region('top', 0)): ?>
 	<div class="haut azuro-bg-dark py-1">
 		<div class="container">
 			<?php echo $zone ?>
 		</div>
 	</div>
 	<?php endif ?>
-	<?php if ($zone = (string)$this->output->zone(1)): ?>
+	<?php if ($zone = (string)$this->output->region('header', 1)): ?>
 	<div class="entete py-5">
 		<div class="container">
 			<?php echo $zone ?>
 		</div>
 	</div>
 	<?php endif ?>
-	<?php if ($zone = (string)$this->output->zone(2)): ?>
+	<?php if ($zone = (string)$this->output->region('navigation', 2)): ?>
 		<div class="menu bg-white">
 			<div class="container">
 				<?php echo $zone ?>
@@ -32,14 +32,14 @@
 		<?php endif ?>
 	<?php endif ?>
 </header>
-<?php if ($zone = (string)$this->output->zone(3)): ?>
+<?php if ($zone = (string)$this->output->region('slider', 3)): ?>
 <section id="slider">
 	<div class="container-fluid">
 		<?php echo $zone ?>
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->zone(4)): ?>
+<?php if ($zone = (string)$this->output->region('before_content', 4)): ?>
 <section class="bg-white border-top border-bottom py-5" id="avant-contenu">
 	<div class="container">
 		<?php echo $zone ?>
@@ -62,14 +62,14 @@ if (count($this->url->segments) == 3 && $this->url->segments[0] == 'user' && iss
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->zone(6)): ?>
+<?php if ($zone = (string)$this->output->region('after_content', 6)): ?>
 <section class="bg-dark py-5" id="post-contenu">
 	<div class="container">
 		<?php echo $zone ?>
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->zone(7)): ?>
+<?php if ($zone = (string)$this->output->region('footer', 7)): ?>
 <footer class="footer azuro-bg-dark py-4">
 	<div class="container">
 		<?php echo $zone ?>

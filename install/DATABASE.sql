@@ -248,6 +248,7 @@ DROP TABLE IF EXISTS `pages_instances`;
 CREATE TABLE `pages_instances` (
   `instance_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `page_id` int(11) unsigned NOT NULL,
+  `region` varchar(50) NOT NULL DEFAULT 'content',
   `module` varchar(100) NOT NULL,
   `route` varchar(255) NOT NULL,
   `settings` text NOT NULL,
@@ -255,12 +256,13 @@ CREATE TABLE `pages_instances` (
   `enabled` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`instance_id`),
   KEY `page_id` (`page_id`),
+  KEY `page_region` (`page_id`,`region`,`enabled`),
   KEY `enabled` (`enabled`),
   CONSTRAINT `pages_instances_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages_instances` (`instance_id`, `page_id`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
-(1, 1, 'news', '', '[]', 0, '1');
+INSERT INTO `pages_instances` (`instance_id`, `page_id`, `region`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
+(1, 1, 'content', 'news', '', '[]', 0, '1');
 
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (

@@ -143,6 +143,36 @@ abstract class Module extends Addon
 		return !empty($this->info()->front);
 	}
 
+	public function page_blocks()
+	{
+		return [
+			'index' => [
+				'title'  => (string)$this->info()->title,
+				'fields' => []
+			]
+		];
+	}
+
+	public function page_block($block = 'index', $settings = [])
+	{
+		$settings['block'] = $block ?: 'index';
+
+		return [
+			'route'    => '',
+			'settings' => $settings
+		];
+	}
+
+	public function page_block_form_value($block)
+	{
+		return [
+			'type'     => 'module',
+			'module'   => $this->info()->name,
+			'block'    => !empty($block['settings']['block']) ? $block['settings']['block'] : 'index',
+			'settings' => !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : []
+		];
+	}
+
 	public function is_authorized()
 	{
 		static $allowed = [];

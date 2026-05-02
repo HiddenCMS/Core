@@ -55,6 +55,18 @@ class Index extends Controller_Module
 		return $output;
 	}
 
+	public function blocks($blocks)
+	{
+		$output = $this->array();
+
+		foreach ($blocks as $block)
+		{
+			$output->append($this->block($block));
+		}
+
+		return $output;
+	}
+
 	private function block($block)
 	{
 		if (empty($block['module']))

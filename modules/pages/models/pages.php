@@ -54,7 +54,26 @@ class Pages extends Model
 		return FALSE;
 	}
 
-	public function get_blocks($page_id)
+	public function get_blocks($page_id, $region = 'content')
+	{
+		$blocks = [];
+
+		foreach ($this->db	->select('*')
+							->from('pages_instances')
+							->where('page_id', $page_id)
+							->where('region', $region)
+							->where('enabled', TRUE)
+							->order_by('position ASC')
+							->get(FALSE) as $block)
+		{
+			$block['settings'] = $this->storage->decode($block['settings']);
+			$blocks[] = $block;
+		}
+
+		return $blocks;
+	}
+
+	public function get_all_blocks($page_id)
 	{
 		$blocks = [];
 
@@ -72,38 +91,62 @@ class Pages extends Model
 		return $blocks;
 	}
 
+	public function get_regions()
+	{
+		return HiddenCMS()->theme($this->config->default_theme)->regions();
+	}
+
 	public function get_page_modules()
 	{
-		$modules = ['' => (string)$this->lang('Contenu statique')];
+		$modules = [];
 
 		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
 			if ($module->is_enabled() && $module->is_front())
 			{
-				$modules[$module->info()->name] = (string)$module->info()->title;
+				$modules[$module->info()->name] = [
+					'title'  => (string)$module->info()->title,
+					'blocks' => $this->normalize_page_blocks($module->page_blocks())
+				];
 			}
 		}
 
-		array_natsort($modules);
+		uasort($modules, function($a, $b){
+			return strnatcasecmp($a['title'], $b['title']);
+		});
 
 		return $modules;
 	}
 
-	public function get_news_categories()
+	private function normalize_page_blocks($blocks)
 	{
-		$categories = ['' => (string)$this->lang('Toutes les actualités')];
+		$output = [];
 
-		foreach ($this->db	->select('c.category_id', 'cl.title')
-							->from('news_categories c')
-							->join('news_categories_lang cl', 'c.category_id = cl.category_id')
-							->where('cl.lang', $this->config->lang->info()->name)
-							->order_by('cl.title')
-							->get() as $category)
+		foreach ($blocks as $name => $block)
 		{
-			$categories[$category['category_id']] = $category['title'];
+			$output[$name] = [
+				'title'  => !empty($block['title']) ? (string)$block['title'] : $name,
+				'fields' => []
+			];
+
+			foreach (!empty($block['fields']) && is_array($block['fields']) ? $block['fields'] : [] as $field => $settings)
+			{
+				$values = [];
+
+				foreach (!empty($settings['values']) && is_array($settings['values']) ? $settings['values'] : [] as $value => $label)
+				{
+					$values[$value] = (string)$label;
+				}
+
+				$output[$name]['fields'][$field] = [
+					'label'  => !empty($settings['label']) ? (string)$settings['label'] : $field,
+					'type'   => !empty($settings['type']) ? (string)$settings['type'] : 'text',
+					'values' => $values
+				];
+			}
 		}
 
-		return $categories;
+		return $output;
 	}
 
 	public function get_blocks_form_value($page_id, $content = '')
@@ -118,23 +161,20 @@ class Pages extends Model
 			];
 		}
 
-		foreach ($this->get_blocks($page_id) as $block)
+		foreach ($this->get_all_blocks($page_id) as $block)
 		{
 			if (!$block['module'])
 			{
 				$blocks[] = [
 					'type'    => 'static',
+					'region'  => !empty($block['region']) ? $block['region'] : 'content',
 					'content' => isset($block['settings']['content']) ? $block['settings']['content'] : ''
 				];
 
 				continue;
 			}
 
-			$blocks[] = [
-				'type'          => 'module',
-				'module'        => $block['module'],
-				'news_category' => isset($block['settings']['category_id']) ? $block['settings']['category_id'] : ''
-			];
+			$blocks[] = ['region' => !empty($block['region']) ? $block['region'] : 'content'] + $this->module_page_block_form_value($block);
 		}
 
 		return $this->storage->encode($blocks);
@@ -165,6 +205,7 @@ class Pages extends Model
 				{
 					$output[] = [
 						'module'   => '',
+						'region'   => !empty($block['region']) ? $block['region'] : 'content',
 						'route'    => '',
 						'settings' => [
 							'type'    => 'static',
@@ -178,7 +219,10 @@ class Pages extends Model
 
 			if ($block['type'] == 'module' && !empty($block['module']))
 			{
-				$output[] = $this->build_module_block($block);
+				if ($module_block = $this->build_module_block($block))
+				{
+					$output[] = $module_block;
+				}
 			}
 		}
 
@@ -304,6 +348,7 @@ class Pages extends Model
 		{
 			$this->db->insert('pages_instances', [
 				'page_id'  => $page_id,
+				'region'   => !empty($block['region']) ? $block['region'] : 'content',
 				'module'   => isset($block['module']) ? $block['module'] : '',
 				'route'    => isset($block['route']) ? trim($block['route'], '/') : '',
 				'settings' => $this->storage->encode(isset($block['settings']) ? $block['settings'] : []),
@@ -317,27 +362,38 @@ class Pages extends Model
 
 	private function build_module_block($block)
 	{
-		$route = '';
-		$settings = [];
-
-		if ($block['module'] == 'news' && !empty($block['news_category']))
+		if (!($module = @HiddenCMS()->module($block['module'])) || !$module->is_enabled() || !$module->is_front())
 		{
-			$category = $this->db	->select('c.category_id', 'c.name')
-									->from('news_categories c')
-									->where('c.category_id', $block['news_category'])
-									->row();
-
-			if ($category)
-			{
-				$route = 'category/'.$category['category_id'].'/'.$category['name'];
-				$settings['category_id'] = $category['category_id'];
-			}
+			return FALSE;
 		}
+
+		$type = !empty($block['block']) ? $block['block'] : 'index';
+		$settings = !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : [];
+		$data = $module->page_block($type, $settings);
+
+		$data['settings'] = !empty($data['settings']) && is_array($data['settings']) ? $data['settings'] : [];
+		$data['settings']['block'] = !empty($data['settings']['block']) ? $data['settings']['block'] : $type;
 
 		return [
 			'module'   => $block['module'],
-			'route'    => $route,
-			'settings' => $settings
+			'region'   => !empty($block['region']) ? $block['region'] : 'content',
+			'route'    => !empty($data['route']) ? $data['route'] : '',
+			'settings' => $data['settings']
+		];
+	}
+
+	private function module_page_block_form_value($block)
+	{
+		if (($module = @HiddenCMS()->module($block['module'])) && $module->is_enabled() && $module->is_front())
+		{
+			return $module->page_block_form_value($block);
+		}
+
+		return [
+			'type'     => 'module',
+			'module'   => $block['module'],
+			'block'    => !empty($block['settings']['block']) ? $block['settings']['block'] : 'index',
+			'settings' => !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : []
 		];
 	}
 }
