@@ -68,7 +68,7 @@ class Url extends Core
 				$this->_const['cli']      = TRUE;
 				$this->_const['segments'] = array_merge(explode('/', $argv[1]), array_slice($argv, 2));
 				$this->_const['base']     = isset($config['base']) ? $config['base'] : '/';
-				chdir(NEOFRAG_CMS);
+				chdir(HIDDENCMS_CMS);
 			}
 			else
 			{
@@ -126,7 +126,7 @@ class Url extends Core
 				}
 			}
 
-			if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+			if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 			{
 				$this->debug('URL', 'LOCATION', $this->location);
 				$this->debug('URL', 'SEGMENTS', implode(' / ', $this->segments));
@@ -143,7 +143,7 @@ class Url extends Core
 					$segments($request);
 				}
 			}
-			else if (!defined('NEOFRAG_INSTALL') && !$this->cli && !preg_match('_^user/auth/_', $this->request))
+			else if (!defined('HIDDENCMS_INSTALL') && !defined('NEOFRAG_INSTALL') && !$this->cli && !preg_match('_^user/auth/_', $this->request))
 			{
 				$this->on('config_lang_selected', function(){
 					redirect($this->request.$this->query);

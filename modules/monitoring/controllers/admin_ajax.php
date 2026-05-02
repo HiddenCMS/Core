@@ -45,7 +45,7 @@ class Admin_Ajax extends Controller_Module
 
 			foreach (['version', 'checksum'] as $file)
 			{
-				if ($$file = $this	->network('https://neofr.ag/'.$file.'.json?v='.version_format(NEOFRAG_VERSION).($this->config->update_beta ? '&beta=1' : ''))
+				if ($$file = $this	->network('https://neofr.ag/'.$file.'.json?v='.version_format(HIDDENCMS_VERSION).($this->config->update_beta ? '&beta=1' : ''))
 									->type('text')
 									->get())
 				{
@@ -257,8 +257,8 @@ class Admin_Ajax extends Controller_Module
 
 			$result = [
 				'storage' => [
-					'total'    => disk_total_space(NEOFRAG_CMS) ?: 0,
-					'free'     => disk_free_space(NEOFRAG_CMS) ?: 0,
+					'total'    => disk_total_space(HIDDENCMS_CMS) ?: 0,
+					'free'     => disk_free_space(HIDDENCMS_CMS) ?: 0,
 					'files'    => array_sum(dir_scan($this->model()->folders, 'filesize')) + filesize('index.php'),
 					'database' => $this->db->get_size()
 				],
@@ -331,7 +331,7 @@ class Admin_Ajax extends Controller_Module
 				dir_create('cache/monitoring');
 
 				$this	->network('https://neofrag.download/?v='.version_format($version->version))
-						->stream($file = 'cache/monitoring/neofrag.zip', function($size, $total){
+						->stream($file = 'cache/monitoring/hiddencms.zip', function($size, $total){
 							$this->_flush(2, $size / $total * 100);
 						});
 
@@ -384,7 +384,7 @@ class Admin_Ajax extends Controller_Module
 
 					if (!$this->config->version)
 					{
-						$this->config('version', version_format(NEOFRAG_VERSION));
+						$this->config('version', version_format(HIDDENCMS_VERSION));
 					}
 
 					if ($patch = @NeoFrag()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))

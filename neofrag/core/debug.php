@@ -23,7 +23,7 @@ class Debug extends Core
 		set_error_handler(function($errno, $errstr, $errfile, $errline){
 			if (error_reporting() !== 0)
 			{
-				if (NEOFRAG_DEBUG_BAR || NEOFRAG_LOGS)
+				if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
 				{
 					if (in_array($errno, [E_USER_ERROR, E_RECOVERABLE_ERROR]))
 					{
@@ -55,14 +55,14 @@ class Debug extends Core
 			}
 		});
 
-		if (NEOFRAG_LOGS)
+		if (HIDDENCMS_LOGS)
 		{
 			$this->on('output_rendered', function(){
 				$cols = $lines = [];
 
 				foreach ($this->_logs as list($args, $message, $type, $file, $line, $date, $memory))
 				{
-					array_unshift($args, $date->format('Y-m-d H:i:s.u'), sprintf('%.3f', ($memory - NEOFRAG_MEMORY) / 1024 / 1024).'Mb', strtoupper($type));
+					array_unshift($args, $date->format('Y-m-d H:i:s.u'), sprintf('%.3f', ($memory - HIDDENCMS_MEMORY) / 1024 / 1024).'Mb', strtoupper($type));
 
 					foreach ($args as $i => $value)
 					{
@@ -80,7 +80,7 @@ class Debug extends Core
 
 				dir_create('logs');
 
-				if ($f = fopen('logs/neofrag.log', 'a'))
+				if ($f = fopen('logs/hiddencms.log', 'a'))
 				{
 					while (!flock($f, LOCK_EX));
 
@@ -180,7 +180,7 @@ class Debug extends Core
 
 	public function bar($type = '', $data = NULL)
 	{
-		if (NEOFRAG_DEBUG_BAR)
+		if (HIDDENCMS_DEBUG_BAR)
 		{
 			static $debug_bar = [];
 

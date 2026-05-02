@@ -170,7 +170,7 @@ class Admin extends Theme
 		{
 			$version = json_decode(file_get_contents($file))->neofrag;
 
-			if (version_compare(version_format($version->version), version_format(NEOFRAG_VERSION), '>'))
+			if (version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
 			{
 				return $version;
 			}

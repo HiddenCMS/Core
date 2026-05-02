@@ -6,7 +6,7 @@
 
 function relative_path($file)
 {
-	$file  = substr(str_replace('\\', '/', $file), strlen(NEOFRAG_CMS));
+	$file  = substr(str_replace('\\', '/', $file), strlen(HIDDENCMS_CMS));
 
 	return (substr($file, 0, 1) == '/' ? '.' : './').$file;
 }
