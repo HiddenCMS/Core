@@ -74,7 +74,7 @@ class Pages extends Model
 
 	public function get_page_modules()
 	{
-		$modules = ['' => $this->lang('Contenu statique')];
+		$modules = ['' => (string)$this->lang('Contenu statique')];
 
 		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
@@ -91,7 +91,7 @@ class Pages extends Model
 
 	public function get_news_categories()
 	{
-		$categories = ['' => $this->lang('Toutes les actualités')];
+		$categories = ['' => (string)$this->lang('Toutes les actualités')];
 
 		foreach ($this->db	->select('c.category_id', 'cl.title')
 							->from('news_categories c')

@@ -60,12 +60,12 @@ $news_categories = $this->form()->value('news_categories') ?: [];
 unset($modules['']);
 
 $labels = [
-	'static'        => $this->lang('Contenu statique'),
-	'module'        => $this->lang('Module'),
-	'module_type'   => $this->lang('Type de module'),
-	'news_category' => $this->lang('Catégorie d\'actualités'),
-	'add_static'    => $this->lang('Ajouter du contenu'),
-	'add_module'    => $this->lang('Ajouter un module')
+	'static'        => (string)$this->lang('Contenu statique'),
+	'module'        => (string)$this->lang('Module'),
+	'module_type'   => (string)$this->lang('Type de module'),
+	'news_category' => (string)$this->lang('Catégorie d\'actualités'),
+	'add_static'    => (string)$this->lang('Ajouter du contenu'),
+	'add_module'    => (string)$this->lang('Ajouter un module')
 ];
 
 $icons = [
