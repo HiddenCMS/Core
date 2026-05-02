@@ -45,7 +45,7 @@ class Pages extends Model
 			{
 				return [
 					'page'     => $page,
-					'instance' => $this->get_instance($page['page_id']),
+					'blocks'   => $this->get_blocks($page['page_id']),
 					'segments' => array_slice($segments, $i)
 				];
 			}
@@ -54,23 +54,22 @@ class Pages extends Model
 		return FALSE;
 	}
 
-	public function get_instance($page_id)
+	public function get_blocks($page_id)
 	{
-		$instance = $this->db	->select('*')
-								->from('pages_instances')
-								->where('page_id', $page_id)
-								->where('enabled', TRUE)
-								->order_by('position ASC')
-								->row();
+		$blocks = [];
 
-		if (!$instance)
+		foreach ($this->db	->select('*')
+							->from('pages_instances')
+							->where('page_id', $page_id)
+							->where('enabled', TRUE)
+							->order_by('position ASC')
+							->get(FALSE) as $block)
 		{
-			return FALSE;
+			$block['settings'] = $this->storage->decode($block['settings']);
+			$blocks[] = $block;
 		}
 
-		$instance['settings'] = $this->storage->decode($instance['settings']);
-
-		return $instance;
+		return $blocks;
 	}
 
 	public function get_page_modules()
@@ -107,68 +106,83 @@ class Pages extends Model
 		return $categories;
 	}
 
-	public function get_instance_form_values($instance)
+	public function get_blocks_form_value($page_id, $content = '')
 	{
-		$values = [
-			'module'        => '',
-			'news_category' => ''
-		];
+		$blocks = [];
 
-		if ($instance)
+		if ($content !== '')
 		{
-			$values['module'] = $instance['module'];
-
-			if ($instance['module'] == 'news')
-			{
-				if (isset($instance['settings']['category_id']))
-				{
-					$values['news_category'] = $instance['settings']['category_id'];
-				}
-				else if (preg_match('#^category/([0-9]+)(?:/|$)#', $instance['route'], $match))
-				{
-					$values['news_category'] = $match[1];
-				}
-			}
-		}
-
-		return $values;
-	}
-
-	public function build_instance($post)
-	{
-		$module = isset($post['module']) ? $post['module'] : '';
-
-		if (!$module)
-		{
-			return [
-				'module'   => '',
-				'route'    => '',
-				'settings' => []
+			$blocks[] = [
+				'type'    => 'static',
+				'content' => $content
 			];
 		}
 
-		$route = '';
-		$settings = [];
-
-		if ($module == 'news' && !empty($post['news_category']))
+		foreach ($this->get_blocks($page_id) as $block)
 		{
-			$category = $this->db	->select('c.category_id', 'c.name')
-									->from('news_categories c')
-									->where('c.category_id', $post['news_category'])
-									->row();
-
-			if ($category)
+			if (!$block['module'])
 			{
-				$route = 'category/'.$category['category_id'].'/'.$category['name'];
-				$settings['category_id'] = $category['category_id'];
+				$blocks[] = [
+					'type'    => 'static',
+					'content' => isset($block['settings']['content']) ? $block['settings']['content'] : ''
+				];
+
+				continue;
+			}
+
+			$blocks[] = [
+				'type'          => 'module',
+				'module'        => $block['module'],
+				'news_category' => isset($block['settings']['category_id']) ? $block['settings']['category_id'] : ''
+			];
+		}
+
+		return $this->storage->encode($blocks);
+	}
+
+	public function build_blocks($post)
+	{
+		$blocks = $this->storage->decode(isset($post['blocks']) ? $post['blocks'] : '', []);
+		$output = [];
+
+		if (!is_array($blocks))
+		{
+			return $output;
+		}
+
+		foreach ($blocks as $block)
+		{
+			if (!is_array($block) || empty($block['type']))
+			{
+				continue;
+			}
+
+			if ($block['type'] == 'static')
+			{
+				$content = isset($block['content']) ? trim($block['content']) : '';
+
+				if ($content !== '')
+				{
+					$output[] = [
+						'module'   => '',
+						'route'    => '',
+						'settings' => [
+							'type'    => 'static',
+							'content' => $content
+						]
+					];
+				}
+
+				continue;
+			}
+
+			if ($block['type'] == 'module' && !empty($block['module']))
+			{
+				$output[] = $this->build_module_block($block);
 			}
 		}
 
-		return [
-			'module'   => $module,
-			'route'    => $route,
-			'settings' => $settings
-		];
+		return $output;
 	}
 
 	public function get_pages()
@@ -211,7 +225,7 @@ class Pages extends Model
 		}
 	}
 
-	public function add_page($name, $title, $published, $subtitle, $content, $module = '', $route = '', $settings = [])
+	public function add_page($name, $title, $published, $subtitle, $content, $blocks = [])
 	{
 		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
@@ -228,10 +242,10 @@ class Pages extends Model
 
 		$this->access->init('pages', 'page', $page_id);
 
-		$this->save_instance($page_id, $module, $route, $settings);
+		$this->save_blocks($page_id, $blocks);
 	}
 
-	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $module = '', $route = '', $settings = [])
+	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $blocks = [])
 	{
 		if (!$this->db	->from('pages p')
 						->join('pages_lang l', 'p.page_id = l.page_id')
@@ -270,7 +284,7 @@ class Pages extends Model
 						]);
 		}
 
-		$this->save_instance($page_id, $module, $route, $settings);
+		$this->save_blocks($page_id, $blocks);
 	}
 
 	public function delete_page($page_id)
@@ -281,36 +295,50 @@ class Pages extends Model
 		$this->access->delete('pages', $page_id);
 	}
 
-	public function save_instance($page_id, $module = '', $route = '', $settings = [])
+	public function save_blocks($page_id, $blocks = [])
 	{
-		if (!$module)
-		{
-			$this->db	->where('page_id', $page_id)
-						->delete('pages_instances');
+		$this->db	->where('page_id', $page_id)
+					->delete('pages_instances');
 
-			return $this;
-		}
-
-		$data = [
-			'page_id'  => $page_id,
-			'module'   => $module,
-			'route'    => trim($route, '/'),
-			'settings' => $this->storage->encode($settings),
-			'position' => 0,
-			'enabled'  => TRUE
-		];
-
-		if ($this->db->from('pages_instances')->where('page_id', $page_id)->empty())
+		foreach (array_values($blocks) as $position => $block)
 		{
-			$this->db->insert('pages_instances', $data);
-		}
-		else
-		{
-			$this->db	->where('page_id', $page_id)
-						->update('pages_instances', $data);
+			$this->db->insert('pages_instances', [
+				'page_id'  => $page_id,
+				'module'   => isset($block['module']) ? $block['module'] : '',
+				'route'    => isset($block['route']) ? trim($block['route'], '/') : '',
+				'settings' => $this->storage->encode(isset($block['settings']) ? $block['settings'] : []),
+				'position' => $position,
+				'enabled'  => TRUE
+			]);
 		}
 
 		return $this;
+	}
+
+	private function build_module_block($block)
+	{
+		$route = '';
+		$settings = [];
+
+		if ($block['module'] == 'news' && !empty($block['news_category']))
+		{
+			$category = $this->db	->select('c.category_id', 'c.name')
+									->from('news_categories c')
+									->where('c.category_id', $block['news_category'])
+									->row();
+
+			if ($category)
+			{
+				$route = 'category/'.$category['category_id'].'/'.$category['name'];
+				$settings['category_id'] = $category['category_id'];
+			}
+		}
+
+		return [
+			'module'   => $block['module'],
+			'route'    => $route,
+			'settings' => $settings
+		];
 	}
 }
 

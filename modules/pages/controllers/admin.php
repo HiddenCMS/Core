@@ -80,23 +80,22 @@ class Admin extends Controller_Module
 				->form()
 				->add_rules('pages', [
 					'modules'         => $this->model()->get_page_modules(),
-					'news_categories' => $this->model()->get_news_categories()
+					'news_categories' => $this->model()->get_news_categories(),
+					'blocks'          => $this->storage->encode([])
 				])
 				->add_submit($this->lang('Ajouter'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
 		{
-			$instance = $this->model()->build_instance($post);
+			$blocks = $this->model()->build_blocks($post);
 
 			$this->model()->add_page(	$post['name'],
 										$post['title'],
 										in_array('on', $post['published']),
 										$post['subtitle'],
-										$post['content'],
-										$instance['module'],
-										$instance['route'],
-										$instance['settings']);
+										'',
+										$blocks);
 
 			notify($this->lang('Page ajoutée avec succès'));
 
@@ -110,39 +109,32 @@ class Admin extends Controller_Module
 
 	public function _edit($page_id, $name, $published, $title, $subtitle, $content, $tab)
 	{
-		$instance = $this->model()->get_instance($page_id) ?: [];
-		$instance_values = $this->model()->get_instance_form_values($instance);
-
 		$this	->subtitle($title)
 				->form()
 				->add_rules('pages', [
 					'title'          => $title,
 					'subtitle'       => $subtitle,
 					'name'           => $name,
-					'content'        => $content,
 					'published'      => $published,
 					'modules'        => $this->model()->get_page_modules(),
 					'news_categories' => $this->model()->get_news_categories(),
-					'module'         => $instance_values['module'],
-					'news_category'  => $instance_values['news_category']
+					'blocks'         => $this->model()->get_blocks_form_value($page_id, $content)
 				])
 				->add_submit($this->lang('Éditer'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
 		{
-			$instance = $this->model()->build_instance($post);
+			$blocks = $this->model()->build_blocks($post);
 
 			$this->model()->edit_page(	$page_id,
 										$post['name'],
 										$post['title'],
 										in_array('on', $post['published']),
 										$post['subtitle'],
-										$post['content'],
+										'',
 										$this->config->lang->info()->name,
-										$instance['module'],
-										$instance['route'],
-										$instance['settings']);
+										$blocks);
 
 			notify($this->lang('Page éditée avec succès'));
 

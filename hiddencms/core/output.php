@@ -143,16 +143,16 @@ class Output extends Core
 						$this->error->unauthorized();
 					}
 
-					if ($resolved['instance'])
-					{
-						$this->data->set('module', 'title', $resolved['page']['title']);
-						$this->data->set('module', 'icon',  $this->_module->info()->icon);
-
-						return $this->module_content($resolved['instance']['module'], array_merge(strtoarray('/', $resolved['instance']['route']), $resolved['segments']), FALSE);
-					}
-
 					if (!empty($resolved['segments']))
 					{
+						if (count($resolved['blocks']) == 1 && empty($resolved['page']['content']) && !empty($resolved['blocks'][0]['module']))
+						{
+							$this->data->set('module', 'title', $resolved['page']['title']);
+							$this->data->set('module', 'icon',  $this->_module->info()->icon);
+
+							return $this->module_content($resolved['blocks'][0]['module'], array_merge(strtoarray('/', $resolved['blocks'][0]['route']), $resolved['segments']), FALSE);
+						}
+
 						parent::error();
 					}
 
@@ -161,7 +161,7 @@ class Output extends Core
 
 					if (($controller = @$module->controller('index')) && $controller->has_method('_index'))
 					{
-						return $controller->_index($resolved['page']);
+						return $controller->_index($resolved['page'], $resolved['blocks']);
 					}
 
 					parent::error();
