@@ -6,22 +6,22 @@
 
 function url($url = '')
 {
-	return NeoFrag()->url($url);
+	return HiddenCMS()->url($url);
 }
 
 function redirect($location = '')
 {
-	return NeoFrag()->url->redirect(url($location));
+	return HiddenCMS()->url->redirect(url($location));
 }
 
 function redirect_back($default = '')
 {
-	return redirect(NeoFrag()->url->back() ?: $default);
+	return redirect(HiddenCMS()->url->back() ?: $default);
 }
 
 function refresh()
 {
-	return NeoFrag()->url->refresh();
+	return HiddenCMS()->url->refresh();
 }
 
 function urltolink($url)

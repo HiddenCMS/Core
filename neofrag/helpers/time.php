@@ -41,5 +41,5 @@ function time_span($timestamp)
 		$timestamp = strtotime($timestamp);
 	}
 
-	return (string)NeoFrag()->date($timestamp);
+	return (string)HiddenCMS()->date($timestamp);
 }

@@ -6,7 +6,7 @@
 
 function notify($message, $type = 'success')
 {
-	NeoFrag()->session->append('notifications', [
+	HiddenCMS()->session->append('notifications', [
 		'message' => (string)$message,
 		'type'    => get_colors($type) ? $type : 'success'
 	]);
@@ -14,13 +14,13 @@ function notify($message, $type = 'success')
 
 function notifications()
 {
-	if ($notifications = NeoFrag()->session('notifications'))
+	if ($notifications = HiddenCMS()->session('notifications'))
 	{
 		foreach ($notifications as $notification)
 		{
-			NeoFrag()->js_load('notify(\''.addcslashes($notification['message'], '\'').'\', \''.$notification['type'].'\');');
+			HiddenCMS()->js_load('notify(\''.addcslashes($notification['message'], '\'').'\', \''.$notification['type'].'\');');
 		}
 
-		NeoFrag()->session->destroy('notifications');
+		HiddenCMS()->session->destroy('notifications');
 	}
 }

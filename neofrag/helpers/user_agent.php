@@ -8,7 +8,7 @@ function user_agent($user_agent)
 {
 	if (!is_empty($user_agent))
 	{
-		NeoFrag()->js('user-agent');
+		HiddenCMS()->js('user-agent');
 		return '<img src="'.image('ajax-loader.gif').'" data-user-agent="'.$user_agent.'" alt="" />';
 	}
 	else

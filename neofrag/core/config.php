@@ -177,7 +177,7 @@ class Config extends Core
 			{
 				unset($this->_const[$args[0]]);
 
-				NeoFrag()->db	->where('name', $args[0])
+				HiddenCMS()->db	->where('name', $args[0])
 								->delete('settings');
 			}
 
@@ -197,14 +197,14 @@ class Config extends Core
 	{
 		if (array_key_exists($name, $this->_const))
 		{
-			NeoFrag()->db	->where('name', $name)
+			HiddenCMS()->db	->where('name', $name)
 							->update('settings', [
 								'value' => $value
 							]);
 
 			if ($type)
 			{
-				NeoFrag()->db	->where('name', $name)
+				HiddenCMS()->db	->where('name', $name)
 								->update('settings', [
 									'type' => $type
 								]);
@@ -212,7 +212,7 @@ class Config extends Core
 		}
 		else
 		{
-			NeoFrag()->db->insert('settings', [
+			HiddenCMS()->db->insert('settings', [
 				'name'  => $name,
 				'value' => $value,
 				'type'  => $type ?: 'string'

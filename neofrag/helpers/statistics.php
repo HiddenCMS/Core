@@ -10,7 +10,7 @@ function statistics($name, $value = NULL, $callback = NULL)
 
 	if ($statistics === NULL)
 	{
-		foreach (NeoFrag()->db->from('statistics')->get() as $stat)
+		foreach (HiddenCMS()->db->from('statistics')->get() as $stat)
 		{
 			$statistics[$stat['name']] = $stat['value'];
 		}
@@ -22,7 +22,7 @@ function statistics($name, $value = NULL, $callback = NULL)
 		{
 			if ($callback === NULL || call_user_func($callback, $value, $statistics[$name]))
 			{
-				NeoFrag()->db	->where('name', $name)
+				HiddenCMS()->db	->where('name', $name)
 										->update('statistics', [
 											'value' => $value
 										]);
@@ -30,7 +30,7 @@ function statistics($name, $value = NULL, $callback = NULL)
 		}
 		else
 		{
-			NeoFrag()->db->insert('statistics', [
+			HiddenCMS()->db->insert('statistics', [
 				'name'  => $name,
 				'value' => $value
 			]);

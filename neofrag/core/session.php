@@ -68,14 +68,14 @@ class Session extends Core
 					$set_cookie();
 				}
 
-				$this->_session->set('last_activity', NeoFrag()->date())->update();
+				$this->_session->set('last_activity', HiddenCMS()->date())->update();
 			}
 			else
 			{
 				$set_cookie();
 
 				$this->set('session', [
-					'date'       => NeoFrag()->date(),
+					'date'       => HiddenCMS()->date(),
 					'ip_address' => $ip_address = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP']                     : $_SERVER['REMOTE_ADDR'],
 					'host_name'  => utf8_string(gethostbyaddr($ip_address)),
 					'referer'    => isset($_SERVER['HTTP_REFERER'])                 ? utf8_htmlentities($_SERVER['HTTP_REFERER'])    : '',
@@ -90,11 +90,11 @@ class Session extends Core
 			});
 		}
 
-		NeoFrag()->user = $user = $this->_session->user;
+		HiddenCMS()->user = $user = $this->_session->user;
 
 		if ($user())
 		{
-			$user->set('last_activity_date', NeoFrag()->date())->update();
+			$user->set('last_activity_date', HiddenCMS()->date())->update();
 		}
 
 		$this	->trigger('session_init', $this)
@@ -156,7 +156,7 @@ class Session extends Core
 
 	public function current_sessions()
 	{
-		return NeoFrag()->collection('session')
+		return HiddenCMS()->collection('session')
 						->where('_.last_activity > DATE_SUB(NOW(), INTERVAL 5 MINUTE)');
 	}
 }

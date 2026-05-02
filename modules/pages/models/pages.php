@@ -77,7 +77,7 @@ class Pages extends Model
 	{
 		$modules = ['' => $this->lang('Contenu statique')];
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
 			if ($module->is_enabled() && $module->is_front())
 			{

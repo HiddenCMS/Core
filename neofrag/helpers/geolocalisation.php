@@ -8,7 +8,7 @@ function geolocalisation($address_ip)
 {
 	if (!is_empty($address_ip))
 	{
-		NeoFrag()->js('geolocalisation');
+		HiddenCMS()->js('geolocalisation');
 		return '<img src="'.image('ajax-loader.gif').'" style="margin-right: 10px;" data-geolocalisation="'.$address_ip.'" alt="" />';
 	}
 	else

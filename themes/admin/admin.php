@@ -30,7 +30,7 @@ class Admin extends Theme
 		{
 			$this->config('update_callback', '');
 
-			if ($patch = @NeoFrag()->install($this->config->update_callback))
+			if ($patch = @HiddenCMS()->install($this->config->update_callback))
 			{
 				if (method_exists($patch, 'post'))
 				{
@@ -64,7 +64,7 @@ class Admin extends Theme
 			'gaming'  => []
 		];
 
-		foreach (NeoFrag()->model2('addon')->get('module') as $module)
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
 			if ($module->is_enabled() && $module->is_administrable($category) && $category != 'none' && $module->is_authorized())
 			{
@@ -83,7 +83,7 @@ class Admin extends Theme
 		});
 
 		$customize = $this->array();
-		$theme     = NeoFrag()->model2('addon')->get('theme', $this->config->default_theme, FALSE);
+		$theme     = HiddenCMS()->model2('addon')->get('theme', $this->config->default_theme, FALSE);
 
 		if (@$theme->addon()->controller('admin'))
 		{

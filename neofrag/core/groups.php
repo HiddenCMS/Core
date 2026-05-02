@@ -19,7 +19,7 @@ class Groups extends Core
 		$this->_groups = [
 			'admins' => [
 				'name'   => 'admins',
-				'title'  => NeoFrag()->lang('Administrateurs'),
+				'title'  => HiddenCMS()->lang('Administrateurs'),
 				'color'  => 'danger',
 				'icon'   => 'fas fa-rocket',
 				'hidden' => FALSE,
@@ -28,7 +28,7 @@ class Groups extends Core
 			],
 			'members' => [
 				'name'   => 'members',
-				'title'  => NeoFrag()->lang('Membres'),
+				'title'  => HiddenCMS()->lang('Membres'),
 				'color'  => 'success',
 				'icon'   => 'fas fa-user',
 				'hidden' => FALSE,
@@ -37,7 +37,7 @@ class Groups extends Core
 			],
 			'visitors' => [
 				'name'   => 'visitors',
-				'title'  => NeoFrag()->lang('Visiteurs'),
+				'title'  => HiddenCMS()->lang('Visiteurs'),
 				'color'  => 'info',
 				'icon'   => '',
 				'hidden' => FALSE,

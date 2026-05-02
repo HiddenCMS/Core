@@ -175,7 +175,7 @@ function strtolink($string, $is_html = FALSE)
 
 		if ($users === NULL)
 		{
-			foreach (NeoFrag()->db->select('id', 'username')->from('user')->where('deleted', FALSE)->get() as $user)
+			foreach (HiddenCMS()->db->select('id', 'username')->from('user')->where('deleted', FALSE)->get() as $user)
 			{
 				$users[$user['id']] = $user['username'];
 			}
@@ -183,7 +183,7 @@ function strtolink($string, $is_html = FALSE)
 
 		$username = !empty($match[3]) ? $match[3] : $match[2];
 
-		return ($user_id = array_search($username, $users)) !== FALSE ? NeoFrag()->user->link($user_id, $username, '@') : $match[0];
+		return ($user_id = array_search($username, $users)) !== FALSE ? HiddenCMS()->user->link($user_id, $username, '@') : $match[0];
 	}, $string);
 }
 
@@ -258,7 +258,7 @@ function str_shortener($string, $max_length, $end = '&#8230;')
 
 function bbcode($string)
 {
-	return nl2br(strtolink(NeoFrag()->bbcode->bbcode2html($string), TRUE));
+	return nl2br(strtolink(HiddenCMS()->bbcode->bbcode2html($string), TRUE));
 }
 
 function highlight($string, $keywords, $max_length = 256)

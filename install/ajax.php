@@ -423,7 +423,7 @@ else if ($step == 'user')
 
 	if ($ok)
 	{
-		$user = NeoFrag()	->module('user')
+		$user = HiddenCMS()	->module('user')
 							->model2('user', 1)
 							->set('id', 1)
 							->set_password($password)
@@ -432,7 +432,7 @@ else if ($step == 'user')
 							->set('admin',    TRUE)
 							->commit();
 
-		NeoFrag()->session->login($user);
+		HiddenCMS()->session->login($user);
 
 		require_once 'neofrag/helpers/dir.php';
 		unlink('.htaccess');

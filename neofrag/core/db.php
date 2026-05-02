@@ -421,7 +421,7 @@ class Db extends Core
 			if (!isset(self::$_drivers[$type]) && isset(self::$_config[$type]))
 			{
 				array_walk(self::$_config[$type], $connect = function($config) use (&$connect){
-					if ($driver = NeoFrag()->___load('drivers', $config['driver'], [$config['hostname'], $config['username'], $config['password'], $config['database']]))
+					if ($driver = HiddenCMS()->___load('drivers', $config['driver'], [$config['hostname'], $config['username'], $config['password'], $config['database']]))
 					{
 						if ($connection = $driver->connect())
 						{
