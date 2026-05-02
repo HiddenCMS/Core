@@ -45,7 +45,7 @@ class Admin_Ajax extends Controller_Module
 
 			foreach (['version', 'checksum'] as $file)
 			{
-				if ($$file = $this	->network('https://neofr.ag/'.$file.'.json?v='.version_format(HIDDENCMS_VERSION).($this->config->update_beta ? '&beta=1' : ''))
+				if ($$file = $this	->network(rtrim(HIDDENCMS_UPDATE_BASE, '/').'/'.$file.'.json?v='.version_format(HIDDENCMS_VERSION).($this->config->update_beta ? '&beta=1' : ''))
 									->type('text')
 									->get())
 				{
@@ -330,7 +330,7 @@ class Admin_Ajax extends Controller_Module
 
 				dir_create('cache/monitoring');
 
-				$this	->network('https://neofrag.download/?v='.version_format($version->version))
+				$this	->network(rtrim(HIDDENCMS_DOWNLOAD_BASE, '/').'/?v='.version_format($version->version))
 						->stream($file = 'cache/monitoring/hiddencms.zip', function($size, $total){
 							$this->_flush(2, $size / $total * 100);
 						});
@@ -387,7 +387,7 @@ class Admin_Ajax extends Controller_Module
 						$this->config('version', version_format(HIDDENCMS_VERSION));
 					}
 
-					if ($patch = @NeoFrag()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))
+					if ($patch = @HiddenCMS()->install($patch_name = preg_replace('/[^a-z0-9]/i', '_', $version->version)))
 					{
 						$patch->up();
 					}

@@ -118,7 +118,7 @@ if ($step == 'check')
 			$get = function($ssl = TRUE) use (&$output){
 				$ch = curl_init();
 
-				curl_setopt($ch, CURLOPT_URL, 'https://vc.nf.hiddenblob.com/version.json?v=last&install='.urlencode(NEOFRAG_VERSION));
+				curl_setopt($ch, CURLOPT_URL, HIDDENCMS_VERSION_CHECK_URL.'?v=last&install='.urlencode(HIDDENCMS_VERSION));
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 				curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
@@ -131,15 +131,20 @@ if ($step == 'check')
 
 				$content = json_decode(curl_exec($ch));
 
-				if ($content && $content->neofrag->version != NEOFRAG_VERSION)
+				if ($content)
 				{
-					$output[] =[
-						'title' => 'HiddenCMS',
-						'info'  => [
-							lang('Dernière version') => $content->neofrag->version
-						],
-						'icon'  => 'danger'
-					];
+					$version = isset($content->hiddencms) ? $content->hiddencms : (isset($content->neofrag) ? $content->neofrag : NULL);
+
+					if ($version && isset($version->version) && $version->version != HIDDENCMS_VERSION)
+					{
+						$output[] =[
+							'title' => 'HiddenCMS',
+							'info'  => [
+								lang('Dernière version') => $version->version
+							],
+							'icon'  => 'danger'
+						];
+					}
 				}
 
 				curl_close($ch);

@@ -168,9 +168,10 @@ class Admin extends Theme
 	{
 		if (file_exists($file = 'cache/monitoring/version.json'))
 		{
-			$version = json_decode(file_get_contents($file))->neofrag;
+			$versions = json_decode(file_get_contents($file));
+			$version  = isset($versions->hiddencms) ? $versions->hiddencms : (isset($versions->neofrag) ? $versions->neofrag : NULL);
 
-			if (version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
+			if ($version && version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
 			{
 				return $version;
 			}
