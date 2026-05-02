@@ -12,8 +12,10 @@ CREATE TABLE `access` (
   PRIMARY KEY (`access_id`),
   UNIQUE KEY `module_id` (`id`,`module`,`action`),
   KEY `module` (`module`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+INSERT INTO `access` (`access_id`, `id`, `module`, `action`) VALUES
+(1, 1, 'pages', 'access_page');
 
 DROP TABLE IF EXISTS `access_details`;
 CREATE TABLE `access_details` (
@@ -222,7 +224,10 @@ CREATE TABLE `pages` (
   `published` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `page` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `pages` (`page_id`, `name`, `published`) VALUES
+(1, 'accueil', '1');
 
 DROP TABLE IF EXISTS `pages_lang`;
 CREATE TABLE `pages_lang` (
@@ -235,6 +240,9 @@ CREATE TABLE `pages_lang` (
   KEY `lang` (`lang`),
   CONSTRAINT `pages_lang_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `pages_lang` (`page_id`, `lang`, `title`, `subtitle`, `content`) VALUES
+(1, 'fr', 'Accueil', '', '');
 
 DROP TABLE IF EXISTS `pages_instances`;
 CREATE TABLE `pages_instances` (
@@ -249,7 +257,10 @@ CREATE TABLE `pages_instances` (
   KEY `page_id` (`page_id`),
   KEY `enabled` (`enabled`),
   CONSTRAINT `pages_instances_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `pages_instances` (`instance_id`, `page_id`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
+(1, 1, 'news', '', 'a:0:{}', 0, '1');
 
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (
@@ -312,7 +323,7 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('cookie_expire', '', '', '1 hour', 'string'),
 ('cookie_name', '', '', 'session', 'string'),
 ('copyright', '', '', 'Copyright {copyright} {year} {name}, tous droits r&eacute;serv&eacute;s &lt;div class=&quot;float-right&quot;&gt;Propuls&eacute; par {hiddencms}&lt;/div&gt;', 'string'),
-('default_page', '', '', 'news', 'string'),
+('default_page', '', '', 'accueil', 'string'),
 ('default_theme', '', '', 'azuro', 'string'),
 ('description', '', '', 'HiddenCMS', 'string'),
 ('favicon', '', '', '0', 'int'),

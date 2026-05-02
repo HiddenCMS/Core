@@ -15,39 +15,20 @@ class Admin extends Controller_Module
 		$this	->subtitle($this->lang('Préférences générales'))
 				->icon('fas fa-cog');
 
-		$modules = $pages = [];
+		$pages = [];
 
-		foreach (HB()->model2('addon')->get('module') as $module)
+		if (($pages_module = @HB()->module('pages')) && $pages_module->is_enabled())
 		{
-			if (@$module->controller('index') && !in_array($module->info()->name, ['settings', 'user']))
+			foreach ($pages_module->model()->get_pages() as $page)
 			{
-				$modules[] = $module;
-			}
-		}
-
-		array_natsort($modules, function($a){
-			return $a->info()->title;
-		});
-
-		foreach ($modules as $module)
-		{
-			$name = $module->info()->name;
-
-			if ($name == 'pages')
-			{
-				foreach ($module->model()->get_pages() as $page)
+				if ($page['published'])
 				{
-					if ($page['published'])
-					{
-						$pages['pages/'.$page['name']] = 'Page : '.$page['title'];
-					}
+					$pages[$page['name']] = $page['title'];
 				}
 			}
-			else
-			{
-				$pages[$name] = $module->info()->title;
-			}
 		}
+
+		array_natsort($pages);
 
 		$this	->form()
 				->add_rules([
