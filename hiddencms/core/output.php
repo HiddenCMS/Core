@@ -276,7 +276,7 @@ class Output extends Core
 				//Checker Controller
 				if ($has_checker = ($checker = @$module->controller($name('checker'))) && $checker->has_method($method))
 				{
-					$segments = call_user_func_array([$checker, $method], $segments);
+					$segments = call_user_func_array([$checker, $method], array_values($segments));
 				}
 
 				if ((!$has_checker && $this->url->extension == '') || ($has_checker && $checker->valid() && is_array($segments)))
@@ -284,7 +284,7 @@ class Output extends Core
 					//Controller
 					if (($controller = @$module->controller($controller ?: 'index')) && $controller->has_method($method))
 					{
-						return call_user_func_array([$controller, $method], $segments);
+						return call_user_func_array([$controller, $method], array_values($segments));
 					}
 				}
 
@@ -499,14 +499,14 @@ class Output extends Core
 
 		if ($has_checker = ($checker = @$module->controller($name('checker'))) && $checker->has_method($method))
 		{
-			$segments = call_user_func_array([$checker, $method], $segments);
+			$segments = call_user_func_array([$checker, $method], array_values($segments));
 		}
 
 		if ((!$has_checker && $this->url->extension == '') || ($has_checker && $checker->valid() && is_array($segments)))
 		{
 			if (($controller = @$module->controller($controller ?: 'index')) && $controller->has_method($method))
 			{
-				return call_user_func_array([$controller, $method], $segments);
+				return call_user_func_array([$controller, $method], array_values($segments));
 			}
 		}
 
