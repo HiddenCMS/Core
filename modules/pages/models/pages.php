@@ -80,7 +80,7 @@ class Pages extends Model
 		{
 			if ($module->is_enabled() && $module->is_front())
 			{
-				$modules[$module->info()->name] = $module->info()->title;
+				$modules[$module->info()->name] = (string)$module->info()->title;
 			}
 		}
 

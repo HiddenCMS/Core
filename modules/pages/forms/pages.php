@@ -69,11 +69,11 @@ $labels = [
 ];
 
 $icons = [
-	'static' => icon('fas fa-align-left'),
-	'module' => icon('fas fa-cube'),
-	'up'     => icon('fas fa-arrow-up'),
-	'down'   => icon('fas fa-arrow-down'),
-	'delete' => icon('far fa-trash-alt')
+	'static' => (string)icon('fas fa-align-left'),
+	'module' => (string)icon('fas fa-cube'),
+	'up'     => (string)icon('fas fa-arrow-up'),
+	'down'   => (string)icon('fas fa-arrow-down'),
+	'delete' => (string)icon('far fa-trash-alt')
 ];
 
 if ($modules)
