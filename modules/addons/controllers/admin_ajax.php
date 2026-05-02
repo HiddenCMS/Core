@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Addons\Controllers;
@@ -82,13 +82,13 @@ class Admin_Ajax extends Controller_Module
 												if (($cmp = version_compare($version, version_format($addon->info()->version))) === 0)
 												{
 													return [
-														'warning' => 'Le '.$type.' '.$addon->info()->title.' est dÃ©jÃ  installÃ© en version '.$version
+														'warning' => 'Le '.$type.' '.$addon->info()->title.' est déjà installé en version '.$version
 													];
 												}
 												else if ($cmp === -1)
 												{
 													return [
-														'danger' => 'Le '.$type.' '.$addon->info()->title.' est dÃ©jÃ  installÃ© avec une version supÃ©rieure'
+														'danger' => 'Le '.$type.' '.$addon->info()->title.' est déjà installé avec une version supérieure'
 													];
 												}
 											}
@@ -114,28 +114,28 @@ class Admin_Ajax extends Controller_Module
 													$addon->reset();
 
 													return [
-														'success' => 'Le '.$type.' '.$addon->info()->title.' a Ã©tÃ© '.(empty($update) ? 'installÃ©' : 'mis-Ã -jour')
+														'success' => 'Le '.$type.' '.$addon->info()->title.' a été '.(empty($update) ? 'installé' : 'mis-à-jour')
 													];
 												}
 
 												return [
-													'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' n\'a pas pu Ãªtre '.(empty($update) ? 'installÃ©' : 'mis-Ã -jour')
+													'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' n\'a pas pu être '.(empty($update) ? 'installé' : 'mis-à-jour')
 												];
 											}
 
 											return [
-												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nÃ©cessite la version '.$nf_version.' de HiddenCMS, veuillez mettre jour votre site'
+												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$nf_version.' de HiddenCMS, veuillez mettre jour votre site'
 											];
 										}
 
 										return [
-											'danger' => 'Le composant ne peut pas Ãªtre installÃ©, veuillez vÃ©rifier la prÃ©sence des numÃ©ros de version'
+											'danger' => 'Le composant ne peut pas être installé, veuillez vérifier la présence des numéros de version'
 										];
 									}
 								}
 
 								return [
-									'danger' => 'Le composant ne peut pas Ãªtre installÃ©, veuillez vÃ©rifier son contenu'
+									'danger' => 'Le composant ne peut pas être installé, veuillez vérifier son contenu'
 								];
 							};
 

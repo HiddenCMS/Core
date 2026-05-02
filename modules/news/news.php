@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\News;
@@ -13,11 +13,11 @@ class News extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('ActualitÃ©s'),
+			'title'       => $this->lang('Actualités'),
 			'description' => '',
 			'icon'        => 'far fa-file-alt',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'front'       => TRUE,
@@ -42,12 +42,12 @@ class News extends Module
 			'settings'    => function(){
 				return $this->form2()
 							->rule($this->form_number('news_per_page')
-										->title('ActualitÃ©s par page')
+										->title('Actualités par page')
 										->value($this->config->news_per_page)
 							)
 							->success(function($data){
 								$this->config('news_per_page', $data['news_per_page']);
-								notify('Configuration modifiÃ©e');
+								notify('Configuration modifiée');
 								refresh();
 							});
 			}
@@ -60,7 +60,7 @@ class News extends Module
 			'default' => [
 				'access'  => [
 					[
-						'title'  => 'ActualitÃ©s',
+						'title'  => 'Actualités',
 						'icon'   => 'far fa-file-alt',
 						'access' => [
 							'add_news' => [
@@ -81,21 +81,21 @@ class News extends Module
 						]
 					],
 					[
-						'title'  => 'CatÃ©gories',
+						'title'  => 'Catégories',
 						'icon'   => 'fas fa-align-left',
 						'access' => [
 							'add_news_category' => [
-								'title' => 'Ajouter une catÃ©gorie',
+								'title' => 'Ajouter une catégorie',
 								'icon'  => 'fas fa-plus',
 								'admin' => TRUE
 							],
 							'modify_news_category' => [
-								'title' => 'Modifier une catÃ©gorie',
+								'title' => 'Modifier une catégorie',
 								'icon'  => 'fas fa-edit',
 								'admin' => TRUE
 							],
 							'delete_news_category' => [
-								'title' => 'Supprimer une catÃ©gorie',
+								'title' => 'Supprimer une catégorie',
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
 							]

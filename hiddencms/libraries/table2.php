@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -188,7 +188,7 @@ class Table2 extends Library
 							$output = $this	->button('Filtrer', 'fas fa-filter', 'light btn-sm')
 											->align('right')
 											->modal($this	->_filters
-															->info('<small>Le caractÃƒÆ’Ã‚Â¨re % permet des recherches partielles</small>')
+															->info('<small>Le caractère % permet des recherches partielles</small>')
 															->submit('Filtrer')
 															->modal('Filtrer', 'fas fa-filter')
 															->close()
@@ -409,7 +409,7 @@ class Table2 extends Library
 							->exec(function($html){
 								if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
 								{
-									$html->content(HB()->lang('Aucun rÃƒÆ’Ã‚Â©sultat trouvÃƒÆ’Ã‚Â©').$this->_filters_reset()->outline()->color('danger btn-sm'));
+									$html->content(HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger btn-sm'));
 								}
 								else
 								{

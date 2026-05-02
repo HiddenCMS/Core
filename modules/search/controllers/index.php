@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Search\Controllers;
@@ -114,7 +114,7 @@ class Index extends Controller_Module
 												->heading($result[0]->info()->title, $result[0]->info()->icon, 'search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 												->body(implode('<hr />', $content))
 												->footer_if(!$details && $result[3] > 3, $this	->button()
-																								->title($this->lang('Voir l\'ensemble des rÃ©sultats'))
+																								->title($this->lang('Voir l\'ensemble des résultats'))
 																								->url('search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 																								->color('light')
 																								->align('center')

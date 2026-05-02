@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -112,25 +112,25 @@ class Date extends Library
 		}
 		else
 		{
-			$output = HB()->lang('Le %s ÃƒÆ’Ã‚Â  %s', $this->short_date(), $this->short_time());
+			$output = HB()->lang('Le %s à %s', $this->short_date(), $this->short_time());
 
 			if ($diff < 0)
 			{
 				if ($timestamp < strtotime('+1 days midnight'))
 				{
-					$output = HB()->lang('Aujourd\'hui ÃƒÆ’Ã‚Â  %s', $this->short_time());
+					$output = HB()->lang('Aujourd\'hui à %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+2 days midnight'))
 				{
-					$output = HB()->lang('Demain ÃƒÆ’Ã‚Â  %s', $this->short_time());
+					$output = HB()->lang('Demain à %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+8 days midnight'))
 				{
-					$output = HB()->lang('%s prochain ÃƒÆ’Ã‚Â  %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('%s prochain à %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 				else if ($timestamp < strtotime('+22 days midnight'))
 				{
-					$output = HB()->lang('Dans %d jours ÃƒÆ’Ã‚Â  %s', floor($diff / 87840 * -1), $this->short_time());
+					$output = HB()->lang('Dans %d jours à %s', floor($diff / 87840 * -1), $this->short_time());
 				}
 			}
 			else if ($diff > 0)
@@ -173,16 +173,16 @@ class Date extends Library
 				}
 				else if ($timestamp >= strtotime('yesterday'))
 				{
-					$output = HB()->lang('Hier ÃƒÆ’Ã‚Â  %s', $this->short_time());
+					$output = HB()->lang('Hier à %s', $this->short_time());
 				}
 				else if ($timestamp >= strtotime('6 days ago midnight'))
 				{
-					$output = HB()->lang('%s dernier ÃƒÆ’Ã‚Â  %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('%s dernier à %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 			}
 			else
 			{
-				$output = HB()->lang('ÃƒÆ’Ã¢â€šÂ¬ l\'instant');
+				$output = HB()->lang('À l\'instant');
 			}
 		}
 

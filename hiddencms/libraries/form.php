@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -285,7 +285,7 @@ class Form extends Library
 			array_diff(array_filter($post[$var]), array_map('utf8_htmlentities', array_keys($options['values'])))
 		)
 		{
-			return HB()->lang('La valeur sÃƒÆ’Ã‚Â©lectionnÃƒÆ’Ã‚Â©e n\'est pas valide|Les valeurs sÃƒÆ’Ã‚Â©lectionnÃƒÆ’Ã‚Â©es ne sont pas valides', count($post[$var]));
+			return HB()->lang('La valeur sélectionnée n\'est pas valide|Les valeurs sélectionnées ne sont pas valides', count($post[$var]));
 		}
 
 		$is_file = !empty($options['type']) && $options['type'] == 'file';
@@ -304,13 +304,13 @@ class Form extends Library
 		if ($is_file && !empty($_FILES[$this->token()]['error'][$var]) && $_FILES[$this->token()]['error'][$var] != 4)
 		{
 			$errors = [
-				1 => 'La taille du fichier tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â© excÃƒÆ’Ã‚Â¨de la valeur de upload_max_filesize, configurÃƒÆ’Ã‚Â©e dans le php.ini',
-				2 => 'La taille du fichier tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â© excÃƒÆ’Ã‚Â¨de la valeur de MAX_FILE_SIZE, qui a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© spÃƒÆ’Ã‚Â©cifiÃƒÆ’Ã‚Â©e dans le formulaire HTML',
-				3 => 'Le fichier n\'a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© que partiellement tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â©',
-				4 => 'Aucun fichier n\'a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â©',
+				1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
+				2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
+				3 => 'Le fichier n\'a été que partiellement téléchargé',
+				4 => 'Aucun fichier n\'a été téléchargé',
 				6 => 'Un dossier temporaire est manquant',
-				7 => 'ÃƒÆ’Ã¢â‚¬Â°chec de l\'ÃƒÆ’Ã‚Â©criture du fichier sur le disque',
-				8 => 'Une extension PHP a arrÃƒÆ’Ã‚ÂªtÃƒÆ’Ã‚Â© l\'envoi de fichier'
+				7 => 'Échec de l\'écriture du fichier sur le disque',
+				8 => 'Une extension PHP a arrêté l\'envoi de fichier'
 			];
 
 			return HB()->lang($errors[$_FILES[$this->token()]['error'][$var]]);
@@ -388,7 +388,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !preg_match('/^0[1-9]([. ]?)\d{2}(?:\1\d{2}){3}$/', $post[$var], $match))
 		{
-			return 'NumÃƒÆ’Ã‚Â©ro de tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©phone invalide';
+			return 'Numéro de téléphone invalide';
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -508,7 +508,7 @@ class Form extends Library
 
 		if ($this->_display_required)
 		{
-			$output .= '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquÃƒÆ’Ã‚Â©es d\'une ÃƒÆ’Ã‚Â©toile sont requises').'</em></div></div>';
+			$output .= '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>';
 		}
 
 		if (!empty($this->_buttons))
@@ -720,7 +720,7 @@ class Form extends Library
 		{
 			$post = post();
 
-			$input = '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('TÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©charger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
+			$input = '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
 
 			if (!empty($options['value']))
 			{
@@ -773,7 +773,7 @@ class Form extends Library
 									rows: 5,
 									iconset: "fontawesome",
 									labelHeader: "'.HB()->lang('{0} sur {1} pages').'",
-									labelFooter: "<div class=\"float-right\">'.HB()->lang('{2} icÃƒÆ’Ã‚Â´nes').'</div>",
+									labelFooter: "<div class=\"float-right\">'.HB()->lang('{2} icônes').'</div>",
 									searchText: "'.HB()->lang('Rechercher...').'",
 									selectedClass: "btn-primary",
 									unselectedClass: ""

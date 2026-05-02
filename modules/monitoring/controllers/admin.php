@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Monitoring\Controllers;
@@ -26,7 +26,7 @@ class Admin extends Controller_Module
 			$this	->col(
 						$this->panel()->body($this->view('monitoring'), FALSE),
 						$this	->panel()
-								->heading('<div class="float-right" data-toggle="tooltip" title="'.$this->lang('DÃ©tails').'"><a class="btn btn-outline-info btn-sm" href="#" data-modal-ajax="'.url('admin/ajax/monitoring/phpinfo').'">'.icon('fas fa-info').'</a></div>Informations serveur', 'fas fa-info-circle')
+								->heading('<div class="float-right" data-toggle="tooltip" title="'.$this->lang('Détails').'"><a class="btn btn-outline-info btn-sm" href="#" data-modal-ajax="'.url('admin/ajax/monitoring/phpinfo').'">'.icon('fas fa-info').'</a></div>Informations serveur', 'fas fa-info-circle')
 								->body($this->view('infos', [
 									'check'   => $this->model()->check_server()
 								]))
@@ -67,7 +67,7 @@ class Admin extends Controller_Module
 	{
 		$this->theme('admin')->js('update');
 
-		return $this->modal('Mise Ã  jour de HiddenCMS', 'fas fa-rocket')
+		return $this->modal('Mise à jour de HiddenCMS', 'fas fa-rocket')
 					->large()
 					->set_id('modal-update')
 					->body('<div class="update-features">
@@ -109,7 +109,7 @@ class Admin extends Controller_Module
 										<div class="step">
 											'.icon('far fa-arrow-alt-circle-down').'
 										</div>
-										TÃ©lÃ©chargement
+										Téléchargement
 									</div>
 									<div class="col">
 										<div class="step">
@@ -119,7 +119,7 @@ class Admin extends Controller_Module
 									</div>
 								</div>
 							</div>')
-					->submit('Lancer la mise Ã  jour')
+					->submit('Lancer la mise à jour')
 					->cancel();
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Core;
@@ -197,7 +197,7 @@ class Output extends Core
 
 				$module->__init();
 
-				//MÃƒÆ’Ã‚Â©thode par dÃƒÆ’Ã‚Â©fault
+				//Méthode par défault
 				if (empty($segments))
 				{
 					$method = 'index';
@@ -206,7 +206,7 @@ class Output extends Core
 				{
 					parent::error();
 				}
-				//MÃƒÆ’Ã‚Â©thode dÃƒÆ’Ã‚Â©finie par routage
+				//Méthode définie par routage
 				else if (!empty($module->info()->routes))
 				{
 					$method = $module->get_method($segments);

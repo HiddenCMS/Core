@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\User\Models\User;
@@ -61,12 +61,12 @@ class Update extends \HB\HiddenCMS\Actions\Update
 				]);
 			}
 
-			notify('Groupes du membre Ã©ditÃ©s');
+			notify('Groupes du membre édités');
 
 			redirect_back('admin/user');
 		}
 
-		$this->module()	->title($this->lang('Ã‰dition du membre'))
+		$this->module()	->title($this->lang('Édition du membre'))
 						->subtitle($user->username)
 						->css('groups')
 						->js('groups');
@@ -85,7 +85,7 @@ class Update extends \HB\HiddenCMS\Actions\Update
 
 												$user->update();
 
-												notify($this->lang('Membre modifiÃ©'));
+												notify($this->lang('Membre modifié'));
 												redirect('admin/user/user/update/'.$user->url());
 											})
 											->panel()

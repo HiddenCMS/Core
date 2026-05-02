@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Core;
@@ -132,7 +132,7 @@ class Access extends Core
 
 		if (!empty($count[1]))
 		{
-			$output[] = '<span class="text-success" data-toggle="tooltip" title="'.$this->lang('Membres autorisÃƒÆ’Ã‚Â©s').'" data-original-title="">'.icon('fas fa-check').' '.$count[1].'</span>';
+			$output[] = '<span class="text-success" data-toggle="tooltip" title="'.$this->lang('Membres autorisés').'" data-original-title="">'.icon('fas fa-check').' '.$count[1].'</span>';
 		}
 
 		if (!empty($count[0]))

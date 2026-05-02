@@ -28,7 +28,7 @@
 		</ul>
 	<?php endif ?>
 	<?php if ($content): ?>
-		<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer Ã  lire') ?></a>
+		<a href="<?php echo url('news/'.$news_id.'/'.url_title($title)) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer à lire') ?></a>
 	<?php endif ?>
 </div>
 <?php endif ?>

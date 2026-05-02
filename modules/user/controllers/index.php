@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\User\Controllers;
@@ -12,7 +12,7 @@ class Index extends Controller_Module
 {
 	public function index()
 	{
-		return $this->title('Mon activitÃ©')
+		return $this->title('Mon activité')
 					->icon('far fa-star')
 					->row([
 						$this->col(
@@ -70,7 +70,7 @@ class Index extends Controller_Module
 
 									$user->update();
 
-									notify($this->lang('Informations modifiÃ©es'));
+									notify($this->lang('Informations modifiées'));
 
 									refresh();
 								})
@@ -100,7 +100,7 @@ class Index extends Controller_Module
 											->col('Adresse IP', function($session){
 												return geolocalisation($ip_address = $session->data->session->ip_address).'<span data-toggle="tooltip" data-original-title="'.$session->data->session->host_name.'">'.$ip_address.'</span>';
 											})
-											->col('Site rÃ©fÃ©rent', function($session){
+											->col('Site référent', function($session){
 												return $session->data->session->referer ? urltolink($session->data->session->referer) : $this->lang('Aucun');
 											})
 											->col('Date', function($session){
@@ -118,7 +118,7 @@ class Index extends Controller_Module
 											->rule($this->form_checkbox('delete')
 														->data([
 															'account'   => 'Je souhaite supprimer mon compte',
-															//'keep_data' => 'J\'accepte que mes contributions soient conservÃ©es de faÃ§on anonyme'
+															//'keep_data' => 'J\'accepte que mes contributions soient conservées de façon anonyme'
 														])
 											)
 											->form('current_password')
@@ -139,7 +139,7 @@ class Index extends Controller_Module
 														'user_id' => NULL
 													]);
 
-													notify('Compte supprimÃ©');
+													notify('Compte supprimé');
 
 													redirect();
 												}
@@ -205,7 +205,7 @@ class Index extends Controller_Module
 	{
 		$this	->title($this->lang('Confirmation de suppression'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer la session de l\'utilisateur <b>%s</b> ?'));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la session de l\'utilisateur <b>%s</b> ?'));
 
 		if ($this->form()->is_valid())
 		{
@@ -263,7 +263,7 @@ class Index extends Controller_Module
 						->set_if($data['avatar'],   'avatar',   $data['avatar'])
 						->create();
 
-				notify($this->lang('Connexion Ã©tablie via %s', $authenticator->info()->title));
+				notify($this->lang('Connexion établie via %s', $authenticator->info()->title));
 			}
 			else
 			{
@@ -320,12 +320,12 @@ class Index extends Controller_Module
 
 	public function _messages_inbox($messages)
 	{
-		return $this->_messages($messages, TRUE, 'BoÃ®te de rÃ©ception', 'fas fa-inbox');
+		return $this->_messages($messages, TRUE, 'Boîte de réception', 'fas fa-inbox');
 	}
 
 	public function _messages_sent($messages)
 	{
-		return $this->_messages($messages, FALSE, 'Messages envoyÃ©s', 'far fa-paper-plane', 'sent');
+		return $this->_messages($messages, FALSE, 'Messages envoyés', 'far fa-paper-plane', 'sent');
 	}
 
 	public function _messages_archives($messages)
@@ -341,13 +341,13 @@ class Index extends Controller_Module
 
 		if ($box == 'inbox')
 		{
-			$page_title   = $this->lang('BoÃ®te de rÃ©ception');
+			$page_title   = $this->lang('Boîte de réception');
 			$page_icon    = 'fas fa-inbox';
 			$allow_delete = TRUE;
 		}
 		else if ($box == 'sent')
 		{
-			$page_title = $this->lang('Messages envoyÃ©s');
+			$page_title = $this->lang('Messages envoyés');
 			$page_icon  = 'far fa-paper-plane';
 		}
 		else if ($box == 'archives')
@@ -391,7 +391,7 @@ class Index extends Controller_Module
 
 	public function _messages_compose($username)
 	{
-		$this	->title('Nouveau message privÃ©')
+		$this	->title('Nouveau message privé')
 				->icon('far fa-envelope')
 				->breadcrumb()
 				->form()
@@ -406,7 +406,7 @@ class Index extends Controller_Module
 						'value'       => $username,
 						'type'        => 'text',
 						'rules'       => 'required',
-						'description' => 'SÃ©parez plusieurs destinataires par un <b>;</b> <small>(point virgule)</small>'
+						'description' => 'Séparez plusieurs destinataires par un <b>;</b> <small>(point virgule)</small>'
 					],
 					'message' => [
 						'label' => 'Mon message',
@@ -439,7 +439,7 @@ class Index extends Controller_Module
 		$this	->title($this->lang('Suppression du message'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), 'ÃŠtes-vous sÃ»r(e) de vouloir supprimer le message <b>'.$title.'</b> ?');
+				->confirm_deletion($this->lang('Confirmation de suppression'), 'Êtes-vous sûr(e) de vouloir supprimer le message <b>'.$title.'</b> ?');
 
 		if ($this->form()->is_valid())
 		{
@@ -504,22 +504,22 @@ class Index extends Controller_Module
 					'url'   => 'user/account'
 				],
 				[
-					'title' => 'Ã‰diter mon profil',
+					'title' => 'Éditer mon profil',
 					'icon'  => 'fas fa-pencil-alt',
 					'url'   => 'user/profile'
 				],
 				[
-					'title' => 'Messagerie privÃ©e',
+					'title' => 'Messagerie privée',
 					'icon'  => 'far fa-envelope',
 					'url'   => 'user/messages'
 				],
 				[
-					'title' => 'GÃ©rer mes sessions',
+					'title' => 'Gérer mes sessions',
 					'icon'  => 'fas fa-globe',
 					'url'   => 'user/sessions'
 				],
 				[
-					'title' => 'DÃ©connexion',
+					'title' => 'Déconnexion',
 					'icon'  => 'fas fa-times',
 					'url'   => 'user/logout'
 				]
@@ -574,7 +574,7 @@ class Index extends Controller_Module
 		}
 
 		return $this->panel()
-					->heading('ActivitÃ© rÃ©cente')
+					->heading('Activité récente')
 					->body($this->view('activity', [
 						'user_activity' => $user_activity
 					]));

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Pages\Models;
@@ -92,7 +92,7 @@ class Pages extends Model
 
 	public function get_news_categories()
 	{
-		$categories = ['' => $this->lang('Toutes les actualitÃ©s')];
+		$categories = ['' => $this->lang('Toutes les actualités')];
 
 		foreach ($this->db	->select('c.category_id', 'cl.title')
 							->from('news_categories c')

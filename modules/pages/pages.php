@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Pages;
@@ -17,7 +17,7 @@ class Pages extends Module
 			'description' => '',
 			'icon'        => 'far fa-file',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'routes'      => [
@@ -78,7 +78,7 @@ class Pages extends Module
 						'icon'   => 'far fa-file',
 						'access' => [
 							'access_page' => [
-								'title' => 'AccÃ¨s au contenu',
+								'title' => 'Accès au contenu',
 								'icon'  => 'far fa-eye'
 							]
 						]

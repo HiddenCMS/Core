@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\News\Controllers;
@@ -12,13 +12,13 @@ class Admin extends Controller_Module
 {
 	public function index($news)
 	{
-		$this->title($this->lang('ActualitÃ©s'));
+		$this->title($this->lang('Actualités'));
 
 		$news = $this	->table()
 						->add_columns([
 							[
 								'content' => function($data){
-									return $data['published'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('PubliÃ©e').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('En attente de publication').'" style="color: #535353;"></i>';
+									return $data['published'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('Publiée').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('En attente de publication').'" style="color: #535353;"></i>';
 								},
 								'sort'    => function($data){
 									return $data['published'];
@@ -38,7 +38,7 @@ class Admin extends Controller_Module
 								}
 							],
 							[
-								'title'   => $this->lang('CatÃ©gorie'),
+								'title'   => $this->lang('Catégorie'),
 								'content' => function($data){
 									return '<a href="'.url('admin/news/categories/'.$data['category_id'].'/'.$data['category_name']).'"><img src="'.HB()->model2('file', $data['category_icon'])->path().'" alt="" /> '.$data['category_title'].'</a>';
 								},
@@ -91,7 +91,7 @@ class Admin extends Controller_Module
 						])
 						->sort_by(5, SORT_DESC, SORT_NUMERIC)
 						->data($news)
-						->no_data($this->lang('Il n\'y a pas encore d\'actualitÃ©'))
+						->no_data($this->lang('Il n\'y a pas encore d\'actualité'))
 						->display();
 
 		$categories = $this	->table()
@@ -121,22 +121,22 @@ class Admin extends Controller_Module
 							])
 							->pagination(FALSE)
 							->data($this->model('categories')->get_categories())
-							->no_data($this->lang('Aucune catÃ©gorie'))
+							->no_data($this->lang('Aucune catégorie'))
 							->display();
 
 		return $this->row(
 			$this->col(
 				$this	->panel()
-						->heading($this->lang('CatÃ©gories'), 'fas fa-align-left')
+						->heading($this->lang('Catégories'), 'fas fa-align-left')
 						->body($categories)
-						->footer_if($this->is_authorized('add_news_category'), $this->button_create('admin/news/categories/add', $this->lang('CrÃ©er une catÃ©gorie')))
+						->footer_if($this->is_authorized('add_news_category'), $this->button_create('admin/news/categories/add', $this->lang('Créer une catégorie')))
 						->size('col-12 col-lg-3')
 			),
 			$this->col(
 				$this	->panel()
-						->heading($this->lang('Liste des actualitÃ©s'), 'far fa-file-alt')
+						->heading($this->lang('Liste des actualités'), 'far fa-file-alt')
 						->body($news)
-						->footer_if($this->is_authorized('add_news'), $this->button_create('admin/news/add', $this->lang('Ajouter une actualitÃ©')))
+						->footer_if($this->is_authorized('add_news'), $this->button_create('admin/news/add', $this->lang('Ajouter une actualité')))
 						->size('col-12 col-lg-9')
 			)
 		);
@@ -144,7 +144,7 @@ class Admin extends Controller_Module
 
 	public function add()
 	{
-		$this	->subtitle($this->lang('Ajouter une actualitÃ©'))
+		$this	->subtitle($this->lang('Ajouter une actualité'))
 				->form()
 				->add_rules('news', [
 					'categories' => $this->model('categories')->get_categories_list()
@@ -162,19 +162,19 @@ class Admin extends Controller_Module
 										$post['tags'],
 										in_array('on', $post['published']));
 
-			notify($this->lang('ActualitÃ© ajoutÃ©e avec succÃ¨s'));
+			notify($this->lang('Actualité ajoutée avec succès'));
 
 			redirect_back('admin/news');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ajouter une actualitÃ©'), 'far fa-file-alt')
+					->heading($this->lang('Ajouter une actualité'), 'far fa-file-alt')
 					->body($this->form()->display());
 	}
 
 	public function _edit($news_id, $category_id, $user_id, $image_id, $date, $published, $views, $vote, $title, $introduction, $content, $tags, $category_name, $category_title, $news_image, $category_image, $category_icon)
 	{
-		$this	->title($this->lang('Ã‰diter l\'actualitÃ©'))
+		$this	->title($this->lang('Éditer l\'actualité'))
 				->subtitle($title)
 				->form()
 				->add_rules('news', [
@@ -187,7 +187,7 @@ class Admin extends Controller_Module
 					'tags'         => $tags,
 					'published'    => $published
 				])
-				->add_submit($this->lang('Ã‰diter'))
+				->add_submit($this->lang('Éditer'))
 				->add_back('admin/news');
 
 		if ($this->form()->is_valid($post))
@@ -202,22 +202,22 @@ class Admin extends Controller_Module
 										$post['tags'],
 										$this->config->lang->info()->name);
 
-			notify($this->lang('ActualitÃ© Ã©ditÃ©e avec succÃ¨s'));
+			notify($this->lang('Actualité éditée avec succès'));
 
 			redirect_back('admin/news');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ã‰diter l\'actualitÃ©'), 'fas fa-align-left')
+					->heading($this->lang('Éditer l\'actualité'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
 	public function delete($news_id, $title)
 	{
-		$this	->title($this->lang('Suppression actualitÃ©'))
+		$this	->title($this->lang('Suppression actualité'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer l\'actualitÃ© <b>%s</b> ?<br />Tous les commentaires associÃ©s Ã  cette actualitÃ© seront aussi supprimÃ©s.', $title));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer l\'actualité <b>%s</b> ?<br />Tous les commentaires associés à cette actualité seront aussi supprimés.', $title));
 
 		if ($this->form()->is_valid())
 		{
@@ -231,7 +231,7 @@ class Admin extends Controller_Module
 
 	public function _categories_add()
 	{
-		$this	->subtitle($this->lang('Ajouter une catÃ©gorie'))
+		$this	->subtitle($this->lang('Ajouter une catégorie'))
 				->form()
 				->add_rules('categories')
 				->add_back('admin/news')
@@ -243,26 +243,26 @@ class Admin extends Controller_Module
 														$post['image'],
 														$post['icon']);
 
-			notify($this->lang('CatÃ©gorie ajoutÃ©e avec succÃ¨s'));
+			notify($this->lang('Catégorie ajoutée avec succès'));
 
 			redirect_back('admin/news');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ajouter une catÃ©gorie'), 'fas fa-align-left')
+					->heading($this->lang('Ajouter une catégorie'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
 	public function _categories_edit($category_id, $title, $image_id, $icon_id)
 	{
-		$this	->subtitle($this->lang('CatÃ©gorie %s', $title))
+		$this	->subtitle($this->lang('Catégorie %s', $title))
 				->form()
 				->add_rules('categories', [
 					'title' => $title,
 					'image' => $image_id,
 					'icon'  => $icon_id
 				])
-				->add_submit($this->lang('Ã‰diter'))
+				->add_submit($this->lang('Éditer'))
 				->add_back('admin/news');
 
 		if ($this->form()->is_valid($post))
@@ -272,22 +272,22 @@ class Admin extends Controller_Module
 														$post['image'],
 														$post['icon']);
 
-			notify($this->lang('CatÃ©gorie Ã©ditÃ©e avec succÃ¨s'));
+			notify($this->lang('Catégorie éditée avec succès'));
 
 			redirect_back('admin/news');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ã‰diter la catÃ©gorie'), 'fas fa-align-left')
+					->heading($this->lang('Éditer la catégorie'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
 	public function _categories_delete($category_id, $title)
 	{
-		$this	->title($this->lang('Suppression catÃ©gorie'))
+		$this	->title($this->lang('Suppression catégorie'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer la catÃ©gorie <b>%s</b> ?<br />Toutes les actualitÃ©s associÃ©es Ã  cette catÃ©gorie seront aussi supprimÃ©es.', $title));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la catégorie <b>%s</b> ?<br />Toutes les actualités associées à cette catégorie seront aussi supprimées.', $title));
 
 		if ($this->form()->is_valid())
 		{

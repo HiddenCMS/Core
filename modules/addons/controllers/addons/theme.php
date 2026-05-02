@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Addons\Controllers\Addons;
@@ -10,7 +10,7 @@ use HB\HiddenCMS\Loadables\Controller;
 
 class Theme extends Controller
 {
-	public $__label = ['ThÃ¨mes', 'ThÃ¨me', 'fas fa-tint', 'success'];
+	public $__label = ['Thèmes', 'Thème', 'fas fa-tint', 'success'];
 
 	public function __actions()
 	{
@@ -21,7 +21,7 @@ class Theme extends Controller
 					->set('customize', ['Personaliser', 'fas fa-paint-brush', 'info', FALSE, function($addon){
 						return $addon->info()->name != 'admin' && @$addon->controller('admin');
 					}])
-					->set('reset',     ['RÃ©installer par dÃ©faut', 'fas fa-sync', 'warning', TRUE, function($addon){
+					->set('reset',     ['Réinstaller par défaut', 'fas fa-sync', 'warning', TRUE, function($addon){
 						return $addon->info()->name != 'admin';
 					}]);
 	}
@@ -30,7 +30,7 @@ class Theme extends Controller
 	{
 		$this->config('default_theme', $addon->info()->name);
 
-		notify($this->lang('<b>%s</b> activÃ©', $addon->info()->title));
+		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
 
 		refresh();
 	}
@@ -38,22 +38,22 @@ class Theme extends Controller
 	public function customize($theme, $controller)
 	{
 		$controller	->title($theme->info()->title)
-					->subtitle('Personnalisation du thÃ¨me')
+					->subtitle('Personnalisation du thème')
 					->icon('fas fa-paint-brush')
-					->add_action($this->button('RÃ©installer par dÃ©faut', 'fas fa-sync', 'warning')->modal($this->reset($theme)));
+					->add_action($this->button('Réinstaller par défaut', 'fas fa-sync', 'warning')->modal($this->reset($theme)));
 
 		return $theme->controller('admin')->index();
 	}
 
 	public function reset($theme)
 	{
-		return $this->modal('RÃ©installer par dÃ©faut', 'fas fa-sync')
-					->body($this->lang('ÃŠtes-vous sÃ»r(e) de vouloir rÃ©installer le thÃ¨me <b>%s</b> ?<br />Toutes les dispositions et configurations de widgets seront perdues.', $theme->info()->title))
-					->submit('RÃ©installer', 'warning')
+		return $this->modal('Réinstaller par défaut', 'fas fa-sync')
+					->body($this->lang('Êtes-vous sûr(e) de vouloir réinstaller le thème <b>%s</b> ?<br />Toutes les dispositions et configurations de widgets seront perdues.', $theme->info()->title))
+					->submit('Réinstaller', 'warning')
 					->cancel()
 					->callback(function() use ($theme){
 						$theme->reset();
-						notify($this->lang('ThÃ¨me %s rÃ©installÃ© par dÃ©faut', $theme->info()->title));
+						notify($this->lang('Thème %s réinstallé par défaut', $theme->info()->title));
 						refresh();
 					});
 	}

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Comments\Controllers;
@@ -14,7 +14,7 @@ class Ajax extends Controller_Module
 	{
 		$this	->title($this->lang('Confirmation de suppression'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer ce commentaire ?'));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer ce commentaire ?'));
 
 		if ($this->form()->is_valid())
 		{

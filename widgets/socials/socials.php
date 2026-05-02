@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace HB\Widgets\Socials;
@@ -13,10 +13,10 @@ class Socials extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('RÃ©seaux sociaux'),
+			'title'       => $this->lang('Réseaux sociaux'),
 			'description' => '',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>',
+			'author'      => 'Jérémy VALENTIN <jeremy.valentin@neofr.ag>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0',
 			'depends'     => [

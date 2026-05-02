@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Admin\Controllers;
@@ -47,7 +47,7 @@ class Admin extends Controller_Module
 			$this->row(
 				$this->col(
 					$this	->panel_box()
-							->heading($this->lang('ActualitÃ©|ActualitÃ©s', $count = $this->db->from('news')->where('published', TRUE)->count()), 'far fa-newspaper', 'admin/news')
+							->heading($this->lang('Actualité|Actualités', $count = $this->db->from('news')->where('published', TRUE)->count()), 'far fa-newspaper', 'admin/news')
 							->body($count)
 							->color('bg-aqua')
 							->size('col-4 col-lg-2')
@@ -59,7 +59,7 @@ class Admin extends Controller_Module
 							->body($count)
 							->color('bg-green')
 							->size('col-4 col-lg-2')
-							->footer($this->lang('GÃ©rer les utilisateurs').' '.icon('fas fa-arrow-circle-right'))
+							->footer($this->lang('Gérer les utilisateurs').' '.icon('fas fa-arrow-circle-right'))
 				),
 				$this->col(
 					$this	->panel_box()
@@ -67,20 +67,20 @@ class Admin extends Controller_Module
 							->body($count)
 							->color('bg-maroon')
 							->size('col-4 col-lg-2')
-							->footer($this->lang('GÃ©rer les commentaires').' '.icon('fas fa-arrow-circle-right'))
+							->footer($this->lang('Gérer les commentaires').' '.icon('fas fa-arrow-circle-right'))
 				)
 			),
 			$this->row(
 				$this	->col(
 							$this	->panel()
-									->heading($this->lang('Utilisateurs connectÃ©s'), 'fas fa-globe')
+									->heading($this->lang('Utilisateurs connectés'), 'fas fa-globe')
 									->body($this->view('users_online', [
 										'currently' => $this->db->from('session')->where('last_activity > DATE_SUB(NOW(), INTERVAL 5 MINUTE)')->count(),
 										'max'       => statistics('sessions_max_simultaneous')
 									]))
 									->footer('<a href="'.url('admin/user/sessions').'">'.$this->lang('Voir toutes les sessions actives').'</a>'),
 							$this	->panel()
-									->heading($this->lang('DerniÃ¨res inscriptions'), 'fas fa-users')
+									->heading($this->lang('Dernières inscriptions'), 'fas fa-users')
 									->body($users)
 						)
 						->size('col-4')

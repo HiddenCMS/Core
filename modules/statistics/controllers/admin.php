@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Statistics\Controllers;
@@ -18,7 +18,7 @@ class Admin extends Controller_Module
 		return $this->row(
 			$this	->col(
 						$this	->panel()
-								->heading('PÃ©riode', 'fas fa-calendar-alt')
+								->heading('Période', 'fas fa-calendar-alt')
 								->body($this	->form()
 												->set_id('sq6fswkfb81n0lu4cb7eyb3tuixcovla')
 												->add_rules('statistics')

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -15,7 +15,7 @@ class Phone extends Text
 		$this->_check[] = function($post, &$data){
 			if (isset($post[$this->_name]) && $post[$this->_name] !== '' && !preg_match('/^0[1-9]([. ]?)\d{2}(?:\1\d{2}){3}$/', $post[$this->_name]))
 			{
-				$this->_errors[] = 'NumÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone invalide';
+				$this->_errors[] = 'Numéro de téléphone invalide';
 			}
 		};
 

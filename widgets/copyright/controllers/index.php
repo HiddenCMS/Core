@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Widgets\Copyright\Controllers;
@@ -22,7 +22,7 @@ class Index extends Controller_Widget
 
 		if (!in_string('{hiddencms}', $copyright = utf8_html_entity_decode($this->config->copyright)) && !in_string('{HiddenCMS}', $copyright))
 		{
-			$copyright .= '<div class="float-right">'.$this->lang('PropulsÃ© par %s', '{hiddencms}').'</div>';
+			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{hiddencms}').'</div>';
 		}
 
 		return $this->panel()

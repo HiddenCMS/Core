@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\User\Controllers;
@@ -34,7 +34,7 @@ class Admin extends Controller_Module
 				],
 				[
 					'content' => function($data){
-						return $data['hidden'] ? $this->button()->icon('far fa-eye-slash')->tooltip('Groupe cachÃ©') : NULL;
+						return $data['hidden'] ? $this->button()->icon('far fa-eye-slash')->tooltip('Groupe caché') : NULL;
 					},
 					'size'    => TRUE
 				],
@@ -87,7 +87,7 @@ class Admin extends Controller_Module
 									->sort('registration_date')
 						)
 						->col($this	->table_col()
-									->title('DerniÃ¨re activitÃ©')
+									->title('Dernière activité')
 									->content('last_activity_date')
 									->sort('last_activity_date')
 						)
@@ -120,7 +120,7 @@ class Admin extends Controller_Module
 				$this->config->lang->info()->name
 			);
 
-			notify($this->lang('Groupe ajoutÃ©'));
+			notify($this->lang('Groupe ajouté'));
 
 			redirect_back('admin/user');
 		}
@@ -134,7 +134,7 @@ class Admin extends Controller_Module
 	public function _groups_edit($group_id, $name, $title, $color, $icon, $hidden, $auto)
 	{
 		$this	->title($this->lang('Groupes'))
-				->subtitle($this->lang('Ã‰diter'))
+				->subtitle($this->lang('Éditer'))
 				->form()
 				->add_rules('groups', [
 					'title'  => $title,
@@ -144,7 +144,7 @@ class Admin extends Controller_Module
 					'auto'   => $auto
 				])
 				->add_back('admin/user')
-				->add_submit($this->lang('Ã‰diter'));
+				->add_submit($this->lang('Éditer'));
 
 		if ($this->form()->is_valid($post))
 		{
@@ -170,13 +170,13 @@ class Admin extends Controller_Module
 				]);
 			}
 
-			notify($this->lang('Groupe modifiÃ©'));
+			notify($this->lang('Groupe modifié'));
 
 			redirect_back('admin/user');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ã‰diter un groupe'), 'fas fa-users')
+					->heading($this->lang('Éditer un groupe'), 'fas fa-users')
 					->body($this->form()->display())
 					->size('col-12');
 	}
@@ -185,7 +185,7 @@ class Admin extends Controller_Module
 	{
 		$this	->title($this->lang('Confirmation de suppression'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer le groupe <b>%s</b> ?', $title));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer le groupe <b>%s</b> ?', $title));
 
 		if ($this->form()->is_valid())
 		{
@@ -213,7 +213,7 @@ class Admin extends Controller_Module
 	{
 		$this	->title($this->lang('Confirmation de suppression'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('ÃŠtes-vous sÃ»r(e) de vouloir supprimer la session de l\'utilisateur <b>%s</b> ?', $username));
+				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la session de l\'utilisateur <b>%s</b> ?', $username));
 
 		if ($this->form()->is_valid())
 		{

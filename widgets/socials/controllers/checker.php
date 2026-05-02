@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace HB\Widgets\Socials\Controllers;

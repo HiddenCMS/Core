@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -41,20 +41,20 @@ class File extends Labelable
 				if (!empty($_FILES[$this->_name]['error']))
 				{
 					$errors = [
-						1 => 'La taille du fichier tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â© excÃƒÆ’Ã‚Â¨de la valeur de upload_max_filesize, configurÃƒÆ’Ã‚Â©e dans le php.ini',
-						2 => 'La taille du fichier tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â© excÃƒÆ’Ã‚Â¨de la valeur de MAX_FILE_SIZE, qui a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© spÃƒÆ’Ã‚Â©cifiÃƒÆ’Ã‚Â©e dans le formulaire HTML',
-						3 => 'Le fichier n\'a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© que partiellement tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â©',
-						4 => 'Aucun fichier n\'a ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â©',
+						1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
+						2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
+						3 => 'Le fichier n\'a été que partiellement téléchargé',
+						4 => 'Aucun fichier n\'a été téléchargé',
 						6 => 'Un dossier temporaire est manquant',
-						7 => 'ÃƒÆ’Ã¢â‚¬Â°chec de l\'ÃƒÆ’Ã‚Â©criture du fichier sur le disque',
-						8 => 'Une extension PHP a arrÃƒÆ’Ã‚ÂªtÃƒÆ’Ã‚Â© l\'envoi de fichier'
+						7 => 'Échec de l\'écriture du fichier sur le disque',
+						8 => 'Une extension PHP a arrêté l\'envoi de fichier'
 					];
 
 					$this->_errors[] = $this->lang($errors[$_FILES[$this->_name]['error']]);
 				}
 				else if ($this->_mimes && !in_array($_FILES[$this->_name]['type'], $this->_mimes))
 				{
-					$this->_errors[] = HB()->lang('Type de fichier non autorisÃƒÆ’Ã‚Â©');
+					$this->_errors[] = HB()->lang('Type de fichier non autorisé');
 				}
 				else if (!empty($_FILES[$this->_name]['tmp_name']))
 				{

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -28,7 +28,7 @@ class Iconpicker extends Labelable
 		$this->_check[] = function($post, &$data){
 			if ($this->_required && (!isset($post[$this->_name]) || is_empty($post[$this->_name]) || $post[$this->_name] == 'empty'))
 			{
-				$this->_errors[] = 'Veuillez sÃƒÂ©lectionner une icÃƒÂ´ne';
+				$this->_errors[] = 'Veuillez sélectionner une icône';
 			}
 		};
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Themes\Admin;
@@ -18,7 +18,7 @@ class Admin extends Theme
 			'title'       => 'Administration',
 			'description' => 'Panel d\'administration',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
 		];
@@ -102,7 +102,7 @@ class Admin extends Theme
 					'url'   => 'admin'
 				],
 				[
-					'title'  => 'ParamÃ¨tres',
+					'title'  => 'Paramètres',
 					'icon'   => 'fas fa-cogs',
 					'access' => $this->user->admin,
 					'url'    => 'admin/settings'
@@ -128,11 +128,11 @@ class Admin extends Theme
 					]
 				],
 				[
-					'title'  => 'ThÃ¨mes & addons',
+					'title'  => 'Thèmes & addons',
 					'icon'   => 'fas fa-puzzle-piece',
 					'access' => $this->user->admin,
 					'url'   => [
-						['title' => 'ThÃ¨mes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
+						['title' => 'Thèmes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
 						['title' => 'Modules',    	'icon'  => 'fas fa-cube',        'access' => $this->user->admin, 'url' => 'admin/addons/modules'],
 						['title' => 'Widgets',     	'icon'  => 'fas fa-cubes',   'access' => $this->user->admin, 'url' => 'admin/addons/widgets']
 					]

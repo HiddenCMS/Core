@@ -1,4 +1,4 @@
-<a id="link-delete" class="btn btn-outline-danger float-right" href="#" data-toggle="popover" title="<?php echo $this->lang('Supprimer un lien') ?>" data-content="<?php echo $this->lang('DÃ©placez un lien ici pour le supprimer') ?>" data-placement="top"><?php echo icon('far fa-trash-alt').$this->lang('Supprimer') ?></a>
+<a id="link-delete" class="btn btn-outline-danger float-right" href="#" data-toggle="popover" title="<?php echo $this->lang('Supprimer un lien') ?>" data-content="<?php echo $this->lang('Déplacez un lien ici pour le supprimer') ?>" data-placement="top"><?php echo icon('far fa-trash-alt').$this->lang('Supprimer') ?></a>
 <ul class="nav nav-pills" id="pills-tab" role="tablist">
 	<li class="nav-item"><a class="nav-link active" id="pills-links-tab" data-toggle="pill" href="#pills-links" role="tab" aria-controls="pills-links" aria-selected="true"><?php echo icon('fas fa-cogs').' Liens' ?></a></li>
 	<li class="nav-item"><a class="nav-link" id="pills-add-tab" data-toggle="pill" href="#pills-add" role="tab" aria-controls="pills-add" aria-selected="false"><?php echo icon('fas fa-plus').' Ajouter' ?></a></li>
@@ -68,8 +68,8 @@
 							<label for="settings-target" class="col-sm-3 control-label"><?php echo $this->lang('Cible') ?></label>
 							<div class="col-sm-5">
 								<select class="form-control" id="settings-target">
-									<option value="_parent"><?php echo $this->lang('MÃªme fenÃªtre') ?></option>
-									<option value="_blank"><?php echo $this->lang('Nouvelle fenÃªtre') ?></option>
+									<option value="_parent"><?php echo $this->lang('Même fenêtre') ?></option>
+									<option value="_blank"><?php echo $this->lang('Nouvelle fenêtre') ?></option>
 								</select>
 							</div>
 						</div>
@@ -121,8 +121,8 @@
 							<label for="settings-target" class="col-sm-3 control-label"><?php echo $this->lang('Cible') ?></label>
 							<div class="col-sm-5">
 								<select class="form-control" id="settings-target">
-									<option value="_parent"><?php echo $this->lang('MÃªme fenÃªtre') ?></option>
-									<option value="_blank"><?php echo $this->lang('Nouvelle fenÃªtre') ?></option>
+									<option value="_parent"><?php echo $this->lang('Même fenêtre') ?></option>
+									<option value="_blank"><?php echo $this->lang('Nouvelle fenêtre') ?></option>
 								</select>
 							</div>
 						</div>
@@ -139,7 +139,7 @@
 			<div class="card px-2 py-3" style="margin-top: 5px !important;">
 				<div class="card-heading">
 					<a class="type-collapse link-item" role="button" data-link-title="" data-link-url="" data-toggle="collapse" data-parent="#add-link" href="#type-custom" aria-controls="type-custom">
-						<?php echo icon('fas fa-link') ?> <b>Lien personnalisÃ©</b>
+						<?php echo icon('fas fa-link') ?> <b>Lien personnalisé</b>
 					</a>
 				</div>
 				<div id="type-custom" class="card-collapse collapse" role="tabcard">
@@ -160,8 +160,8 @@
 							<label for="settings-target" class="col-sm-3 control-label"><?php echo $this->lang('Cible') ?></label>
 							<div class="col-sm-5">
 								<select class="form-control" id="settings-target">
-									<option value="_parent"><?php echo $this->lang('MÃªme fenÃªtre') ?></option>
-									<option value="_blank"><?php echo $this->lang('Nouvelle fenÃªtre') ?></option>
+									<option value="_parent"><?php echo $this->lang('Même fenêtre') ?></option>
+									<option value="_blank"><?php echo $this->lang('Nouvelle fenêtre') ?></option>
 								</select>
 							</div>
 						</div>

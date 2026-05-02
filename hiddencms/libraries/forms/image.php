@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÂ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -26,7 +26,7 @@ class Image extends File
 			{
 				if ($this->_width == $this->_height)
 				{
-					$this->_errors[] = $this->lang('L\'image doit ÃƒÂªtre un carrÃƒÂ© de %dpx de cÃƒÂ´tÃƒÂ©', $this->_width);
+					$this->_errors[] = $this->lang('L\'image doit être un carré de %dpx de côté', $this->_width);
 				}
 				else
 				{

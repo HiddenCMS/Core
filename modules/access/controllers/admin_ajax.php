@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Access\Controllers;
@@ -116,7 +116,7 @@ class Admin_Ajax extends Controller_Module
 						'td'      => FALSE
 					],
 					[
-						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autorisÃ©').'">'.icon('fas fa-check').'</i></div>',
+						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autorisé').'">'.icon('fas fa-check').'</i></div>',
 						'content' => function($data){
 							return $this->view('radio', [
 								'class'  => 'success',

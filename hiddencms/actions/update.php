@@ -1,14 +1,14 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Actions;
 
 class Update extends \HB\HiddenCMS\Action
 {
-	protected $_title = 'ÃƒÆ’Ã¢â‚¬Â°diter';
+	protected $_title = 'Éditer';
 	protected $_icon  = 'fas fa-pencil-alt';
 	protected $_color = 'primary';
 
@@ -46,7 +46,7 @@ class Update extends \HB\HiddenCMS\Action
 
 	protected function title($model)
 	{
-		return $this->lang('ÃƒÆ’Ã¢â‚¬Â°dition de %s', $model);
+		return $this->lang('Édition de %s', $model);
 	}
 }
 

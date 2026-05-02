@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃƒÆ’Ã‚Â«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -240,7 +240,7 @@ class Table extends Library
 				$this->session->set('table', $this->id, 'search', $search);
 
 				$this->_data    = $results;
-				$this->_no_data = HB()->lang('Aucun rÃƒÆ’Ã‚Â©sultat ne correspond ÃƒÆ’Ã‚Â  la recherche');
+				$this->_no_data = HB()->lang('Aucun résultat ne correspond à la recherche');
 			}
 			else
 			{
@@ -331,10 +331,10 @@ class Table extends Library
 			{
 				$output .= '<div class="form-group float-left">
 								<select class="form-control" style="width: auto;" onchange="window.location=\''.url($this->output->module()->pagination->get_url()).'/\'+$(this).find(\'option:selected\').data(\'url\')" autocomplete="off">
-									<option value="10"'. ($this->output->module()->pagination->get_items_per_page() == 10  ? ' selected="selected"' : '').' data-url="page/1/10">'.HB()->lang('%d rÃƒÆ’Ã‚Â©sultat|%d rÃƒÆ’Ã‚Â©sultats', 10, 10).'</option>
-									<option value="25"'. ($this->output->module()->pagination->get_items_per_page() == 25  ? ' selected="selected"' : '').' data-url="page/1/25">'.HB()->lang('%d rÃƒÆ’Ã‚Â©sultat|%d rÃƒÆ’Ã‚Â©sultats', 25, 25).'</option>
-									<option value="50"'. ($this->output->module()->pagination->get_items_per_page() == 50  ? ' selected="selected"' : '').' data-url="page/1/50">'.HB()->lang('%d rÃƒÆ’Ã‚Â©sultat|%d rÃƒÆ’Ã‚Â©sultats', 50, 50).'</option>
-									<option value="100"'.($this->output->module()->pagination->get_items_per_page() == 100 ? ' selected="selected"' : '').' data-url="page/1/100">'.HB()->lang('%d rÃƒÆ’Ã‚Â©sultat|%d rÃƒÆ’Ã‚Â©sultats', 100, 100).'</option>
+									<option value="10"'. ($this->output->module()->pagination->get_items_per_page() == 10  ? ' selected="selected"' : '').' data-url="page/1/10">'.HB()->lang('%d résultat|%d résultats', 10, 10).'</option>
+									<option value="25"'. ($this->output->module()->pagination->get_items_per_page() == 25  ? ' selected="selected"' : '').' data-url="page/1/25">'.HB()->lang('%d résultat|%d résultats', 25, 25).'</option>
+									<option value="50"'. ($this->output->module()->pagination->get_items_per_page() == 50  ? ' selected="selected"' : '').' data-url="page/1/50">'.HB()->lang('%d résultat|%d résultats', 50, 50).'</option>
+									<option value="100"'.($this->output->module()->pagination->get_items_per_page() == 100 ? ' selected="selected"' : '').' data-url="page/1/100">'.HB()->lang('%d résultat|%d résultats', 100, 100).'</option>
 									<option value="all"'.($this->output->module()->pagination->get_items_per_page() == 0   ? ' selected="selected"' : '').' data-url="all">'.HB()->lang('Tout afficher').'</option>
 								</select>
 							</div>';
@@ -474,7 +474,7 @@ class Table extends Library
 				$output .= '<div class="float-right">'.$pagination.'</div>';
 			}
 
-			$output .= '<i>'.HB()->lang('%d rÃƒÆ’Ã‚Â©sultat|%d rÃƒÆ’Ã‚Â©sultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '').'</i>';
+			$output .= '<i>'.HB()->lang('%d résultat|%d résultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '').'</i>';
 
 			if (!$this->_ajax)
 			{

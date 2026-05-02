@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Comments;
@@ -17,7 +17,7 @@ class Comments extends Module
 			'description' => '',
 			'icon'        => 'far fa-comments',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
 			'routes'      => [
@@ -50,7 +50,7 @@ class Comments extends Module
 											->set('content',   $data['comment'])
 											->create();
 
-									notify('Commentaire envoyÃ©');
+									notify('Commentaire envoyé');
 
 									refresh();
 								})
@@ -59,7 +59,7 @@ class Comments extends Module
 		}
 		else
 		{
-			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('Vous devez Ãªtre identifiÃ© pour pouvoir poster un commentaire').'</div>';
+			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('Vous devez être identifié pour pouvoir poster un commentaire').'</div>';
 		}
 
 		return $this->css('comments')

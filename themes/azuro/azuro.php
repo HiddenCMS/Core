@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>
+ * @author: Jérémy VALENTIN <jeremy.valentin@neofr.ag>
  */
 
 namespace HB\Themes\Azuro;
@@ -14,15 +14,15 @@ class Azuro extends Theme
 	{
 		return [
 			'title'       => 'Azuro',
-			'description' => 'ThÃ¨me gaming',
+			'description' => 'Thème gaming',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'JÃ©rÃ©my VALENTIN <jeremy.valentin@neofr.ag>',
+			'author'      => 'Jérémy VALENTIN <jeremy.valentin@neofr.ag>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'version'     => '1.0.0',
 			'depends' => [
 				'HiddenCMS' => 'Alpha 0.2.1'
 			],
-			'zones'       => ['Haut', 'EntÃªte', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
+			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page']
 		];
 	}
 
@@ -100,7 +100,7 @@ class Azuro extends Theme
 												'url'   => 'forum'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Ã‰quipes')),
+												'title' => utf8_htmlentities($this->lang('Équipes')),
 												'url'   => 'teams'
 											],
 											[
@@ -112,7 +112,7 @@ class Azuro extends Theme
 												'url'   => 'partners'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('PalmarÃ¨s')),
+												'title' => utf8_htmlentities($this->lang('Palmarès')),
 												'url'   => 'awards'
 											]
 										]
@@ -180,7 +180,7 @@ class Azuro extends Theme
 			->style('align-items-center')
 		]));
 
-		$dispositions->set('*', 'EntÃªte', $this->array([
+		$dispositions->set('*', 'Entête', $this->array([
 			$header()
 		]));
 
@@ -204,7 +204,7 @@ class Azuro extends Theme
 									'settings' => serialize([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('ActualitÃ©s')),
+												'title' => utf8_htmlentities($this->lang('Actualités')),
 												'url'   => 'news'
 											],
 											[
@@ -220,7 +220,7 @@ class Azuro extends Theme
 												'url'   => 'gallery'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Ã‰vÃ©nements')),
+												'title' => utf8_htmlentities($this->lang('Événements')),
 												'url'   => 'events'
 											],
 											[

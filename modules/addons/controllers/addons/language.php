@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Addons\Controllers\Addons;
@@ -18,7 +18,7 @@ class Language extends Controller
 					->set('enable', ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
 						return !$addon->is_enabled();
 					}])
-					->set('disable', ['DÃ©sactiver', 'fas fa-times', 'muted', TRUE, function($addon){
+					->set('disable', ['Désactiver', 'fas fa-times', 'muted', TRUE, function($addon){
 						return count($this->config->langs) > 1 && $addon->is_enabled();
 					}])
 					->set('order', ['Ordre', 'fas fa-sort', 'info', TRUE]);
@@ -28,7 +28,7 @@ class Language extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', TRUE))->update();
 
-		notify($this->lang('<b>%s</b> activÃ©', $addon->info()->title));
+		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
 
 		refresh();
 	}
@@ -37,7 +37,7 @@ class Language extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', FALSE))->update();
 
-		notify($this->lang('<b>%s</b> dÃ©sactivÃ©', $addon->info()->title));
+		notify($this->lang('<b>%s</b> désactivé', $addon->info()->title));
 
 		refresh();
 	}
@@ -68,7 +68,7 @@ class Language extends Controller
 			return $this->output->json(['success' => 'refresh']);
 		}
 
-		return $this->modal('PrÃ©fÃ©rence des langues', 'far fa-flag')
+		return $this->modal('Préférence des langues', 'far fa-flag')
 					->body($this->table2($langs)
 								->compact(function($a){
 									return $this->button_sort($a->__addon->id, 'admin/addons/order/'.$a->__addon->url());

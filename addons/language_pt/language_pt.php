@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Addons\Language_Pt;
@@ -13,7 +13,7 @@ class Language_Pt extends Language
 	protected function __info()
 	{
 		return [
-			'title'   => 'PortuguÃªs',
+			'title'   => 'Português',
 			'icon'    => 'ðŸ‡µðŸ‡¹',
 			'version' => '1.0',
 			'depends' => [

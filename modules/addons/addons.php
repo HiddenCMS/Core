@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Addons;
@@ -13,11 +13,11 @@ class Addons extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => 'ThÃ¨mes & Addons',
+			'title'       => 'Thèmes & Addons',
 			'description' => '',
 			'icon'        => 'fas fa-puzzle-piece',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE,
 			'routes'      => [
