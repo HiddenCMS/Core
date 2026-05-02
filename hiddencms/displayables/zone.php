@@ -12,7 +12,7 @@ class Zone extends Displayable
 {
 	public function display($disposition)
 	{
-		$output = $this->disposition->decode($disposition['disposition']);
+		$output = HB()->disposition->decode($disposition['disposition']);
 
 		if ($live_editor = HB()->output->live_editor())
 		{

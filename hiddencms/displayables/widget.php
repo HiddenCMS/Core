@@ -80,7 +80,7 @@ class Widget extends Displayable
 		{
 			$widget->data = HB()->array;
 			
-			$output = $widget->output($widget_data['type'], $this->storage->decode($widget_data['settings']));
+			$output = $widget->output($widget_data['type'], HB()->storage->decode($widget_data['settings']));
 
 			$style = function($output) use ($widget_data){
 				if (is_a($output, 'HB\HiddenCMS\Libraries\Panel'))
