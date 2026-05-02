@@ -4,12 +4,23 @@
     "type": "project",
     "license": "GPL-3.0-only",
     "minimum-stability": "dev",
+    "keywords": [
+        "cms",
+        "hiddencms",
+        "php"
+    ],
     "authors": [
         {
             "name": "HiddenBlob",
             "email": "contact@hiddenblob.com"
         }
     ],
+    "replace": {
+        "neofrag/core": "self.version"
+    },
+    "support": {
+        "source": "https://github.com/HiddenCMS/Core"
+    },
     "require": {
         "phpmailer/phpmailer": "^6.9.2",
         "scssphp/scssphp": "^2.0.1",

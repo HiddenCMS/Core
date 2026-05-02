@@ -5,10 +5,12 @@ if (PHP_SAPI != 'cli')
 	exit("This installer must be run from the command line.\n");
 }
 
-define('NEOFRAG_CLI_INSTALLER', TRUE);
-define('NEOFRAG_ROOT', dirname(__DIR__));
+define('HIDDENCMS_CLI_INSTALLER', TRUE);
+define('HIDDENCMS_ROOT', dirname(__DIR__));
+define('NEOFRAG_CLI_INSTALLER', HIDDENCMS_CLI_INSTALLER);
+define('NEOFRAG_ROOT', HIDDENCMS_ROOT);
 
-chdir(NEOFRAG_ROOT);
+chdir(HIDDENCMS_ROOT);
 
 main($argv);
 
@@ -67,7 +69,7 @@ function main($argv)
 	}
 
 	write_db_config($config);
-	import_database($mysqli, NEOFRAG_ROOT.'/install/DATABASE.sql');
+	import_database($mysqli, HIDDENCMS_ROOT.'/install/DATABASE.sql');
 	configure_site($mysqli, $config);
 	configure_admin($mysqli, $config);
 	write_htaccess($config);
@@ -75,7 +77,7 @@ function main($argv)
 
 	if ($config['remove_install'])
 	{
-		remove_directory(NEOFRAG_ROOT.'/install');
+		remove_directory(HIDDENCMS_ROOT.'/install');
 	}
 
 	line('');
@@ -293,7 +295,7 @@ function has_hiddencms_tables($mysqli)
 
 function expected_tables()
 {
-	if (!preg_match_all('/^DROP TABLE IF EXISTS `(.+?)`;/m', file_get_contents(NEOFRAG_ROOT.'/install/DATABASE.sql'), $matches))
+	if (!preg_match_all('/^DROP TABLE IF EXISTS `(.+?)`;/m', file_get_contents(HIDDENCMS_ROOT.'/install/DATABASE.sql'), $matches))
 	{
 		exit_with_error('Unable to read expected tables from install/DATABASE.sql.');
 	}
@@ -312,7 +314,7 @@ function write_db_config($config)
 	$content .= "\t'driver'   => 'mysqli'\n";
 	$content .= "];\n";
 
-	write_file(NEOFRAG_ROOT.'/config/db.php', $content);
+	write_file(HIDDENCMS_ROOT.'/config/db.php', $content);
 
 	line('Wrote config/db.php');
 }
@@ -493,7 +495,7 @@ function write_htaccess($config)
 		return;
 	}
 
-	$template = NEOFRAG_ROOT.'/install/htaccess.txt';
+	$template = HIDDENCMS_ROOT.'/install/htaccess.txt';
 
 	if (!is_file($template))
 	{
@@ -501,7 +503,7 @@ function write_htaccess($config)
 	}
 
 	$base = normalize_base($config['base']);
-	write_file(NEOFRAG_ROOT.'/.htaccess', str_replace('%BASE%', $base, file_get_contents($template)));
+	write_file(HIDDENCMS_ROOT.'/.htaccess', str_replace('%BASE%', $base, file_get_contents($template)));
 	line('Wrote .htaccess with RewriteBase '.$base);
 }
 
@@ -524,14 +526,14 @@ function normalize_base($base)
 
 function mark_install_complete()
 {
-	if (is_dir(NEOFRAG_ROOT.'/install'))
+	if (is_dir(HIDDENCMS_ROOT.'/install'))
 	{
-		if (is_file(NEOFRAG_ROOT.'/install/db.txt'))
+		if (is_file(HIDDENCMS_ROOT.'/install/db.txt'))
 		{
-			unlink(NEOFRAG_ROOT.'/install/db.txt');
+			unlink(HIDDENCMS_ROOT.'/install/db.txt');
 		}
 
-		touch(NEOFRAG_ROOT.'/install/installed.txt');
+		touch(HIDDENCMS_ROOT.'/install/installed.txt');
 	}
 }
 

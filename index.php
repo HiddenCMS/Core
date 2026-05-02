@@ -7,10 +7,15 @@
 /** Init composer */
 require 'vendor/autoload.php';
 
-define('NEOFRAG_MEMORY',  memory_get_usage());
-define('NEOFRAG_TIME',    microtime(TRUE));
-define('NEOFRAG_CMS',     __DIR__);
-define('NEOFRAG_VERSION', 'Alpha 0.2.3');
+define('HIDDENCMS_MEMORY',  memory_get_usage());
+define('HIDDENCMS_TIME',    microtime(TRUE));
+define('HIDDENCMS_CMS',     __DIR__);
+define('HIDDENCMS_VERSION', 'Alpha 0.2.3');
+
+define('NEOFRAG_MEMORY',  HIDDENCMS_MEMORY);
+define('NEOFRAG_TIME',    HIDDENCMS_TIME);
+define('NEOFRAG_CMS',     HIDDENCMS_CMS);
+define('NEOFRAG_VERSION', HIDDENCMS_VERSION);
 
 error_reporting(E_ALL);
 
@@ -22,6 +27,7 @@ if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
 {
 	if (file_exists('install/db.txt'))
 	{
+		define('HIDDENCMS_INSTALL', TRUE);
 		define('NEOFRAG_INSTALL', TRUE);
 	}
 	else
@@ -33,7 +39,7 @@ if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
 mb_regex_encoding('UTF-8');
 mb_internal_encoding('UTF-8');
 
-require_once 'config/neofrag.php';
+require_once 'config/hiddencms.php';
 
 function class_name($name)
 {
@@ -91,6 +97,11 @@ function NeoFrag()
 	{
 		return $NeoFrag;
 	}
+}
+
+function HiddenCMS()
+{
+	return call_user_func_array('NeoFrag', func_get_args());
 }
 
 function check_file($dir, $force = FALSE)
@@ -205,9 +216,10 @@ foreach ([
 	NeoFrag()->{'core_'.$core};
 }
 
+define('HIDDENCMS_CORE', TRUE);
 define('NEOFRAG_CORE', TRUE);
 
-if (defined('NEOFRAG_INSTALL'))
+if (defined('HIDDENCMS_INSTALL') || defined('NEOFRAG_INSTALL'))
 {
 	require_once 'install/index.php';
 }

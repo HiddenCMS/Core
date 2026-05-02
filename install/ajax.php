@@ -1,4 +1,4 @@
-<?php if (!defined('NEOFRAG_CMS')) exit;
+<?php if (!defined('HIDDENCMS_CMS') && !defined('NEOFRAG_CMS')) exit;
 
 $step = array_key_exists('step', $_GET) ? $_GET['step'] : '';
 $output = [];
