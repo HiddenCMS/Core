@@ -148,8 +148,10 @@ class Layouts extends Model
 
 	public function add_outline($name, $title, $theme, $layout, $base, $enabled)
 	{
+		$name = $name ?: url_title($title);
+
 		$outline_id = $this->db->insert('layouts_outlines', [
-			'name'     => $name ?: url_title($title),
+			'name'     => $name,
 			'title'    => $title,
 			'theme'    => $theme ?: $this->config->default_theme,
 			'layout'   => $this->storage->encode($this->normalize_layout($layout)),
@@ -157,6 +159,11 @@ class Layouts extends Model
 			'base'     => $base,
 			'enabled'  => $enabled
 		]);
+
+		if (!$outline_id)
+		{
+			return FALSE;
+		}
 
 		if ($base)
 		{
@@ -169,15 +176,22 @@ class Layouts extends Model
 
 	public function edit_outline($outline_id, $name, $title, $theme, $layout, $base, $enabled)
 	{
-		$this->db	->where('outline_id', $outline_id)
-					->update('layouts_outlines', [
-						'name'    => $name ?: url_title($title),
+		$name = $name ?: url_title($title);
+
+		$updated = $this->db	->where('outline_id', $outline_id)
+							->update('layouts_outlines', [
+						'name'    => $name,
 						'title'   => $title,
 						'theme'   => $theme ?: $this->config->default_theme,
 						'layout'  => $this->storage->encode($this->normalize_layout($layout)),
 						'base'    => $base,
 						'enabled' => $enabled
 					]);
+
+		if ($updated === NULL)
+		{
+			return FALSE;
+		}
 
 		if ($base)
 		{

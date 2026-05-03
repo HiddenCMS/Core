@@ -12,6 +12,8 @@ class Admin extends Controller_Module
 {
 	public function index($outlines)
 	{
+		$this->css('layouts');
+
 		$this	->table()
 				->add_columns([
 					[
@@ -61,7 +63,8 @@ class Admin extends Controller_Module
 	{
 		$theme = $this->config->default_theme;
 
-		$this	->subtitle($this->lang('Ajouter un outline'))
+		$this	->css('layouts')
+				->subtitle($this->lang('Ajouter un outline'))
 				->form()
 				->add_rules('outlines', [
 					'theme'   => $theme,
@@ -79,16 +82,25 @@ class Admin extends Controller_Module
 		{
 			$layout = $this->storage->decode($post['layout'], []);
 
-			$this->model()->add_outline(	$post['name'],
-											$post['title'],
-											$post['theme'],
-											$layout,
-											in_array('on', $post['base']),
-											in_array('on', $post['enabled']));
+			if (!$this->model()->add_outline(	$post['name'],
+												$post['title'],
+												$post['theme'],
+												$layout,
+												in_array('on', isset($post['base']) ? $post['base'] : []),
+												in_array('on', isset($post['enabled']) ? $post['enabled'] : [])))
+			{
+				notify($this->lang('Impossible d\'enregistrer l\'outline'), 'danger');
+
+				refresh();
+			}
 
 			notify($this->lang('Outline ajoutÃ© avec succÃ¨s'));
 
 			redirect_back('admin/layouts');
+		}
+		else if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' && ($errors = $this->form()->get_errors()))
+		{
+			notify(implode('<br />', array_map('strval', $errors)), 'danger');
 		}
 
 		return $this->panel()
@@ -98,7 +110,8 @@ class Admin extends Controller_Module
 
 	public function _edit($outline_id, $name, $title, $theme, $layout, $base, $enabled)
 	{
-		$this	->subtitle($title)
+		$this	->css('layouts')
+				->subtitle($title)
 				->form()
 				->add_rules('outlines', [
 					'name'    => $name,
@@ -119,17 +132,26 @@ class Admin extends Controller_Module
 		{
 			$layout = $this->storage->decode($post['layout'], []);
 
-			$this->model()->edit_outline(	$outline_id,
-											$post['name'],
-											$post['title'],
-											$post['theme'],
-											$layout,
-											in_array('on', $post['base']),
-											in_array('on', $post['enabled']));
+			if (!$this->model()->edit_outline(	$outline_id,
+												$post['name'],
+												$post['title'],
+												$post['theme'],
+												$layout,
+												in_array('on', isset($post['base']) ? $post['base'] : []),
+												in_array('on', isset($post['enabled']) ? $post['enabled'] : [])))
+			{
+				notify($this->lang('Impossible d\'enregistrer l\'outline'), 'danger');
+
+				refresh();
+			}
 
 			notify($this->lang('Outline Ã©ditÃ© avec succÃ¨s'));
 
 			redirect_back('admin/layouts');
+		}
+		else if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' && ($errors = $this->form()->get_errors()))
+		{
+			notify(implode('<br />', array_map('strval', $errors)), 'danger');
 		}
 
 		return $this->panel()
