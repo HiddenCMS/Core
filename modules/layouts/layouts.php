@@ -22,7 +22,9 @@ class Layouts extends Module
 			'admin'       => TRUE,
 			'version'     => '1.0.0',
 			'routes'      => [
-				'admin{pages}' => 'index'
+				'admin{pages}'            => 'index',
+				'admin/add'               => 'add',
+				'admin/{id}/{url_title*}' => '_edit'
 			]
 		];
 	}

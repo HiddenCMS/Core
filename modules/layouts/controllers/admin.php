@@ -38,6 +38,14 @@ class Admin extends Controller_Module
 							return $outline['base'] ? icon('fas fa-check') : '';
 						},
 						'size'    => TRUE
+					],
+					[
+						'content' => [
+							function($outline){
+								return $this->button_update('admin/layouts/'.$outline['outline_id'].'/'.url_title($outline['title']));
+							}
+						],
+						'size'    => TRUE
 					]
 				])
 				->data($outlines)
@@ -45,6 +53,87 @@ class Admin extends Controller_Module
 
 		return $this->panel()
 					->heading($this->lang('Outlines'), 'fas fa-layer-group')
-					->body($this->table()->display());
+					->body($this->table()->display())
+					->footer($this->button_create('admin/layouts/add', $this->lang('Ajouter un outline')));
+	}
+
+	public function add()
+	{
+		$theme = $this->config->default_theme;
+
+		$this	->subtitle($this->lang('Ajouter un outline'))
+				->form()
+				->add_rules('outlines', [
+					'theme'   => $theme,
+					'themes'  => $this->model()->get_themes(),
+					'regions' => $this->model()->get_regions($theme),
+					'widgets' => $this->model()->get_widgets(),
+					'modules' => $this->model()->get_modules(),
+					'layout'  => $this->storage->encode($this->model()->default_layout($theme)),
+					'enabled' => TRUE
+				])
+				->add_submit($this->lang('Ajouter'))
+				->add_back('admin/layouts');
+
+		if ($this->form()->is_valid($post))
+		{
+			$layout = $this->storage->decode($post['layout'], []);
+
+			$this->model()->add_outline(	$post['name'],
+											$post['title'],
+											$post['theme'],
+											$layout,
+											in_array('on', $post['base']),
+											in_array('on', $post['enabled']));
+
+			notify($this->lang('Outline ajoutÃ© avec succÃ¨s'));
+
+			redirect_back('admin/layouts');
+		}
+
+		return $this->panel()
+					->heading($this->lang('Ajouter un outline'), 'fas fa-layer-group')
+					->body($this->form()->display());
+	}
+
+	public function _edit($outline_id, $name, $title, $theme, $layout, $base, $enabled)
+	{
+		$this	->subtitle($title)
+				->form()
+				->add_rules('outlines', [
+					'name'    => $name,
+					'title'   => $title,
+					'theme'   => $theme,
+					'themes'  => $this->model()->get_themes(),
+					'regions' => $this->model()->get_regions($theme),
+					'widgets' => $this->model()->get_widgets(),
+					'modules' => $this->model()->get_modules(),
+					'layout'  => $layout,
+					'base'    => $base,
+					'enabled' => $enabled
+				])
+				->add_submit($this->lang('Ã‰diter'))
+				->add_back('admin/layouts');
+
+		if ($this->form()->is_valid($post))
+		{
+			$layout = $this->storage->decode($post['layout'], []);
+
+			$this->model()->edit_outline(	$outline_id,
+											$post['name'],
+											$post['title'],
+											$post['theme'],
+											$layout,
+											in_array('on', $post['base']),
+											in_array('on', $post['enabled']));
+
+			notify($this->lang('Outline Ã©ditÃ© avec succÃ¨s'));
+
+			redirect_back('admin/layouts');
+		}
+
+		return $this->panel()
+					->heading($this->lang('Ã‰dition de l\'outline'), 'fas fa-layer-group')
+					->body($this->form()->display());
 	}
 }

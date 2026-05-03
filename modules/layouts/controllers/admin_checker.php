@@ -14,4 +14,25 @@ class Admin_Checker extends Module_Checker
 	{
 		return [$this->module->pagination->get_data($this->model()->get_outlines(), $page)];
 	}
+
+	public function add()
+	{
+		return [];
+	}
+
+	public function _edit($outline_id, $title)
+	{
+		if ($outline = $this->model()->check_outline($outline_id, $title, TRUE))
+		{
+			return [
+				$outline['outline_id'],
+				$outline['name'],
+				$outline['title'],
+				$outline['theme'],
+				$outline['layout'],
+				$outline['base'],
+				$outline['enabled']
+			];
+		}
+	}
 }

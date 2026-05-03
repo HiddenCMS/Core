@@ -10,25 +10,106 @@ use HB\HiddenCMS\Loadables\Model;
 
 class Layouts extends Model
 {
-	public function get_outlines()
+	public function get_outlines($enabled = NULL)
 	{
-		return $this->db	->select('*')
-						->from('layouts_outlines')
-						->where('enabled', TRUE)
-						->order_by('title ASC')
-						->get();
+		$this->db	->select('*')
+					->from('layouts_outlines')
+					->order_by('title ASC');
+
+		if ($enabled !== NULL)
+		{
+			$this->db->where('enabled', $enabled);
+		}
+
+		return $this->db->get();
 	}
 
 	public function get_outline_choices()
 	{
 		$outlines = [];
 
-		foreach ($this->get_outlines() as $outline)
+		foreach ($this->get_outlines(TRUE) as $outline)
 		{
 			$outlines[$outline['outline_id']] = $outline['title'];
 		}
 
 		return $outlines;
+	}
+
+	public function get_regions($theme = NULL)
+	{
+		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->regions();
+	}
+
+	public function get_themes()
+	{
+		$themes = [];
+
+		foreach (HiddenCMS()->model2('addon')->get('theme') as $theme)
+		{
+			if ($theme->info()->name != 'admin')
+			{
+				$themes[$theme->info()->name] = (string)$theme->info()->title;
+			}
+		}
+
+		return $themes;
+	}
+
+	public function get_widgets()
+	{
+		$widgets = [];
+
+		foreach ($this->db->select('widget_id', 'widget', 'type', 'title')->from('widgets')->order_by('widget ASC', 'type ASC')->get() as $widget)
+		{
+			$label = ($widget['title'] ?: $widget['widget'].' / '.$widget['type']);
+			$widgets[$widget['widget_id']] = $label;
+		}
+
+		return $widgets;
+	}
+
+	public function get_modules()
+	{
+		$modules = [];
+
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
+		{
+			if ($module->is_enabled() && $module->is_front())
+			{
+				$modules[$module->info()->name] = (string)$module->info()->title;
+			}
+		}
+
+		uasort($modules, 'strnatcasecmp');
+
+		return $modules;
+	}
+
+	public function default_layout($theme = NULL)
+	{
+		$layout = [];
+
+		foreach ($this->get_regions($theme) as $region => $title)
+		{
+			$layout[$region] = [];
+		}
+
+		if (isset($layout['content']))
+		{
+			$layout['content'][] = [
+				'columns' => [
+					[
+						'size'  => 'col-12',
+						'items' => [
+							['type' => 'page_content']
+						]
+					]
+				]
+			];
+		}
+
+		return $layout;
 	}
 
 	public function get_outline($outline_id = NULL)
@@ -47,6 +128,64 @@ class Layouts extends Model
 		}
 
 		return $this->db->row();
+	}
+
+	public function check_outline($outline_id, $title, $all = FALSE)
+	{
+		$this->db	->select('*')
+					->from('layouts_outlines')
+					->where('outline_id', $outline_id);
+
+		if (!$all)
+		{
+			$this->db->where('enabled', TRUE);
+		}
+
+		$outline = $this->db->row();
+
+		return $outline && url_title($outline['title']) == $title ? $outline : FALSE;
+	}
+
+	public function add_outline($name, $title, $theme, $layout, $base, $enabled)
+	{
+		$outline_id = $this->db->insert('layouts_outlines', [
+			'name'     => $name ?: url_title($title),
+			'title'    => $title,
+			'theme'    => $theme ?: $this->config->default_theme,
+			'layout'   => $this->storage->encode($this->normalize_layout($layout)),
+			'settings' => $this->storage->encode([]),
+			'base'     => $base,
+			'enabled'  => $enabled
+		]);
+
+		if ($base)
+		{
+			$this->db	->where('outline_id <>', $outline_id)
+						->update('layouts_outlines', ['base' => FALSE]);
+		}
+
+		return $outline_id;
+	}
+
+	public function edit_outline($outline_id, $name, $title, $theme, $layout, $base, $enabled)
+	{
+		$this->db	->where('outline_id', $outline_id)
+					->update('layouts_outlines', [
+						'name'    => $name ?: url_title($title),
+						'title'   => $title,
+						'theme'   => $theme ?: $this->config->default_theme,
+						'layout'  => $this->storage->encode($this->normalize_layout($layout)),
+						'base'    => $base,
+						'enabled' => $enabled
+					]);
+
+		if ($base)
+		{
+			$this->db	->where('outline_id <>', $outline_id)
+						->update('layouts_outlines', ['base' => FALSE]);
+		}
+
+		return $this;
 	}
 
 	public function render_region($outline_id, $region)
@@ -149,5 +288,60 @@ class Layouts extends Model
 		}
 
 		return '';
+	}
+
+	private function normalize_layout($layout)
+	{
+		$output = [];
+
+		foreach (is_array($layout) ? $layout : [] as $region => $rows)
+		{
+			$output[$region] = [];
+
+			foreach (is_array($rows) ? $rows : [] as $row)
+			{
+				$columns = [];
+
+				foreach (!empty($row['columns']) && is_array($row['columns']) ? $row['columns'] : [] as $column)
+				{
+					$items = [];
+
+					foreach (!empty($column['items']) && is_array($column['items']) ? $column['items'] : [] as $item)
+					{
+						if (!empty($item['type']))
+						{
+							$items[] = array_filter([
+								'type'      => $item['type'],
+								'widget_id' => !empty($item['widget_id']) ? (int)$item['widget_id'] : NULL,
+								'module'    => !empty($item['module']) ? $item['module'] : NULL,
+								'route'     => !empty($item['route']) ? trim($item['route'], '/') : NULL,
+								'content'   => !empty($item['content']) ? $item['content'] : NULL,
+								'style'     => !empty($item['style']) ? $item['style'] : NULL,
+								'size'      => !empty($item['size']) ? $item['size'] : NULL
+							], function($value){
+								return $value !== NULL;
+							});
+						}
+					}
+
+					$columns[] = [
+						'size'  => !empty($column['size']) ? $column['size'] : 'col-12',
+						'items' => $items
+					];
+				}
+
+				if ($columns)
+				{
+					$output[$region][] = array_filter([
+						'style'   => !empty($row['style']) ? $row['style'] : NULL,
+						'columns' => $columns
+					], function($value){
+						return $value !== NULL;
+					});
+				}
+			}
+		}
+
+		return $output;
 	}
 }
