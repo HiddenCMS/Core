@@ -54,26 +54,7 @@ class Pages extends Model
 		return FALSE;
 	}
 
-	public function get_blocks($page_id, $region = 'content')
-	{
-		$blocks = [];
-
-		foreach ($this->db	->select('*')
-							->from('pages_instances')
-							->where('page_id', $page_id)
-							->where('region', $region)
-							->where('enabled', TRUE)
-							->order_by('position ASC')
-							->get(FALSE) as $block)
-		{
-			$block['settings'] = $this->storage->decode($block['settings']);
-			$blocks[] = $block;
-		}
-
-		return $blocks;
-	}
-
-	public function get_all_blocks($page_id)
+	public function get_blocks($page_id)
 	{
 		$blocks = [];
 
@@ -89,11 +70,6 @@ class Pages extends Model
 		}
 
 		return $blocks;
-	}
-
-	public function get_regions()
-	{
-		return HiddenCMS()->theme($this->config->default_theme)->regions();
 	}
 
 	public function get_page_modules()
@@ -149,6 +125,16 @@ class Pages extends Model
 		return $output;
 	}
 
+	public function get_outlines()
+	{
+		if (($module = @HiddenCMS()->module('layouts')) && $module->is_enabled())
+		{
+			return $module->model()->get_outline_choices();
+		}
+
+		return [];
+	}
+
 	public function get_blocks_form_value($page_id, $content = '')
 	{
 		$blocks = [];
@@ -161,20 +147,19 @@ class Pages extends Model
 			];
 		}
 
-		foreach ($this->get_all_blocks($page_id) as $block)
+		foreach ($this->get_blocks($page_id) as $block)
 		{
 			if (!$block['module'])
 			{
 				$blocks[] = [
 					'type'    => 'static',
-					'region'  => !empty($block['region']) ? $block['region'] : 'content',
 					'content' => isset($block['settings']['content']) ? $block['settings']['content'] : ''
 				];
 
 				continue;
 			}
 
-			$blocks[] = ['region' => !empty($block['region']) ? $block['region'] : 'content'] + $this->module_page_block_form_value($block);
+			$blocks[] = $this->module_page_block_form_value($block);
 		}
 
 		return $this->storage->encode($blocks);
@@ -205,7 +190,6 @@ class Pages extends Model
 				{
 					$output[] = [
 						'module'   => '',
-						'region'   => !empty($block['region']) ? $block['region'] : 'content',
 						'route'    => '',
 						'settings' => [
 							'type'    => 'static',
@@ -269,11 +253,12 @@ class Pages extends Model
 		}
 	}
 
-	public function add_page($name, $title, $published, $subtitle, $content, $blocks = [])
+	public function add_page($name, $title, $published, $outline_id, $subtitle, $content, $blocks = [])
 	{
 		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
-			'published'      => $published
+			'published'      => $published,
+			'outline_id'     => $outline_id ?: NULL
 		]);
 
 		$this->db->insert('pages_lang', [
@@ -289,7 +274,7 @@ class Pages extends Model
 		$this->save_blocks($page_id, $blocks);
 	}
 
-	public function edit_page($page_id, $name, $title, $published, $subtitle, $content, $lang, $blocks = [])
+	public function edit_page($page_id, $name, $title, $published, $outline_id, $subtitle, $content, $lang, $blocks = [])
 	{
 		if (!$this->db	->from('pages p')
 						->join('pages_lang l', 'p.page_id = l.page_id')
@@ -308,7 +293,8 @@ class Pages extends Model
 			$this->db	->where('page_id', $page_id)
 						->update('pages', [
 							'name'           => $name ?: url_title($title),
-							'published'      => $published
+							'published'      => $published,
+							'outline_id'     => $outline_id ?: NULL
 						]);
 		}
 		else
@@ -324,7 +310,8 @@ class Pages extends Model
 			$this->db	->where('page_id', $page_id)
 						->update('pages', [
 							'name'           => $name ?: url_title($title),
-							'published'      => $published
+							'published'      => $published,
+							'outline_id'     => $outline_id ?: NULL
 						]);
 		}
 
@@ -348,7 +335,6 @@ class Pages extends Model
 		{
 			$this->db->insert('pages_instances', [
 				'page_id'  => $page_id,
-				'region'   => !empty($block['region']) ? $block['region'] : 'content',
 				'module'   => isset($block['module']) ? $block['module'] : '',
 				'route'    => isset($block['route']) ? trim($block['route'], '/') : '',
 				'settings' => $this->storage->encode(isset($block['settings']) ? $block['settings'] : []),
@@ -376,7 +362,6 @@ class Pages extends Model
 
 		return [
 			'module'   => $block['module'],
-			'region'   => !empty($block['region']) ? $block['region'] : 'content',
 			'route'    => !empty($data['route']) ? $data['route'] : '',
 			'settings' => $data['settings']
 		];

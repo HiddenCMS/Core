@@ -82,7 +82,8 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (39, 3, 'copyright', '{"enabled":true}'),
 (40, 1, 'tools', '{"enabled":true}'),
 (41, 3, 'about', '{"enabled":true}'),
-(42, 3, 'socials', '{"enabled":true}');
+(42, 3, 'socials', '{"enabled":true}'),
+(43, 1, 'layouts', '{"enabled":true}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (
@@ -217,17 +218,40 @@ CREATE TABLE `log_i18n` (
   UNIQUE KEY `language` (`language`,`key`,`file`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `layouts_outlines`;
+CREATE TABLE `layouts_outlines` (
+  `outline_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `theme` varchar(100) NOT NULL,
+  `layout` text NOT NULL,
+  `settings` text NOT NULL,
+  `base` enum('0','1') NOT NULL DEFAULT '0',
+  `enabled` enum('0','1') NOT NULL DEFAULT '1',
+  PRIMARY KEY (`outline_id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `theme` (`theme`),
+  KEY `base` (`base`),
+  KEY `enabled` (`enabled`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `layouts_outlines` (`outline_id`, `name`, `title`, `theme`, `layout`, `settings`, `base`, `enabled`) VALUES
+(1, 'base', 'Base', 'azuro', '{"top":[{"columns":[{"size":"col-9","items":[{"type":"widget","widget_id":1}]},{"size":"col-3","items":[{"type":"widget","widget_id":2}]}]}],"header":[{"columns":[{"items":[{"type":"widget","widget_id":3}]}]}],"navigation":[{"columns":[{"size":"col-7","items":[{"type":"widget","widget_id":4}]},{"size":"col-5","items":[{"type":"widget","widget_id":5}]}]}],"slider":[],"before_content":[],"content":[{"columns":[{"size":"col-8","items":[{"type":"page_content"}]},{"size":"col-4","items":[{"type":"widget","widget_id":9},{"type":"widget","widget_id":8}]}]}],"after_content":[],"footer":[{"columns":[{"items":[{"type":"widget","widget_id":10}]}]}]}', '[]', '1', '1');
+
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (
   `page_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `published` enum('0','1') NOT NULL DEFAULT '0',
+  `outline_id` int(11) unsigned DEFAULT '1',
   PRIMARY KEY (`page_id`),
-  UNIQUE KEY `page` (`name`)
+  UNIQUE KEY `page` (`name`),
+  KEY `outline_id` (`outline_id`),
+  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`outline_id`) REFERENCES `layouts_outlines` (`outline_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages` (`page_id`, `name`, `published`) VALUES
-(1, 'accueil', '1');
+INSERT INTO `pages` (`page_id`, `name`, `outline_id`, `published`) VALUES
+(1, 'accueil', 1, '1');
 
 DROP TABLE IF EXISTS `pages_lang`;
 CREATE TABLE `pages_lang` (
@@ -248,7 +272,6 @@ DROP TABLE IF EXISTS `pages_instances`;
 CREATE TABLE `pages_instances` (
   `instance_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `page_id` int(11) unsigned NOT NULL,
-  `region` varchar(50) NOT NULL DEFAULT 'content',
   `module` varchar(100) NOT NULL,
   `route` varchar(255) NOT NULL,
   `settings` text NOT NULL,
@@ -256,13 +279,12 @@ CREATE TABLE `pages_instances` (
   `enabled` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`instance_id`),
   KEY `page_id` (`page_id`),
-  KEY `page_region` (`page_id`,`region`,`enabled`),
   KEY `enabled` (`enabled`),
   CONSTRAINT `pages_instances_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages_instances` (`instance_id`, `page_id`, `region`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
-(1, 1, 'content', 'news', '', '[]', 0, '1');
+INSERT INTO `pages_instances` (`instance_id`, `page_id`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
+(1, 1, 'news', '', '[]', 0, '1');
 
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (

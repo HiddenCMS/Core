@@ -15,6 +15,7 @@ abstract class Module extends Addon
 		'addons'      => FALSE,
 		'admin'       => FALSE,
 		'comments'    => TRUE,
+		'layouts'     => FALSE,
 		'live_editor' => FALSE,
 		'monitoring'  => FALSE,
 		'pages'       => TRUE,

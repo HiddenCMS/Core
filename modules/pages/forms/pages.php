@@ -34,6 +34,12 @@ $rules = [
 			}
 		}
 	],
+	'outline_id' => [
+		'label'         => $this->lang('Outline'),
+		'value'         => $this->form()->value('outline_id'),
+		'values'        => $this->form()->value('outlines'),
+		'type'          => 'select'
+	],
 	'blocks' => [
 		'label' => $this->lang('Composition de la page'),
 		'value' => $this->form()->value('blocks'),
@@ -55,12 +61,10 @@ $rules = [
 ];
 
 $modules = $this->form()->value('modules') ?: [];
-$regions = $this->form()->value('regions') ?: ['content' => 'Contenu'];
 
 $labels = [
 	'static'      => (string)$this->lang('Contenu statique'),
 	'module'      => (string)$this->lang('Module'),
-	'region'      => (string)$this->lang('Région'),
 	'module_type' => (string)$this->lang('Type de module'),
 	'block_type'  => (string)$this->lang('Affichage'),
 	'add_static'  => (string)$this->lang('Ajouter du contenu'),
@@ -80,7 +84,6 @@ if ($modules)
 	$this->js_load('
 		(function(){
 			var modules = '.json_encode($modules, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
-			var regions = '.json_encode($regions, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var labels = '.json_encode($labels, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var icons = '.json_encode($icons, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var $field = $("[name$=\"[blocks]\"]");
@@ -119,16 +122,6 @@ if ($modules)
 				return $select;
 			};
 
-			var regionSelect = function(selected){
-				var $select = $("<select />").addClass("form-control form-control-sm page-block-region");
-
-				$.each(regions, function(value, label){
-					$select.append(option(value, label, selected || "content"));
-				});
-
-				return $select;
-			};
-
 			var blockSelect = function(moduleName, selected){
 				var $select = $("<select />").addClass("form-control form-control-sm page-block-type");
 				var module = modules[moduleName] || {blocks: {}};
@@ -154,7 +147,6 @@ if ($modules)
 					if ($block.data("type") == "static"){
 						blocks.push({
 							type: "static",
-							region: $block.find(".page-block-region").val() || "content",
 							content: $block.find(".page-block-content").val() || ""
 						});
 					}
@@ -172,7 +164,6 @@ if ($modules)
 
 						blocks.push({
 							type: "module",
-							region: $block.find(".page-block-region").val() || "content",
 							module: $block.find(".page-block-module").val() || "",
 							block: $block.find(".page-block-type").val() || "index",
 							settings: settings
@@ -239,13 +230,10 @@ if ($modules)
 				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "static").data("type", "static");
 				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.static));
 				var $body = $("<div />").addClass("card-body p-2");
-				var $region = regionSelect(block && block.region ? block.region : "content");
 				var $content = $("<textarea />").addClass("form-control page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
-				$body	.append($("<label />").addClass("mb-1").text(labels.region))
-						.append($region)
-						.append($("<label />").addClass("mb-1 mt-2").text(labels.static))
+				$body	.append($("<label />").addClass("mb-1").text(labels.static))
 						.append($content);
 				$list.append($block.append($header).append($body));
 				read();
@@ -253,7 +241,6 @@ if ($modules)
 
 			var normalizeModuleBlock = function(block){
 				block = block || {};
-				block.region = block.region || "content";
 				block.module = block.module || firstKey(modules);
 				block.settings = block.settings || {};
 
@@ -268,15 +255,12 @@ if ($modules)
 				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "module").data("type", "module");
 				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.module));
 				var $body = $("<div />").addClass("card-body p-2");
-				var $region = regionSelect(block.region);
 				var $module = moduleSelect(block.module);
 				var $type = blockSelect(block.module, block.block);
 				var $settings = $("<div />").addClass("page-block-settings");
 
 				$header.append(controls());
-				$body	.append($("<label />").addClass("mb-1").text(labels.region))
-						.append($region)
-						.append($("<label />").addClass("mb-1 mt-2").text(labels.module_type))
+				$body	.append($("<label />").addClass("mb-1").text(labels.module_type))
 						.append($module)
 						.append($("<label />").addClass("mb-1 mt-2").text(labels.block_type))
 						.append($type)
@@ -345,7 +329,7 @@ if ($modules)
 				read();
 			});
 
-			$composer.on("change keyup", ".page-block-region, .page-block-content, .page-block-setting", read);
+			$composer.on("change keyup", ".page-block-content, .page-block-setting", read);
 
 			$form.on("submit", read);
 			read();

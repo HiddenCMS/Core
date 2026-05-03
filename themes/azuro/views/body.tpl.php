@@ -1,19 +1,19 @@
 <header class="header">
-	<?php if ($zone = (string)$this->output->region('top', 0)): ?>
+	<?php if ($zone = (string)$this->output->region('top')): ?>
 	<div class="haut azuro-bg-dark py-1">
 		<div class="container">
 			<?php echo $zone ?>
 		</div>
 	</div>
 	<?php endif ?>
-	<?php if ($zone = (string)$this->output->region('header', 1)): ?>
+	<?php if ($zone = (string)$this->output->region('header')): ?>
 	<div class="entete py-5">
 		<div class="container">
 			<?php echo $zone ?>
 		</div>
 	</div>
 	<?php endif ?>
-	<?php if ($zone = (string)$this->output->region('navigation', 2)): ?>
+	<?php if ($zone = (string)$this->output->region('navigation')): ?>
 		<div class="menu bg-white">
 			<div class="container">
 				<?php echo $zone ?>
@@ -32,14 +32,14 @@
 		<?php endif ?>
 	<?php endif ?>
 </header>
-<?php if ($zone = (string)$this->output->region('slider', 3)): ?>
+<?php if ($zone = (string)$this->output->region('slider')): ?>
 <section id="slider">
 	<div class="container-fluid">
 		<?php echo $zone ?>
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->region('before_content', 4)): ?>
+<?php if ($zone = (string)$this->output->region('before_content')): ?>
 <section class="bg-white border-top border-bottom py-5" id="avant-contenu">
 	<div class="container">
 		<?php echo $zone ?>
@@ -55,21 +55,21 @@ if (count($this->url->segments) == 3 && $this->url->segments[0] == 'user' && iss
 	}
 }
 ?>
-<?php if (($zone = (string)$this->output->error()) || ($zone = (string)$this->output->zone(5))): ?>
+<?php if (($zone = (string)$this->output->error()) || ($zone = (string)$this->output->region('content'))): ?>
 <section class="py-5" id="contenu">
 	<div class="container">
 		<?php echo $zone ?>
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->region('after_content', 6)): ?>
+<?php if ($zone = (string)$this->output->region('after_content')): ?>
 <section class="bg-dark py-5" id="post-contenu">
 	<div class="container">
 		<?php echo $zone ?>
 	</div>
 </section>
 <?php endif ?>
-<?php if ($zone = (string)$this->output->region('footer', 7)): ?>
+<?php if ($zone = (string)$this->output->region('footer')): ?>
 <footer class="footer azuro-bg-dark py-4">
 	<div class="container">
 		<?php echo $zone ?>

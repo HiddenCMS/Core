@@ -76,11 +76,14 @@ class Admin extends Controller_Module
 
 	public function add()
 	{
+		$outlines = $this->model()->get_outlines();
+
 		$this	->subtitle($this->lang('Ajouter une page'))
 				->form()
 				->add_rules('pages', [
 					'modules'         => $this->model()->get_page_modules(),
-					'regions'         => $this->model()->get_regions(),
+					'outline_id'      => key($outlines),
+					'outlines'        => $outlines,
 					'blocks'          => $this->storage->encode([])
 				])
 				->add_submit($this->lang('Ajouter'))
@@ -93,6 +96,7 @@ class Admin extends Controller_Module
 			$this->model()->add_page(	$post['name'],
 										$post['title'],
 										in_array('on', $post['published']),
+										!empty($post['outline_id']) ? $post['outline_id'] : NULL,
 										$post['subtitle'],
 										'',
 										$blocks);
@@ -107,7 +111,7 @@ class Admin extends Controller_Module
 					->body($this->form()->display());
 	}
 
-	public function _edit($page_id, $name, $published, $title, $subtitle, $content, $tab)
+	public function _edit($page_id, $name, $published, $outline_id, $title, $subtitle, $content, $tab)
 	{
 		$this	->subtitle($title)
 				->form()
@@ -116,8 +120,9 @@ class Admin extends Controller_Module
 					'subtitle'       => $subtitle,
 					'name'           => $name,
 					'published'      => $published,
+					'outline_id'     => $outline_id,
 					'modules'        => $this->model()->get_page_modules(),
-					'regions'        => $this->model()->get_regions(),
+					'outlines'       => $this->model()->get_outlines(),
 					'blocks'         => $this->model()->get_blocks_form_value($page_id, $content)
 				])
 				->add_submit($this->lang('Éditer'))
@@ -131,6 +136,7 @@ class Admin extends Controller_Module
 										$post['name'],
 										$post['title'],
 										in_array('on', $post['published']),
+										!empty($post['outline_id']) ? $post['outline_id'] : NULL,
 										$post['subtitle'],
 										'',
 										$this->config->lang->info()->name,
