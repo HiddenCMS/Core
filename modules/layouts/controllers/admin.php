@@ -63,8 +63,9 @@ class Admin extends Controller_Module
 	{
 		$theme = $this->config->default_theme;
 
-		$this	->css('layouts')
-				->subtitle($this->lang('Ajouter un outline'))
+		$this->css('layouts');
+
+		$this	->subtitle($this->lang('Ajouter un outline'))
 				->form()
 				->add_rules('outlines', [
 					'theme'   => $theme,
@@ -110,8 +111,9 @@ class Admin extends Controller_Module
 
 	public function _edit($outline_id, $name, $title, $theme, $layout, $base, $enabled)
 	{
-		$this	->css('layouts')
-				->subtitle($title)
+		$this->css('layouts');
+
+		$this	->subtitle($title)
 				->form()
 				->add_rules('outlines', [
 					'name'    => $name,
