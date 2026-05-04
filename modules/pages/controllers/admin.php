@@ -81,6 +81,7 @@ class Admin extends Controller_Module
 		$this	->subtitle($this->lang('Ajouter une page'))
 				->form()
 				->add_rules('pages', [
+					'page_id'         => 0,
 					'modules'         => $this->model()->get_page_modules(),
 					'outline_id'      => key($outlines),
 					'outlines'        => $outlines,
@@ -116,6 +117,7 @@ class Admin extends Controller_Module
 		$this	->subtitle($title)
 				->form()
 				->add_rules('pages', [
+					'page_id'        => $page_id,
 					'title'          => $title,
 					'subtitle'       => $subtitle,
 					'name'           => $name,

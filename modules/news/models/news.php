@@ -76,23 +76,17 @@ class News extends Model
 						->join('user_profile up',         'u.id          = up.id')
 						->join('session        s',        'u.id          = s.user_id')
 						->where('c.name', $category_name)
+						->where('nl.slug', $title)
 						->where('nl.lang', $lang)
-						->where('cl.lang', $lang);
+						->where('cl.lang', $lang)
+						->group_by('n.news_id');
 
 		if (!$this->url->admin)
 		{
 			$this->db->where('n.published', TRUE);
 		}
 
-		foreach ($this->db->get(FALSE) as $news)
-		{
-			if ($news['slug'] == $title || (!$news['slug'] && url_title($news['title']) == $title))
-			{
-				return $news;
-			}
-		}
-
-		return FALSE;
+		return $this->db->row();
 	}
 
 	public function check_news($news_id, $title, $lang = 'default')

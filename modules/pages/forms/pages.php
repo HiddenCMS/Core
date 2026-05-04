@@ -18,17 +18,24 @@ $rules = [
 	],
 	'name' => [
 		'label'         => $this->lang('Chemin d\'accès'),
-		'value'         => $name = $this->form()->value('name'),
+		'value'         => $this->form()->value('name'),
 		'type'          => 'text',
-		'check'         => function($value, $post) use ($name){
+		'check'         => function($value, $post){
 			if (!$value)
 			{
 				$value = $post['title'];
 			}
 
 			$value = url_title($value);
+			$page_id = (int)$this->form()->value('page_id');
+			$query = HiddenCMS()->db->from('pages')->where('name', $value);
 
-			if ($value != $name && !HiddenCMS()->db->from('pages')->where('name', $value)->empty())
+			if ($page_id)
+			{
+				$query->where('page_id <>', $page_id);
+			}
+
+			if (!$query->empty())
 			{
 				return $this->lang('Chemin d\'accès déjà utilisé');
 			}
