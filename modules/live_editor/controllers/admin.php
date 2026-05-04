@@ -19,7 +19,7 @@ class Admin extends Controller_Module
 				->js('jquery-ui.min');
 
 		$outlines = [];
-		$outline_id = !empty($_GET['outline_id']) ? (int)$_GET['outline_id'] : 0;
+		$outline_id = isset($_GET['outline_id']) ? (int)$_GET['outline_id'] : NULL;
 		$outline_title = '';
 
 		$theme = $this->theme($this->config->default_theme);
@@ -31,12 +31,12 @@ class Admin extends Controller_Module
 				$outlines[$outline['outline_id']] = $outline['title'];
 			}
 
-			if (!$outline_id && $outlines)
+			if ($outline_id === NULL && $outlines)
 			{
 				$outline_id = key($outlines);
 			}
 
-			if ($outline_id && isset($outlines[$outline_id]))
+			if ($outline_id !== NULL && array_key_exists($outline_id, $outlines))
 			{
 				$outline_title = $outlines[$outline_id];
 			}

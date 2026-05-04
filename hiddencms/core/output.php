@@ -568,7 +568,7 @@ class Output extends Core
 
 				$outline_id = $this->data->get('page', 'outline');
 
-				if ($this->user->admin && $this->live_editor() && !empty($_GET['outline_id']))
+				if ($this->user->admin && $this->live_editor() && isset($_GET['outline_id']))
 				{
 					$outline_id = (int)$_GET['outline_id'];
 				}

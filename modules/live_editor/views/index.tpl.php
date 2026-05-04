@@ -1,13 +1,20 @@
 <?php
 $iframe_url = url($this->config->default_page);
+$default_mode = \HB\HiddenCMS\Core\Output::ZONES + \HB\HiddenCMS\Core\Output::ROWS + \HB\HiddenCMS\Core\Output::COLS + \HB\HiddenCMS\Core\Output::WIDGETS;
+$live_editor = $this->session('live_editor');
 
-if (!empty($outline_id))
+if (!$live_editor || !($live_editor & (\HB\HiddenCMS\Core\Output::ZONES + \HB\HiddenCMS\Core\Output::ROWS + \HB\HiddenCMS\Core\Output::COLS)))
+{
+	$live_editor = $default_mode;
+}
+
+if ($outline_id !== NULL)
 {
 	$iframe_url .= (strpos($iframe_url, '?') === FALSE ? '?' : '&').'outline_id='.$outline_id;
 }
 ?>
 <form target="live-editor-iframe" action="<?php echo $iframe_url ?>" method="post">
-	<input type="hidden" name="live_editor" value="<?php echo $live_editor = $this->session('live_editor') ?: $this->output->live_editor() ^ \HB\HiddenCMS\Core\Output::WIDGETS ?>" />
+	<input type="hidden" name="live_editor" value="<?php echo $live_editor ?>" />
 	<nav class="live-editor-navbar navbar navbar-expand-lg navbar-light bg-light py-2">
 		<a class="navbar-brand" href="<?php echo url('admin/live-editor') ?>"><?php echo icon('fas fa-desktop') ?> <b>Live</b><span data-typer="Editor"></span></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#modules-links-collapse" aria-controls="modules-links-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +35,7 @@ if (!empty($outline_id))
 				</li>
 				<?php endif ?>
 				<li class="nav-item">
-					<span class="d-block" id="live-editor-map" data-outline-mode="1"<?php echo !empty($outline_title) ? ' data-outline-title="'.utf8_htmlentities(icon('fas fa-layer-group').' '.$outline_title).'"' : '' ?>><?php echo !empty($outline_title) ? icon('fas fa-layer-group').' '.$outline_title : icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
+					<span class="d-block" id="live-editor-map" data-outline-mode="1"<?php echo $outline_title !== '' ? ' data-outline-title="'.utf8_htmlentities(icon('fas fa-layer-group').' '.$outline_title).'"' : '' ?>><?php echo $outline_title !== '' ? icon('fas fa-layer-group').' '.$outline_title : icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -37,7 +44,7 @@ if (!empty($outline_id))
 						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ZONES ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ZONES ?>"><?php echo icon('far fa-square').' '.$this->lang('Zones') ?></button>
 						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ROWS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ROWS ?>"><?php echo icon('fas fa-columns fa-rotate-270').' '.$this->lang('Lignes') ?></button>
 						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::COLS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::COLS ?>"><?php echo icon('fas fa-columns').' '.$this->lang('Colonnes') ?></button>
-						<button type="button" class="btn btn-light live-editor-mode active" data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
+						<button type="button" class="btn btn-light live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::WIDGETS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
 					</div>
 				</li>
 				<li class="nav-item dropdown ml-2">
