@@ -190,7 +190,7 @@ class News extends Module
 
 	public function comments($news_id)
 	{
-		$news = $this->db	->select('nl.title', 'c.name as category_name')
+		$news = $this->db	->select('nl.title', 'nl.slug', 'c.name as category_name')
 							->from('news n')
 							->join('news_lang nl', 'n.news_id = nl.news_id')
 							->join('news_categories c', 'n.category_id = c.category_id')
@@ -202,14 +202,14 @@ class News extends Module
 		{
 			return [
 				'title' => $news['title'],
-				'url'   => $this->news_path($news['category_name'], $news['title'])
+				'url'   => $this->news_path($news['category_name'], $news['title'], $news['slug'])
 			];
 		}
 	}
 
-	public function news_path($category_name, $title)
+	public function news_path($category_name, $title, $slug = '')
 	{
-		return $this->base_path().trim($category_name, '/').'/'.url_title($title);
+		return $this->base_path().trim($category_name, '/').'/'.($slug ?: url_title($title));
 	}
 
 	public function category_path($category_name)

@@ -474,11 +474,13 @@ CREATE TABLE `news_lang` (
   `news_id` int(11) unsigned NOT NULL,
   `lang` varchar(5) NOT NULL,
   `title` varchar(100) NOT NULL,
+  `slug` varchar(150) NOT NULL,
   `introduction` text NOT NULL,
   `content` text NOT NULL,
   `tags` text NOT NULL,
   PRIMARY KEY (`news_id`,`lang`),
   KEY `lang` (`lang`),
+  KEY `slug` (`slug`),
   CONSTRAINT `news_lang_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -1,11 +1,11 @@
 <?php $news_module = $this->module('news'); ?>
 <?php if ($image): ?>
-	<a href="<?php echo url($news_module->news_path($category_name, $title)) ?>">
+	<a href="<?php echo url($news_module->news_path($category_name, $title, isset($slug) ? $slug : '')) ?>">
 		<img class="card-img-top" src="<?php echo HB()->model2('file', $image)->path() ?>" alt="" />
 	</a>
 <?php endif ?>
 <div class="card-body">
-	<h5 class="card-title"><a href="<?php echo url($news_module->news_path($category_name, $title)) ?>"><?php echo $title ?></a></h5>
+	<h5 class="card-title"><a href="<?php echo url($news_module->news_path($category_name, $title, isset($slug) ? $slug : '')) ?>"><?php echo $title ?></a></h5>
 	<p class="card-text"><?php echo $introduction ?></p>
 	<blockquote class="blockquote mb-0">
 		<?php if (isset($next)): ?>
@@ -15,7 +15,7 @@
 			<a class="btn btn-light btn-sm" href="https://plus.google.com/share?url=<?php echo $url ?>" target="_blank"><?php echo icon('fab fa-google-plus-g text-danger') ?></a>
 		</div>
 		<?php endif ?>
-		<footer class="blockquote-footer"><?php echo $this->lang('Par').' '.($user_id ? $this->user->link($user_id, $username) : $this->lang('Visiteur')).' '.$this->lang('le').' '.timetostr('j M Y', $date) ?> / <a href="<?php echo url($news_module->category_path($category_name)) ?>"><?php echo $category_title ?></a><?php echo (($comments = $this->module('comments')) && $comments->is_enabled()) ? ' / '.$comments->link('news', $news_id, $news_module->news_path($category_name, $title)) : '' ?></footer>
+		<footer class="blockquote-footer"><?php echo $this->lang('Par').' '.($user_id ? $this->user->link($user_id, $username) : $this->lang('Visiteur')).' '.$this->lang('le').' '.timetostr('j M Y', $date) ?> / <a href="<?php echo url($news_module->category_path($category_name)) ?>"><?php echo $category_title ?></a><?php echo (($comments = $this->module('comments')) && $comments->is_enabled()) ? ' / '.$comments->link('news', $news_id, $news_module->news_path($category_name, $title, isset($slug) ? $slug : '')) : '' ?></footer>
 	</blockquote>
 </div>
 <?php if ($tags || $content): ?>
@@ -29,7 +29,7 @@
 		</ul>
 	<?php endif ?>
 	<?php if ($content): ?>
-		<a href="<?php echo url($news_module->news_path($category_name, $title)) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer à lire') ?></a>
+		<a href="<?php echo url($news_module->news_path($category_name, $title, isset($slug) ? $slug : '')) ?>" class="btn btn-sm btn-secondary float-right"><?php echo $this->lang('Continuer à lire') ?></a>
 	<?php endif ?>
 </div>
 <?php endif ?>

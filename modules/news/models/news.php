@@ -12,7 +12,7 @@ class News extends Model
 {
 	public function get_news($filter = '', $filter_data = '')
 	{
-		$this->db	->select('n.*', 'nl.title', 'nl.introduction', 'nl.content', 'nl.tags', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'c.name as category_name', 'cl.title as category_title', 'u.id as user_id', 'u.username', 'up.avatar', 'up.sex')
+		$this->db	->select('n.*', 'nl.title', 'nl.slug', 'nl.introduction', 'nl.content', 'nl.tags', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'c.name as category_name', 'cl.title as category_title', 'u.id as user_id', 'u.username', 'up.avatar', 'up.sex')
 					->from('news n')
 					->join('news_lang nl',            'n.news_id     = nl.news_id')
 					->join('news_categories c',       'n.category_id = c.category_id')
@@ -45,7 +45,7 @@ class News extends Model
 
 	public function get_news_by_user($user_id, $news_id)
 	{
-		return $this->db->select('n.news_id', 'nl.title', 'c.name as category_name', 'cl.title as category_title')
+		return $this->db->select('n.news_id', 'nl.title', 'nl.slug', 'c.name as category_name', 'cl.title as category_title')
 						->from('news n')
 						->join('news_lang nl',            'n.news_id     = nl.news_id')
 						->join('news_categories c',       'n.category_id = c.category_id')
@@ -67,7 +67,7 @@ class News extends Model
 			$lang = $this->config->lang->info()->name;
 		}
 
-		$this->db	->select('n.news_id', 'n.category_id', 'u.id as user_id', 'n.image_id', 'n.date', 'n.published', 'n.views', 'n.vote', 'nl.title', 'nl.introduction', 'nl.content', 'nl.tags', 'c.name as category_name', 'cl.title as category_title', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'u.username', 'u.admin', 'MAX(s.last_activity) > DATE_SUB(NOW(), INTERVAL 5 MINUTE) as online', 'up.quote', 'up.avatar', 'up.sex')
+		$this->db	->select('n.news_id', 'n.category_id', 'u.id as user_id', 'n.image_id', 'n.date', 'n.published', 'n.views', 'n.vote', 'nl.title', 'nl.slug', 'nl.introduction', 'nl.content', 'nl.tags', 'c.name as category_name', 'cl.title as category_title', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'u.username', 'u.admin', 'MAX(s.last_activity) > DATE_SUB(NOW(), INTERVAL 5 MINUTE) as online', 'up.quote', 'up.avatar', 'up.sex')
 						->from('news n')
 						->join('news_lang nl',            'n.news_id     = nl.news_id')
 						->join('news_categories c',       'n.category_id = c.category_id')
@@ -86,7 +86,7 @@ class News extends Model
 
 		foreach ($this->db->get(FALSE) as $news)
 		{
-			if (url_title($news['title']) == $title)
+			if ($news['slug'] == $title || (!$news['slug'] && url_title($news['title']) == $title))
 			{
 				return $news;
 			}
@@ -102,7 +102,7 @@ class News extends Model
 			$lang = $this->config->lang->info()->name;
 		}
 
-		$this->db	->select('n.news_id', 'n.category_id', 'u.id as user_id', 'n.image_id', 'n.date', 'n.published', 'n.views', 'n.vote', 'nl.title', 'nl.introduction', 'nl.content', 'nl.tags', 'c.name as category_name', 'cl.title as category_title', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'u.username', 'u.admin', 'MAX(s.last_activity) > DATE_SUB(NOW(), INTERVAL 5 MINUTE) as online', 'up.quote', 'up.avatar', 'up.sex')
+		$this->db	->select('n.news_id', 'n.category_id', 'u.id as user_id', 'n.image_id', 'n.date', 'n.published', 'n.views', 'n.vote', 'nl.title', 'nl.slug', 'nl.introduction', 'nl.content', 'nl.tags', 'c.name as category_name', 'cl.title as category_title', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'u.username', 'u.admin', 'MAX(s.last_activity) > DATE_SUB(NOW(), INTERVAL 5 MINUTE) as online', 'up.quote', 'up.avatar', 'up.sex')
 						->from('news n')
 						->join('news_lang nl',            'n.news_id     = nl.news_id')
 						->join('news_categories c',       'n.category_id = c.category_id')
@@ -133,6 +133,8 @@ class News extends Model
 
 	public function add_news($title, $category_id, $image_id, $introduction, $content, $tags, $published)
 	{
+		$lang = $this->config->lang->info()->name;
+
 		$news_id = $this->db->insert('news', [
 								'category_id' => $category_id,
 								'user_id'     => $this->user->id,
@@ -142,8 +144,9 @@ class News extends Model
 
 		$this->db	->insert('news_lang', [
 						'news_id'      => $news_id,
-						'lang'         => $this->config->lang->info()->name,
+						'lang'         => $lang,
 						'title'        => $title,
+						'slug'         => $this->unique_slug($title, $category_id, $lang),
 						'introduction' => $introduction,
 						'content'      => $content,
 						'tags'         => $this->_tags($tags)
@@ -163,6 +166,7 @@ class News extends Model
 					->where('lang', $lang)
 					->update('news_lang', [
 						'title'        => $title,
+						'slug'         => $this->unique_slug($title, $category_id, $lang, $news_id),
 						'introduction' => $introduction,
 						'content'      => $content,
 						'tags'         => $this->_tags($tags)
@@ -185,6 +189,42 @@ class News extends Model
 	private function _tags($tags)
 	{
 		return implode(',', array_unique(array_map('trim', preg_split('/[ ,;]+/', $tags, -1, PREG_SPLIT_NO_EMPTY))));
+	}
+
+	private function unique_slug($title, $category_id, $lang, $news_id = NULL)
+	{
+		$base = url_title($title);
+
+		if (!$base)
+		{
+			$base = 'news';
+		}
+
+		$slug = $base;
+		$i = 2;
+
+		while ($this->slug_exists($slug, $category_id, $lang, $news_id))
+		{
+			$slug = $base.'-'.$i++;
+		}
+
+		return $slug;
+	}
+
+	private function slug_exists($slug, $category_id, $lang, $news_id = NULL)
+	{
+		$this->db	->from('news_lang nl')
+					->join('news n', 'n.news_id = nl.news_id')
+					->where('nl.lang', $lang)
+					->where('nl.slug', $slug)
+					->where('n.category_id', $category_id);
+
+		if ($news_id !== NULL)
+		{
+			$this->db->where('n.news_id <>', $news_id);
+		}
+
+		return !$this->db->empty();
 	}
 }
 

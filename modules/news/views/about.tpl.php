@@ -20,7 +20,7 @@
 			<?php if (!empty($news)): ?>
 			<ul class="list-unstyled">
 				<?php foreach ($news as $news): ?>
-				<li><a href="<?php echo url($news_module->news_path($news['category_name'], $news['title'])) ?>"><?php echo str_shortener($news['title'], 45) ?></a></li>
+				<li><a href="<?php echo url($news_module->news_path($news['category_name'], $news['title'], $news['slug'])) ?>"><?php echo str_shortener($news['title'], 45) ?></a></li>
 				<?php endforeach ?>
 			</ul>
 			<?php else: ?>
