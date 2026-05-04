@@ -135,6 +135,11 @@ class Output extends Core
 
 					if (!($resolved = $module->model()->resolve($segments)))
 					{
+						if (($reserved_module = $this->reserved_module($segments[0])) && $reserved_module->is_enabled())
+						{
+							return $this->module_content($reserved_module->info()->name, array_slice($segments, 1));
+						}
+
 						parent::error();
 					}
 
@@ -623,6 +628,31 @@ class Output extends Core
 		}
 
 		return '';
+	}
+
+	private function reserved_module($route)
+	{
+		if (!$route)
+		{
+			return NULL;
+		}
+
+		$route = strtolower(trim($route, '/'));
+
+		foreach (parent::model2('addon')->get('module') as $module)
+		{
+			if (!$module->is_enabled() || !$module->is_front() || empty($module->info()->reserved_route))
+			{
+				continue;
+			}
+
+			if ($route == strtolower(trim($module->info()->reserved_route, '/')))
+			{
+				return $module;
+			}
+		}
+
+		return NULL;
 	}
 
 	public function json($data = NULL)

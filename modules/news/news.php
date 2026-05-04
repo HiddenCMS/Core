@@ -22,6 +22,7 @@ class News extends Module
 			'admin'       => TRUE,
 			'front'       => TRUE,
 			'version'     => '1.0',
+			'reserved_route' => 'news',
 			'depends'     => [
 				'HiddenCMS' => 'Alpha 0.2'
 			],
@@ -226,6 +227,11 @@ class News extends Module
 
 	private function base_path()
 	{
+		if (!$this->url->admin && !$this->url->ajax && !empty($this->info()->reserved_route))
+		{
+			return trim($this->info()->reserved_route, '/').'/';
+		}
+
 		if (!$this->url->admin && !$this->url->ajax && ($page = $this->output->data->get('page', 'name')))
 		{
 			return trim($page, '/').'/';
