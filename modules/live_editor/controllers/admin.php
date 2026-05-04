@@ -18,43 +18,9 @@ class Admin extends Controller_Module
 				->css('jquery-ui.min')
 				->js('jquery-ui.min');
 
-		$modules = $pages = $outlines = [];
-
-		foreach (HB()->model2('addon')->get('module') as $module)
-		{
-			if (@$module->controller('index') && !in_array($module->info()->name, ['settings']))
-			{
-				$modules[] = $module;
-			}
-		}
-
-		array_natsort($modules, function($a){
-			return $a->info()->title;
-		});
-
-		$pages = array_merge([
-			'index' => HB()->lang('Accueil')
-		], $pages);
-
-		foreach ($modules as $module)
-		{
-			$name = $module->info()->name;
-
-			if ($name == 'pages')
-			{
-				foreach ($module->model()->get_pages() as $page)
-				{
-					if ($page['published'])
-					{
-						$pages[$page['name']] = 'Page : '.str_shortener($page['title'], 35);
-					}
-				}
-			}
-			else
-			{
-				$pages[$name] = $module->info()->title;
-			}
-		}
+		$outlines = [];
+		$outline_id = !empty($_GET['outline_id']) ? (int)$_GET['outline_id'] : 0;
+		$outline_title = '';
 
 		$theme = $this->theme($this->config->default_theme);
 
@@ -64,12 +30,22 @@ class Admin extends Controller_Module
 			{
 				$outlines[$outline['outline_id']] = $outline['title'];
 			}
+
+			if (!$outline_id && $outlines)
+			{
+				$outline_id = key($outlines);
+			}
+
+			if ($outline_id && isset($outlines[$outline_id]))
+			{
+				$outline_title = $outlines[$outline_id];
+			}
 		}
 
 		return $this->view('index', [
-			'modules'       => $pages,
 			'outlines'      => $outlines,
-			'outline_id'    => !empty($_GET['outline_id']) ? (int)$_GET['outline_id'] : 0,
+			'outline_id'    => $outline_id,
+			'outline_title' => $outline_title,
 			'styles_row'    => $theme->styles_row(),
 			'styles_widget' => $theme->styles_widget()
 		]);

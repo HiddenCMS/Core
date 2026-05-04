@@ -45,7 +45,25 @@ class Admin extends Controller_Module
 								return '<a href="'.url('admin/live-editor?outline_id='.$outline['outline_id']).'" class="btn btn-sm btn-info">'.icon('fas fa-desktop').'</a>';
 							},
 							function($outline){
+								return $this->button()
+											->tooltip($this->lang('Dupliquer'))
+											->icon('far fa-copy')
+											->color('secondary')
+											->compact()
+											->outline()
+											->modal_ajax('admin/layouts/'.$outline['outline_id'].'/duplicate');
+							},
+							function($outline){
 								return $this->button_update('admin/layouts/'.$outline['outline_id'].'/'.url_title($outline['title']));
+							},
+							function($outline){
+								return !$outline['base'] ? $this->button()
+															->tooltip($this->lang('Supprimer'))
+															->icon('far fa-trash-alt')
+															->color('danger')
+															->compact()
+															->outline()
+															->modal_ajax('admin/layouts/'.$outline['outline_id'].'/delete') : '';
 							}
 						],
 						'size'    => TRUE
@@ -143,5 +161,56 @@ class Admin extends Controller_Module
 					->heading($this->lang('Edition de l\'outline'), 'fas fa-layer-group')
 					->body($this->form()->display())
 					->footer('<a href="'.url('admin/live-editor?outline_id='.$outline_id).'" class="btn btn-info">'.icon('fas fa-desktop').' '.$this->lang('Editer visuellement').'</a>');
+	}
+
+	public function _duplicate($outline)
+	{
+		return $this	->form2()
+					->rule($this	->form_text('title')
+									->title($this->lang('Nom du nouvel outline'))
+									->value($this->lang('Copie de %s', $outline['title']))
+									->required()
+									->check(function($post){
+										$name = !empty($post['title']) ? url_title($post['title']) : '';
+
+										if ($name && !HiddenCMS()->db->from('layouts_outlines')->where('name', $name)->empty())
+										{
+											return $this->lang('Un outline utilise deja ce nom');
+										}
+									})
+					)
+					->success(function($data) use ($outline){
+						if (!($outline_id = $this->model()->duplicate_outline($outline['outline_id'], $data['title'])))
+						{
+							notify($this->lang('Impossible de dupliquer l\'outline'), 'danger');
+							refresh();
+						}
+
+						notify($this->lang('Outline duplique avec succes'));
+
+						redirect('admin/live-editor?outline_id='.$outline_id);
+					})
+					->submit($this->lang('Dupliquer'))
+					->modal($this->lang('Dupliquer %s', $outline['title']), 'far fa-copy')
+					->cancel();
+	}
+
+	public function _delete($outline)
+	{
+		return $this	->modal($this->lang('Supprimer %s', $outline['title']), 'far fa-trash-alt text-danger')
+					->body($this->lang('Les pages utilisant cet outline seront rattachees a l\'outline de base.'))
+					->callback(function() use ($outline){
+						if (!$this->model()->delete_outline($outline['outline_id']))
+						{
+							notify($this->lang('Impossible de supprimer l\'outline'), 'danger');
+							refresh();
+						}
+
+						notify($this->lang('Outline supprime avec succes'));
+
+						redirect('admin/layouts');
+					})
+					->submit($this->lang('Supprimer'), 'danger')
+					->cancel();
 	}
 }

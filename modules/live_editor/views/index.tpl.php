@@ -15,16 +15,6 @@ if (!empty($outline_id))
 		</button>
 		<div class="collapse navbar-collapse" id="modules-links-collapse">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item dropdown">
-					<a class="nav-link" href="#" id="navbarDropdownModules" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<?php echo icon('fas fa-link').' '.$this->lang('Navigation').' '.icon('fas fa-angle-down') ?>
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
-						<?php foreach ($modules as $name => $title): ?>
-							<a class="dropdown-item live-editor-navigation-link" href="<?php echo url($name) ?>"><?php echo $title ?></a>
-						<?php endforeach ?>
-					</div>
-				</li>
 				<?php if (!empty($outlines)): ?>
 				<li class="nav-item dropdown">
 					<a class="nav-link" href="#" id="navbarDropdownOutlines" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,7 +28,7 @@ if (!empty($outline_id))
 				</li>
 				<?php endif ?>
 				<li class="nav-item">
-					<span class="d-block" id="live-editor-map"><?php echo icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
+					<span class="d-block" id="live-editor-map" data-outline-mode="1"<?php echo !empty($outline_title) ? ' data-outline-title="'.utf8_htmlentities(icon('fas fa-layer-group').' '.$outline_title).'"' : '' ?>><?php echo !empty($outline_title) ? icon('fas fa-layer-group').' '.$outline_title : icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto">

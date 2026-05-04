@@ -74,6 +74,14 @@ class Layouts extends Model
 		return $this->db->row();
 	}
 
+	public function get_outline_by_id($outline_id)
+	{
+		return $this->db	->select('*')
+						->from('layouts_outlines')
+						->where('outline_id', $outline_id)
+						->row(FALSE);
+	}
+
 	public function check_outline($outline_id, $title, $all = FALSE)
 	{
 		$this->db	->select('*')
@@ -149,6 +157,74 @@ class Layouts extends Model
 		return $this;
 	}
 
+	public function duplicate_outline($outline_id, $title)
+	{
+		if (!($outline = $this->get_outline_by_id($outline_id)))
+		{
+			return FALSE;
+		}
+
+		$new_outline_id = $this->db->insert('layouts_outlines', [
+			'name'    => url_title($title),
+			'title'   => $title,
+			'theme'   => $outline['theme'],
+			'base'    => FALSE,
+			'enabled' => TRUE
+		]);
+
+		if (!$new_outline_id)
+		{
+			return FALSE;
+		}
+
+		foreach ($this->get_outline_dispositions($outline) as $disposition)
+		{
+			$output = $this->disposition->decode($disposition['disposition']);
+			$this->duplicate_disposition_widgets($output);
+
+			$this->db->insert('dispositions', [
+				'theme'       => $outline['theme'],
+				'page'        => $this->outline_page($new_outline_id),
+				'zone'        => $disposition['zone'],
+				'disposition' => $this->disposition->encode($output)
+			]);
+		}
+
+		return $new_outline_id;
+	}
+
+	public function delete_outline($outline_id)
+	{
+		if (!($outline = $this->get_outline_by_id($outline_id)) || $outline['base'])
+		{
+			return FALSE;
+		}
+
+		if (!($base = $this->get_outline()))
+		{
+			return FALSE;
+		}
+
+		foreach ($this->get_outline_dispositions($outline) as $disposition)
+		{
+			HiddenCMS()->module('live_editor')->model()->delete_widgets($this->disposition->decode($disposition['disposition']));
+		}
+
+		$this->db	->where('outline_id', $outline_id)
+					->update('pages', [
+						'outline_id' => $base['outline_id']
+					]);
+
+		$this->db	->where('theme', $outline['theme'])
+					->where('page', $this->outline_page($outline_id))
+					->delete('dispositions');
+
+		$this->db	->where('outline_id', $outline_id)
+					->delete('layouts_outlines');
+
+		return $this;
+	}
+
 	public function render_region($outline_id, $region)
 	{
 		if (!($outline = $this->get_outline($outline_id)) && !($outline = $this->get_outline()))
@@ -207,6 +283,36 @@ class Layouts extends Model
 						->where('page', $this->outline_page($outline['outline_id']))
 						->where('zone', $zone)
 						->row();
+	}
+
+	private function get_outline_dispositions($outline)
+	{
+		return $this->db	->select('*')
+						->from('dispositions')
+						->where('theme', $outline['theme'])
+						->where('page', $this->outline_page($outline['outline_id']))
+						->get();
+	}
+
+	private function duplicate_disposition_widgets($disposition)
+	{
+		$disposition->each($traverse = function($item) use (&$traverse){
+			if (is_a($item, 'HB\HiddenCMS\Displayables\Widget'))
+			{
+				$item->widget_id($this->db->insert('widgets', $this->db	->select('widget', 'type', 'title', 'settings')
+																		->from('widgets')
+																		->where('widget_id', $item->widget_id())
+																		->row()));
+			}
+			else if ($item && method_exists($item, 'each'))
+			{
+				$item->each($traverse);
+			}
+
+			return $item;
+		});
+
+		return $disposition;
 	}
 
 	private function region_zone($theme, $region)

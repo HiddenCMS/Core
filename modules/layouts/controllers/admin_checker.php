@@ -34,4 +34,20 @@ class Admin_Checker extends Module_Checker
 			];
 		}
 	}
+
+	public function _duplicate($outline_id)
+	{
+		if ($outline = $this->model()->get_outline_by_id($outline_id))
+		{
+			return [$outline];
+		}
+	}
+
+	public function _delete($outline_id)
+	{
+		if (($outline = $this->model()->get_outline_by_id($outline_id)) && !$outline['base'])
+		{
+			return [$outline];
+		}
+	}
 }
