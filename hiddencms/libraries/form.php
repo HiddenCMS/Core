@@ -414,7 +414,18 @@ class Form extends Library
 
 	private function _check_editor(&$post, $var, $options)
 	{
-		$post[$var] = trim(preg_replace('/ {2,}/', ' ', preg_replace('/(^ +?)|( +?$)/m', '', str_replace('&nbsp;', ' ', $post[$var]))));
+		$decoded = utf8_html_entity_decode($post[$var], ENT_QUOTES);
+		$json    = json_decode($decoded, TRUE);
+
+		if (json_last_error() === JSON_ERROR_NONE && !empty($json['blocks']) && is_array($json['blocks']))
+		{
+			$post[$var] = trim($decoded);
+		}
+		else
+		{
+			$post[$var] = trim(preg_replace('/ {2,}/', ' ', preg_replace('/(^ +?)|( +?$)/m', '', str_replace('&nbsp;', ' ', $post[$var]))));
+		}
+
 		return $this->_check_text($post, $var, $options);
 	}
 
@@ -936,10 +947,10 @@ class Form extends Library
 
 	private function _display_editor($var, $options, $post)
 	{
-		$this	->css('wbbtheme')
-				->js('jquery.wysibb.min')
-				->js('jquery.wysibb.fr')
-				->js_load('$(\'textarea.editor\').wysibb({lang: "fr"});');
+		$this	->css('editorjs')
+				->js('form')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.31.5/dist/editorjs.umd.js')
+				->js('form_editorjs');
 
 		return $this->_display_textarea($var, $options, $post, TRUE);
 	}

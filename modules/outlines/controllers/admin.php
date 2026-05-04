@@ -4,7 +4,7 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace HB\Modules\Layouts\Controllers;
+namespace HB\Modules\Outlines\Controllers;
 
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
@@ -51,10 +51,10 @@ class Admin extends Controller_Module
 											->color('secondary')
 											->compact()
 											->outline()
-											->modal_ajax('admin/layouts/'.$outline['outline_id'].'/duplicate');
+											->modal_ajax('admin/outlines/'.$outline['outline_id'].'/duplicate');
 							},
 							function($outline){
-								return $this->button_update('admin/layouts/'.$outline['outline_id'].'/'.url_title($outline['title']));
+								return $this->button_update('admin/outlines/'.$outline['outline_id'].'/'.url_title($outline['title']));
 							},
 							function($outline){
 								return !$outline['base'] ? $this->button()
@@ -63,7 +63,7 @@ class Admin extends Controller_Module
 															->color('danger')
 															->compact()
 															->outline()
-															->modal_ajax('admin/layouts/'.$outline['outline_id'].'/delete') : '';
+															->modal_ajax('admin/outlines/'.$outline['outline_id'].'/delete') : '';
 							}
 						],
 						'size'    => TRUE
@@ -75,7 +75,7 @@ class Admin extends Controller_Module
 		return $this->panel()
 					->heading($this->lang('Outlines'), 'fas fa-layer-group')
 					->body($this->table()->display())
-					->footer($this->button_create('admin/layouts/add', $this->lang('Ajouter un outline')));
+					->footer($this->button_create('admin/outlines/add', $this->lang('Ajouter un outline')));
 	}
 
 	public function add()
@@ -90,7 +90,7 @@ class Admin extends Controller_Module
 					'enabled' => TRUE
 				])
 				->add_submit($this->lang('Ajouter'))
-				->add_back('admin/layouts');
+				->add_back('admin/outlines');
 
 		if ($this->form()->is_valid($post))
 		{
@@ -132,7 +132,7 @@ class Admin extends Controller_Module
 					'enabled' => $enabled
 				])
 				->add_submit($this->lang('Editer'))
-				->add_back('admin/layouts');
+				->add_back('admin/outlines');
 
 		if ($this->form()->is_valid($post))
 		{
@@ -150,7 +150,7 @@ class Admin extends Controller_Module
 
 			notify($this->lang('Outline edite avec succes'));
 
-			redirect_back('admin/layouts');
+			redirect_back('admin/outlines');
 		}
 		else if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' && ($errors = $this->form()->get_errors()))
 		{
@@ -173,7 +173,7 @@ class Admin extends Controller_Module
 									->check(function($post){
 										$name = !empty($post['title']) ? url_title($post['title']) : '';
 
-										if ($name && !HiddenCMS()->db->from('layouts_outlines')->where('name', $name)->empty())
+										if ($name && !HiddenCMS()->db->from('outlines')->where('name', $name)->empty())
 										{
 											return $this->lang('Un outline utilise deja ce nom');
 										}
@@ -208,7 +208,7 @@ class Admin extends Controller_Module
 
 						notify($this->lang('Outline supprime avec succes'));
 
-						redirect('admin/layouts');
+						redirect('admin/outlines');
 					})
 					->submit($this->lang('Supprimer'), 'danger')
 					->cancel();

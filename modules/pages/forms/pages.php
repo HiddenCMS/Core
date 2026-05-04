@@ -230,12 +230,17 @@ if ($modules)
 				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "static").data("type", "static");
 				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.static));
 				var $body = $("<div />").addClass("card-body p-2");
-				var $content = $("<textarea />").addClass("form-control page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
+				var $content = $("<textarea />").addClass("form-control editor page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
 				$body	.append($("<label />").addClass("mb-1").text(labels.static))
 						.append($content);
 				$list.append($block.append($header).append($body));
+
+				if (typeof form !== "undefined"){
+					form.load($form, true);
+				}
+
 				read();
 			};
 

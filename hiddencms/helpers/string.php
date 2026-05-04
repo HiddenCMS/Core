@@ -258,7 +258,109 @@ function str_shortener($string, $max_length, $end = '&#8230;')
 
 function bbcode($string)
 {
+	if ($editorjs = editorjs_decode($string))
+	{
+		return editorjs_to_html($editorjs);
+	}
+
 	return nl2br(strtolink(HiddenCMS()->bbcode->bbcode2html($string), TRUE));
+}
+
+function editorjs_decode($string)
+{
+	if (!is_string($string))
+	{
+		return NULL;
+	}
+
+	$decoded = trim(utf8_html_entity_decode($string, ENT_QUOTES));
+
+	if ($decoded === '' || $decoded[0] != '{')
+	{
+		return NULL;
+	}
+
+	$data = json_decode($decoded, TRUE);
+
+	if (json_last_error() !== JSON_ERROR_NONE || empty($data['blocks']) || !is_array($data['blocks']))
+	{
+		return NULL;
+	}
+
+	return $data;
+}
+
+function editorjs_inline_html($text)
+{
+	return strtolink(strip_tags((string)$text, '<a><b><strong><i><em><u><mark><code><br>'), TRUE);
+}
+
+function editorjs_list_html($items, $ordered = FALSE)
+{
+	if (!$items || !is_array($items))
+	{
+		return '';
+	}
+
+	$tag = $ordered ? 'ol' : 'ul';
+	$out = '<'.$tag.'>';
+
+	foreach ($items as $item)
+	{
+		if (is_array($item))
+		{
+			$content = editorjs_inline_html(!empty($item['content']) ? $item['content'] : '');
+			$nested  = editorjs_list_html(!empty($item['items']) ? $item['items'] : [], $ordered);
+		}
+		else
+		{
+			$content = editorjs_inline_html($item);
+			$nested  = '';
+		}
+
+		$out .= '<li>'.$content.$nested.'</li>';
+	}
+
+	return $out.'</'.$tag.'>';
+}
+
+function editorjs_to_html($data)
+{
+	$output = [];
+
+	foreach ($data['blocks'] as $block)
+	{
+		$type = !empty($block['type']) ? $block['type'] : '';
+		$meta = !empty($block['data']) && is_array($block['data']) ? $block['data'] : [];
+
+		if ($type == 'paragraph')
+		{
+			$output[] = '<p>'.editorjs_inline_html(!empty($meta['text']) ? $meta['text'] : '').'</p>';
+		}
+		else if ($type == 'header')
+		{
+			$level = !empty($meta['level']) ? max(1, min(6, (int)$meta['level'])) : 2;
+			$output[] = '<h'.$level.'>'.editorjs_inline_html(!empty($meta['text']) ? $meta['text'] : '').'</h'.$level.'>';
+		}
+		else if ($type == 'list')
+		{
+			$output[] = editorjs_list_html(!empty($meta['items']) ? $meta['items'] : [], !empty($meta['style']) && $meta['style'] == 'ordered');
+		}
+		else if ($type == 'quote')
+		{
+			$output[] = '<blockquote><p>'.editorjs_inline_html(!empty($meta['text']) ? $meta['text'] : '').'</p></blockquote>';
+		}
+		else if ($type == 'code')
+		{
+			$output[] = '<pre><code>'.utf8_htmlentities(!empty($meta['code']) ? $meta['code'] : '').'</code></pre>';
+		}
+		else if ($type == 'delimiter')
+		{
+			$output[] = '<hr />';
+		}
+	}
+
+	return implode("\n", array_filter($output));
 }
 
 function highlight($string, $keywords, $max_length = 256)

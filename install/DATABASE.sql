@@ -83,7 +83,7 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (40, 1, 'tools', '{"enabled":true}'),
 (41, 3, 'about', '{"enabled":true}'),
 (42, 3, 'socials', '{"enabled":true}'),
-(43, 1, 'layouts', '{"enabled":true}');
+(43, 1, 'outlines', '{"enabled":true}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (
@@ -226,8 +226,8 @@ CREATE TABLE `log_i18n` (
   UNIQUE KEY `language` (`language`,`key`,`file`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `layouts_outlines`;
-CREATE TABLE `layouts_outlines` (
+DROP TABLE IF EXISTS `outlines`;
+CREATE TABLE `outlines` (
   `outline_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `title` varchar(100) NOT NULL,
@@ -241,7 +241,7 @@ CREATE TABLE `layouts_outlines` (
   KEY `enabled` (`enabled`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `layouts_outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `enabled`) VALUES
+INSERT INTO `outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `enabled`) VALUES
 (1, 'base', 'Base', 'azuro', '1', '1');
 
 DROP TABLE IF EXISTS `pages`;
@@ -253,7 +253,7 @@ CREATE TABLE `pages` (
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `page` (`name`),
   KEY `outline_id` (`outline_id`),
-  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`outline_id`) REFERENCES `layouts_outlines` (`outline_id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`outline_id`) REFERENCES `outlines` (`outline_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `pages` (`page_id`, `name`, `outline_id`, `published`) VALUES

@@ -25,7 +25,7 @@ $rules = [
 
 			$value = url_title($value);
 
-			if ($value != $name && !HiddenCMS()->db->from('layouts_outlines')->where('name', $value)->empty())
+			if ($value != $name && !HiddenCMS()->db->from('outlines')->where('name', $value)->empty())
 			{
 				return $this->lang('Nom technique deja utilise');
 			}

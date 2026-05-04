@@ -127,7 +127,7 @@ class Pages extends Model
 
 	public function get_outlines()
 	{
-		if (($module = @HiddenCMS()->module('layouts')) && $module->is_enabled())
+		if (($module = @HiddenCMS()->module('outlines')) && $module->is_enabled())
 		{
 			return $module->model()->get_outline_choices();
 		}

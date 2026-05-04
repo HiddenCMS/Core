@@ -4,16 +4,16 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-namespace HB\Modules\Layouts\Models;
+namespace HB\Modules\Outlines\Models;
 
 use HB\HiddenCMS\Loadables\Model;
 
-class Layouts extends Model
+class Outlines extends Model
 {
 	public function get_outlines($enabled = NULL)
 	{
 		$this->db	->select('*')
-					->from('layouts_outlines')
+					->from('outlines')
 					->order_by('title ASC');
 
 		if ($enabled !== NULL)
@@ -59,7 +59,7 @@ class Layouts extends Model
 	public function get_outline($outline_id = NULL)
 	{
 		$this->db	->select('*')
-					->from('layouts_outlines')
+					->from('outlines')
 					->where('enabled', TRUE);
 
 		if ($outline_id)
@@ -77,7 +77,7 @@ class Layouts extends Model
 	public function get_outline_by_id($outline_id)
 	{
 		return $this->db	->select('*')
-						->from('layouts_outlines')
+						->from('outlines')
 						->where('outline_id', $outline_id)
 						->row(FALSE);
 	}
@@ -85,7 +85,7 @@ class Layouts extends Model
 	public function check_outline($outline_id, $title, $all = FALSE)
 	{
 		$this->db	->select('*')
-					->from('layouts_outlines')
+					->from('outlines')
 					->where('outline_id', $outline_id);
 
 		if (!$all)
@@ -103,7 +103,7 @@ class Layouts extends Model
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
 
-		$outline_id = $this->db->insert('layouts_outlines', [
+		$outline_id = $this->db->insert('outlines', [
 			'name'    => $name,
 			'title'   => $title,
 			'theme'   => $theme,
@@ -121,7 +121,7 @@ class Layouts extends Model
 		if ($base)
 		{
 			$this->db	->where('outline_id <>', $outline_id)
-						->update('layouts_outlines', ['base' => FALSE]);
+						->update('outlines', ['base' => FALSE]);
 		}
 
 		return $outline_id;
@@ -133,7 +133,7 @@ class Layouts extends Model
 		$theme = $theme ?: $this->config->default_theme;
 
 		$updated = $this->db	->where('outline_id', $outline_id)
-								->update('layouts_outlines', [
+								->update('outlines', [
 									'name'    => $name,
 									'title'   => $title,
 									'theme'   => $theme,
@@ -151,7 +151,7 @@ class Layouts extends Model
 		if ($base)
 		{
 			$this->db	->where('outline_id <>', $outline_id)
-						->update('layouts_outlines', ['base' => FALSE]);
+						->update('outlines', ['base' => FALSE]);
 		}
 
 		return $this;
@@ -164,7 +164,7 @@ class Layouts extends Model
 			return FALSE;
 		}
 
-		$new_outline_id = $this->db->insert('layouts_outlines', [
+		$new_outline_id = $this->db->insert('outlines', [
 			'name'    => url_title($title),
 			'title'   => $title,
 			'theme'   => $outline['theme'],
@@ -220,7 +220,7 @@ class Layouts extends Model
 					->delete('dispositions');
 
 		$this->db	->where('outline_id', $outline_id)
-					->delete('layouts_outlines');
+					->delete('outlines');
 
 		return $this;
 	}

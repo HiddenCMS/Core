@@ -562,7 +562,7 @@ class Output extends Core
 	{
 		if (!$this->url->admin && !$this->url->ajax && !$this->url->cli)
 		{
-			if (($module = @parent::module('layouts')) && $module->is_enabled())
+			if (($module = @parent::module('outlines')) && $module->is_enabled())
 			{
 				$module->__init();
 

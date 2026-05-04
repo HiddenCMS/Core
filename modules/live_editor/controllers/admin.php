@@ -24,9 +24,9 @@ class Admin extends Controller_Module
 
 		$theme = $this->theme($this->config->default_theme);
 
-		if (($layouts = @HB()->module('layouts')) && $layouts->is_enabled())
+		if (($outlines_module = @HB()->module('outlines')) && $outlines_module->is_enabled())
 		{
-			foreach ($layouts->model()->get_outlines(TRUE) as $outline)
+			foreach ($outlines_module->model()->get_outlines(TRUE) as $outline)
 			{
 				$outlines[$outline['outline_id']] = $outline['title'];
 			}
