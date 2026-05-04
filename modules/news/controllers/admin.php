@@ -28,7 +28,7 @@ class Admin extends Controller_Module
 							[
 								'title'   => $this->lang('Titre'),
 								'content' => function($data){
-									return '<a href="'.url('news/'.$data['news_id'].'/'.url_title($data['title'])).'">'.$data['title'].'</a>';
+									return '<a href="'.url($this->module->news_path($data['news_id'], $data['title'])).'">'.$data['title'].'</a>';
 								},
 								'sort'    => function($data){
 									return $data['title'];

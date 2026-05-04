@@ -1,4 +1,5 @@
 <div class="card-group">
+	<?php $news_module = $this->module('news'); ?>
 	<div class="card">
 		<div class="card-body">
 			<h5 class="card-title"><?php echo $this->lang('À propos de l\'auteur') ?></h5>
@@ -19,7 +20,7 @@
 			<?php if (!empty($news)): ?>
 			<ul class="list-unstyled">
 				<?php foreach ($news as $news): ?>
-				<li><a href="<?php echo url('news/'.$news['news_id'].'/'.url_title($news['title'])) ?>"><?php echo str_shortener($news['title'], 45) ?></a></li>
+				<li><a href="<?php echo url($news_module->news_path($news['news_id'], $news['title'])) ?>"><?php echo str_shortener($news['title'], 45) ?></a></li>
 				<?php endforeach ?>
 			</ul>
 			<?php else: ?>

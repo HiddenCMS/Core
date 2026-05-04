@@ -950,6 +950,11 @@ class Form extends Library
 		$this	->css('editorjs')
 				->js('form')
 				->js('https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.31.5/dist/editorjs.umd.js')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.8/dist/header.umd.js')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/list@2.0.8/dist/list.umd.js')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/quote@2.7.6/dist/quote.umd.js')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/code@2.9.3/dist/code.umd.js')
+				->js('https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.2/dist/delimiter.umd.js')
 				->js('form_editorjs');
 
 		return $this->_display_textarea($var, $options, $post, TRUE);

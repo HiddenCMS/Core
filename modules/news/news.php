@@ -199,9 +199,39 @@ class News extends Module
 		{
 			return [
 				'title' => $news,
-				'url'   => 'news/'.$news_id.'/'.url_title($news)
+				'url'   => $this->news_path($news_id, $news)
 			];
 		}
+	}
+
+	public function news_path($news_id, $title)
+	{
+		return $this->base_path().$news_id.'/'.url_title($title);
+	}
+
+	public function category_path($category_id, $category_name)
+	{
+		return $this->base_path().'category/'.$category_id.'/'.url_title($category_name);
+	}
+
+	public function tag_path($tag)
+	{
+		return $this->base_path().'tag/'.url_title($tag);
+	}
+
+	public function index_path()
+	{
+		return rtrim($this->base_path(), '/');
+	}
+
+	private function base_path()
+	{
+		if (!$this->url->admin && !$this->url->ajax && ($page = $this->output->data->get('page', 'name')))
+		{
+			return trim($page, '/').'/';
+		}
+
+		return $this->info()->name.'/';
 	}
 }
 
