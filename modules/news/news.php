@@ -29,9 +29,9 @@ class News extends Module
 			'routes'      => [
 				//Index
 				'{page}'                                   => 'index',
-				'{id}/{url_title}'                         => '_news',
+				'{url_title}/{url_title}'                  => '_news',
 				'tag/{url_title}{pages}'                   => '_tag',
-				'category/{id}/{url_title}{pages}'         => '_category',
+				'{url_title}{pages}'                       => '_category',
 
 				//Admin
 				'admin{pages}'                             => 'index',
@@ -139,7 +139,7 @@ class News extends Module
 			if ($category)
 			{
 				return [
-					'route'    => 'category/'.$category['category_id'].'/'.$category['name'],
+					'route'    => $category['name'],
 					'settings' => [
 						'block'       => 'category',
 						'category_id' => $category['category_id']
@@ -190,29 +190,31 @@ class News extends Module
 
 	public function comments($news_id)
 	{
-		$news = $this->db	->select('title')
-							->from('news_lang')
-							->where('news_id', $news_id)
-							->where('lang', $this->config->lang->info()->name)
+		$news = $this->db	->select('nl.title', 'c.name as category_name')
+							->from('news n')
+							->join('news_lang nl', 'n.news_id = nl.news_id')
+							->join('news_categories c', 'n.category_id = c.category_id')
+							->where('n.news_id', $news_id)
+							->where('nl.lang', $this->config->lang->info()->name)
 							->row();
 
 		if ($news)
 		{
 			return [
-				'title' => $news,
-				'url'   => $this->news_path($news_id, $news)
+				'title' => $news['title'],
+				'url'   => $this->news_path($news['category_name'], $news['title'])
 			];
 		}
 	}
 
-	public function news_path($news_id, $title)
+	public function news_path($category_name, $title)
 	{
-		return $this->base_path().$news_id.'/'.url_title($title);
+		return $this->base_path().trim($category_name, '/').'/'.url_title($title);
 	}
 
-	public function category_path($category_id, $category_name)
+	public function category_path($category_name)
 	{
-		return $this->base_path().'category/'.$category_id.'/'.url_title($category_name);
+		return $this->base_path().trim($category_name, '/');
 	}
 
 	public function tag_path($tag)

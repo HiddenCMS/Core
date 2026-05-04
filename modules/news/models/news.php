@@ -45,7 +45,7 @@ class News extends Model
 
 	public function get_news_by_user($user_id, $news_id)
 	{
-		return $this->db->select('n.news_id', 'nl.title', 'cl.title as category_title')
+		return $this->db->select('n.news_id', 'nl.title', 'c.name as category_name', 'cl.title as category_title')
 						->from('news n')
 						->join('news_lang nl',            'n.news_id     = nl.news_id')
 						->join('news_categories c',       'n.category_id = c.category_id')
@@ -58,6 +58,41 @@ class News extends Model
 						->order_by('n.date DESC')
 						->limit(5)
 						->get();
+	}
+
+	public function check_news_by_slugs($category_name, $title, $lang = 'default')
+	{
+		if ($lang == 'default')
+		{
+			$lang = $this->config->lang->info()->name;
+		}
+
+		$this->db	->select('n.news_id', 'n.category_id', 'u.id as user_id', 'n.image_id', 'n.date', 'n.published', 'n.views', 'n.vote', 'nl.title', 'nl.introduction', 'nl.content', 'nl.tags', 'c.name as category_name', 'cl.title as category_title', 'IFNULL(n.image_id, c.image_id) as image', 'c.icon_id as category_icon', 'u.username', 'u.admin', 'MAX(s.last_activity) > DATE_SUB(NOW(), INTERVAL 5 MINUTE) as online', 'up.quote', 'up.avatar', 'up.sex')
+						->from('news n')
+						->join('news_lang nl',            'n.news_id     = nl.news_id')
+						->join('news_categories c',       'n.category_id = c.category_id')
+						->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+						->join('user u',                  'u.id          = n.user_id AND u.deleted = "0"')
+						->join('user_profile up',         'u.id          = up.id')
+						->join('session        s',        'u.id          = s.user_id')
+						->where('c.name', $category_name)
+						->where('nl.lang', $lang)
+						->where('cl.lang', $lang);
+
+		if (!$this->url->admin)
+		{
+			$this->db->where('n.published', TRUE);
+		}
+
+		foreach ($this->db->get(FALSE) as $news)
+		{
+			if (url_title($news['title']) == $title)
+			{
+				return $news;
+			}
+		}
+
+		return FALSE;
 	}
 
 	public function check_news($news_id, $title, $lang = 'default')

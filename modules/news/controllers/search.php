@@ -24,7 +24,7 @@ class Search extends Controller_Module
 
 	public function search()
 	{
-		$this->db	->select('n.news_id', 'n.date', 'nl.title', 'nl.introduction', 'nl.content', 'u.id as user_id', 'u.username', 'c.category_id', 'cl.title as category')
+		$this->db	->select('n.news_id', 'n.date', 'nl.title', 'nl.introduction', 'nl.content', 'u.id as user_id', 'u.username', 'c.category_id', 'c.name as category_name', 'cl.title as category')
 					->from('news n')
 					->join('news_lang nl',            'n.news_id     = nl.news_id')
 					->join('news_categories c',       'n.category_id = c.category_id')

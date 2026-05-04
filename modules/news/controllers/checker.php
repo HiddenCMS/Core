@@ -20,17 +20,17 @@ class Checker extends Module_Checker
 		return [$tag, $this->module->pagination->fix_items_per_page($this->config->news_per_page)->get_data($this->model()->get_news('tag', $tag), $page)];
 	}
 
-	public function _category($category_id, $name, $page = '')
+	public function _category($name, $page = '')
 	{
-		if ($category = $this->model('categories')->check_category($category_id, $name))
+		if ($category = $this->model('categories')->check_category_by_name($name))
 		{
-			return [$category['title'], $this->module->pagination->fix_items_per_page($this->config->news_per_page)->get_data($this->model()->get_news('category', $category_id), $page)];
+			return [$category['title'], $this->module->pagination->fix_items_per_page($this->config->news_per_page)->get_data($this->model()->get_news('category', $category['category_id']), $page)];
 		}
 	}
 
-	public function _news($news_id, $title)
+	public function _news($category_name, $title)
 	{
-		if ($news = $this->model()->check_news($news_id, $title))
+		if ($news = $this->model()->check_news_by_slugs($category_name, $title))
 		{
 			return $news;
 		}

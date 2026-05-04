@@ -26,6 +26,21 @@ class Categories extends Model
 						->row();
 	}
 
+	public function check_category_by_name($name, $lang = 'default')
+	{
+		if ($lang == 'default')
+		{
+			$lang = $this->config->lang->info()->name;
+		}
+
+		return $this->db->select('c.category_id', 'cl.title', 'c.image_id', 'c.icon_id')
+						->from('news_categories c')
+						->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+						->where('c.name', $name)
+						->where('cl.lang', $lang)
+						->row();
+	}
+
 	public function get_categories()
 	{
 		return $this->db->select('c.category_id', 'c.icon_id', 'c.name', 'cl.title', 'COUNT(n.news_id) as nb_news')
