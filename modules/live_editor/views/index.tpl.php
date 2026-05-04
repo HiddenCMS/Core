@@ -1,4 +1,12 @@
-<form target="live-editor-iframe" action="<?php echo url() ?>" method="post">
+<?php
+$iframe_url = url($this->config->default_page);
+
+if (!empty($outline_id))
+{
+	$iframe_url .= (strpos($iframe_url, '?') === FALSE ? '?' : '&').'outline_id='.$outline_id;
+}
+?>
+<form target="live-editor-iframe" action="<?php echo $iframe_url ?>" method="post">
 	<input type="hidden" name="live_editor" value="<?php echo $live_editor = $this->session('live_editor') ?: $this->output->live_editor() ^ \HB\HiddenCMS\Core\Output::WIDGETS ?>" />
 	<nav class="live-editor-navbar navbar navbar-expand-lg navbar-light bg-light py-2">
 		<a class="navbar-brand" href="<?php echo url('admin/live-editor') ?>"><?php echo icon('fas fa-desktop') ?> <b>Live</b><span data-typer="Editor"></span></a>
@@ -13,10 +21,22 @@
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownModules">
 						<?php foreach ($modules as $name => $title): ?>
-							<a class="dropdown-item" href="<?php echo url($name) ?>"><?php echo $title ?></a>
+							<a class="dropdown-item live-editor-navigation-link" href="<?php echo url($name) ?>"><?php echo $title ?></a>
 						<?php endforeach ?>
 					</div>
 				</li>
+				<?php if (!empty($outlines)): ?>
+				<li class="nav-item dropdown">
+					<a class="nav-link" href="#" id="navbarDropdownOutlines" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<?php echo icon('fas fa-layer-group').' '.$this->lang('Outlines').' '.icon('fas fa-angle-down') ?>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdownOutlines">
+						<?php foreach ($outlines as $id => $title): ?>
+							<a class="dropdown-item<?php echo $outline_id == $id ? ' active' : '' ?>" href="<?php echo url('admin/live-editor?outline_id='.$id) ?>"><?php echo $title ?></a>
+						<?php endforeach ?>
+					</div>
+				</li>
+				<?php endif ?>
 				<li class="nav-item">
 					<span class="d-block" id="live-editor-map"><?php echo icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
 				</li>

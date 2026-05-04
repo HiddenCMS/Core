@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Layouts\Controllers;
@@ -29,7 +29,6 @@ class Admin_Checker extends Module_Checker
 				$outline['name'],
 				$outline['title'],
 				$outline['theme'],
-				$outline['layout'],
 				$outline['base'],
 				$outline['enabled']
 			];

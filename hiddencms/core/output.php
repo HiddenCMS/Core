@@ -565,7 +565,15 @@ class Output extends Core
 			if (($module = @parent::module('layouts')) && $module->is_enabled())
 			{
 				$module->__init();
-				return $module->model()->render_region($this->data->get('page', 'outline'), $region);
+
+				$outline_id = $this->data->get('page', 'outline');
+
+				if ($this->user->admin && $this->live_editor() && !empty($_GET['outline_id']))
+				{
+					$outline_id = (int)$_GET['outline_id'];
+				}
+
+				return $module->model()->render_region($outline_id, $region);
 			}
 		}
 

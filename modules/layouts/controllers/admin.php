@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Layouts\Controllers;
@@ -12,8 +12,6 @@ class Admin extends Controller_Module
 {
 	public function index($outlines)
 	{
-		$this->css('layouts');
-
 		$this	->table()
 				->add_columns([
 					[
@@ -26,7 +24,7 @@ class Admin extends Controller_Module
 						}
 					],
 					[
-						'title'   => $this->lang('ThÃ¨me'),
+						'title'   => $this->lang('Theme'),
 						'content' => function($outline){
 							return '<code>'.$outline['theme'].'</code>';
 						},
@@ -43,6 +41,9 @@ class Admin extends Controller_Module
 					],
 					[
 						'content' => [
+							function($outline){
+								return '<a href="'.url('admin/live-editor?outline_id='.$outline['outline_id']).'" class="btn btn-sm btn-info">'.icon('fas fa-desktop').'</a>';
+							},
 							function($outline){
 								return $this->button_update('admin/layouts/'.$outline['outline_id'].'/'.url_title($outline['title']));
 							}
@@ -63,17 +64,11 @@ class Admin extends Controller_Module
 	{
 		$theme = $this->config->default_theme;
 
-		$this->css('layouts');
-
 		$this	->subtitle($this->lang('Ajouter un outline'))
 				->form()
 				->add_rules('outlines', [
 					'theme'   => $theme,
 					'themes'  => $this->model()->get_themes(),
-					'regions' => $this->model()->get_regions($theme),
-					'widgets' => $this->model()->get_widgets(),
-					'modules' => $this->model()->get_modules(),
-					'layout'  => $this->storage->encode($this->model()->default_layout($theme)),
 					'enabled' => TRUE
 				])
 				->add_submit($this->lang('Ajouter'))
@@ -81,23 +76,20 @@ class Admin extends Controller_Module
 
 		if ($this->form()->is_valid($post))
 		{
-			$layout = $this->storage->decode($post['layout'], []);
-
-			if (!$this->model()->add_outline(	$post['name'],
-												$post['title'],
-												$post['theme'],
-												$layout,
-												in_array('on', isset($post['base']) ? $post['base'] : []),
-												in_array('on', isset($post['enabled']) ? $post['enabled'] : [])))
+			if (!($outline_id = $this->model()->add_outline(	$post['name'],
+																$post['title'],
+																$post['theme'],
+																in_array('on', isset($post['base']) ? $post['base'] : []),
+																in_array('on', isset($post['enabled']) ? $post['enabled'] : []))))
 			{
 				notify($this->lang('Impossible d\'enregistrer l\'outline'), 'danger');
 
 				refresh();
 			}
 
-			notify($this->lang('Outline ajoutÃ© avec succÃ¨s'));
+			notify($this->lang('Outline ajoute avec succes'));
 
-			redirect_back('admin/layouts');
+			redirect('admin/live-editor?outline_id='.$outline_id);
 		}
 		else if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' && ($errors = $this->form()->get_errors()))
 		{
@@ -109,10 +101,8 @@ class Admin extends Controller_Module
 					->body($this->form()->display());
 	}
 
-	public function _edit($outline_id, $name, $title, $theme, $layout, $base, $enabled)
+	public function _edit($outline_id, $name, $title, $theme, $base, $enabled)
 	{
-		$this->css('layouts');
-
 		$this	->subtitle($title)
 				->form()
 				->add_rules('outlines', [
@@ -120,25 +110,18 @@ class Admin extends Controller_Module
 					'title'   => $title,
 					'theme'   => $theme,
 					'themes'  => $this->model()->get_themes(),
-					'regions' => $this->model()->get_regions($theme),
-					'widgets' => $this->model()->get_widgets(),
-					'modules' => $this->model()->get_modules(),
-					'layout'  => $layout,
 					'base'    => $base,
 					'enabled' => $enabled
 				])
-				->add_submit($this->lang('Ã‰diter'))
+				->add_submit($this->lang('Editer'))
 				->add_back('admin/layouts');
 
 		if ($this->form()->is_valid($post))
 		{
-			$layout = $this->storage->decode($post['layout'], []);
-
 			if (!$this->model()->edit_outline(	$outline_id,
 												$post['name'],
 												$post['title'],
 												$post['theme'],
-												$layout,
 												in_array('on', isset($post['base']) ? $post['base'] : []),
 												in_array('on', isset($post['enabled']) ? $post['enabled'] : [])))
 			{
@@ -147,7 +130,7 @@ class Admin extends Controller_Module
 				refresh();
 			}
 
-			notify($this->lang('Outline Ã©ditÃ© avec succÃ¨s'));
+			notify($this->lang('Outline edite avec succes'));
 
 			redirect_back('admin/layouts');
 		}
@@ -157,7 +140,8 @@ class Admin extends Controller_Module
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ã‰dition de l\'outline'), 'fas fa-layer-group')
-					->body($this->form()->display());
+					->heading($this->lang('Edition de l\'outline'), 'fas fa-layer-group')
+					->body($this->form()->display())
+					->footer('<a href="'.url('admin/live-editor?outline_id='.$outline_id).'" class="btn btn-info">'.icon('fas fa-desktop').' '.$this->lang('Editer visuellement').'</a>');
 	}
 }

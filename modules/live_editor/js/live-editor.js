@@ -297,7 +297,7 @@ $(function(){
 		$('form[target="live-editor-iframe"]').submit();
 	});
 
-	$('#modules-links-collapse').on('click', '.dropdown-menu > a', function(){
+	$('#modules-links-collapse').on('click', '.live-editor-navigation-link', function(){
 		$('#live-editor-map').html('<?php echo icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?>');
 		$('form[target="live-editor-iframe"]').prop('action', $(this).attr('href')).submit();
 		$('.dropdown-menu').removeClass('show');

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Layouts\Models;
@@ -56,62 +56,6 @@ class Layouts extends Model
 		return $themes;
 	}
 
-	public function get_widgets()
-	{
-		$widgets = [];
-
-		foreach ($this->db->select('widget_id', 'widget', 'type', 'title')->from('widgets')->order_by('widget ASC', 'type ASC')->get() as $widget)
-		{
-			$label = ($widget['title'] ?: $widget['widget'].' / '.$widget['type']);
-			$widgets[$widget['widget_id']] = $label;
-		}
-
-		return $widgets;
-	}
-
-	public function get_modules()
-	{
-		$modules = [];
-
-		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
-		{
-			if ($module->is_enabled() && $module->is_front())
-			{
-				$modules[$module->info()->name] = (string)$module->info()->title;
-			}
-		}
-
-		uasort($modules, 'strnatcasecmp');
-
-		return $modules;
-	}
-
-	public function default_layout($theme = NULL)
-	{
-		$layout = [];
-
-		foreach ($this->get_regions($theme) as $region => $title)
-		{
-			$layout[$region] = [];
-		}
-
-		if (isset($layout['content']))
-		{
-			$layout['content'][] = [
-				'columns' => [
-					[
-						'size'  => 'col-12',
-						'items' => [
-							['type' => 'page_content']
-						]
-					]
-				]
-			];
-		}
-
-		return $layout;
-	}
-
 	public function get_outline($outline_id = NULL)
 	{
 		$this->db	->select('*')
@@ -146,24 +90,25 @@ class Layouts extends Model
 		return $outline && url_title($outline['title']) == $title ? $outline : FALSE;
 	}
 
-	public function add_outline($name, $title, $theme, $layout, $base, $enabled)
+	public function add_outline($name, $title, $theme, $base, $enabled)
 	{
 		$name = $name ?: url_title($title);
+		$theme = $theme ?: $this->config->default_theme;
 
 		$outline_id = $this->db->insert('layouts_outlines', [
-			'name'     => $name,
-			'title'    => $title,
-			'theme'    => $theme ?: $this->config->default_theme,
-			'layout'   => $this->storage->encode($this->normalize_layout($layout)),
-			'settings' => $this->storage->encode([]),
-			'base'     => $base,
-			'enabled'  => $enabled
+			'name'    => $name,
+			'title'   => $title,
+			'theme'   => $theme,
+			'base'    => $base,
+			'enabled' => $enabled
 		]);
 
 		if (!$outline_id)
 		{
 			return FALSE;
 		}
+
+		$this->create_dispositions($outline_id, $theme);
 
 		if ($base)
 		{
@@ -174,24 +119,26 @@ class Layouts extends Model
 		return $outline_id;
 	}
 
-	public function edit_outline($outline_id, $name, $title, $theme, $layout, $base, $enabled)
+	public function edit_outline($outline_id, $name, $title, $theme, $base, $enabled)
 	{
 		$name = $name ?: url_title($title);
+		$theme = $theme ?: $this->config->default_theme;
 
 		$updated = $this->db	->where('outline_id', $outline_id)
-							->update('layouts_outlines', [
-						'name'    => $name,
-						'title'   => $title,
-						'theme'   => $theme ?: $this->config->default_theme,
-						'layout'  => $this->storage->encode($this->normalize_layout($layout)),
-						'base'    => $base,
-						'enabled' => $enabled
-					]);
+								->update('layouts_outlines', [
+									'name'    => $name,
+									'title'   => $title,
+									'theme'   => $theme,
+									'base'    => $base,
+									'enabled' => $enabled
+								]);
 
 		if ($updated === NULL)
 		{
 			return FALSE;
 		}
+
+		$this->create_dispositions($outline_id, $theme);
 
 		if ($base)
 		{
@@ -209,153 +156,95 @@ class Layouts extends Model
 			return '';
 		}
 
-		$layout = $this->storage->decode($outline['layout'], []);
-
-		if (!array_key_exists($region, $layout) && !$outline['base'] && ($base = $this->get_outline()))
+		if (!($disposition = $this->get_region_disposition($outline, $region)) && !$outline['base'] && ($base = $this->get_outline()))
 		{
-			$layout = $this->storage->decode($base['layout'], []);
+			$disposition = $this->get_region_disposition($base, $region);
 		}
 
-		$rows = isset($layout[$region]) && is_array($layout[$region]) ? $layout[$region] : [];
-		$output = $this->array();
-
-		foreach ($rows as $row)
-		{
-			if ($rendered = $this->render_row($row))
-			{
-				$output->append($rendered);
-			}
-		}
-
-		return $output;
+		return $disposition ? $this->zone()->display($disposition) : '';
 	}
 
-	private function render_row($row_data)
+	public function outline_page($outline_id)
 	{
-		$row = $this->row();
-
-		if (!empty($row_data['style']))
-		{
-			$row->style($row_data['style']);
-		}
-
-		foreach (!empty($row_data['columns']) && is_array($row_data['columns']) ? $row_data['columns'] : [] as $column_data)
-		{
-			$column = $this->col();
-
-			if (!empty($column_data['size']))
-			{
-				$column->size($column_data['size']);
-			}
-
-			foreach (!empty($column_data['items']) && is_array($column_data['items']) ? $column_data['items'] : [] as $item)
-			{
-				if (($rendered = $this->render_item($item)) !== '')
-				{
-					$column->append($rendered);
-				}
-			}
-
-			$row->append($column);
-		}
-
-		return $row;
+		return 'outline:'.(int)$outline_id;
 	}
 
-	private function render_item($item)
+	private function create_dispositions($outline_id, $theme)
 	{
-		if (empty($item['type']))
+		foreach ($this->theme_zones($theme) as $zone => $title)
 		{
-			return '';
-		}
-
-		if ($item['type'] == 'page_content')
-		{
-			return $this->output->data->get('module', 'content') ?: '';
-		}
-
-		if ($item['type'] == 'widget' && !empty($item['widget_id']))
-		{
-			$widget = $this->widget((int)$item['widget_id']);
-
-			if (!empty($item['style']))
+			if (!$this->db	->from('dispositions')
+							->where('theme', $theme)
+							->where('page', $this->outline_page($outline_id))
+							->where('zone', $zone)
+							->empty())
 			{
-				$widget->style($item['style']);
+				continue;
 			}
 
-			if (!empty($item['size']))
-			{
-				$widget->size($item['size']);
-			}
-
-			return $widget;
+			$this->db->insert('dispositions', [
+				'theme'       => $theme,
+				'page'        => $this->outline_page($outline_id),
+				'zone'        => $zone,
+				'disposition' => $this->disposition->encode($this->default_disposition($title))
+			]);
 		}
 
-		if ($item['type'] == 'module' && !empty($item['module']))
-		{
-			return $this->output->module_content($item['module'], strtoarray('/', isset($item['route']) ? $item['route'] : ''), FALSE);
-		}
-
-		if ($item['type'] == 'static')
-		{
-			return bbcode(isset($item['content']) ? $item['content'] : '');
-		}
-
-		return '';
+		return $this;
 	}
 
-	private function normalize_layout($layout)
+	private function get_region_disposition($outline, $region)
 	{
-		$output = [];
+		$zone = $this->region_zone($outline['theme'], $region);
 
-		foreach (is_array($layout) ? $layout : [] as $region => $rows)
+		if ($zone === NULL)
 		{
-			$output[$region] = [];
-
-			foreach (is_array($rows) ? $rows : [] as $row)
-			{
-				$columns = [];
-
-				foreach (!empty($row['columns']) && is_array($row['columns']) ? $row['columns'] : [] as $column)
-				{
-					$items = [];
-
-					foreach (!empty($column['items']) && is_array($column['items']) ? $column['items'] : [] as $item)
-					{
-						if (!empty($item['type']))
-						{
-							$items[] = array_filter([
-								'type'      => $item['type'],
-								'widget_id' => !empty($item['widget_id']) ? (int)$item['widget_id'] : NULL,
-								'module'    => !empty($item['module']) ? $item['module'] : NULL,
-								'route'     => !empty($item['route']) ? trim($item['route'], '/') : NULL,
-								'content'   => !empty($item['content']) ? $item['content'] : NULL,
-								'style'     => !empty($item['style']) ? $item['style'] : NULL,
-								'size'      => !empty($item['size']) ? $item['size'] : NULL
-							], function($value){
-								return $value !== NULL;
-							});
-						}
-					}
-
-					$columns[] = [
-						'size'  => !empty($column['size']) ? $column['size'] : 'col-12',
-						'items' => $items
-					];
-				}
-
-				if ($columns)
-				{
-					$output[$region][] = array_filter([
-						'style'   => !empty($row['style']) ? $row['style'] : NULL,
-						'columns' => $columns
-					], function($value){
-						return $value !== NULL;
-					});
-				}
-			}
+			return FALSE;
 		}
 
-		return $output;
+		return $this->db	->from('dispositions')
+						->where('theme', $outline['theme'])
+						->where('page', $this->outline_page($outline['outline_id']))
+						->where('zone', $zone)
+						->row();
+	}
+
+	private function region_zone($theme, $region)
+	{
+		$theme = HiddenCMS()->theme($theme ?: $this->config->default_theme);
+		$regions = $theme->regions();
+
+		if (empty($regions[$region]))
+		{
+			return NULL;
+		}
+
+		$zone = array_search($regions[$region], $theme->info()->zones);
+
+		return $zone === FALSE ? NULL : $zone;
+	}
+
+	private function theme_zones($theme)
+	{
+		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->info()->zones;
+	}
+
+	private function default_disposition($zone_title)
+	{
+		if (url_title($zone_title) == 'contenu')
+		{
+			return $this->array([
+				$this->row(
+					$this->col(
+						$this->widget($this->db->insert('widgets', [
+							'widget' => 'module',
+							'type'   => 'index'
+						]))
+					)
+				)
+			]);
+		}
+
+		return $this->array();
 	}
 }

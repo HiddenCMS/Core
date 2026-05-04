@@ -137,7 +137,15 @@ INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposit
 (7, 'azuro', '*', 4, '[]'),
 (8, 'azuro', '*', 6, '[]'),
 (13, 'azuro', 'news/_news/*', 5, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":20,"style":null,"size":null}]}]}]'),
-(17, 'azuro', 'user/*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":33,"style":null,"size":null}]}]}]');
+(17, 'azuro', 'user/*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":33,"style":null,"size":null}]}]}]'),
+(18, 'azuro', 'outline:1', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":null}]},{"size":"col-3","widgets":[{"id":2,"style":null,"size":null}]}]}]'),
+(19, 'azuro', 'outline:1', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":3,"style":null,"size":null}]}]}]'),
+(20, 'azuro', 'outline:1', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":4,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":null}]}]}]'),
+(21, 'azuro', 'outline:1', 3, '[]'),
+(22, 'azuro', 'outline:1', 4, '[]'),
+(23, 'azuro', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":6,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":9,"style":null,"size":null},{"id":8,"style":null,"size":null}]}]}]'),
+(24, 'azuro', 'outline:1', 6, '[]'),
+(25, 'azuro', 'outline:1', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":10,"style":"card-transparent","size":null}]}]}]');
 
 DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
@@ -224,8 +232,6 @@ CREATE TABLE `layouts_outlines` (
   `name` varchar(100) NOT NULL,
   `title` varchar(100) NOT NULL,
   `theme` varchar(100) NOT NULL,
-  `layout` text NOT NULL,
-  `settings` text NOT NULL,
   `base` enum('0','1') NOT NULL DEFAULT '0',
   `enabled` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`outline_id`),
@@ -235,8 +241,8 @@ CREATE TABLE `layouts_outlines` (
   KEY `enabled` (`enabled`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `layouts_outlines` (`outline_id`, `name`, `title`, `theme`, `layout`, `settings`, `base`, `enabled`) VALUES
-(1, 'base', 'Base', 'azuro', '{"top":[{"columns":[{"size":"col-9","items":[{"type":"widget","widget_id":1}]},{"size":"col-3","items":[{"type":"widget","widget_id":2}]}]}],"header":[{"columns":[{"items":[{"type":"widget","widget_id":3}]}]}],"navigation":[{"columns":[{"size":"col-7","items":[{"type":"widget","widget_id":4}]},{"size":"col-5","items":[{"type":"widget","widget_id":5}]}]}],"slider":[],"before_content":[],"content":[{"columns":[{"size":"col-8","items":[{"type":"page_content"}]},{"size":"col-4","items":[{"type":"widget","widget_id":9},{"type":"widget","widget_id":8}]}]}],"after_content":[],"footer":[{"columns":[{"items":[{"type":"widget","widget_id":10}]}]}]}', '[]', '1', '1');
+INSERT INTO `layouts_outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `enabled`) VALUES
+(1, 'base', 'Base', 'azuro', '1', '1');
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (

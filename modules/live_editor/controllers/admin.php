@@ -18,7 +18,7 @@ class Admin extends Controller_Module
 				->css('jquery-ui.min')
 				->js('jquery-ui.min');
 
-		$modules = $pages = [];
+		$modules = $pages = $outlines = [];
 
 		foreach (HB()->model2('addon')->get('module') as $module)
 		{
@@ -58,8 +58,18 @@ class Admin extends Controller_Module
 
 		$theme = $this->theme($this->config->default_theme);
 
+		if (($layouts = @HB()->module('layouts')) && $layouts->is_enabled())
+		{
+			foreach ($layouts->model()->get_outlines(TRUE) as $outline)
+			{
+				$outlines[$outline['outline_id']] = $outline['title'];
+			}
+		}
+
 		return $this->view('index', [
 			'modules'       => $pages,
+			'outlines'      => $outlines,
+			'outline_id'    => !empty($_GET['outline_id']) ? (int)$_GET['outline_id'] : 0,
 			'styles_row'    => $theme->styles_row(),
 			'styles_widget' => $theme->styles_widget()
 		]);
