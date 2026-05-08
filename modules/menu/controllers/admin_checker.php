@@ -67,7 +67,7 @@ class Admin_Checker extends Module_Checker
 
 		if ($menu = $this->menu_model()->check_menu($menu_id, $name))
 		{
-			return [$menu, $this->module->pagination->get_data($this->menu_model()->get_menu_items($menu_id), $page)];
+			return [$menu, $this->menu_model()->get_menu_items($menu_id)];
 		}
 	}
 

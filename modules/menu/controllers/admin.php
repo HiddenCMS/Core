@@ -157,6 +157,12 @@ class Admin extends Controller_Module
 		$this	->table()
 				->add_columns([
 					[
+						'content' => function($data){
+							return $this->is_authorized('modify_menus') ? $this->button_sort($data['item_id'], 'admin/ajax/menu/items/sort') : NULL;
+						},
+						'size'    => TRUE
+					],
+					[
 						'title'   => $this->lang('Titre'),
 						'content' => function($data){
 							return $data['level'] ? str_repeat('&mdash; ', (int)$data['level']).$data['title'] : $data['title'];
@@ -212,7 +218,7 @@ class Admin extends Controller_Module
 						'size'    => TRUE
 					]
 				])
-				->sort_by(3)
+				->pagination(FALSE)
 				->data($items)
 				->no_data($this->lang('Il n\'y a pas encore de lien'));
 
@@ -226,20 +232,59 @@ class Admin extends Controller_Module
 	{
 		$this->subtitle($this->lang('Ajouter un lien'));
 
+		$front_urls = $this->menu_model()->get_front_url_choices();
+
 		return $this	->form2('menu_item', [
 						'menu_id'      => $menu['menu_id'],
+						'url_mode'     => 'custom',
+						'front_urls'   => $front_urls,
 						'target'       => '_parent',
 						'parent_items' => $this->menu_model()->get_parent_items($menu['menu_id']),
 						'position'     => $this->menu_model()->next_position($menu['menu_id']),
 						'enabled'      => TRUE
 					])
-					->success(function($data) use ($menu){
+					->success(function($data, $form) use ($menu){
+						$url = '';
+
+						if (($data['url_mode'] ?? 'custom') === 'front')
+						{
+							$url = trim((string)($data['front_url'] ?? ''));
+							if ($url !== '/')
+							{
+								$url = trim($url, '/');
+							}
+
+							if ($url === '')
+							{
+								$form->error($this->lang('Veuillez selectionner un element front'));
+								return;
+							}
+						}
+						else
+						{
+							$url = trim((string)($data['url'] ?? ''));
+
+							if ($url === '')
+							{
+								$form->error($this->lang('Veuillez saisir une URL'));
+								return;
+							}
+						}
+
+						$parent_id = !empty($data['parent_id']) ? (int)$data['parent_id'] : NULL;
+
+						if (!$this->menu_model()->is_parent_depth_allowed($menu['menu_id'], $parent_id))
+						{
+							$form->error($this->lang('Profondeur maximale atteinte (3 sous-niveaux maximum)'));
+							return;
+						}
+
 						$this->menu_model()->add_item(
 							$menu['menu_id'],
 							trim($data['title']),
-							trim($data['url']),
+							$url,
 							!empty($data['target']) ? $data['target'] : '_parent',
-							!empty($data['parent_id']) ? (int)$data['parent_id'] : NULL,
+							$parent_id,
 							isset($data['position']) && $data['position'] !== '' ? (int)$data['position'] : 0,
 							!empty($data['enabled']) && in_array('1', $data['enabled'], TRUE)
 						);
@@ -258,24 +303,65 @@ class Admin extends Controller_Module
 	{
 		$this->subtitle($this->lang('Editer un lien'));
 
+		$front_urls = $this->menu_model()->get_front_url_choices();
+		$url_mode = array_key_exists($item['url'], $front_urls) ? 'front' : 'custom';
+
 		return $this	->form2('menu_item', [
 						'item_id'      => $item['item_id'],
 						'menu_id'      => $menu['menu_id'],
 						'title'        => $item['title'],
-						'url'          => $item['url'],
+						'url_mode'     => $url_mode,
+						'front_urls'   => $front_urls,
+						'front_url'    => $url_mode === 'front' ? $item['url'] : '',
+						'url'          => $url_mode === 'custom' ? $item['url'] : '',
 						'target'       => $item['target'],
 						'parent_id'    => $item['parent_id'],
 						'position'     => $item['position'],
 						'enabled'      => (bool)$item['enabled'],
 						'parent_items' => $this->menu_model()->get_parent_items($menu['menu_id'], $item['item_id'])
 					])
-					->success(function($data) use ($item, $menu){
+					->success(function($data, $form) use ($item, $menu){
+						$url = '';
+
+						if (($data['url_mode'] ?? 'custom') === 'front')
+						{
+							$url = trim((string)($data['front_url'] ?? ''));
+							if ($url !== '/')
+							{
+								$url = trim($url, '/');
+							}
+
+							if ($url === '')
+							{
+								$form->error($this->lang('Veuillez selectionner un element front'));
+								return;
+							}
+						}
+						else
+						{
+							$url = trim((string)($data['url'] ?? ''));
+
+							if ($url === '')
+							{
+								$form->error($this->lang('Veuillez saisir une URL'));
+								return;
+							}
+						}
+
+						$parent_id = !empty($data['parent_id']) ? (int)$data['parent_id'] : NULL;
+
+						if (!$this->menu_model()->is_parent_depth_allowed($menu['menu_id'], $parent_id))
+						{
+							$form->error($this->lang('Profondeur maximale atteinte (3 sous-niveaux maximum)'));
+							return;
+						}
+
 						$this->menu_model()->edit_item(
 							$item['item_id'],
 							trim($data['title']),
-							trim($data['url']),
+							$url,
 							!empty($data['target']) ? $data['target'] : '_parent',
-							!empty($data['parent_id']) ? (int)$data['parent_id'] : NULL,
+							$parent_id,
 							isset($data['position']) && $data['position'] !== '' ? (int)$data['position'] : 0,
 							!empty($data['enabled']) && in_array('1', $data['enabled'], TRUE)
 						);

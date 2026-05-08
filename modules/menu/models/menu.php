@@ -11,6 +11,7 @@ use HB\HiddenCMS\Loadables\Model2;
 class Menu extends Model2
 {
 	public $__table = 'menus';
+	const MAX_SUBLEVELS = 3;
 
 	static public function __schema()
 	{
@@ -108,12 +109,18 @@ class Menu extends Model2
 
 	public function get_parent_items($menu_id, $exclude_item_id = 0)
 	{
-		$items = ['' => $this->lang('Aucun (niveau racine)')];
+		$items = ['' => 'Aucun (niveau racine)'];
 		$excluded = $exclude_item_id ? array_merge([$exclude_item_id], $this->descendant_ids($menu_id, $exclude_item_id)) : [];
 
 		foreach ($this->get_menu_items($menu_id) as $item)
 		{
 			if ($excluded && in_array($item['item_id'], $excluded, TRUE))
+			{
+				continue;
+			}
+
+			// Parent level 3 would create a level 4 child, not allowed
+			if ((int)$item['level'] >= self::MAX_SUBLEVELS)
 			{
 				continue;
 			}
@@ -129,9 +136,27 @@ class Menu extends Model2
 		$item = $this->db	->select('MAX(position) as max_position')
 						->from('menus_items')
 						->where('menu_id', $menu_id)
-						->row();
+						->row(FALSE);
 
-		return $item ? ((int)$item['max_position'] + 1) : 1;
+		return !empty($item['max_position']) ? ((int)$item['max_position'] + 1) : 1;
+	}
+
+	public function is_parent_depth_allowed($menu_id, $parent_id = NULL)
+	{
+		if (!$parent_id)
+		{
+			return TRUE;
+		}
+
+		foreach ($this->get_menu_items($menu_id) as $item)
+		{
+			if ((int)$item['item_id'] === (int)$parent_id)
+			{
+				return ((int)$item['level'] + 1) <= self::MAX_SUBLEVELS;
+			}
+		}
+
+		return FALSE;
 	}
 
 	public function add_item($menu_id, $title, $url, $target, $parent_id, $position, $enabled)
@@ -186,6 +211,58 @@ class Menu extends Model2
 					]);
 	}
 
+	public function sort_item($item_id, $position)
+	{
+		$item = $this->check_item($item_id);
+
+		if (!$item)
+		{
+			return;
+		}
+
+		$items = $this->get_menu_items((int)$item['menu_id']);
+
+		if (!$items)
+		{
+			return;
+		}
+
+		$current_index = NULL;
+
+		foreach ($items as $index => $row)
+		{
+			if ((int)$row['item_id'] === (int)$item_id)
+			{
+				$current_index = $index;
+				break;
+			}
+		}
+
+		if ($current_index === NULL)
+		{
+			return;
+		}
+
+		$position = max(0, min((int)$position, count($items) - 1));
+
+		if ($position === $current_index)
+		{
+			return;
+		}
+
+		$moved = $items[$current_index];
+		array_splice($items, $current_index, 1);
+		array_splice($items, $position, 0, [$moved]);
+
+		foreach ($items as $order => $row)
+		{
+			$this->db	->where('item_id', $row['item_id'])
+						->update('menus_items', [
+							'position' => $order + 1
+						]);
+		}
+	}
+
 	public function delete_item($item_id)
 	{
 		$this->db	->where('item_id', $item_id)
@@ -203,6 +280,92 @@ class Menu extends Model2
 						->get(FALSE);
 
 		return $this->build_links_tree($items);
+	}
+
+	public function get_front_url_choices()
+	{
+		$urls = [];
+		$modules = [];
+
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
+		{
+			if (!$module->is_enabled() || !$module->is_front())
+			{
+				continue;
+			}
+
+			$name = $module->info()->name;
+			$title = (string)$module->info()->title;
+			$base = !empty($module->info()->reserved_route) ? trim((string)$module->info()->reserved_route, '/') : trim((string)$name, '/');
+
+			if ($base !== '')
+			{
+				$urls[$base] = '['.$title.'] '.$title;
+			}
+
+			$modules[$name] = [
+				'title' => $title,
+				'base'  => $base
+			];
+		}
+
+		$lang = $this->config->lang->info()->name;
+
+		if (isset($modules['pages']))
+		{
+			foreach ($this->db	->select('p.name', 'pl.title')
+								->from('pages p')
+								->join('pages_lang pl', 'p.page_id = pl.page_id')
+								->where('pl.lang', $lang)
+								->where('p.published', TRUE)
+								->order_by('pl.title ASC')
+								->get(FALSE) as $page)
+			{
+				$path = trim((string)$page['name'], '/');
+				$path = $path === '' ? '/' : $path;
+				$title = trim((string)$page['title']);
+				$label = '[Pages] '.$title;
+
+				$urls[$path] = $label;
+			}
+		}
+
+		if (isset($modules['news']))
+		{
+			$base = $modules['news']['base'] ?: 'news';
+
+			foreach ($this->db	->select('c.name', 'cl.title')
+								->from('news_categories c')
+								->join('news_categories_lang cl', 'c.category_id = cl.category_id')
+								->where('cl.lang', $lang)
+								->order_by('cl.title ASC')
+								->get(FALSE) as $category)
+			{
+				$path = trim($base.'/'.$category['name'], '/');
+				$label = '[News category] '.trim((string)$category['title']);
+
+				$urls[$path] = $label;
+			}
+
+			foreach ($this->db	->select('c.name as category_name', 'nl.slug', 'nl.title')
+								->from('news n')
+								->join('news_categories c', 'c.category_id = n.category_id')
+								->join('news_lang nl', 'nl.news_id = n.news_id')
+								->where('nl.lang', $lang)
+								->where('n.published', TRUE)
+								->order_by('n.date DESC')
+								->get(FALSE) as $news)
+			{
+				$path = trim($base.'/'.$news['category_name'].'/'.$news['slug'], '/');
+				$label = '[News] '.trim((string)$news['title']);
+
+				$urls[$path] = $label;
+			}
+		}
+
+		natcasesort($urls);
+
+		return $urls;
 	}
 
 	private function flatten_items($items)
@@ -259,7 +422,7 @@ class Menu extends Model2
 			$children[$parent_id][] = $item;
 		}
 
-		$build = function($parent_id = 0) use (&$build, $children){
+		$build = function($parent_id = 0, $depth = 0) use (&$build, $children){
 			$output = [];
 
 			if (empty($children[$parent_id]))
@@ -277,7 +440,7 @@ class Menu extends Model2
 					'access' => TRUE
 				];
 
-				$children_links = $build($item['item_id']);
+				$children_links = $depth < self::MAX_SUBLEVELS ? $build($item['item_id'], $depth + 1) : [];
 
 				if ($children_links)
 				{

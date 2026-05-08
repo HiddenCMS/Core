@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michael BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Widgets\Navigation\Controllers;
@@ -10,6 +10,8 @@ use HB\HiddenCMS\Loadables\Controllers\Widget as Controller_Widget;
 
 class Index extends Controller_Widget
 {
+	const MAX_SUBLEVELS = 3;
+
 	public function index($settings = [])
 	{
 		return $this->_display($settings, 'horizontal', !empty($settings['panel']));
@@ -34,129 +36,168 @@ class Index extends Controller_Widget
 			$settings['links'] = [];
 		}
 
-		$nav = $this->html('ul')
-					->attr('class', 'nav')
-					->append_attr_if($type == 'vertical', 'class', 'flex-column');
+		$normalize = function($links) use (&$normalize){
+			$output = [];
 
-		array_walk($settings['links'], $f = function(&$link) use (&$f){
-			$link = array_merge([
-				'title'  => '',
-				'url'    => '',
-				'icon'   => '',
-				'access' => TRUE
-			], $link);
-
-			if (is_array($link['url']))
+			foreach ($links as $link)
 			{
-				array_walk($link['url'], $f);
+				if (!is_array($link))
+				{
+					continue;
+				}
+
+				$link = array_merge([
+					'title'  => '',
+					'url'    => '',
+					'icon'   => '',
+					'access' => TRUE,
+					'target' => ''
+				], $link);
+
+				if (is_array($link['url']))
+				{
+					$link['url'] = $normalize($link['url']);
+				}
+
+				$output[] = $link;
 			}
-		});
 
-		$actives = [];
-
-		$is_external = function($link){
-			return strpos($link, '#') === 0 || strpos($link, 'mailto:') === 0 || preg_match('#^(?:https?:)?//#i', $link);
+			return $output;
 		};
 
-		$link_href = function($link) use ($is_external){
-			return $is_external($link) ? $link : url($link);
-		};
+		$links = $normalize($settings['links']);
 
-		$is_active = function($link) use ($is_external){
-			if ($is_external($link))
+		$is_external = function($url){
+			if (!is_string($url))
 			{
 				return FALSE;
 			}
 
-			return (($url = ltrim(preg_replace('_^'.preg_quote(url(), '_').'_', '', url($link)), '/')) == $this->url->request) || ($url && strpos($this->url->request, $url) === 0);
+			return strpos($url, '#') === 0 || strpos($url, 'mailto:') === 0 || preg_match('#^(?:https?:)?//#i', $url);
 		};
 
-		$nav_link = function($link, $active) use ($link_href){
-			return $this->html('a')
-						->attr('class', 'nav-link')
-						->append_attr_if($active, 'class', 'active')
-						->exec(function($a) use ($link){
-							if (isset($link['modal']))
-							{
-								$this->js('modal');
-
-								$a	->attr('href',            '#')
-									->attr('data-modal-ajax', url($link['modal']));
-							}
-							else
-							{
-								$a->attr('href', !is_array($link['url']) ? $link_href($link['url']) : '#');
-
-								if (!empty($link['target']))
-								{
-									$a->attr('target', $link['target']);
-								}
-							}
-						})
-						->content(icon($link['icon']).' '.$this->lang($link['title']));
+		$link_href = function($url) use ($is_external){
+			return $is_external($url) ? $url : url($url);
 		};
 
-		$show_link = function($link, &$active = FALSE) use (&$actives, &$nav_link){
-			if ($link['access'])
+		$is_active = function($url) use ($is_external){
+			if (!is_string($url) || $is_external($url))
 			{
-				return $this->html('li')
-							->attr('class', 'nav-item')
-							->content($nav_link($link, $actives && $actives[0] == $link['url'] && ($active = TRUE)));
+				return FALSE;
 			}
+
+			$clean = ltrim(preg_replace('_^'.preg_quote(url(), '_').'_', '', url($url)), '/');
+
+			return ($clean == $this->url->request) || ($clean && strpos($this->url->request, $clean) === 0);
 		};
 
-		foreach ($settings['links'] as $link)
-		{
-			if (is_array($link['url']))
+		$actives = [];
+
+		$collect_actives = function($items) use (&$collect_actives, &$actives, $is_active){
+			foreach ($items as $item)
 			{
-				foreach ($link['url'] as $link)
+				if (is_array($item['url']))
 				{
-					if ($is_active($link['url']))
-					{
-						$actives[] = $link['url'];
-					}
+					$collect_actives($item['url']);
+				}
+				else if ($is_active($item['url']))
+				{
+					$actives[] = $item['url'];
 				}
 			}
-			else if ($is_active($link['url']))
-			{
-				$actives[] = $link['url'];
-			}
-		}
+		};
+
+		$collect_actives($links);
 
 		usort($actives, function($a, $b){
 			return strlen($b) <=> strlen($a);
 		});
 
-		foreach ($settings['links'] as $link)
-		{
-			if (is_array($link['url']))
-			{
-				$active  = FALSE;
-				$submenu = '';
+		$nav_link = function($item, $active) use ($link_href){
+			return $this->html('a')
+						->attr('class', 'nav-link')
+						->append_attr_if($active, 'class', 'active')
+						->exec(function($a) use ($item, $link_href){
+							if (isset($item['modal']))
+							{
+								$this->js('modal');
 
-				foreach ($link['url'] as $link2)
+								$a	->attr('href', '#')
+									->attr('data-modal-ajax', url($item['modal']));
+							}
+							else
+							{
+								$a->attr('href', is_array($item['url']) ? '#' : $link_href($item['url']));
+
+								if (!empty($item['target']))
+								{
+									$a->attr('target', $item['target']);
+								}
+							}
+						})
+						->content(icon($item['icon']).' '.$this->lang($item['title']));
+		};
+
+		$render_items = function($items, $depth = 0) use (&$render_items, $nav_link, $actives){
+			if ($depth > self::MAX_SUBLEVELS)
+			{
+				return ['', FALSE];
+			}
+
+			$html = '';
+			$branch_active = FALSE;
+
+			foreach ($items as $item)
+			{
+				if (!$item['access'])
 				{
-					$submenu .= $show_link($link2, $active);
+					continue;
 				}
 
-				if ($submenu)
+				$current_active = FALSE;
+				$children_html = '';
+
+				if (is_array($item['url']))
 				{
-					$nav->append($this	->html('li')
-										->attr('class', 'nav-item')
-										->content(
-											$nav_link($link, $active)
-												->attr('data-toggle', 'collapse')
-												->attr('href',        '#')
-												->content(icon($link['icon']).' <span class="hidden-xs">'.$this->lang($link['title']).'</span><span class="fas fa-angle-down"></span>').'<ul class="nav flex-column">'.$submenu.'</ul>'
-										)
-					);
+					list($children_html, $children_active) = $render_items($item['url'], $depth + 1);
+					$current_active = $children_active;
+				}
+				else if ($actives && $actives[0] == $item['url'])
+				{
+					$current_active = TRUE;
+				}
+
+				$branch_active = $branch_active || $current_active;
+
+				$link_html = $nav_link($item, $current_active);
+
+				if ($children_html !== '')
+				{
+					$link_html	->attr('data-toggle', 'collapse')
+								->attr('href', '#')
+								->content(icon($item['icon']).' <span class="hidden-xs">'.$this->lang($item['title']).'</span><span class="fas fa-angle-down"></span>');
+
+					$html .= $this->html('li')
+								->attr('class', 'nav-item')
+								->content($link_html.'<ul class="nav flex-column">'.$children_html.'</ul>');
+				}
+				else
+				{
+					$html .= $this->html('li')
+								->attr('class', 'nav-item')
+								->content($link_html);
 				}
 			}
-			else
-			{
-				$nav->append($show_link($link));
-			}
-		}
+
+			return [$html, $branch_active];
+		};
+
+		list($content) = $render_items($links);
+
+		$nav = $this->html('ul')
+					->attr('class', 'nav')
+					->append_attr_if($type == 'vertical', 'class', 'flex-column')
+					->content($content);
 
 		if ($panel)
 		{
@@ -167,5 +208,3 @@ class Index extends Controller_Widget
 		return $nav;
 	}
 }
-
-
