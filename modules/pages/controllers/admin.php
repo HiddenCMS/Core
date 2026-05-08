@@ -92,9 +92,17 @@ class Admin extends Controller_Module
 
 		if ($this->form()->is_valid($post))
 		{
+			$page_name = $this->model()->normalize_page_name($post['name'], $post['title']);
+
+			if ($this->model()->is_reserved_page_name($page_name))
+			{
+				notify($this->lang('Le premier segment du chemin d\'accès est réservé par un module'), 'danger');
+			}
+			else
+			{
 			$blocks = $this->model()->build_blocks($post);
 
-			$this->model()->add_page(	$post['name'],
+			$this->model()->add_page(	$page_name,
 										$post['title'],
 										in_array('on', $post['published']),
 										!empty($post['outline_id']) ? $post['outline_id'] : NULL,
@@ -105,6 +113,7 @@ class Admin extends Controller_Module
 			notify($this->lang('Page ajoutée avec succès'));
 
 			redirect_back('admin/pages');
+			}
 		}
 
 		return $this->panel()

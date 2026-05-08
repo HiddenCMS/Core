@@ -52,7 +52,7 @@ $rules = [
 		'value' => $this->form()->value('blocks'),
 		'type'  => 'textarea',
 		'check' => function($value){
-			$blocks = HB()->storage->decode($value, NULL);
+			$blocks = HB()->storage->decode(utf8_html_entity_decode($value, ENT_QUOTES), NULL);
 
 			if (!is_array($blocks))
 			{

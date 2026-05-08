@@ -12,12 +12,26 @@ class Admin extends Controller_Widget
 {
 	public function index($settings = [])
 	{
-		return $this->view('admin', $settings);
+		return $this->view('admin', $settings + [
+			'menus' => $this->menus()
+		]);
 	}
 
 	public function vertical($settings = [])
 	{
-		return $this->view('admin', $settings);
+		return $this->view('admin', $settings + [
+			'menus' => $this->menus()
+		]);
+	}
+
+	private function menus()
+	{
+		if (($module = @HiddenCMS()->module('menu')) && $module->is_enabled())
+		{
+			return $module->model2('menu')->get_menu_choices();
+		}
+
+		return [];
 	}
 }
 

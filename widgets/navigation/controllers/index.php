@@ -24,6 +24,16 @@ class Index extends Controller_Widget
 	{
 		$this->js('navigation');
 
+		if (empty($settings['links']) && !empty($settings['menu_id']) && ($module = @HiddenCMS()->module('menu')) && $module->is_enabled())
+		{
+			$settings['links'] = $module->model2('menu')->get_menu_links((int)$settings['menu_id']);
+		}
+
+		if (empty($settings['links']) || !is_array($settings['links']))
+		{
+			$settings['links'] = [];
+		}
+
 		$nav = $this->html('ul')
 					->attr('class', 'nav')
 					->append_attr_if($type == 'vertical', 'class', 'flex-column');
@@ -44,11 +54,24 @@ class Index extends Controller_Widget
 
 		$actives = [];
 
-		$is_active = function($link){
+		$is_external = function($link){
+			return strpos($link, '#') === 0 || strpos($link, 'mailto:') === 0 || preg_match('#^(?:https?:)?//#i', $link);
+		};
+
+		$link_href = function($link) use ($is_external){
+			return $is_external($link) ? $link : url($link);
+		};
+
+		$is_active = function($link) use ($is_external){
+			if ($is_external($link))
+			{
+				return FALSE;
+			}
+
 			return (($url = ltrim(preg_replace('_^'.preg_quote(url(), '_').'_', '', url($link)), '/')) == $this->url->request) || ($url && strpos($this->url->request, $url) === 0);
 		};
 
-		$nav_link = function($link, $active){
+		$nav_link = function($link, $active) use ($link_href){
 			return $this->html('a')
 						->attr('class', 'nav-link')
 						->append_attr_if($active, 'class', 'active')
@@ -62,7 +85,12 @@ class Index extends Controller_Widget
 							}
 							else
 							{
-								$a->attr('href', !is_array($link['url']) ? url($link['url']) : '#');
+								$a->attr('href', !is_array($link['url']) ? $link_href($link['url']) : '#');
+
+								if (!empty($link['target']))
+								{
+									$a->attr('target', $link['target']);
+								}
 							}
 						})
 						->content(icon($link['icon']).' '.$this->lang($link['title']));

@@ -83,7 +83,8 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (40, 1, 'tools', '{"enabled":true}'),
 (41, 3, 'about', '{"enabled":true}'),
 (42, 3, 'socials', '{"enabled":true}'),
-(43, 1, 'outlines', '{"enabled":true}');
+(43, 1, 'outlines', '{"enabled":true}'),
+(44, 1, 'menu', '{"enabled":true}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (
@@ -484,6 +485,57 @@ CREATE TABLE `news_lang` (
   CONSTRAINT `news_lang_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `menus`;
+CREATE TABLE `menus` (
+  `menu_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  PRIMARY KEY (`menu_id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+INSERT INTO `menus` (`menu_id`, `name`, `title`) VALUES
+(1, 'top', 'Menu top'),
+(2, 'main', 'Menu principal'),
+(3, 'sidebar', 'Menu lateral');
+
+DROP TABLE IF EXISTS `menus_items`;
+CREATE TABLE `menus_items` (
+  `item_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `menu_id` int(11) unsigned NOT NULL,
+  `parent_id` int(11) unsigned DEFAULT NULL,
+  `title` varchar(100) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `target` enum('_parent','_blank') NOT NULL DEFAULT '_parent',
+  `position` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `enabled` enum('0','1') NOT NULL DEFAULT '1',
+  PRIMARY KEY (`item_id`),
+  KEY `menu_id` (`menu_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `position` (`position`),
+  CONSTRAINT `menus_items_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`menu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `menus_items_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `menus_items` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+INSERT INTO `menus_items` (`item_id`, `menu_id`, `parent_id`, `title`, `url`, `target`, `position`, `enabled`) VALUES
+(1, 1, NULL, 'Facebook', '#', '_parent', 1, '1'),
+(2, 1, NULL, 'Twitter', '#', '_parent', 2, '1'),
+(3, 1, NULL, 'Origin', '#', '_parent', 3, '1'),
+(4, 1, NULL, 'Steam', '#', '_parent', 4, '1'),
+(5, 2, NULL, 'Accueil', '', '_parent', 1, '1'),
+(6, 2, NULL, 'Forum', 'forum', '_parent', 2, '1'),
+(7, 2, NULL, 'Equipes', 'teams', '_parent', 3, '1'),
+(8, 2, NULL, 'Matchs', 'events/matches', '_parent', 4, '1'),
+(9, 2, NULL, 'Partenaires', 'partners', '_parent', 5, '1'),
+(10, 2, NULL, 'Palmares', 'awards', '_parent', 6, '1'),
+(11, 3, NULL, 'Actualites', 'news', '_parent', 1, '1'),
+(12, 3, NULL, 'Membres', 'members', '_parent', 2, '1'),
+(13, 3, NULL, 'Recrutement', 'recruits', '_parent', 3, '1'),
+(14, 3, NULL, 'Photos', 'gallery', '_parent', 4, '1'),
+(15, 3, NULL, 'Evenements', 'events', '_parent', 5, '1'),
+(16, 3, NULL, 'Rechercher', 'search', '_parent', 6, '1'),
+(17, 3, NULL, 'Contact', 'contact', '_parent', 7, '1');
+
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -615,13 +667,13 @@ CREATE TABLE `widgets` (
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUES
-(1, 'navigation', 'index', NULL, '{"links":[{"title":"Facebook","url":"#"},{"title":"Twitter","url":"#"},{"title":"Origin","url":"#"},{"title":"Steam","url":"#"}]}'),
+(1, 'navigation', 'index', NULL, '{"menu_id":1,"panel":0}'),
 (2, 'search', 'index', NULL, NULL),
 (3, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"#fff","color_description":"#a4b5c5"}'),
-(4, 'navigation', 'index', NULL, '{"links":[{"title":"Accueil","url":""},{"title":"Forum","url":"forum"},{"title":"&Eacute;quipes","url":"teams"},{"title":"Matchs","url":"events/matches"},{"title":"Partenaires","url":"partners"},{"title":"Palmar&egrave;s","url":"awards"}]}'),
+(4, 'navigation', 'index', NULL, '{"menu_id":2,"panel":0}'),
 (5, 'user', 'index_mini', NULL, NULL),
 (6, 'module', 'index', NULL, NULL),
-(7, 'navigation', 'vertical', NULL, '{"links":[{"title":"Actualit&eacute;s","url":"news"},{"title":"Membres","url":"members"},{"title":"Recrutement","url":"recruits"},{"title":"Photos","url":"gallery"},{"title":"&Eacute;v&eacute;nements","url":"events"},{"title":"Rechercher","url":"search"},{"title":"Contact","url":"contact"}]}'),
+(7, 'navigation', 'vertical', NULL, '{"menu_id":3,"panel":1}'),
 (8, 'user', 'index', NULL, NULL),
 (9, 'news', 'categories', NULL, NULL),
 (10, 'copyright', 'index', NULL, NULL),

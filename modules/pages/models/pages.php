@@ -10,6 +10,47 @@ use HB\HiddenCMS\Loadables\Model;
 
 class Pages extends Model
 {
+	public function normalize_page_name($name, $title = '')
+	{
+		return trim(url_title($name ?: $title), '/');
+	}
+
+	public function is_reserved_page_name($name)
+	{
+		$segments = explode('/', trim((string)$name, '/'));
+		$first = isset($segments[0]) ? url_title($segments[0]) : '';
+
+		if ($first === '')
+		{
+			return FALSE;
+		}
+
+		return in_array($first, $this->reserved_route_segments(), TRUE);
+	}
+
+	private function reserved_route_segments()
+	{
+		$reserved = [];
+
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
+		{
+			if (!$module->is_enabled() || !$module->is_front() || empty($module->info()->reserved_route))
+			{
+				continue;
+			}
+
+			$segments = explode('/', trim((string)$module->info()->reserved_route, '/'));
+			$first = isset($segments[0]) ? url_title($segments[0]) : '';
+
+			if ($first !== '')
+			{
+				$reserved[] = $first;
+			}
+		}
+
+		return array_values(array_unique($reserved));
+	}
+
 	public function resolve($segments, $lang = 'default', $all = FALSE)
 	{
 		if ($lang == 'default')
@@ -167,7 +208,7 @@ class Pages extends Model
 
 	public function build_blocks($post)
 	{
-		$blocks = $this->storage->decode(isset($post['blocks']) ? $post['blocks'] : '', []);
+		$blocks = $this->storage->decode(utf8_html_entity_decode(isset($post['blocks']) ? $post['blocks'] : '', ENT_QUOTES), []);
 		$output = [];
 
 		if (!is_array($blocks))
