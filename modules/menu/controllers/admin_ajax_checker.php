@@ -22,9 +22,25 @@ class Admin_Ajax_Checker extends Module_Checker
 			$this->error->unauthorized();
 		}
 
-		if (($check = post_check('id', 'position')) && $this->menu_model()->check_item((int)$check['id']))
+		$order = post('order');
+		if (is_array($order) && !empty($order))
 		{
-			return [(int)$check['id'], (int)$check['position']];
+			$order = array_values(array_filter(array_map('intval', $order), function($id){
+				return $id > 0;
+			}));
+
+			if (!empty($order))
+			{
+				return [$order];
+			}
+		}
+
+		$id = post('id');
+		$position = post('position');
+
+		if ($id !== NULL && $position !== NULL && is_numeric($id) && is_numeric($position))
+		{
+			return [(int)$id, (int)$position];
 		}
 	}
 }

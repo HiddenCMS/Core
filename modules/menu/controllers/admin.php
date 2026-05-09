@@ -154,6 +154,8 @@ class Admin extends Controller_Module
 
 	public function _items($menu, $items)
 	{
+		$this->js('items_sort');
+
 		$this	->table()
 				->add_columns([
 					[
@@ -168,9 +170,6 @@ class Admin extends Controller_Module
 							return $data['level'] ? str_repeat('&mdash; ', (int)$data['level']).$data['title'] : $data['title'];
 						},
 						'search'  => function($data){
-							return $data['title'];
-						},
-						'sort'    => function($data){
 							return $data['title'];
 						}
 					],
@@ -187,16 +186,6 @@ class Admin extends Controller_Module
 						'title'   => $this->lang('Cible'),
 						'content' => function($data){
 							return $data['target'] == '_blank' ? $this->lang('Nouvelle fenetre') : $this->lang('Meme fenetre');
-						},
-						'size'    => TRUE
-					],
-					[
-						'title'   => $this->lang('Ordre'),
-						'content' => function($data){
-							return $data['position'];
-						},
-						'sort'    => function($data){
-							return $data['position'];
 						},
 						'size'    => TRUE
 					],
@@ -231,12 +220,12 @@ class Admin extends Controller_Module
 	public function _items_add($menu)
 	{
 		$this->subtitle($this->lang('Ajouter un lien'));
+		$this->js('menu_item_url_picker');
 
 		$front_urls = $this->menu_model()->get_front_url_choices();
 
 		return $this	->form2('menu_item', [
 						'menu_id'      => $menu['menu_id'],
-						'url_mode'     => 'custom',
 						'front_urls'   => $front_urls,
 						'target'       => '_parent',
 						'parent_items' => $this->menu_model()->get_parent_items($menu['menu_id']),
@@ -244,31 +233,17 @@ class Admin extends Controller_Module
 						'enabled'      => TRUE
 					])
 					->success(function($data, $form) use ($menu){
-						$url = '';
+						$url = trim((string)($data['url'] ?? ''));
 
-						if (($data['url_mode'] ?? 'custom') === 'front')
+						if ($url !== '/')
 						{
-							$url = trim((string)($data['front_url'] ?? ''));
-							if ($url !== '/')
-							{
-								$url = trim($url, '/');
-							}
-
-							if ($url === '')
-							{
-								$form->error($this->lang('Veuillez selectionner un element front'));
-								return;
-							}
+							$url = trim($url, '/');
 						}
-						else
-						{
-							$url = trim((string)($data['url'] ?? ''));
 
-							if ($url === '')
-							{
-								$form->error($this->lang('Veuillez saisir une URL'));
-								return;
-							}
+						if ($url === '')
+						{
+							$form->error($this->lang('Veuillez saisir une URL'));
+							return;
 						}
 
 						$parent_id = !empty($data['parent_id']) ? (int)$data['parent_id'] : NULL;
@@ -302,18 +277,16 @@ class Admin extends Controller_Module
 	public function _items_edit($menu, $item)
 	{
 		$this->subtitle($this->lang('Editer un lien'));
+		$this->js('menu_item_url_picker');
 
 		$front_urls = $this->menu_model()->get_front_url_choices();
-		$url_mode = array_key_exists($item['url'], $front_urls) ? 'front' : 'custom';
 
 		return $this	->form2('menu_item', [
 						'item_id'      => $item['item_id'],
 						'menu_id'      => $menu['menu_id'],
 						'title'        => $item['title'],
-						'url_mode'     => $url_mode,
 						'front_urls'   => $front_urls,
-						'front_url'    => $url_mode === 'front' ? $item['url'] : '',
-						'url'          => $url_mode === 'custom' ? $item['url'] : '',
+						'url'          => $item['url'],
 						'target'       => $item['target'],
 						'parent_id'    => $item['parent_id'],
 						'position'     => $item['position'],
@@ -321,31 +294,17 @@ class Admin extends Controller_Module
 						'parent_items' => $this->menu_model()->get_parent_items($menu['menu_id'], $item['item_id'])
 					])
 					->success(function($data, $form) use ($item, $menu){
-						$url = '';
+						$url = trim((string)($data['url'] ?? ''));
 
-						if (($data['url_mode'] ?? 'custom') === 'front')
+						if ($url !== '/')
 						{
-							$url = trim((string)($data['front_url'] ?? ''));
-							if ($url !== '/')
-							{
-								$url = trim($url, '/');
-							}
-
-							if ($url === '')
-							{
-								$form->error($this->lang('Veuillez selectionner un element front'));
-								return;
-							}
+							$url = trim($url, '/');
 						}
-						else
-						{
-							$url = trim((string)($data['url'] ?? ''));
 
-							if ($url === '')
-							{
-								$form->error($this->lang('Veuillez saisir une URL'));
-								return;
-							}
+						if ($url === '')
+						{
+							$form->error($this->lang('Veuillez saisir une URL'));
+							return;
 						}
 
 						$parent_id = !empty($data['parent_id']) ? (int)$data['parent_id'] : NULL;

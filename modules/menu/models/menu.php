@@ -263,6 +263,51 @@ class Menu extends Model2
 		}
 	}
 
+	public function sort_items($ordered_item_ids)
+	{
+		$ordered_item_ids = array_values(array_unique(array_map('intval', (array)$ordered_item_ids)));
+
+		if (empty($ordered_item_ids))
+		{
+			return;
+		}
+
+		$first = $this->check_item($ordered_item_ids[0]);
+
+		if (!$first)
+		{
+			return;
+		}
+
+		$menu_id = (int)$first['menu_id'];
+
+		$rows = $this->db	->select('item_id')
+						->from('menus_items')
+						->where('menu_id', $menu_id)
+						->order_by('position ASC')
+						->order_by('item_id ASC')
+						->get(FALSE);
+
+		$menu_item_ids = array_map('intval', array_column($rows, 'item_id'));
+
+		if (empty($menu_item_ids))
+		{
+			return;
+		}
+
+		$sorted = array_values(array_intersect($ordered_item_ids, $menu_item_ids));
+		$missing = array_values(array_diff($menu_item_ids, $sorted));
+		$final = array_merge($sorted, $missing);
+
+		foreach ($final as $order => $item_id)
+		{
+			$this->db	->where('item_id', $item_id)
+						->update('menus_items', [
+							'position' => $order + 1
+						]);
+		}
+	}
+
 	public function delete_item($item_id)
 	{
 		$this->db	->where('item_id', $item_id)

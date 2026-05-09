@@ -29,6 +29,7 @@ class Menu extends Module
 				'admin/add'                                          => 'add',
 				'admin/{id}/{url_title}'                             => '_edit',
 				'admin/delete/{id}/{url_title}'                      => 'delete',
+				'admin/ajax/items/sort'                              => '_items_sort',
 				'admin/items/{id}/{url_title}{pages}'                => '_items',
 				'admin/items/{id}/{url_title}/add'                   => '_items_add',
 				'admin/items/{id}/{url_title}/edit/{id}'             => '_items_edit',
@@ -68,4 +69,3 @@ class Menu extends Module
 		];
 	}
 }
-

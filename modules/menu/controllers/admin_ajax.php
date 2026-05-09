@@ -15,8 +15,14 @@ class Admin_Ajax extends Controller_Module
 		return $this->module->model2('menu');
 	}
 
-	public function _items_sort($item_id, $position)
+	public function _items_sort($item_id_or_order, $position = NULL)
 	{
-		$this->menu_model()->sort_item((int)$item_id, (int)$position);
+		if (is_array($item_id_or_order))
+		{
+			$this->menu_model()->sort_items($item_id_or_order);
+			return;
+		}
+
+		$this->menu_model()->sort_item((int)$item_id_or_order, (int)$position);
 	}
 }
