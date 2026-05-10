@@ -69,9 +69,6 @@ $this	->rule($this->form_text('title')
 					->title($this->lang('Parent'))
 					->data($parent_items)
 		)
-		->rule($this->form_number('position')
-					->title($this->lang('Ordre'))
-		)
 		->rule($this->form_checkbox('enabled')
 					->data([
 						'1' => 'Lien active'

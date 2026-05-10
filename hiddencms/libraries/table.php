@@ -285,6 +285,8 @@ class Table extends Library
 			if (!empty($this->_sortings))
 			{
 				$sortings = [];
+				$has_valid_sorting = FALSE;
+
 				foreach ($this->_sortings as $column => $order)
 				{
 					if (!isset($this->_columns[$column]) || !isset($this->_columns[$column]['sort']) || $order[0] == -1)
@@ -301,29 +303,39 @@ class Table extends Library
 
 					$sortings[] = array_map('strtolower', $tmp);
 					$sortings   = array_merge($sortings, $order);
+					$has_valid_sorting = TRUE;
 				}
 
-				$data = [];
-
-				foreach ($this->_data as $key => $value)
+				if ($has_valid_sorting)
 				{
-					$data[$key.' '] = $value;
+					$data = [];
+
+					foreach ($this->_data as $key => $value)
+					{
+						$data[$key.' '] = $value;
+					}
+
+					$sortings[] = &$data;
+
+					call_user_func_array('array_multisort', $sortings);
+
+					$this->_data = [];
+
+					foreach ($data as $key => $value)
+					{
+						$this->_data[trim($key)] = $value;
+					}
+
+					if ($this->_pagination && !empty($this->output->module()->pagination) && ($items_per_page = $this->output->module()->pagination->get_items_per_page()) > 0)
+					{
+						$this->_data = array_slice($this->_data, ($this->output->module()->pagination->get_page() - 1) * $items_per_page, $items_per_page);
+					}
 				}
-
-				$sortings[] = &$data;
-
-				call_user_func_array('array_multisort', $sortings);
-
-				$this->_data = [];
-
-				foreach ($data as $key => $value)
+				else
 				{
-					$this->_data[trim($key)] = $value;
-				}
-
-				if ($this->_pagination && !empty($this->output->module()->pagination) && ($items_per_page = $this->output->module()->pagination->get_items_per_page()) > 0)
-				{
-					$this->_data = array_slice($this->_data, ($this->output->module()->pagination->get_page() - 1) * $items_per_page, $items_per_page);
+					// Session sorting can reference legacy/non-sortable columns; clear it to preserve source order.
+					$this->_sortings = [];
+					$this->session->destroy('table', $this->id, 'sort');
 				}
 			}
 

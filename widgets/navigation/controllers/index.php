@@ -26,7 +26,7 @@ class Index extends Controller_Widget
 	{
 		$this->js('navigation');
 
-		if (empty($settings['links']) && !empty($settings['menu_id']) && ($module = @HiddenCMS()->module('menu')) && $module->is_enabled())
+		if (!empty($settings['menu_id']) && ($module = @HiddenCMS()->module('menu')) && $module->is_enabled())
 		{
 			$settings['links'] = $module->model2('menu')->get_menu_links((int)$settings['menu_id']);
 		}

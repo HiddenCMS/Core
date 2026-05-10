@@ -16,10 +16,12 @@ class User extends Module
 			'title'       => 'Utilisateur',
 			'description' => '',
 			'icon'        => 'fas fa-user',
+			'reserved_route' => 'user',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE,
+			'front'       => TRUE,
 			'routes'      => [
 				//Index
 				'sessions{pages}'                            => 'sessions',

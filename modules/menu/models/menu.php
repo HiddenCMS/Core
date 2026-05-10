@@ -101,7 +101,6 @@ class Menu extends Model2
 						->join('menus_items p', 'p.item_id = i.parent_id', 'left')
 						->where('i.menu_id', $menu_id)
 						->order_by('i.position ASC')
-						->order_by('i.item_id ASC')
 						->get(FALSE);
 
 		return $this->flatten_items($items);
@@ -200,13 +199,21 @@ class Menu extends Model2
 
 	public function edit_item($item_id, $title, $url, $target, $parent_id, $position, $enabled)
 	{
+		$current = $this->check_item($item_id);
+		$resolved_position = (int)$position;
+
+		if ($resolved_position <= 0)
+		{
+			$resolved_position = !empty($current['position']) ? (int)$current['position'] : 1;
+		}
+
 		$this->db	->where('item_id', $item_id)
 					->update('menus_items', [
 						'parent_id' => $parent_id ?: NULL,
 						'title'     => $title,
 						'url'       => trim($url),
 						'target'    => $target ?: '_parent',
-						'position'  => $position ?: 0,
+						'position'  => $resolved_position,
 						'enabled'   => (bool)$enabled
 					]);
 	}
@@ -220,7 +227,23 @@ class Menu extends Model2
 			return;
 		}
 
-		$items = $this->get_menu_items((int)$item['menu_id']);
+		$parent_id = isset($item['parent_id']) && $item['parent_id'] !== NULL ? (int)$item['parent_id'] : NULL;
+
+		$this->db	->select('*')
+					->from('menus_items')
+					->where('menu_id', (int)$item['menu_id']);
+
+		if ($parent_id === NULL)
+		{
+			$this->db->where('parent_id IS NULL');
+		}
+		else
+		{
+			$this->db->where('parent_id', $parent_id);
+		}
+
+		$items = $this->db	->order_by('position ASC')
+						->get(FALSE);
 
 		if (!$items)
 		{
@@ -281,11 +304,10 @@ class Menu extends Model2
 
 		$menu_id = (int)$first['menu_id'];
 
-		$rows = $this->db	->select('item_id')
+		$rows = $this->db	->select('item_id', 'parent_id', 'position')
 						->from('menus_items')
 						->where('menu_id', $menu_id)
 						->order_by('position ASC')
-						->order_by('item_id ASC')
 						->get(FALSE);
 
 		$menu_item_ids = array_map('intval', array_column($rows, 'item_id'));
@@ -295,9 +317,81 @@ class Menu extends Model2
 			return;
 		}
 
-		$sorted = array_values(array_intersect($ordered_item_ids, $menu_item_ids));
-		$missing = array_values(array_diff($menu_item_ids, $sorted));
-		$final = array_merge($sorted, $missing);
+		$order_rank = array_flip($ordered_item_ids);
+		$items = [];
+		$children = [];
+
+		foreach ($rows as $row)
+		{
+			$item_id = (int)$row['item_id'];
+			$parent_id = !empty($row['parent_id']) ? (int)$row['parent_id'] : 0;
+			$position = (int)$row['position'];
+
+			$items[$item_id] = [
+				'item_id'   => $item_id,
+				'parent_id' => $parent_id,
+				'position'  => $position
+			];
+
+			if (!isset($children[$parent_id]))
+			{
+				$children[$parent_id] = [];
+			}
+
+			$children[$parent_id][] = $item_id;
+		}
+
+		$sort_siblings = function(&$siblings) use ($items, $order_rank){
+			usort($siblings, function($a, $b) use ($items, $order_rank){
+				$rank_a = array_key_exists($a, $order_rank) ? $order_rank[$a] : PHP_INT_MAX;
+				$rank_b = array_key_exists($b, $order_rank) ? $order_rank[$b] : PHP_INT_MAX;
+
+				if ($rank_a !== $rank_b)
+				{
+					return $rank_a <=> $rank_b;
+				}
+
+				if ($items[$a]['position'] !== $items[$b]['position'])
+				{
+					return $items[$a]['position'] <=> $items[$b]['position'];
+				}
+
+				return $a <=> $b;
+			});
+		};
+
+		foreach ($children as &$siblings)
+		{
+			$sort_siblings($siblings);
+		}
+		unset($siblings);
+
+		$final = [];
+		$visited = [];
+
+		$walk = function($parent_id = 0) use (&$walk, &$final, &$visited, $children){
+			if (empty($children[$parent_id]))
+			{
+				return;
+			}
+
+			foreach ($children[$parent_id] as $item_id)
+			{
+				if (isset($visited[$item_id]))
+				{
+					continue;
+				}
+
+				$visited[$item_id] = TRUE;
+				$final[] = $item_id;
+				$walk($item_id);
+			}
+		};
+
+		$walk(0);
+
+		$missing = array_values(array_diff($menu_item_ids, $final));
+		$final = array_merge($final, $missing);
 
 		foreach ($final as $order => $item_id)
 		{
@@ -321,7 +415,6 @@ class Menu extends Model2
 						->where('menu_id', $menu_id)
 						->where('enabled', TRUE)
 						->order_by('position ASC')
-						->order_by('item_id ASC')
 						->get(FALSE);
 
 		return $this->build_links_tree($items);

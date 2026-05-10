@@ -12,7 +12,7 @@ class Sort extends Library
 {
 	public function __invoke($id, $url, $parent = 'tbody', $items = 'tr')
 	{
-		return $this->js('jquery-ui.min')
+		return $this->js('https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js')
 					->js('sortable')
 					->button()
 					->tooltip($this->lang('Ordonner'))

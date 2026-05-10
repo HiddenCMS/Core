@@ -19,63 +19,37 @@ class Admin extends Controller_Module
 	{
 		$this->title($this->lang('Menus'));
 
-		$this	->table()
-				->add_columns([
-					[
-						'title'   => $this->lang('Titre'),
-						'content' => function($data){
+		$table = $this	->table2($this->array($menus), $this->lang('Il n\'y a pas encore de menu'))
+						->col($this->lang('Titre'), function($data){
 							return '<a href="'.url('admin/menu/items/'.$data['menu_id'].'/'.$data['name']).'">'.$data['title'].'</a>';
-						},
-						'sort'    => function($data){
-							return $data['title'];
-						},
-						'search'  => function($data){
-							return $data['title'];
-						}
-					],
-					[
-						'title'   => $this->lang('Chemin d\'acces'),
-						'content' => function($data){
+						})
+						->col($this->lang('Chemin d\'acces'), function($data){
 							return '<code>'.$data['name'].'</code>';
-						},
-						'sort'    => function($data){
-							return $data['name'];
-						},
-						'search'  => function($data){
-							return $data['name'];
-						}
-					],
-					[
-						'title'   => $this->lang('Liens'),
-						'content' => function($data){
+						})
+						->col($this->lang('Liens'), 'compact', 'center', function($data){
 							return '<span class="badge badge-secondary">'.$data['nb_items'].'</span>';
-						},
-						'sort'    => function($data){
-							return $data['nb_items'];
-						},
-						'size'    => TRUE
-					],
-					[
-						'content' => [
-							function($data){
-								return $this->button()->icon('fas fa-list')->tooltip($this->lang('Gerer les liens'))->url('admin/menu/items/'.$data['menu_id'].'/'.$data['name'])->compact()->outline();
-							},
-							function($data){
-								return $this->is_authorized('modify_menus') ? $this->button_update('admin/menu/'.$data['menu_id'].'/'.$data['name']) : NULL;
-							},
-							function($data){
-								return $this->is_authorized('delete_menus') ? $this->button_delete('admin/menu/delete/'.$data['menu_id'].'/'.$data['name']) : NULL;
-							}
-						],
-						'size'    => TRUE
-					]
-				])
-				->data($menus)
-				->no_data($this->lang('Il n\'y a pas encore de menu'));
+						})
+						->compact(function($data){
+							$actions = [
+								$this->button()->icon('fas fa-list')->tooltip($this->lang('Gerer les liens'))->url('admin/menu/items/'.$data['menu_id'].'/'.$data['name'])->compact()->outline()
+							];
 
-		return $this->panel()
+							if ($this->is_authorized('modify_menus'))
+							{
+								$actions[] = $this->button_update('admin/menu/'.$data['menu_id'].'/'.$data['name']);
+							}
+
+							if ($this->is_authorized('delete_menus'))
+							{
+								$actions[] = $this->button_delete('admin/menu/delete/'.$data['menu_id'].'/'.$data['name']);
+							}
+
+							return implode('&nbsp;', array_filter($actions));
+						});
+
+		return $this	->panel()
 					->heading($this->lang('Liste des menus'), 'fas fa-bars')
-					->body($this->table()->display())
+					->body($table->panel()->body(), FALSE)
 					->footer_if($this->is_authorized('add_menus'), $this->button_create('admin/menu/add', $this->lang('Creer un menu')));
 	}
 
@@ -154,66 +128,84 @@ class Admin extends Controller_Module
 
 	public function _items($menu, $items)
 	{
-		$this->js('items_sort');
+		$this->css('menu_nested');
 
-		$this	->table()
-				->add_columns([
-					[
-						'content' => function($data){
-							return $this->is_authorized('modify_menus') ? $this->button_sort($data['item_id'], 'admin/ajax/menu/items/sort') : NULL;
-						},
-						'size'    => TRUE
-					],
-					[
-						'title'   => $this->lang('Titre'),
-						'content' => function($data){
-							return $data['level'] ? str_repeat('&mdash; ', (int)$data['level']).$data['title'] : $data['title'];
-						},
-						'search'  => function($data){
-							return $data['title'];
-						}
-					],
-					[
-						'title'   => $this->lang('URL'),
-						'content' => function($data){
-							return '<code>'.$data['url'].'</code>';
-						},
-						'search'  => function($data){
-							return $data['url'];
-						}
-					],
-					[
-						'title'   => $this->lang('Cible'),
-						'content' => function($data){
-							return $data['target'] == '_blank' ? $this->lang('Nouvelle fenetre') : $this->lang('Meme fenetre');
-						},
-						'size'    => TRUE
-					],
-					[
-						'content' => function($data){
-							return $data['enabled'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('Active').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('Desactive').'" style="color: #535353;"></i>';
-						},
-						'size'    => TRUE
-					],
-					[
-						'content' => [
-							function($data) use ($menu){
-								return $this->is_authorized('modify_menus') ? $this->button_update('admin/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/edit/'.$data['item_id']) : NULL;
-							},
-							function($data) use ($menu){
-								return $this->is_authorized('delete_menus') ? $this->button_delete('admin/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/delete/'.$data['item_id'].'/'.url_title($data['title'])) : NULL;
-							}
-						],
-						'size'    => TRUE
-					]
-				])
-				->pagination(FALSE)
-				->data($items)
-				->no_data($this->lang('Il n\'y a pas encore de lien'));
+		$children = [];
 
-		return $this->panel()
+		foreach ($items as $item)
+		{
+			$parent_id = !empty($item['parent_id']) ? (int)$item['parent_id'] : 0;
+
+			if (!isset($children[$parent_id]))
+			{
+				$children[$parent_id] = [];
+			}
+
+			$children[$parent_id][] = $item;
+		}
+
+		$render = function($parent_id = 0, $level = 0) use (&$render, $children, $menu){
+			if (empty($children[$parent_id]))
+			{
+				return '';
+			}
+
+			$html = '<ul class="menu-nested-sortable '.(!$level ? 'menu-nested-root' : 'menu-nested-children').'">';
+
+			foreach ($children[$parent_id] as $item)
+			{
+				$actions = [];
+
+				if ($this->is_authorized('modify_menus'))
+				{
+					$actions[] = $this->button_update('admin/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/edit/'.$item['item_id']);
+				}
+
+				if ($this->is_authorized('delete_menus'))
+				{
+					$actions[] = $this->button_delete('admin/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/delete/'.$item['item_id'].'/'.url_title($item['title']));
+				}
+
+				$sort = '';
+
+				if ($this->is_authorized('modify_menus'))
+				{
+					$sort = (string)$this->button_sort($item['item_id'], 'admin/ajax/menu/items/sort', '.menu-nested-sortable', 'li.menu-nested-item')
+										->data('level', (int)$item['level'])
+										->data('parent-id', (int)$item['parent_id'])
+										->data('tree', 1);
+				}
+
+				$target = $item['target'] == '_blank' ? $this->lang('Nouvelle fenetre') : $this->lang('Meme fenetre');
+				$status = $item['enabled'] ? '<i class="fas fa-circle text-success" data-toggle="tooltip" title="'.$this->lang('Active').'"></i>' : '<i class="far fa-circle text-muted" data-toggle="tooltip" title="'.$this->lang('Desactive').'"></i>';
+
+				$html .= '<li class="menu-nested-item" data-item-id="'.$item['item_id'].'">'
+						.'<div class="menu-nested-row">'
+							.'<div class="menu-nested-main">'
+								.$sort
+								.'<span class="menu-nested-title">'.$item['title'].'</span>'
+								.'<code class="menu-nested-url">'.$item['url'].'</code>'
+								.'<span class="badge badge-light">'.$target.'</span>'
+							.'</div>'
+							.'<div class="menu-nested-side">'
+								.$status
+								.' '.implode('&nbsp;', array_filter($actions))
+							.'</div>'
+						.'</div>'
+						.$render((int)$item['item_id'], $level + 1)
+					.'</li>';
+			}
+
+			$html .= '</ul>';
+
+			return $html;
+		};
+
+		$body = !empty($items) ? $render() : '<div class="alert alert-info mb-0">'.$this->lang('Il n\'y a pas encore de lien').'</div>';
+
+		return $this	->panel()
 					->heading($this->lang('Liens du menu : %s', $menu['title']), 'fas fa-list')
-					->body($this->table()->display())
+					->body($body, FALSE)
 					->footer(($this->is_authorized('modify_menus') ? $this->button_create('admin/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/add', $this->lang('Ajouter un lien')) : '').' '.$this->button()->label($this->lang('Retour'))->url('admin/menu'));
 	}
 

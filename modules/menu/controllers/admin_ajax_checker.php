@@ -35,6 +35,24 @@ class Admin_Ajax_Checker extends Module_Checker
 			}
 		}
 
+		$order_json = post('order_json');
+		if (is_string($order_json) && $order_json !== '')
+		{
+			$decoded = json_decode($order_json, TRUE);
+
+			if (is_array($decoded) && !empty($decoded))
+			{
+				$decoded = array_values(array_filter(array_map('intval', $decoded), function($id){
+					return $id > 0;
+				}));
+
+				if (!empty($decoded))
+				{
+					return [$decoded];
+				}
+			}
+		}
+
 		$id = post('id');
 		$position = post('position');
 
