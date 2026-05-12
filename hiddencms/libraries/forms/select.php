@@ -37,15 +37,15 @@ class Select extends Multiple
 							->attr('data-options', $encode($this->_data))
 							->attr_if($this->_multiple,                      'multiple')
 							->attr_if($this->_disabled || $this->_read_only, 'disabled')
-							->attr_if(!empty($this->_render[0]),             'data-render-option', utf8_htmlentities($this->_render[0]))
+							->attr_if(isset($this->_render[0]) && $this->_render[0] !== '', 'data-render-option', utf8_htmlentities($this->_render[0]))
 							->attr_if($this->_search,                        'data-search-field',  $this->_search + 1)
 							->attr_if(!is_empty($this->_value),              'data-value',         implode(',', (array)$this->_value));
 
-			if ($this->_optgroup)
+			if (!empty($this->_optgroup) && isset($this->_optgroup[0], $this->_optgroup[1]))
 			{
 				$input	->attr('data-optgroups',      $encode($this->_optgroup[1]))
 						->attr('data-optgroup-field', $this->_optgroup[0] + 1)
-						->attr_if(!empty($this->_render[1]), 'data-render-optgroup', $this->_render[1]);
+						->attr_if(isset($this->_render[1]) && $this->_render[1] !== '', 'data-render-optgroup', $this->_render[1]);
 			}
 
 			$this	->css('selectize')

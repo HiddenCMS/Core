@@ -13,6 +13,7 @@ class Button extends Label
 	protected $_disabled = FALSE;
 	protected $_style    = [];
 	protected $_data     = [];
+	protected $_component = 'button';
 
 	static public function footer($buttons, $default = 'left')
 	{
@@ -63,21 +64,6 @@ class Button extends Label
 
 			$class = [];
 
-			if ($this->_color || $this->_compact || $this->_outline)
-			{
-				$class[] = 'btn';
-				$class[] = $this->array()
-								->append('btn')
-								->append_if($this->_outline, 'outline')
-								->append($this->_color ?: 'secondary')
-								->implode('-');
-
-				if ($this->_compact)
-				{
-					$class[] = 'btn-sm';
-				}
-			}
-
 			if ($this->_style)
 			{
 				$class = array_merge($class, array_filter($this->_style, 'is_string'));
@@ -92,15 +78,58 @@ class Button extends Label
 				}
 			}
 
-			if ($this->_disabled)
-			{
-				$class[] = 'disabled';
-			}
+			$class = $this->build_button_classes($class);
 
 			$attrs['class'] = implode(' ', $class);
 		};
 
 		return $this;
+	}
+
+	public function __toString()
+	{
+		$data = $this->template_data();
+		$candidates = ['components/'.$this->_component];
+
+		if ($this->_component != 'button')
+		{
+			$candidates[] = 'components/button';
+		}
+
+		if ($theme = $this->output->theme())
+		{
+			foreach ($candidates as $candidate)
+			{
+				$paths = [];
+
+				if ($theme->__path('views', $candidate.'.tpl.php', $paths))
+				{
+					return (string)$theme->view($candidate.'.tpl.php', $data);
+				}
+
+				if (class_exists('\Twig\Environment') && $theme->__path('views', $candidate.'.twig', $paths))
+				{
+					return (string)$theme->view($candidate.'.twig', $data);
+				}
+			}
+		}
+
+		foreach ($candidates as $candidate)
+		{
+			$paths = [];
+
+			if (HB()->__path('views', $candidate.'.tpl.php', $paths))
+			{
+				return (string)HB()->view($candidate.'.tpl.php', $data);
+			}
+
+			if (class_exists('\Twig\Environment') && HB()->__path('views', $candidate.'.twig', $paths))
+			{
+				return (string)HB()->view($candidate.'.twig', $data);
+			}
+		}
+
+		return parent::__toString();
 	}
 
 	public function compact($compact = TRUE)
@@ -149,6 +178,18 @@ class Button extends Label
 		return $this;
 	}
 
+	public function component($component = 'button')
+	{
+		$this->_component = trim((string)$component, '/');
+
+		if ($this->_component === '' || strpos($this->_component, '..') !== FALSE)
+		{
+			$this->_component = 'button';
+		}
+
+		return $this;
+	}
+
 	public function modal($title, $icon = '')
 	{
 		$modal = is_a($title, 'HB\HiddenCMS\Libraries\Modal') ? $title : parent::modal($title, $icon);
@@ -168,6 +209,230 @@ class Button extends Label
 					->data([
 						'modal-ajax' => url($url)
 					]);
+	}
+
+	private function template_data()
+	{
+		$tag = $this->_tag ?: 'span';
+		$attrs = $this->_attrs;
+		$content = [];
+
+		foreach ($this->_data as $key => $value)
+		{
+			$attrs['data-'.$key] = $value;
+		}
+
+		if ($this->_icon)
+		{
+			$content[] = icon($this->_icon);
+		}
+
+		if ($this->_title)
+		{
+			$content[] = $this->lang($this->_title);
+		}
+
+		$content = implode(' ', $content);
+
+		if ($content === '')
+		{
+			$content = $this->content();
+		}
+
+		if ($this->_url !== NULL)
+		{
+			$attrs['href'] = url($this->_url);
+			$tag = 'a';
+		}
+
+		if ($this->_tooltip)
+		{
+			$attrs['data-toggle'] = 'tooltip';
+			$attrs['data-html'] = 'true';
+			$attrs['title'] = $this->lang($this->_tooltip);
+		}
+		else if ($this->_popover)
+		{
+			$attrs['data-toggle'] = 'popover';
+			$attrs['data-html'] = 'true';
+			$attrs['title'] = $this->lang($this->_popover[1]);
+			$attrs['data-content'] = $this->lang($this->_popover[0]);
+		}
+
+		$class = [];
+
+		if (!empty($attrs['class']))
+		{
+			$class[] = $attrs['class'];
+		}
+
+		if ($this->_style)
+		{
+			$class = array_merge($class, array_filter($this->_style, 'is_string'));
+
+			$style = implode(';', array_map(function($a){
+				return implode(': ', $a);
+			}, array_filter($this->_style, 'is_array')));
+
+			if ($style)
+			{
+				$attrs['style'] = $style;
+			}
+		}
+
+		$class = $this->build_button_classes($class);
+
+		if ($class)
+		{
+			$attrs['class'] = implode(' ', array_filter($class));
+		}
+
+		$attrs_without_class = $attrs;
+		unset($attrs_without_class['class']);
+
+		return [
+			'tag' => $tag,
+			'attrs' => $this->render_attrs($attrs),
+			'attrs_except_class' => $this->render_attrs($attrs_without_class),
+			'class' => !empty($attrs['class']) ? $attrs['class'] : '',
+			'component' => $this->_component,
+			'color' => $this->_color ?: '',
+			'compact' => $this->_compact,
+			'outline' => $this->_outline,
+			'disabled' => $this->_disabled,
+			'content' => $content
+		];
+	}
+
+	private function render_attrs($attrs)
+	{
+		$output = '';
+
+		foreach ($attrs as $key => $value)
+		{
+			$output .= ' '.$key;
+
+			if ($value !== NULL)
+			{
+				$output .= '="'.utf8_htmlentities($value).'"';
+			}
+		}
+
+		return $output;
+	}
+
+	private function build_button_classes(array $classes = [])
+	{
+		$classes = array_values(array_filter(array_map('trim', $classes)));
+
+		if ($this->_component !== 'button')
+		{
+			if ($this->_disabled)
+			{
+				$classes[] = 'disabled';
+			}
+
+			return array_values(array_unique($classes));
+		}
+
+		$variant = '';
+		$has_button = ($this->_color || $this->_compact || $this->_outline);
+		$variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark', 'light', 'link'];
+		$tokens = preg_split('/\s+/', trim((string)$this->_color));
+
+		foreach ($tokens as $token)
+		{
+			if ($token === '')
+			{
+				continue;
+			}
+
+			if ($token === 'hb-btn')
+			{
+				$has_button = TRUE;
+				continue;
+			}
+
+			if ($token === 'hb-btn-sm' || $token === 'sm')
+			{
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-sm';
+				continue;
+			}
+
+			if ($token === 'hb-btn-lg' || $token === 'lg')
+			{
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-lg';
+				continue;
+			}
+
+			if ($token === 'hb-btn-block' || $token === 'block')
+			{
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-block';
+				continue;
+			}
+
+			if ($token === 'hb-btn-soft' || $token === 'soft')
+			{
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-soft';
+				continue;
+			}
+
+			if ($token === 'hb-btn-outline' || $token === 'outline')
+			{
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-outline';
+				continue;
+			}
+
+			if (strpos($token, 'hb-btn-outline-') === 0)
+			{
+				$token = substr($token, 15);
+				$has_button = TRUE;
+				$classes[] = 'hb-btn-outline';
+			}
+			else if (strpos($token, 'hb-btn-') === 0)
+			{
+				$token = substr($token, 7);
+				$has_button = TRUE;
+			}
+
+			if (in_array($token, $variants))
+			{
+				$variant = $token;
+				continue;
+			}
+
+			$classes[] = $token;
+		}
+
+		if ($this->_outline)
+		{
+			$has_button = TRUE;
+			$classes[] = 'hb-btn-outline';
+		}
+
+		if ($this->_compact)
+		{
+			$has_button = TRUE;
+			$classes[] = 'hb-btn-sm';
+		}
+
+		if ($has_button)
+		{
+			$classes[] = 'hb-btn';
+			$classes[] = 'hb-btn-'.($variant ?: 'secondary');
+		}
+
+		if ($this->_disabled)
+		{
+			$classes[] = 'disabled';
+		}
+
+		return array_values(array_unique(array_filter($classes)));
 	}
 }
 

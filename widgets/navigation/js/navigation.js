@@ -1,27 +1,38 @@
 $(function(){
 	var close = function($menu, $parent){
-		$menu.next('.nav').slideUp(function(){
-			$parent.removeClass('active');
-		});
+		$menu.next('.nav').stop(true, true).slideUp(140);
+		$parent.removeClass('active');
 	};
 
 	$('.nav .nav-link[data-toggle="collapse"]').each(function(){
 		var $menu   = $(this);
 		var $parent = $menu.parent();
+		var $subnav = $menu.next('.nav');
 
-		$menu.on('click', function(){
+		if ($menu.hasClass('active') || $parent.hasClass('active'))
+		{
+			$parent.addClass('active');
+			$subnav.show();
+		}
+		else
+		{
+			$parent.removeClass('active');
+			$subnav.hide();
+		}
+
+		$menu.on('click', function(e){
+			e.preventDefault();
+
 			if ($parent.hasClass('active')){
 				close($menu, $parent);
 			}
 			else {
-				$menu.next('.nav').slideDown(function(){
-					$parent.addClass('active');
-				});
+				$parent.addClass('active');
+				$subnav.stop(true, true).slideDown(140);
 
-				$menu.parents('.nav').find('.nav-link[data-toggle="collapse"]').each(function(){
-					if ($menu[0] != $(this)[0]){
-						close($(this), $(this).parent());
-					}
+				$parent.siblings('.nav-item').each(function(){
+					var $sibling = $(this);
+					close($sibling.children('.nav-link[data-toggle="collapse"]'), $sibling);
 				});
 			}
 		});

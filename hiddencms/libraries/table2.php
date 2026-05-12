@@ -185,7 +185,8 @@ class Table2 extends Library
 		$panel = parent	::panel()
 						->heading()
 						->heading_if($this->_filters, function($filters){
-							$output = $this	->button('Filtrer', 'fas fa-filter', 'light btn-sm')
+							$output = $this	->button('Filtrer', 'fas fa-filter', 'light')
+											->compact()
 											->align('right')
 											->modal($this	->_filters
 															->info('<small>Le caractère % permet des recherches partielles</small>')
@@ -198,7 +199,7 @@ class Table2 extends Library
 							if ($this->session->get('table2', 'filters', $this->_filters->__id()))
 							{
 								$output = $this	->html()
-												->attr('class', 'btn-group')
+												->attr('class', 'hb-btn-group')
 												->align('right')
 												->append($output)
 												->append($this->_filters_reset());
@@ -373,49 +374,53 @@ class Table2 extends Library
 				unset($this->_columns[$i]);
 			}
 
+			$rows = [];
 			$i = 0;
 
-			$table = $this	->html('table')
-							->attr('class', 'table table-hover table-striped')
-							->content($this	->html('tbody')
-											->content(array_map(function($row) use ($table_id, &$i){
-												return $this->html('tr')
-															->content(array_map(function($col) use ($table_id, $row, $i){
-																return $col->display($table_id, $i, $row);
-															}, $this->_columns))
-															->exec(function() use (&$i){
-																$i++;
-															});
-											}, $data)));
+			foreach ($data as $row)
+			{
+				$cells = array_map(function($col) use ($table_id, $row, $i){
+					return $col->display($table_id, $i, $row);
+				}, $this->_columns);
+
+				$rows[] = $this->render_row($cells);
+				$i++;
+			}
+
+			$thead = '';
 
 			if ($this->_has_header())
 			{
 				$i = 0;
 
-				$table->prepend($this	->html('thead')
-										->content($this	->html('tr')
-														->content(array_map(function($col) use (&$i, $sorts){
-															return $col->header($sorts, $i++);
-														}, $this->_columns))));
+				$head_cells = array_map(function($col) use (&$i, $sorts){
+					return $col->header($sorts, $i++);
+				}, $this->_columns);
+
+				$thead = (string)$this	->html('thead')
+									->content($this->render_head_row($head_cells));
 			}
 
-			$output .= $table->__toString();
+			$tbody = (string)$this	->html('tbody')
+								->content($rows);
+
+			$output .= $this->render_table($thead, $tbody);
 		}
 		else
 		{
 			$this->_data = NULL;
-			$output .= $this->html()
-							->attr('class', 'table-empty')
-							->exec(function($html){
-								if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
-								{
-									$html->content(HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger btn-sm'));
-								}
-								else
-								{
-									$html->content(HB()->lang($this->_no_data ?: 'Il n\'y a rien ici pour le moment'));
-								}
-							});
+			$message = '';
+
+			if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
+			{
+				$message = HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger')->compact();
+			}
+			else
+			{
+				$message = HB()->lang($this->_no_data ?: 'Il n\'y a rien ici pour le moment');
+			}
+
+			$output .= $this->render_empty($message);
 		}
 
 		if ($ajax)
@@ -444,12 +449,161 @@ class Table2 extends Library
 		return $this->button()
 					->tooltip('Retirer tous les filtres')
 					->icon('fas fa-times')
-					->color('light text-danger btn-sm')
+					->color('danger')
+					->outline()
+					->compact()
 					->url($this->url->query($this->input->get	->clone()
 																->merge([
 																	'table_id' => $this->__id(),
 																	'action'   => 'reset_filters'
 																])));
+	}
+
+	private function render_table($thead, $tbody)
+	{
+		$data = [
+			'table_class' => 'table table-hover table-striped',
+			'thead'       => $thead,
+			'tbody'       => $tbody
+		];
+
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/table.twig', $paths))
+			{
+				return (string)$theme->view('components/table2/table.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/table2/table.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/table2/table.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/table.twig', $paths))
+		{
+			return (string)HB()->view('components/table2/table.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/table2/table.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/table2/table.tpl.php', $data);
+		}
+
+		return '<table class="'.$data['table_class'].'">'.$thead.$tbody.'</table>';
+	}
+
+	private function render_row(array $cells)
+	{
+		$data = [
+			'cells' => $cells
+		];
+
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/row.twig', $paths))
+			{
+				return (string)$theme->view('components/table2/row.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/table2/row.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/table2/row.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/row.twig', $paths))
+		{
+			return (string)HB()->view('components/table2/row.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/table2/row.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/table2/row.tpl.php', $data);
+		}
+
+		return '<tr>'.implode('', $cells).'</tr>';
+	}
+
+	private function render_head_row(array $cells)
+	{
+		$data = [
+			'cells' => $cells
+		];
+
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/head_row.twig', $paths))
+			{
+				return (string)$theme->view('components/table2/head_row.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/table2/head_row.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/table2/head_row.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/head_row.twig', $paths))
+		{
+			return (string)HB()->view('components/table2/head_row.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/table2/head_row.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/table2/head_row.tpl.php', $data);
+		}
+
+		return '<tr>'.implode('', $cells).'</tr>';
+	}
+
+	private function render_empty($message)
+	{
+		$data = [
+			'class'   => 'table-empty',
+			'message' => $message
+		];
+
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/empty.twig', $paths))
+			{
+				return (string)$theme->view('components/table2/empty.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/table2/empty.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/table2/empty.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/empty.twig', $paths))
+		{
+			return (string)HB()->view('components/table2/empty.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/table2/empty.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/table2/empty.tpl.php', $data);
+		}
+
+		return '<div class="'.$data['class'].'">'.$message.'</div>';
 	}
 }
 

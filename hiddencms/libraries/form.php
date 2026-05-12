@@ -445,16 +445,16 @@ class Form extends Library
 							'.$message.'
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">'.HB()->lang('Annuler').'</button>
-							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">'.HB()->lang('Supprimer').'</a>
+							<button type="button" class="hb-btn hb-btn-secondary" data-dismiss="modal">'.HB()->lang('Annuler').'</button>
+							<a class="hb-btn hb-btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">'.HB()->lang('Supprimer').'</a>
 						</div>';
 			}
 			else
 			{
 				//TODO
 				/*return 	'<p>'.$message.'</p><p>
-							<button type="button" class="btn btn-secondary" onclick="$(this).parents(\'.alert\').alert(\'close\');">Annuler</button>
-							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">Supprimer</a>
+							<button type="button" class="hb-btn hb-btn-secondary" onclick="$(this).parents(\'.alert\').alert(\'close\');">Annuler</button>
+							<a class="hb-btn hb-btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">Supprimer</a>
 						</p>';*/
 			}
 
@@ -573,11 +573,11 @@ class Form extends Library
 	{
 		if (isset($button['type']) && $button['type'] == 'submit')
 		{
-			return '<button class="btn btn-primary" type="submit">'.$button['label'].'</button>';
+			return '<button class="hb-btn hb-btn-primary" type="submit">'.$button['label'].'</button>';
 		}
 		else if (!empty($button['label']) && !empty($button['action']))
 		{
-			return '<a href="'.url($button['action']).'" class="btn btn-secondary">'.$button['label'].'</a>';
+			return '<a href="'.url($button['action']).'" class="hb-btn hb-btn-secondary">'.$button['label'].'</a>';
 		}
 
 		return '';
@@ -746,7 +746,7 @@ class Form extends Library
 										<div class="thumbnail">
 											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
 											<div class="caption text-center">
-												<a class="btn btn-outline-danger btn-block btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
+												<a class="hb-btn hb-btn-danger hb-btn-outline hb-btn-block hb-btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
 											</div>
 										</div>
 									</div>
@@ -777,7 +777,7 @@ class Form extends Library
 	{
 		HB()	->css('bootstrap-iconpicker.min')
 					->js('bootstrap-iconpicker.bundle.min')
-					->js_load('	$(".btn.iconpicker").iconpicker({
+					->js_load('	$(".hb-btn.iconpicker").iconpicker({
 									arrowPrevIconClass: "fas fa-caret-left",
 									arrowNextIconClass: "fas fa-caret-right",
 									cols: 10,
@@ -786,11 +786,11 @@ class Form extends Library
 									labelHeader: "'.HB()->lang('{0} sur {1} pages').'",
 									labelFooter: "<div class=\"float-right\">'.HB()->lang('{2} icônes').'</div>",
 									searchText: "'.HB()->lang('Rechercher...').'",
-									selectedClass: "btn-primary",
+									selectedClass: "hb-btn-primary",
 									unselectedClass: ""
 								});');
 
-		return '<button id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']" class="btn btn-light'.((isset($this->_errors[$var])) ? ' btn-danger' : '').' iconpicker" data-icon="'.addcslashes($this->_display_value($var, $options), '"').'"></button>';
+		return '<button id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']" class="hb-btn hb-btn-light'.((isset($this->_errors[$var])) ? ' hb-btn-danger' : '').' iconpicker" data-icon="'.addcslashes($this->_display_value($var, $options), '"').'"></button>';
 	}
 
 	private function _display_colorpicker($var, $options, $post)

@@ -25,37 +25,36 @@ class Panel extends Library
 
 	public function __toString()
 	{
-		$output = '';
+		$data = $this->template_data();
 
-		if ($this->_heading)
+		if ($theme = $this->output->theme())
 		{
-			$headers = $this->_heading;
+			$paths = [];
 
-			$headers[] = array_shift($headers);
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/panel.twig', $paths))
+			{
+				return (string)$theme->view('components/panel.twig', $data);
+			}
 
-			$output = $this	->button
-							->static_footer($headers, 'left')
-							->append_attr('class', 'card-header')
-							->tag('h6');
+			if ($theme->__path('views', 'components/panel.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/panel.tpl.php', $data);
+			}
 		}
 
-		if ($this->_body)
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/panel.twig', $paths))
 		{
-			$output .= $this->_body_tags ? '<div class="card-body">'.$this->_body.'</div>' : $this->_body;
+			return (string)HB()->view('components/panel.twig', $data);
 		}
 
-		$table = $this	->html()
-						->attr('class', 'card')
-						->append_attr_if($this->_style, 'class', $this->_style)
-						->content($output)
-						->append_if($this->_footer, $this->button->static_footer($this->_footer)->append_attr('class', 'card-footer'));
-
-		foreach ($this->_data as $key => $value)
+		if (HB()->__path('views', 'components/panel.tpl.php', $paths))
 		{
-			$table->attr('data-'.$key, $value);
+			return (string)HB()->view('components/panel.tpl.php', $data);
 		}
 
-		return (string)$table;
+		return $data['legacy'];
 	}
 
 	public function title($label = '', $icon = '')
@@ -178,6 +177,64 @@ class Panel extends Library
 		{
 			return $this->_size;
 		}
+	}
+
+	private function template_data()
+	{
+		$header = '';
+
+		if ($this->_heading)
+		{
+			$headers = $this->_heading;
+
+			$header = (string)$this	->button
+								->static_footer($headers, 'left')
+								->append_attr('class', 'card-header')
+								->tag('h6');
+		}
+
+		$footer = $this->_footer ? (string)$this->button->static_footer($this->_footer)->append_attr('class', 'card-footer') : '';
+		$class = trim('card '.($this->_style ?: ''));
+
+		$attrs = [];
+
+		foreach ($this->_data as $key => $value)
+		{
+			$attrs['data-'.$key] = $value;
+		}
+
+		$legacy = '<div class="'.$class.'"'.$this->render_attrs($attrs).'>'
+				.$header
+				.($this->_body ? ($this->_body_tags ? '<div class="card-body">'.$this->_body.'</div>' : $this->_body) : '')
+				.$footer
+				.'</div>';
+
+		return [
+			'class'     => $class,
+			'attrs'     => $this->render_attrs($attrs),
+			'header'    => $header,
+			'body'      => (string)$this->_body,
+			'body_wrap' => (bool)$this->_body_tags,
+			'footer'    => $footer,
+			'legacy'    => $legacy
+		];
+	}
+
+	private function render_attrs($attrs)
+	{
+		$output = '';
+
+		foreach ($attrs as $key => $value)
+		{
+			$output .= ' '.$key;
+
+			if ($value !== NULL)
+			{
+				$output .= '="'.utf8_htmlentities($value).'"';
+			}
+		}
+
+		return $output;
 	}
 }
 

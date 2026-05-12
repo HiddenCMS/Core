@@ -10,9 +10,14 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
+	private function outline_model()
+	{
+		return $this->module->model2('outline');
+	}
+
 	public function index($page = '')
 	{
-		return [$this->module->pagination->get_data($this->model()->get_outlines(), $page)];
+		return [$this->module->pagination->get_data($this->outline_model()->get_outlines(), $page)];
 	}
 
 	public function add()
@@ -22,7 +27,7 @@ class Admin_Checker extends Module_Checker
 
 	public function _edit($outline_id, $title)
 	{
-		if ($outline = $this->model()->check_outline($outline_id, $title, TRUE))
+		if ($outline = $this->outline_model()->check_outline($outline_id, $title, TRUE))
 		{
 			return [
 				$outline['outline_id'],
@@ -37,7 +42,7 @@ class Admin_Checker extends Module_Checker
 
 	public function _duplicate($outline_id)
 	{
-		if ($outline = $this->model()->get_outline_by_id($outline_id))
+		if ($outline = $this->outline_model()->get_outline_by_id($outline_id))
 		{
 			return [$outline];
 		}
@@ -45,7 +50,7 @@ class Admin_Checker extends Module_Checker
 
 	public function _delete($outline_id)
 	{
-		if (($outline = $this->model()->get_outline_by_id($outline_id)) && !$outline['base'])
+		if (($outline = $this->outline_model()->get_outline_by_id($outline_id)) && !$outline['base'])
 		{
 			return [$outline];
 		}

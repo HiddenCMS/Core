@@ -19,6 +19,7 @@
         "source": "https://github.com/HiddenCMS/Core"
     },
     "require": {
+        "twig/twig": "3.21.*",
         "phpmailer/phpmailer": "^6.9.2",
         "scssphp/scssphp": "^2.0.1",
         "socialconnect/auth": "^3.0",

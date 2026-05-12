@@ -24,8 +24,8 @@ class Outlines extends Module
 			'routes'      => [
 				'admin{pages}'            => 'index',
 				'admin/add'               => 'add',
-				'admin/{id}/duplicate'    => '_duplicate',
-				'admin/{id}/delete'       => '_delete',
+				'admin/ajax/{id}/duplicate' => '_duplicate',
+				'admin/ajax/{id}/delete'    => '_delete',
 				'admin/{id}/{url_title*}' => '_edit'
 			]
 		];

@@ -14,12 +14,9 @@ class Submit extends Button
 	{
 		parent::__invoke();
 
-		$this->_template[] = function(&$content, &$attrs, &$tag){
-			$attrs['type'] = 'submit';
-			$tag = 'button';
-		};
-
 		return $this->title($title ?: $this->lang('Valider'))
+					->tag('button')
+					->attr('type', 'submit')
 					->color($color);
 	}
 }

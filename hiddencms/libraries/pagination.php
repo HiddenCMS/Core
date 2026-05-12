@@ -185,7 +185,7 @@ class Pagination extends Library
 		{
 			if ($p == '...')
 			{
-				$buttons[] = '<span class="btn btn-light">'.$p.'</span>';
+				$buttons[] = '<span class="hb-btn hb-btn-light">'.$p.'</span>';
 			}
 			else
 			{
@@ -198,7 +198,7 @@ class Pagination extends Library
 					$url->prepend(is_empty($base_url) ? 'index' : $base_url);
 				}
 
-				$buttons[] = '<a class="btn '.(($current_page == $p) ? 'btn-primary' : 'btn-light').'" href="'.url($url->implode('/')).(!empty($_GET) ? '?'.http_build_query($_GET, NULL, '&', PHP_QUERY_RFC3986) : '').'">'.$p.'</a>';
+				$buttons[] = '<a class="hb-btn '.(($current_page == $p) ? 'hb-btn-primary' : 'hb-btn-light').'" href="'.url($url->implode('/')).(!empty($_GET) ? '?'.http_build_query($_GET, NULL, '&', PHP_QUERY_RFC3986) : '').'">'.$p.'</a>';
 			}
 		}
 

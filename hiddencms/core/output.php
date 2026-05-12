@@ -388,11 +388,6 @@ class Output extends Core
 				}
 			}
 
-			if (!$this->url->ajax() && $this->user->admin && $this->url->request != 'admin/monitoring' && parent::module('monitoring')->need_checking())
-			{
-				$this->js_load('$.post(\''.url('admin/ajax/monitoring.json').'\', {refresh: false});');
-			}
-
 			$output = $this->_theme->view('theme/main', [
 				'title'     => call_user_func($this->_title),
 				'body'      => $body,

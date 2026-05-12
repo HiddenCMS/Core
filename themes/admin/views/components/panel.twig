@@ -1,0 +1,14 @@
+{% set panel_class = class|replace({'card':'hb-panel'})|trim %}
+{% set panel_header = header|replace({'card-header':'hb-panel-header'}) %}
+{% set panel_footer = footer|replace({'card-footer':'hb-panel-footer'}) %}
+<div class="{{ panel_class }}"{{ attrs|raw }}>
+	{{ panel_header|raw }}
+	{% if body is not empty %}
+		{% if body_wrap %}
+			<div class="hb-panel-body">{{ body|raw }}</div>
+		{% else %}
+			{{ body|raw }}
+		{% endif %}
+	{% endif %}
+	{{ panel_footer|raw }}
+</div>

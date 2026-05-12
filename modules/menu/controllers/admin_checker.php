@@ -27,6 +27,8 @@ class Admin_Checker extends Module_Checker
 			$this->error->unauthorized();
 		}
 
+		$this->ajax();
+
 		return [];
 	}
 
@@ -36,6 +38,8 @@ class Admin_Checker extends Module_Checker
 		{
 			$this->error->unauthorized();
 		}
+
+		$this->ajax();
 
 		if ($menu = $this->menu_model()->check_menu($menu_id, $name))
 		{
@@ -78,6 +82,8 @@ class Admin_Checker extends Module_Checker
 			$this->error->unauthorized();
 		}
 
+		$this->ajax();
+
 		if ($menu = $this->menu_model()->check_menu($menu_id, $name))
 		{
 			return [$menu];
@@ -90,6 +96,8 @@ class Admin_Checker extends Module_Checker
 		{
 			$this->error->unauthorized();
 		}
+
+		$this->ajax();
 
 		if (($menu = $this->menu_model()->check_menu($menu_id, $name)) && ($item = $this->menu_model()->check_item($item_id, $menu_id)))
 		{

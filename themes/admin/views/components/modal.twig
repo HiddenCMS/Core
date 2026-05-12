@@ -1,0 +1,13 @@
+<div id="{{ id }}" class="modal fade hb-modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog{{ size }}" role="document">
+		<div class="modal-content">
+			{% if has_form %}
+				<form action="{{ form_action }}" method="{{ form_method }}" class="hb-modal-form">
+					{{ content|raw }}
+				</form>
+			{% else %}
+				{{ content|raw }}
+			{% endif %}
+		</div>
+	</div>
+</div>

@@ -26,7 +26,7 @@ class Admin extends Controller_Module
 
 		if (($outlines_module = @HB()->module('outlines')) && $outlines_module->is_enabled())
 		{
-			foreach ($outlines_module->model()->get_outlines(TRUE) as $outline)
+			foreach ($outlines_module->model2('outline')->get_outlines(TRUE) as $outline)
 			{
 				$outlines[$outline['outline_id']] = $outline['title'];
 			}

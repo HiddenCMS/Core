@@ -1,0 +1,12 @@
+<div id="{{ id }}" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog{{ size }}">
+		{% if has_form %}
+			<form action="{{ form_action }}" method="{{ form_method }}">
+				<div class="modal-content">{{ content|raw }}</div>
+			</form>
+		{% else %}
+			<div class="modal-content">{{ content|raw }}</div>
+		{% endif %}
+	</div>
+</div>
+

@@ -65,10 +65,17 @@ class Table_Col extends Library
 
 	public function display($table, $i, $data)
 	{
-		return $this->html('td')
-					->attr_if($this->_align, 'class', 'text-'.$this->_align)
-					->append_attr_if($this->_style, 'class', implode(' ', $this->_style))
-					->content($this->execute($table, $i, $data));
+		$content = $this->execute($table, $i, $data);
+		$class = trim(($this->_align ? 'text-'.$this->_align : '').' '.implode(' ', $this->_style));
+
+		return $this->render_component('cell', [
+			'class'   => $class,
+			'content' => $content
+		], function() use ($class, $content){
+			return $this->html('td')
+						->attr_if($class, 'class', $class)
+						->content($content);
+		});
 	}
 
 	public function execute($table, $i, $data)
@@ -158,11 +165,16 @@ class Table_Col extends Library
 			$header = '<a href="#" data-col="'.$i.'">'.$header.'</a>';
 		}
 
-		return $this->html('th')
-					->attr_if($this->_align,        'class', 'text-'.$this->_align)
-					->append_attr_if($this->_size,  'class', $this->_size)
-					->append_attr_if($this->_style, 'class', implode(' ', $this->_style))
-					->content($header);
+		$class = trim(($this->_align ? 'text-'.$this->_align : '').' '.($this->_size ?: '').' '.implode(' ', $this->_style));
+
+		return $this->render_component('head_cell', [
+			'class'   => $class,
+			'content' => $header
+		], function() use ($class, $header){
+			return $this->html('th')
+						->attr_if($class, 'class', $class)
+						->content($header);
+		});
 	}
 
 	public function has_header()
@@ -195,6 +207,38 @@ class Table_Col extends Library
 
 			return implode(', ', $output);
 		}
+	}
+
+	private function render_component($component, array $data, $fallback)
+	{
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/'.$component.'.twig', $paths))
+			{
+				return (string)$theme->view('components/table2/'.$component.'.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/table2/'.$component.'.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/table2/'.$component.'.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/'.$component.'.twig', $paths))
+		{
+			return (string)HB()->view('components/table2/'.$component.'.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/table2/'.$component.'.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/table2/'.$component.'.tpl.php', $data);
+		}
+
+		return (string)call_user_func($fallback);
 	}
 }
 

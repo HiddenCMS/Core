@@ -16,7 +16,7 @@ class Create extends Library
 					->title($title)
 					->url($url)
 					->icon($icon)
-					->color('primary');
+					->style('hb-btn hb-btn-primary');
 	}
 }
 

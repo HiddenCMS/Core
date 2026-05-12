@@ -170,7 +170,7 @@ class Pages extends Model
 	{
 		if (($module = @HiddenCMS()->module('outlines')) && $module->is_enabled())
 		{
-			return $module->model()->get_outline_choices();
+			return $module->model2('outline')->get_outline_choices();
 		}
 
 		return [];

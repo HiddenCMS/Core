@@ -36,15 +36,55 @@
 $(function(){
 	$('body').trigger('nf.load');
 
-	$('body').popover({
-		selector: '[data-toggle=popover]',
-		container: 'body',
-		trigger: 'hover'
-	});
+	if ($.fn.popup)
+	{
+		$('[data-toggle=tooltip]').each(function(){
+			var $el = $(this);
+			var content = $el.attr('title') || $el.attr('data-original-title') || '';
 
-	$('body').tooltip({
-		selector: '[data-toggle=tooltip]'
-	});
+			if (!content)
+			{
+				return;
+			}
+
+			$el.removeAttr('title');
+			$el.popup({
+				content: content,
+				variation: 'tiny',
+				position: $el.data('placement') || 'top center'
+			});
+		});
+
+		$('[data-toggle=popover]').each(function(){
+			var $el = $(this);
+			var title = $el.attr('title') || '';
+			var content = $el.attr('data-content') || '';
+
+			if (!content)
+			{
+				return;
+			}
+
+			$el.popup({
+				html: (title ? '<div class=\"header\">'+title+'</div>' : '')+'<div class=\"content\">'+content+'</div>',
+				on: $el.data('trigger') || 'hover',
+				position: $el.data('placement') || 'top center',
+				hoverable: true
+			});
+		});
+	}
+	else if ($.fn.popover && $.fn.tooltip)
+	{
+		$('body').popover({
+			selector: '[data-toggle=popover]',
+			container: 'body',
+			trigger: 'hover'
+		});
+
+		$('body').tooltip({
+			selector: '[data-toggle=tooltip]'
+		});
+	}
 
 	<?php echo $this->output->js_load() ?>
 });

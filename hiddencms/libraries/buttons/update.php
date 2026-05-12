@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michael BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Buttons;
@@ -13,13 +13,10 @@ class Update extends Library
 	public function __invoke($url = '', $title = '')
 	{
 		return $this->button()
-					->tooltip($title ?: $this->lang('Éditer'))
+					->component('buttons/update')
+					->tooltip($title ?: $this->lang('Editer'))
 					->url($url)
 					->icon('fas fa-pencil-alt')
-					->color('info')
-					->compact()
-					->outline();
+					->style('hb-btn hb-btn-info hb-btn-sm hb-btn-icon');
 	}
 }
-
-

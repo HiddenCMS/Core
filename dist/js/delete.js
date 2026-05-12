@@ -1,19 +1,11 @@
 $(function(){
-	$('body').on('click', 'a.delete', function(){
-		if (!$('.delete.alert').length){
-			$.ajax({
-				url: $(this).attr('href'),
-				dataType: 'text',
-				success: function(data){
-					$('	<div class="modal fade" tabindex="-1" role="dialog">\
-							<div class="modal-dialog">\
-								<div class="modal-content">\
-									'+data+'\
-								</div>\
-							</div>\
-						</div>').appendTo('body').modal();
-				}
-			});
+	$('body').on('click', 'a.delete', function(e){
+		e.preventDefault();
+
+		if (typeof modal !== 'undefined' && typeof modal.load === 'function')
+		{
+			modal.load($(this).attr('href'));
+			return false;
 		}
 
 		return false;
@@ -27,7 +19,12 @@ $(function(){
 			dataType: 'text',
 			success: function(data){
 				if (data == 'OK'){
-					$(anchor).parents('.alert').alert('close');
+					if (typeof $(anchor).parents('.alert').alert === 'function'){
+						$(anchor).parents('.alert').alert('close');
+					}
+					else{
+						$(anchor).parents('.alert').remove();
+					}
 					if ((table = $(anchor).parents('.alert').nextAll('.table-area')).length){
 						$.ajax({
 							url: window.location.pathname,

@@ -37,51 +37,8 @@ class Modal extends Library
 
 	public function __toString()
 	{
-		$content = '';
-
-		if ($this->_body)
-		{
-			$content .= $this->_body_tags ? '<div class="modal-body">'.$this->_body.'</div>' : $this->_body;
-		}
-
-		if ($this->_callback)
-		{
-			$this->_callback->check();
-
-			$content .= $this->form_hidden('_', $this->_callback->token());
-		}
-
-		$content = '<div class="modal-header">
-						<h5 class="modal-title">'.$this->_header.'</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"><span aria-hidden="true">&times;</span></button>
-					</div>
-					'.$content.'
-					'.($this->_buttons ? $this->button->static_footer($this->_buttons, 'right')->append_attr('class', 'modal-footer') : '');
-
-		if ($this->_template)
-		{
-			call_user_func_array($this->_template, [&$content]);
-		}
-
-		$content = $this->html()
-						->attr('class', 'modal-content')
-						->content($content);
-
-		if ($this->_callback)
-		{
-			$this->js('form');
-
-			$content = $this->html('form')
-							->attr('action', url($this->url->request))
-							->attr('method', 'post')
-							->content($content);
-		}
-
-		$content = '<div id="'.$this->id.'" class="modal fade" tabindex="-1" role="dialog">
-					<div class="modal-dialog'.($this->_size ? ' modal-'.$this->_size : '').'">
-						'.$content.'
-					</div>
-				</div>';
+		$data = $this->template_data();
+		$content = $this->render_template($data);
 
 		if ($this->url->ajax())
 		{
@@ -216,6 +173,103 @@ class Modal extends Library
 	{
 		$this->_template = $template;
 		return $this;
+	}
+
+	private function template_data()
+	{
+		$body = '';
+
+		if ($this->_body)
+		{
+			$body .= $this->_body_tags ? '<div class="modal-body">'.$this->_body.'</div>' : $this->_body;
+		}
+
+		if ($this->_callback)
+		{
+			$this->_callback->check();
+			$body .= $this->form_hidden('_', $this->_callback->token());
+		}
+
+		$footer = $this->_buttons ? (string)$this->button->static_footer($this->_buttons, 'right')->append_attr('class', 'modal-footer') : '';
+		$header = '<div class="modal-header">
+						<h5 class="modal-title">'.$this->_header.'</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"><span aria-hidden="true">&times;</span></button>
+					</div>';
+
+		$content = $header.$body.$footer;
+
+		if ($this->_template)
+		{
+			call_user_func_array($this->_template, [&$content]);
+		}
+
+		if ($this->_callback)
+		{
+			$this->js('form');
+		}
+
+		return [
+			'id'          => $this->id,
+			'size'        => $this->_size ? ' modal-'.$this->_size : '',
+			'content'     => $content,
+			'has_form'    => (bool)$this->_callback,
+			'form_action' => url($this->url->request),
+			'form_method' => 'post',
+			'legacy'      => $this->legacy_markup($content)
+		];
+	}
+
+	private function render_template($data)
+	{
+		if ($theme = $this->output->theme())
+		{
+			$paths = [];
+
+			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/modal.twig', $paths))
+			{
+				return (string)$theme->view('components/modal.twig', $data);
+			}
+
+			if ($theme->__path('views', 'components/modal.tpl.php', $paths))
+			{
+				return (string)$theme->view('components/modal.tpl.php', $data);
+			}
+		}
+
+		$paths = [];
+
+		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/modal.twig', $paths))
+		{
+			return (string)HB()->view('components/modal.twig', $data);
+		}
+
+		if (HB()->__path('views', 'components/modal.tpl.php', $paths))
+		{
+			return (string)HB()->view('components/modal.tpl.php', $data);
+		}
+
+		return $data['legacy'];
+	}
+
+	private function legacy_markup($content)
+	{
+		$content = $this->html()
+						->attr('class', 'modal-content')
+						->content($content);
+
+		if ($this->_callback)
+		{
+			$content = $this->html('form')
+							->attr('action', url($this->url->request))
+							->attr('method', 'post')
+							->content($content);
+		}
+
+		return '<div id="'.$this->id.'" class="modal fade" tabindex="-1" role="dialog">
+					<div class="modal-dialog'.($this->_size ? ' modal-'.$this->_size : '').'">
+						'.$content.'
+					</div>
+				</div>';
 	}
 }
 
