@@ -30,9 +30,9 @@
 				<?php if ($this->user()): ?>
 				<div class="card-footer">
 					<?php if ($this->user->id != $member->id): ?>
-						<?php echo $this->button()->label('Contacter')->icon('far fa-envelope')->color('dark')->compact()->url('user/messages/compose/'.$member->url()) ?>
+						<?php echo $this->button()->label('Contacter')->icon('far fa-envelope')->color('dark')->class('hb-btn-sm')->url('user/messages/compose/'.$member->url()) ?>
 					<?php else: ?>
-						<?php echo $this->button()->label('Gérer mon compte')->icon('fas fa-cog')->color('primary')->compact()->url('user') ?>
+						<?php echo $this->button()->label('Gérer mon compte')->icon('fas fa-cog')->color('primary')->class('hb-btn-sm')->url('user') ?>
 					<?php endif ?>
 				</div>
 				<?php endif ?>

@@ -16,7 +16,6 @@ class Update extends Library
 					->component('buttons/update')
 					->tooltip($title ?: $this->lang('Editer'))
 					->url($url)
-					->icon('fas fa-pencil-alt')
-					->style('hb-btn hb-btn-info hb-btn-sm hb-btn-icon');
+					->icon('fas fa-pencil-alt');
 	}
 }

@@ -35,8 +35,7 @@ class Admin extends Controller_Module
 										->tooltip($this->lang('Supprimer'))
 										->icon('far fa-trash-alt')
 										->color('danger')
-										->compact()
-										->outline()
+										->class('hb-btn-sm hb-btn-outline')
 										->modal($this->_delete($outline));
 			}
 

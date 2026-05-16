@@ -15,18 +15,16 @@ class Sort extends Library
 		return $this->js('https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js')
 					->js('sortable')
 					->button()
+					->component('buttons/sort')
 					->tooltip($this->lang('Ordonner'))
 					->icon('fas fa-arrows-alt-v')
-					->color('link')
-					->style('btn-sortable')
+					->class('btn-sortable')
 					->data([
 						'id'     => $id,
 						'update' => url($url),
 						'parent' => $parent,
 						'items'  => $items
-					])
-					->compact()
-					->outline();
+					]);
 	}
 }
 

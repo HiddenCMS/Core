@@ -13,10 +13,10 @@ class Create extends Library
 	public function __invoke($url = '', $title = '', $icon = 'fas fa-plus')
 	{
 		return $this->button()
+					->component('buttons/create')
 					->title($title)
 					->url($url)
-					->icon($icon)
-					->style('hb-btn hb-btn-primary');
+					->icon($icon);
 	}
 }
 

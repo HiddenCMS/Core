@@ -1,1 +1,4 @@
-<<?php echo $tag ?><?php echo $attrs_except_class ?> class="btn btn-outline-danger btn-sm<?php echo $class ? ' '.$class : '' ?>"><?php echo $content ?></<?php echo $tag ?>>
+<?php
+$final_class = trim('hb-btn hb-btn-danger hb-btn-sm hb-btn-icon'.($class ? ' '.$class : ''));
+echo '<'.$tag.$attrs_except_class.' class="'.utf8_htmlentities($final_class).'">'.$content.'</'.$tag.'>';
+?>

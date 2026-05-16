@@ -186,7 +186,7 @@ class Table2 extends Library
 						->heading()
 						->heading_if($this->_filters, function($filters){
 							$output = $this	->button('Filtrer', 'fas fa-filter', 'light')
-											->compact()
+											->class('hb-btn-sm')
 											->align('right')
 											->modal($this	->_filters
 															->info('<small>Le caractère % permet des recherches partielles</small>')
@@ -413,7 +413,7 @@ class Table2 extends Library
 
 			if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
 			{
-				$message = HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger')->compact();
+				$message = HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->color('danger')->class('hb-btn-outline hb-btn-sm');
 			}
 			else
 			{
@@ -450,8 +450,7 @@ class Table2 extends Library
 					->tooltip('Retirer tous les filtres')
 					->icon('fas fa-times')
 					->color('danger')
-					->outline()
-					->compact()
+					->class('hb-btn-outline hb-btn-sm')
 					->url($this->url->query($this->input->get	->clone()
 																->merge([
 																	'table_id' => $this->__id(),
@@ -471,11 +470,6 @@ class Table2 extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/table.twig', $paths))
-			{
-				return (string)$theme->view('components/table2/table.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/table2/table.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/table2/table.tpl.php', $data);
@@ -483,11 +477,6 @@ class Table2 extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/table.twig', $paths))
-		{
-			return (string)HB()->view('components/table2/table.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/table2/table.tpl.php', $paths))
 		{
@@ -507,11 +496,6 @@ class Table2 extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/row.twig', $paths))
-			{
-				return (string)$theme->view('components/table2/row.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/table2/row.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/table2/row.tpl.php', $data);
@@ -519,11 +503,6 @@ class Table2 extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/row.twig', $paths))
-		{
-			return (string)HB()->view('components/table2/row.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/table2/row.tpl.php', $paths))
 		{
@@ -543,11 +522,6 @@ class Table2 extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/head_row.twig', $paths))
-			{
-				return (string)$theme->view('components/table2/head_row.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/table2/head_row.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/table2/head_row.tpl.php', $data);
@@ -555,11 +529,6 @@ class Table2 extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/head_row.twig', $paths))
-		{
-			return (string)HB()->view('components/table2/head_row.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/table2/head_row.tpl.php', $paths))
 		{
@@ -580,11 +549,6 @@ class Table2 extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/empty.twig', $paths))
-			{
-				return (string)$theme->view('components/table2/empty.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/table2/empty.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/table2/empty.tpl.php', $data);
@@ -592,11 +556,6 @@ class Table2 extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/empty.twig', $paths))
-		{
-			return (string)HB()->view('components/table2/empty.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/table2/empty.tpl.php', $paths))
 		{

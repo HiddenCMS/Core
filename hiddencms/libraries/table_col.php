@@ -215,11 +215,6 @@ class Table_Col extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/table2/'.$component.'.twig', $paths))
-			{
-				return (string)$theme->view('components/table2/'.$component.'.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/table2/'.$component.'.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/table2/'.$component.'.tpl.php', $data);
@@ -227,11 +222,6 @@ class Table_Col extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/table2/'.$component.'.twig', $paths))
-		{
-			return (string)HB()->view('components/table2/'.$component.'.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/table2/'.$component.'.tpl.php', $paths))
 		{

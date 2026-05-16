@@ -37,11 +37,6 @@ class View extends Library
 			{
 				$this->_path = $path;
 
-				if (substr($path, -5) == '.twig')
-				{
-					return $this->render_twig($path);
-				}
-
 				return $this->render_php($path);
 			}
 		}
@@ -60,14 +55,13 @@ class View extends Library
 	{
 		$name = trim((string)$this->_name);
 
-		if (preg_match('/\.(?:twig|tpl\.php)$/', $name))
+		if (preg_match('/\.tpl\.php$/', $name))
 		{
 			return [$name];
 		}
 
 		return [
-			$name.'.tpl.php',
-			$name.'.twig'
+			$name.'.tpl.php'
 		];
 	}
 
@@ -80,44 +74,6 @@ class View extends Library
 		include $path;
 
 		return ob_get_clean();
-	}
-
-	private function render_twig($path)
-	{
-		if (!class_exists('\Twig\Environment'))
-		{
-			trigger_error('Twig is not installed. Please run composer install/update.', E_USER_WARNING);
-			return '';
-		}
-
-		static $twig = [];
-
-		$dir = dirname($path);
-
-		if (!isset($twig[$dir]))
-		{
-			$loader = new \Twig\Loader\FilesystemLoader([$dir]);
-			$twig[$dir] = new \Twig\Environment($loader, [
-				'cache'       => FALSE,
-				'autoescape'  => FALSE,
-				'debug'       => FALSE,
-				'strict_variables' => FALSE
-			]);
-
-			$twig[$dir]->addFunction(new \Twig\TwigFunction('icon', function($name){
-				return icon($name);
-			}));
-
-			$twig[$dir]->addFunction(new \Twig\TwigFunction('url', function($value = ''){
-				return url($value);
-			}));
-
-			$twig[$dir]->addFunction(new \Twig\TwigFunction('lang', function(...$args){
-				return call_user_func_array([$this, 'lang'], $args);
-			}));
-		}
-
-		return $twig[$dir]->render(basename($path), $this->_data);
 	}
 }
 

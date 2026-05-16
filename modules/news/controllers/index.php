@@ -53,7 +53,7 @@ class Index extends Controller_Module
 	{
 		$news = $this->index($news);
 
-		$news->prepend($this->panel()->body('<h3 class="m-0">'.$filter.$this->button()->tooltip($this->lang('Voir toutes les actualités'))->icon('fas fa-times')->url($this->module->index_path())->color('danger float-right')->compact()->outline().'</h3>'));
+		$news->prepend($this->panel()->body('<h3 class="m-0">'.$filter.$this->button()->tooltip($this->lang('Voir toutes les actualités'))->icon('fas fa-times')->url($this->module->index_path())->color('danger float-right')->class('hb-btn-sm hb-btn-outline').'</h3>'));
 
 		return $news;
 	}

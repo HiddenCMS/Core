@@ -31,11 +31,6 @@ class Panel extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/panel.twig', $paths))
-			{
-				return (string)$theme->view('components/panel.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/panel.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/panel.tpl.php', $data);
@@ -43,11 +38,6 @@ class Panel extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/panel.twig', $paths))
-		{
-			return (string)HB()->view('components/panel.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/panel.tpl.php', $paths))
 		{

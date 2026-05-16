@@ -16,7 +16,6 @@ class Duplicate extends Library
 					->component('buttons/duplicate')
 					->tooltip($title ?: $this->lang('Dupliquer'))
 					->url($url)
-					->icon('far fa-copy')
-					->style('hb-btn hb-btn-secondary hb-btn-sm hb-btn-icon');
+					->icon('far fa-copy');
 	}
 }

@@ -18,7 +18,6 @@ class Delete extends Library
 					->tooltip($title ?: $this->lang('Supprimer'))
 					->url($url)
 					->icon('fas fa-times')
-					->style_if($url, 'delete')
-					->style('hb-btn hb-btn-danger hb-btn-sm hb-btn-icon');
+					->class_if($url, 'delete');
 	}
 }

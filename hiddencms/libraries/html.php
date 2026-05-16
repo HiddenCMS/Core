@@ -53,7 +53,16 @@ class Html extends Library
 			$value = $key.($value !== NULL ? '="'.$value.'"' : '');
 		});
 
-		$content = '<'.implode(' ', array_merge([$tag], $attrs)).'>'.($content || $this->_end_tag ? $content.'</'.$tag.'>' : '');
+		$rendered = $this->_render_with_template($tag, $attrs, $content);
+
+		if ($rendered === NULL)
+		{
+			$content = '<'.implode(' ', array_merge([$tag], $attrs)).'>'.($content || $this->_end_tag ? $content.'</'.$tag.'>' : '');
+		}
+		else
+		{
+			$content = $rendered;
+		}
 
 		if ($this->_container)
 		{
@@ -71,6 +80,34 @@ class Html extends Library
 	public function attr($name, $value = NULL)
 	{
 		$this->_attrs[$name] = $value;
+		return $this;
+	}
+
+	public function class($class = '', $append = TRUE)
+	{
+		if (!func_num_args())
+		{
+			return isset($this->_attrs['class']) ? trim((string)$this->_attrs['class']) : '';
+		}
+
+		$class = trim(is_array($class) ? implode(' ', $class) : (string)$class);
+
+		if ($class === '')
+		{
+			return $this;
+		}
+
+		if ($append && !empty($this->_attrs['class']))
+		{
+			$this->_attrs['class'] .= ' '.$class;
+		}
+		else
+		{
+			$this->_attrs['class'] = $class;
+		}
+
+		$this->_attrs['class'] = implode(' ', array_values(array_unique(array_filter(preg_split('/\s+/', $this->_attrs['class'])))));
+
 		return $this;
 	}
 
@@ -130,6 +167,35 @@ class Html extends Library
 		{
 			return $this->_align;
 		}
+	}
+
+	protected function _render_with_template($tag, array $attrs, $content)
+	{
+		$paths = [];
+		$tag = strtolower((string)$tag);
+		$templates = [
+			'components/html/'.$tag.'.tpl.php',
+			'components/html/default.tpl.php'
+		];
+
+		foreach ($templates as $template)
+		{
+			if ($path = $this->__caller->__path('views', $template, $paths))
+			{
+				ob_start();
+
+				$element_tag = $tag;
+				$element_attrs = $attrs;
+				$element_content = $content;
+				$element_end_tag = (bool)$this->_end_tag;
+
+				include $path;
+
+				return ob_get_clean();
+			}
+		}
+
+		return NULL;
 	}
 }
 

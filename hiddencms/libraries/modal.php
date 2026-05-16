@@ -225,11 +225,6 @@ class Modal extends Library
 		{
 			$paths = [];
 
-			if (class_exists('\Twig\Environment') && $theme->__path('views', 'components/modal.twig', $paths))
-			{
-				return (string)$theme->view('components/modal.twig', $data);
-			}
-
 			if ($theme->__path('views', 'components/modal.tpl.php', $paths))
 			{
 				return (string)$theme->view('components/modal.tpl.php', $data);
@@ -237,11 +232,6 @@ class Modal extends Library
 		}
 
 		$paths = [];
-
-		if (class_exists('\Twig\Environment') && HB()->__path('views', 'components/modal.twig', $paths))
-		{
-			return (string)HB()->view('components/modal.twig', $data);
-		}
 
 		if (HB()->__path('views', 'components/modal.tpl.php', $paths))
 		{

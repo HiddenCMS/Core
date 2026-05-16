@@ -1775,6 +1775,7 @@ select.form-control,
 	color: var(--hb-text-soft) !important;
 	border-radius: 8px !important;
 	box-shadow: 0 12px 28px var(--hb-shadow-md) !important;
+	z-index: 1065 !important;
 }
 
 .selectize-dropdown .option,
@@ -1878,7 +1879,7 @@ select.form-control,
 	background: var(--hb-bg-2) !important;
 	border: 1px solid var(--hb-border) !important;
 	border-radius: 12px !important;
-	overflow: hidden;
+	overflow: visible;
 	box-shadow: 0 28px 58px var(--hb-shadow-strong), 0 2px 0 var(--hb-overlay-weak) inset;
 }
 
@@ -1967,6 +1968,7 @@ body.hb-modal-open {
 	background: transparent !important;
 	color: var(--hb-text-soft) !important;
 	padding: 18px;
+	overflow: visible;
 }
 
 .hb-modal .modal-footer {
