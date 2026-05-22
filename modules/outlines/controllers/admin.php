@@ -24,7 +24,8 @@ class Admin extends Controller_Module
 	{
 		$actions = function($outline){
 			$buttons = [
-				'<a href="'.url('admin/live-editor?outline_id='.$outline['outline_id']).'" class="btn btn-sm btn-info">'.icon('fas fa-desktop').'</a>',
+				(string)$this->button_update('admin/live-editor?outline_id='.$outline['outline_id'], $this->lang('Editer visuellement'))
+							->icon('fas fa-desktop'),
 				(string)$this->button_duplicate_modal($this->_duplicate($outline)),
 				(string)$this->button_update('admin/outlines/'.$outline['outline_id'].'/'.url_title($outline['title']))
 			];
@@ -44,7 +45,7 @@ class Admin extends Controller_Module
 
 		$table = $this	->table2($this->array($outlines), $this->lang('Il n\'y a pas encore d\'outline'))
 						->col($this->lang('Outline'), function($outline){
-							return $outline['title'].'<small class="ml-2"><code>'.$outline['name'].'</code></small>';
+							return '<span class="hb-outline-title">'.$outline['title'].'</span><code class="hb-code-pill">'.$outline['name'].'</code>';
 						})
 						->col($this->lang('Theme'), function($outline){
 							return '<code>'.$outline['theme'].'</code>';
@@ -132,7 +133,13 @@ class Admin extends Controller_Module
 					->back('admin/outlines')
 					->panel()
 					->heading($this->lang('Edition de l\'outline'), 'fas fa-layer-group')
-					->footer('<a href="'.url('admin/live-editor?outline_id='.$outline_id).'" class="btn btn-info">'.icon('fas fa-desktop').' '.$this->lang('Editer visuellement').'</a>');
+					->footer(
+						$this->button()
+							->title($this->lang('Editer visuellement'))
+							->icon('fas fa-desktop')
+							->color('info')
+							->url('admin/live-editor?outline_id='.$outline_id)
+					);
 	}
 
 	public function _duplicate($outline)

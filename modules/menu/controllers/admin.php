@@ -258,7 +258,7 @@ class Admin extends Controller_Module
 				}
 
 				$status_title = $item['enabled'] ? $this->lang('Active') : $this->lang('Desactive');
-				$status = '<span class="menu-nested-status '.($item['enabled'] ? 'menu-nested-status-active' : 'menu-nested-status-disabled').'" data-toggle="tooltip" title="'.$status_title.'" aria-label="'.$status_title.'"></span>';
+				$status = '<i class="menu-nested-status-icon '.($item['enabled'] ? 'fas fa-circle is-active' : 'far fa-circle is-disabled').'" data-toggle="tooltip" title="'.$status_title.'" aria-label="'.$status_title.'"></i>';
 
 				$html .= '<li class="menu-nested-item" data-item-id="'.$item['item_id'].'">'
 						.'<div class="menu-nested-row">'

@@ -162,6 +162,25 @@ body {
 
 .live-editor-navbar {
 	z-index: 2;
+	background: #4b5460;
+	border: 0;
+	border-radius: 0;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 12px;
+	min-height: 56px;
+}
+
+.live-editor-navbar .navbar-brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	font-size: 30px;
+	line-height: 1;
+	white-space: nowrap;
 }
 
 .live-editor-navbar a.navbar-brand {
@@ -174,6 +193,91 @@ body {
 
 .live-editor-navbar a.navbar-brand > i.icon {
 	color: #00d7b3;
+}
+
+.live-editor-navbar .navbar-toggler {
+	display: none;
+}
+
+.live-editor-navbar .navbar-collapse {
+	display: flex !important;
+	align-items: center;
+	justify-content: space-between;
+	flex: 1;
+	min-width: 0;
+}
+
+.live-editor-navbar .navbar-nav {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	gap: 10px;
+}
+
+.live-editor-navbar .navbar-nav.ml-auto {
+	margin-left: auto;
+}
+
+.live-editor-navbar .navbar-nav.mr-auto {
+	margin-right: auto;
+}
+
+.live-editor-navbar .nav-item {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+.live-editor-navbar .nav-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	color: #12b5ea;
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.live-editor-navbar .nav-link:hover,
+.live-editor-navbar .nav-link:focus {
+	text-decoration: none;
+	background: rgba(0, 0, 0, 0.14);
+}
+
+.live-editor-navbar .dropdown-menu {
+	display: none;
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	min-width: 180px;
+	margin: 0;
+	padding: 6px 0;
+	background: #2a2f39;
+	border: 1px solid #3a425a;
+	border-radius: 8px;
+	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+	z-index: 20;
+}
+
+.live-editor-navbar .dropdown-menu.show,
+.live-editor-navbar .nav-item.dropdown:hover > .dropdown-menu {
+	display: block;
+}
+
+.live-editor-navbar .dropdown-item {
+	display: block;
+	padding: 6px 12px;
+	color: #d4dbf2;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.live-editor-navbar .dropdown-item:hover,
+.live-editor-navbar .dropdown-item.active {
+	background: #1a1f29;
+	color: #ffffff;
 }
 
 a.thumbnail {

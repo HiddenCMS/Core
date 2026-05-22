@@ -1,4 +1,4 @@
 <?php
-$final_class = trim('hb-btn hb-btn-primary'.($class ? ' '.$class : ''));
+$final_class = trim('button is-primary'.($class ? ' '.$class : ''));
 echo '<'.$tag.$attrs_except_class.' class="'.utf8_htmlentities($final_class).'">'.$content.'</'.$tag.'>';
 ?>

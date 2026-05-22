@@ -83,7 +83,8 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (41, 3, 'about', '{"enabled":true}'),
 (42, 3, 'socials', '{"enabled":true}'),
 (43, 1, 'outlines', '{"enabled":true}'),
-(44, 1, 'menu', '{"enabled":true}');
+(44, 1, 'menu', '{"enabled":true}'),
+(45, 1, 'files', '{"enabled":true}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (

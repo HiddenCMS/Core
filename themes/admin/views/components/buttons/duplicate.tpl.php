@@ -1,4 +1,4 @@
 <?php
-$final_class = trim('hb-btn hb-btn-secondary hb-btn-sm hb-btn-icon'.($class ? ' '.$class : ''));
+$final_class = trim('button is-light is-small is-square'.($class ? ' '.$class : ''));
 echo '<'.$tag.$attrs_except_class.' class="'.utf8_htmlentities($final_class).'">'.$content.'</'.$tag.'>';
 ?>

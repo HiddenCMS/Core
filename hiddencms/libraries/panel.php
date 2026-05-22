@@ -68,10 +68,14 @@ class Panel extends Library
 		{
 			if (!is_a($label, 'HB\HiddenCMS\Libraries\Html'))
 			{
-				$label = $this	->button()
+				$label = $this	->label()
 								->title($label)
-								->icon($icon)
-								->url_if($url, $url);
+								->icon($icon);
+
+				if ($url)
+				{
+					$label->url($url);
+				}
 			}
 
 			$this->_heading[] = $label;

@@ -1,7 +1,10 @@
 $(function(){
 	var close = function($menu, $parent){
-		$menu.next('.nav').stop(true, true).slideUp(140);
-		$parent.removeClass('active');
+		var $subnav = $menu.next('.nav');
+
+		$subnav.stop(true, false).slideUp(140, function(){
+			$parent.removeClass('active');
+		});
 	};
 
 	$('.nav .nav-link[data-toggle="collapse"]').each(function(){
@@ -28,7 +31,7 @@ $(function(){
 			}
 			else {
 				$parent.addClass('active');
-				$subnav.stop(true, true).slideDown(140);
+				$subnav.stop(true, false).slideDown(140);
 
 				$parent.siblings('.nav-item').each(function(){
 					var $sibling = $(this);

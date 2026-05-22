@@ -47,6 +47,7 @@ class Admin extends Theme
 				->css('fonts/titillium-web')
 				->css('icons/Pe-icon-7-stroke')
 				->css('icons/fontawesome.min')
+				->css('https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css')
 				->css('modern')
 				->js('jquery-3.2.1.min')
 				->js('bootstrap-notify.min')
