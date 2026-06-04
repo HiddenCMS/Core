@@ -18,7 +18,7 @@ class Create extends \HB\HiddenCMS\Action
 	{
 		if ($button = parent::__button())
 		{
-			return $button	->class('hb-btn hb-btn-'.$this->_color.' hb-btn-sm', FALSE)
+			return $button	->outline(FALSE)
 							->tooltip('')
 							->title($this->_title);
 		}

@@ -51,7 +51,7 @@ class HiddenCmsSession implements Service, AuthInterface
             }
         }
 
-        $hidden_user = $this->resolveHiddenCmsUserFromCookie();
+        $hidden_user = $this->resolveHiddenCmsUserFromRequest();
 
         if (! $hidden_user) {
             return null;
@@ -149,19 +149,11 @@ class HiddenCmsSession implements Service, AuthInterface
         return $users;
     }
 
-    protected function resolveHiddenCmsUserFromCookie(): ?array
+    protected function resolveHiddenCmsUserFromRequest(): ?array
     {
-        $cookie_names = $this->resolveCookieNames();
-        $session_id = '';
+        $session_id = $this->resolveSessionIdFromRequest();
 
-        foreach ($cookie_names as $cookie_name) {
-            if (!empty($_COOKIE[$cookie_name])) {
-                $session_id = (string)$_COOKIE[$cookie_name];
-                break;
-            }
-        }
-
-        if ($session_id === '') {
+        if ($session_id === null) {
             return null;
         }
 
@@ -173,6 +165,47 @@ class HiddenCmsSession implements Service, AuthInterface
               LIMIT 1',
             [':session_id' => $session_id]
         );
+    }
+
+    protected function resolveSessionIdFromRequest(): ?string
+    {
+        if (!empty($_GET['hb_sid'])) {
+            $sid = (string) $_GET['hb_sid'];
+
+            if (preg_match('/^[a-z0-9]{32}$/i', $sid)) {
+                return $sid;
+            }
+        }
+
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $query = parse_url((string) $_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
+
+            if (is_string($query) && $query !== '') {
+                parse_str($query, $params);
+
+                if (!empty($params['hb_sid'])) {
+                    $sid = (string) $params['hb_sid'];
+
+                    if (preg_match('/^[a-z0-9]{32}$/i', $sid)) {
+                        return $sid;
+                    }
+                }
+            }
+        }
+
+        $cookie_names = $this->resolveCookieNames();
+
+        foreach ($cookie_names as $cookie_name) {
+            if (!empty($_COOKIE[$cookie_name])) {
+                $sid = (string) $_COOKIE[$cookie_name];
+
+                if (preg_match('/^[a-z0-9]{32}$/i', $sid)) {
+                    return $sid;
+                }
+            }
+        }
+
+        return null;
     }
 
     protected function resolveCookieNames(): array
@@ -270,4 +303,3 @@ class HiddenCmsSession implements Service, AuthInterface
         return $value === false ? null : $value;
     }
 }
-

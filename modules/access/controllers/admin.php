@@ -63,7 +63,7 @@ class Admin extends Controller_Module
 								[
 									'content' => [
 										function($data) use ($module, $type){
-											return $this->button()->tooltip($this->lang('Réinitialiser'))->icon('fas fa-sync')->color('info access-reset')->class('hb-btn-sm hb-btn-outline')->data([
+											return $this->button()->tooltip($this->lang('Réinitialiser'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 												'module' => $module->info()->name,
 												'type'   => $type,
 												'id'     => $data['id']
@@ -99,7 +99,7 @@ class Admin extends Controller_Module
 						$this->row(
 							$this->col(
 								$this	->panel()
-										->heading($this->lang('Liste des permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('Réinitialiser toutes les permissions'))->icon('fas fa-sync')->color('info access-reset')->class('hb-btn-sm hb-btn-outline')->data([
+										->heading($this->lang('Liste des permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('Réinitialiser toutes les permissions'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 											'module' => $module->info()->name,
 											'type'   => $type,
 											'id'     => $id

@@ -1,21 +1,3 @@
-:root {
-	--hb-menu-color-151a27: var(--hb-bg-2);
-	--hb-menu-color-2f3750: var(--hb-border-soft);
-	--hb-menu-color-2f3650: var(--hb-border);
-	--hb-menu-color-1a2030: var(--hb-bg-3);
-	--hb-menu-color-dbe7f7: var(--hb-text);
-	--hb-menu-color-9db5d2: var(--hb-muted);
-	--hb-menu-color-121725: var(--hb-bg);
-	--hb-menu-color-2a3148: var(--hb-border-soft);
-	--hb-menu-color-rgba-14-18-29-0-88: var(--hb-overlay-soft);
-	--hb-menu-color-2ecf78: var(--hb-success);
-	--hb-menu-color-1fa75d: var(--hb-success-deep);
-	--hb-menu-color-ef5a67: var(--hb-danger);
-	--hb-menu-color-c9414e: var(--hb-danger-deep);
-	--hb-menu-color-rgba-18-181-234-0-14: var(--hb-accent-soft-subtle);
-	--hb-menu-color-rgba-18-181-234-0-48: var(--hb-accent-soft-strong);
-}
-
 .menu-nested-sortable{
 	list-style: none;
 	margin: 0;
@@ -23,7 +5,7 @@
 }
 
 .menu-nested-root{
-	background: var(--hb-menu-color-151a27);
+	background: #f8f9fa;
 	padding: 10px;
 }
 
@@ -31,7 +13,7 @@
 	margin-top: 8px;
 	margin-left: 24px;
 	padding-left: 12px;
-	border-left: 2px solid var(--hb-menu-color-2f3750);
+	border-left: 2px solid #dee2e6;
 }
 
 .menu-nested-item{
@@ -47,9 +29,9 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
-	border: 1px solid var(--hb-menu-color-2f3650);
-	border-radius: 8px;
-	background: var(--hb-menu-color-1a2030);
+	border: 1px solid #dee2e6;
+	border-radius: .25rem;
+	background: #ffffff;
 	padding: 8px 10px;
 }
 
@@ -63,7 +45,7 @@
 
 .menu-nested-title{
 	font-weight: 600;
-	color: var(--hb-menu-color-dbe7f7);
+	color: #212529;
 }
 
 .menu-nested-url{
@@ -71,9 +53,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	color: var(--hb-menu-color-9db5d2);
-	background: var(--hb-menu-color-121725);
-	border: 1px solid var(--hb-menu-color-2a3148);
+	color: #495057;
+	background: #f8f9fa;
+	border: 1px solid #dee2e6;
 	padding: 2px 7px;
 	border-radius: 999px;
 }
@@ -97,15 +79,15 @@
 }
 
 .menu-nested-status-icon.is-active{
-	color: var(--hb-success);
+	color: #28a745;
 }
 
 .menu-nested-status-icon.is-disabled{
-	color: var(--hb-muted);
+	color: #6c757d;
 }
 
 .menu-nested-side .button,
-.menu-nested-side .hb-btn{
+.menu-nested-side .btn{
 	width: 26px;
 	height: 26px;
 	min-width: 26px;
@@ -113,14 +95,14 @@
 }
 
 .menu-nested-side .button:hover,
-.menu-nested-side .hb-btn:hover{
+.menu-nested-side .btn:hover{
 	transform: none !important;
 }
 
 .menu-nested-side .button .icon,
 .menu-nested-side .button i,
-.menu-nested-side .hb-btn .icon,
-.menu-nested-side .hb-btn i{
+.menu-nested-side .btn .icon,
+.menu-nested-side .btn i{
 	margin: 0 !important;
 	font-size: 12px;
 	line-height: 1;
@@ -131,6 +113,6 @@
 }
 
 .sortable-chosen .menu-nested-row{
-	background: var(--hb-menu-color-rgba-18-181-234-0-14);
-	border-color: var(--hb-menu-color-rgba-18-181-234-0-48);
+	background: rgba(23, 162, 184, .08);
+	border-color: rgba(23, 162, 184, .45);
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michael BILCOT <michael.bilcot@neofr.ag>
+ * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Buttons;
@@ -14,10 +14,12 @@ class Delete extends Library
 	{
 		return $this->js('delete')
 					->button()
-					->component('buttons/delete')
 					->tooltip($title ?: $this->lang('Supprimer'))
 					->url($url)
 					->icon('fas fa-times')
-					->class_if($url, 'delete');
+					->color('danger')
+					->style_if($url, 'delete')//TODO
+					->compact()
+					->outline();
 	}
 }

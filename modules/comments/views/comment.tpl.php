@@ -4,7 +4,7 @@
 		<?php
 			$actions = $this->array()
 							//->append_if($this->user() && !$comment->parent(), '<a class="btn btn-link btn-sm" href="#" data-comment-id="'.$comment->id.'">'.icon('fas fa-reply').' '.$this->lang('Répondre').'</a>')//TODO
-							->append_if($this->user->admin || ($this->user() && $this->user->id == $comment->user->id), $this->button_delete('ajax/comments/delete/'.$comment->id)->class('hb-btn-sm'));
+							->append_if($this->user->admin || ($this->user() && $this->user->id == $comment->user->id), $this->button_delete('ajax/comments/delete/'.$comment->id)->compact());
 
 			if ($actions)
 			{

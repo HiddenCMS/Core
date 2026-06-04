@@ -35,10 +35,13 @@ class Dropdown extends Button
 						->content($content.$dropdown);
 		};
 
-		return $this->data('toggle', 'dropdown')
-					->tag('button')
-					->attr('type', 'button')
-					->append_attr('class', 'dropdown-toggle');
+		$this->_template[] = function(&$content, &$attrs, &$tag){
+			$attrs['type'] = 'button';
+			$attrs['class'] .= ' dropdown-toggle';
+			$tag = 'button';
+		};
+
+		return $this->data('toggle', 'dropdown');
 	}
 
 	public function dropdown($dropdown)

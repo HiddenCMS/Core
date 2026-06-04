@@ -1,14 +1,9 @@
-:root {
-	--hb-files-embed-border: var(--hb-border-soft);
-	--hb-files-embed-bg: var(--hb-bg-2);
-}
-
 .hb-files-embed-actions {
 	display: flex;
 	justify-content: flex-end;
 	padding: 8px 10px;
-	border-bottom: 1px solid var(--hb-files-embed-border);
-	background: var(--hb-files-embed-bg);
+	border-bottom: 1px solid #dee2e6;
+	background: #f8f9fa;
 }
 
 .hb-files-embed-iframe {
@@ -17,5 +12,5 @@
 	height: calc(100vh - 240px);
 	min-height: 640px;
 	border: 0;
-	background: var(--hb-files-embed-bg);
+	background: #f8f9fa;
 }

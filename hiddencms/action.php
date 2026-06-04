@@ -33,7 +33,8 @@ abstract class Action extends HiddenCMS
 		if ($this->_is_create || $this->_model() && $this->check($this->_model))
 		{
 			return $this->button('')
-						->class('hb-btn-sm hb-btn-outline')
+						->compact()
+						->outline()
 						->tooltip($this->_title)
 						->color($this->_color)
 						->exec(function($button){

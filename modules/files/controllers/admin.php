@@ -46,7 +46,15 @@ class Admin extends Controller_Module
 
 	private function filegator_url($filegator_entry_url)
 	{
-		return $this->app_root_url().$filegator_entry_url;
+		$url = $this->app_root_url().$filegator_entry_url;
+		$session_id = (string)$this->session->id;
+
+		if ($session_id !== '')
+		{
+			$url .= (strpos($url, '?') === false ? '?' : '&').'hb_sid='.rawurlencode($session_id);
+		}
+
+		return $url;
 	}
 
 	public function index()
@@ -64,7 +72,8 @@ class Admin extends Controller_Module
 		}
 
 		$open_button = $this->button('', 'fas fa-external-link-alt')
-							->class('hb-btn hb-btn-secondary hb-btn-icon')
+							->color('secondary')
+							->compact()
 							->tooltip($this->lang('Ouvrir dans un nouvel onglet'))
 							->url($this->filegator_url($filegator['entry_url']))
 							->attr('target', '_blank')

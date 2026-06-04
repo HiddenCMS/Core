@@ -43,13 +43,15 @@ class Admin extends Theme
 			refresh();
 		}
 
-		$this	->css('fonts/open-sans')
+		$this	->css('bootstrap.min')
+				->css('fonts/open-sans')
 				->css('fonts/titillium-web')
 				->css('icons/Pe-icon-7-stroke')
 				->css('icons/fontawesome.min')
-				->css('https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css')
-				->css('modern')
+				->css('style')
 				->js('jquery-3.2.1.min')
+				->js('popper.min')
+				->js('bootstrap.min')
 				->js('bootstrap-notify.min')
 				->js('modal')
 				->js('notify')
@@ -162,6 +164,19 @@ class Admin extends Theme
 		//Nothing to do
 	}
 
+	public function update()
+	{
+		if (file_exists($file = 'cache/monitoring/version.json'))
+		{
+			$versions = json_decode(file_get_contents($file));
+			$version  = isset($versions->hiddencms) ? $versions->hiddencms : (isset($versions->HiddenCMS) ? $versions->HiddenCMS : NULL);
+
+			if ($version && version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
+			{
+				return $version;
+			}
+		}
+	}
 }
 
 

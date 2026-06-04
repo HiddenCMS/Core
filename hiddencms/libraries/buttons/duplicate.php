@@ -13,9 +13,11 @@ class Duplicate extends Library
 	public function __invoke($url = '', $title = '')
 	{
 		return $this->button()
-					->component('buttons/duplicate')
 					->tooltip($title ?: $this->lang('Dupliquer'))
 					->url($url)
-					->icon('far fa-copy');
+					->icon('far fa-copy')
+					->color('secondary')
+					->compact()
+					->outline();
 	}
 }

@@ -40,5 +40,5 @@
 		}
 	?>
 	<?php if (isset($socials) && !$socials->empty()): ?><div class="socials"><?php echo $socials ?></div><?php endif ?>
-	<?php if ($this->user() && $this->user != $user) echo $this->button()->title('Contacter')->icon('far fa-envelope')->color('dark')->class('hb-btn-block')->url('user/messages/compose/'.$user->url()) ?>
+	<?php if ($this->user() && $this->user != $user) echo $this->button()->title('Contacter')->icon('far fa-envelope')->color('dark')->style('btn-block')->url('user/messages/compose/'.$user->url()) ?>
 </div>

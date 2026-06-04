@@ -13,9 +13,9 @@ class Back extends Library
 	public function __invoke($url = '', $title = '')
 	{
 		return $this->button()
-					->component('buttons/back')
 					->title($title ?: $this->lang('Retour'))
-					->url($this->url->back() ?: $url);
+					->url($this->url->back() ?: $url)
+					->color('secondary');
 	}
 }
 
