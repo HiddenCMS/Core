@@ -98,6 +98,7 @@ class Admin extends Controller_Module
 									->title('')
 									->tooltip($this->lang('Creer un menu'))
 									->modal_ajax('admin/ajax/menu/add')
+									->compact()
 									->align('right')
 							)
 							->body($left_body, FALSE);
@@ -117,6 +118,7 @@ class Admin extends Controller_Module
 											->title('')
 											->tooltip($this->lang('Ajouter un lien'))
 											->modal_ajax('admin/ajax/menu/items/'.$selected_menu['menu_id'].'/'.$selected_menu['name'].'/add')
+											->compact()
 											->align('right');
 			}
 			$right_body = $this->render_items_tree($selected_menu, $selected_items);
@@ -130,9 +132,9 @@ class Admin extends Controller_Module
 							)
 							->body($right_body, FALSE);
 
-		return '<div class="hb-grid hb-grid-12 hb-grid-gap-md hb-grid-stack-lg">'
-				.'<div class="hb-span-3">'.$left_panel.'</div>'
-				.'<div class="hb-span-9">'.$right_panel.'</div>'
+		return '<div class="row menu-admin-layout">'
+				.'<div class="col-lg-3 mb-3">'.$left_panel.'</div>'
+				.'<div class="col-lg-9 mb-3">'.$right_panel.'</div>'
 			.'</div>';
 	}
 
@@ -251,7 +253,7 @@ class Admin extends Controller_Module
 
 				if ($this->is_authorized('modify_menus'))
 				{
-					$sort = (string)$this->button_sort($item['item_id'], 'admin/ajax/menu/items/sort', '.menu-nested-sortable', 'li.menu-nested-item')
+					$sort = (string)$this->button_sort($item['item_id'], 'admin/ajax/menu/items/sort', '.menu-nested-sortable', '> li.menu-nested-item')
 										->data('level', (int)$item['level'])
 										->data('parent-id', (int)$item['parent_id'])
 										->data('tree', 1);

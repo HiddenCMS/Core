@@ -12,11 +12,6 @@ RewriteRule index\.php - [L]
 
 RewriteCond %{REQUEST_URI} !^%BASE%(backups|cache|logs)/
 
-##Allow direct access to FileGator built assets
-RewriteCond %{REQUEST_URI} ^%BASE%tools/filegator/dist/
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule .* - [L,QSA]
-
 ##Allow direct access to specific files
 #RewriteCond %{REQUEST_FILENAME} /file1\.php [OR]
 #RewriteCond %{REQUEST_FILENAME} /file2\.php [OR]
