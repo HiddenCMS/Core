@@ -15,7 +15,7 @@
 		<tr data-group="<?php echo $group_id ?>">
 			<td><?php echo $this->groups->display($group_id) ?></td>
 			<?php echo $this->view('radio', ['class' => 'success', 'active' => $active]) ?>
-			<?php if ($group_id == 'admins') echo '<td></td>'; else echo $this->view('radio', ['class' => 'danger', 'active' => !$active]) ?></td>
+			<?php echo $group_id == 'admins' ? '<td></td>' : $this->view('radio', ['class' => 'danger', 'active' => !$active]) ?>
 		</tr>
 		<?php endforeach ?>
 	</tbody>

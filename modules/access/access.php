@@ -21,6 +21,7 @@ class Access extends Module
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE,
 			'routes'      => [
+				'admin/ajax/edit/{url_title}/{url_title}' => '_edit',
 				'admin/edit/{url_title*}'  => '_edit',
 				'admin/([a-z0-9-]*?){pages}' => 'index'
 			]

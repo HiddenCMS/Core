@@ -12,10 +12,11 @@ CREATE TABLE `access` (
   PRIMARY KEY (`access_id`),
   UNIQUE KEY `module_id` (`id`,`module`,`action`),
   KEY `module` (`module`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 INSERT INTO `access` (`access_id`, `id`, `module`, `action`) VALUES
-(1, 1, 'pages', 'access_page');
+(1, 1, 'pages', 'access_page'),
+(2, 1, 'files', 'read_directory');
 
 DROP TABLE IF EXISTS `access_details`;
 CREATE TABLE `access_details` (
@@ -152,8 +153,8 @@ DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
-  `name` varchar(100) NOT NULL,
-  `path` varchar(100) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `path` varchar(255) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `path` (`path`),
@@ -165,6 +166,17 @@ INSERT INTO `file` (`id`, `user_id`, `name`, `path`, `date`) VALUES
 (1, 1, 'Sans-titre-2.jpg', './upload/news/categories/ubfuejdfooirqya0pyltfeklja4ew4sn.jpg', '2015-05-30 00:34:16'),
 (2, 1, 'logo.png', 'upload/partners/zwvmsjijfljaka4rdblgvlype1lnbwaw.png', '2016-05-07 18:51:53'),
 (3, 1, 'logo_black.png', 'upload/partners/y4ofwq2ekppwnfpmnrmnafeivszlg5bd.png', '2016-05-07 18:51:53');
+
+DROP TABLE IF EXISTS `files_directories`;
+CREATE TABLE `files_directories` (
+  `directory_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) NOT NULL,
+  PRIMARY KEY (`directory_id`),
+  UNIQUE KEY `path` (`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `files_directories` (`directory_id`, `path`) VALUES
+(1, '');
 
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (

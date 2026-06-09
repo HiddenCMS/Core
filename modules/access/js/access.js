@@ -1,89 +1,35 @@
 $(function(){
-	$('[data-action] td').click(function(){
-		var $access = $(this).parents('[data-action]:first');
+	var access_context = function($element){
+		var $context = $element.closest('.module-access');
+		return $context.length ? $context : $(document);
+	};
 
-		if (!$access.hasClass('info')){
-			$.ajax({
-				url: '<?php echo url('admin/ajax/access') ?>',
-				type: 'POST',
-				data: {
-					'module': $('[name="module"]').val(),
-					'type':   $('[name="type"]').val(),
-					'id':     $('[name="id"]').val(),
-					'action': $access.data('action')
-				},
-				success: function(data){
-					var $row  = $('.module-access > .row:first');
-					var $cols = $row.children('[class^="col-"]');
-
-					if ($cols.length > 1){
-						$cols.last().remove();
-					}
-
-					$cols.find('.info[data-action]').removeClass('info');
-
-					$access.addClass('info');
-					$row.append(data);
-				}
-			});
-		}
-
-		return false;
-	});
-
-	var update_access = function($btn, revoke){
-		var data = {
-			'module': $('[name="module"]').val(),
-			'type':   $('[name="type"]').val(),
-			'id':     $('[name="id"]').val(),
-			'action': $('.info[data-action]').data('action')
+	var access_data = function($context){
+		return {
+			'module': $context.find('[name="module"]:first').val(),
+			'type':   $context.find('[name="type"]:first').val(),
+			'id':     $context.find('[name="id"]:first').val()
 		};
+	};
 
-		var $table = $btn.parents('.table:first');
+	var access_row = function($context){
+		return $context.find('> .row:first');
+	};
 
-		if ($table.find('[data-group]').length){
-			data['groups'] = {};
+	var access_columns = function($context){
+		return access_row($context).children('[class^="col-"], [class*=" col-"]');
+	};
 
-			$table.find('[data-group]').each(function(){
-				data['groups'][$(this).data('group')] = $(this).find('.access-radio.success').length;
-			});
-		}
-		else {
-			var $tr = $btn.parents('tr:first');
+	var init_access = function($root){
+		$root.find('.module-access').addBack('.module-access').each(function(){
+			var $context = $(this);
 
-			data['user'] = {};
-			data['user'][$tr.find('[data-user-id]').data('user-id')] = typeof revoke == 'undefined' ? $tr.find('.access-radio.success').length : -1;
-		}
-
-		$.ajax({
-			url: '<?php echo url('admin/ajax/access/update.json') ?>',
-			type: 'POST',
-			data: data,
-			success: function(data){
-				var $row  = $('.module-access > .row:first');
-				var $cols = $row.children('[class^="col-"]');
-
-				if (typeof data.details != 'undefined'){
-					if ($cols.length > 1){
-						$cols.last().remove();
-					}
-
-					$row.append(data.details);
-				}
-
-				if (typeof data.user_authorized != 'undefined' && typeof data.user_forced != 'undefined'){
-					if (data.user_forced){
-						$tr.find('.access-status').html('<a class="access-revoke" href="#" data-toggle="tooltip" title="<?php echo $this->lang('Remettre en automatique') ?>"><?php echo icon('fas fa-thumbtack') ?></a>');
-					}
-					else {
-						$tr.find('.access-status').html('');
-					}
-
-					update_radio($tr.find('[data-class="'+(data.user_authorized ? 'success' : 'danger')+'"]'));
-				}
-
-				$cols.find('.info[data-action] .access-count').html(data.count);
+			if ($context.data('accessLoaded')){
+				return;
 			}
+
+			$context.data('accessLoaded', true);
+			$context.find('[data-action]:first').trigger('click');
 		});
 	};
 
@@ -105,6 +51,89 @@ $(function(){
 		return false;
 	};
 
+	var update_access = function($btn, revoke){
+		var $context = access_context($btn);
+		var data = access_data($context);
+
+		data['action'] = $context.find('.info[data-action]:first').data('action');
+
+		var $table = $btn.parents('.table:first');
+		var $tr = $btn.parents('tr:first');
+
+		if ($table.find('[data-group]').length){
+			data['groups'] = {};
+
+			$table.find('[data-group]').each(function(){
+				data['groups'][$(this).data('group')] = $(this).find('.access-radio.success').length;
+			});
+		}
+		else {
+			data['user'] = {};
+			data['user'][$tr.find('[data-user-id]').data('user-id')] = typeof revoke == 'undefined' ? $tr.find('.access-radio.success').length : -1;
+		}
+
+		$.ajax({
+			url: '<?php echo url('admin/ajax/access/update.json') ?>',
+			type: 'POST',
+			data: data,
+			success: function(data){
+				var $cols = access_columns($context);
+
+				if (typeof data.details != 'undefined'){
+					if ($cols.length > 1){
+						$cols.last().remove();
+					}
+
+					access_row($context).append(data.details);
+				}
+
+				if (typeof data.user_authorized != 'undefined' && typeof data.user_forced != 'undefined'){
+					if (data.user_forced){
+						$tr.find('.access-status').html('<a class="access-revoke" href="#" data-toggle="tooltip" title="<?php echo $this->lang('Remettre en automatique') ?>"><?php echo icon('fas fa-thumbtack') ?></a>');
+					}
+					else {
+						$tr.find('.access-status').html('');
+					}
+
+					update_radio($tr.find('[data-class="'+(data.user_authorized ? 'success' : 'danger')+'"]'));
+				}
+
+				access_columns($context).find('.info[data-action] .access-count').html(data.count);
+			}
+		});
+	};
+
+	$(document).on('click', '.module-access [data-action]', function(){
+		var $access = $(this).closest('[data-action]');
+		var $context = access_context($access);
+
+		if (!$access.hasClass('info')){
+			var data = access_data($context);
+
+			data['action'] = $access.data('action');
+
+			$.ajax({
+				url: '<?php echo url('admin/ajax/access') ?>',
+				type: 'POST',
+				data: data,
+				success: function(data){
+					var $cols = access_columns($context);
+
+					if ($cols.length > 1){
+						$cols.last().remove();
+					}
+
+					$cols.find('.info[data-action]').removeClass('info');
+
+					$access.addClass('info');
+					access_row($context).append(data);
+				}
+			});
+		}
+
+		return false;
+	});
+
 	$(document).on('click', '.access-radio', function(){
 		if (update_radio($(this))){
 			update_access($(this));
@@ -121,8 +150,9 @@ $(function(){
 
 	$(document).on('click', '[data-radio]', function(){
 		var update = false;
+		var $table = $(this).parents('.table:first');
 
-		$(this).parents('.table:first').find('.access-radio[data-class="'+$(this).data('radio')+'"]').each(function(){
+		$table.find('.access-radio[data-class="'+$(this).data('radio')+'"]').each(function(){
 			update = update_radio($(this)) || update;
 		});
 
@@ -132,15 +162,15 @@ $(function(){
 	});
 
 	$(document).on('click', '.access-users', function(){
+		var $context = access_context($(this));
+		var data = access_data($context);
+
+		data['action'] = $context.find('.info[data-action]:first').data('action');
+
 		$.ajax({
 			url: '<?php echo url('admin/ajax/access/users') ?>',
 			type: 'POST',
-			data: {
-				'module': $('[name="module"]').val(),
-				'type':   $('[name="type"]').val(),
-				'id':     $('[name="id"]').val(),
-				'action': $('.info[data-action]').data('action')
-			},
+			data: data,
 			success: function(data){
 				$(data).appendTo('body').modal().on('hidden.bs.modal', function(){
 					$(this).remove();
@@ -190,5 +220,9 @@ $(function(){
 		return false;
 	});
 
-	$('[data-action]:first td:first').trigger('click');
+	$(document).on('nf.load', function(){
+		init_access($(document));
+	});
+
+	init_access($(document));
 });

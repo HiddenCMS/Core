@@ -1,24 +1,20 @@
 <input type="hidden" name="module" value="<?php echo $module ?>" />
 <input type="hidden" name="type" value="<?php echo $type ?>" />
 <input type="hidden" name="id" value="<?php echo $id ?>" />
-<?php foreach ($access as $category): ?>
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th class="col-8"><?php echo icon($category['icon']).' '.$category['title'] ?></th>
-				<th class="col-8 col-sm-4" colspan="2"><?php echo icon('fas fa-key').' '.$this->lang('Accès') ?></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach ($category['access'] as $name => $access): ?>
-			<tr data-action="<?php echo $name ?>">
-				<td class="text-primary"><?php echo icon($access['icon']).' '.$access['title'] ?></td>
-				<td class="access-count">
-					<?php echo HB()->access->count($module, $name, $id) ?>
-				</td>
-			</tr>
-			<?php endforeach ?>
-		</tbody>
-	</table>
-<?php endforeach ?>
 
+<?php foreach ($access as $category): ?>
+	<div class="access-category">
+		<div class="access-category-title"><?php echo icon($category['icon']).' '.$category['title'] ?></div>
+		<div class="access-action-list">
+			<?php foreach ($category['access'] as $name => $access): ?>
+				<a href="#" class="access-action" data-action="<?php echo $name ?>">
+					<span class="access-action-title"><?php echo icon($access['icon']).' '.$access['title'] ?></span>
+					<span class="access-action-meta">
+						<span class="access-count"><?php echo HB()->access->count($module, $name, $id) ?></span>
+						<?php echo icon('fas fa-chevron-right') ?>
+					</span>
+				</a>
+			<?php endforeach ?>
+		</div>
+	</div>
+<?php endforeach ?>

@@ -12,9 +12,12 @@ class Access extends Library
 {
 	public function __invoke($id, $access = '', $module = '', $title = '')
 	{
+		$url = 'admin/access/edit/'.($access ? ($module ?: $this->output->module()->info()->name).'/'.$id.'-'.$access : $id);
+
 		return $this->button()
 					->tooltip($title ?: $this->lang('Permissions'))
-					->url('admin/access/edit/'.($access ? ($module ?: $this->output->module()->info()->name).'/'.$id.'-'.$access : $id))
+					->modal_ajax($access ? 'admin/ajax/access/edit/'.($module ?: $this->output->module()->info()->name).'/'.$id.'-'.$access : 'admin/ajax/access/edit/'.$id.'/0-default')
+					->attr('data-fallback-url', url($url))
 					->icon('fas fa-unlock-alt')
 					->color('success')
 					->compact()

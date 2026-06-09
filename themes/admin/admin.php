@@ -49,6 +49,7 @@ class Admin extends Theme
 				->css('icons/Pe-icon-7-stroke')
 				->css('icons/fontawesome.min')
 				->css('style')
+				->css('access-modal')
 				->js('jquery-3.2.1.min')
 				->js('popper.min')
 				->js('bootstrap.min')

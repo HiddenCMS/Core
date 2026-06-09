@@ -12,7 +12,7 @@ class Admin extends Controller_Module
 {
 	private function root()
 	{
-		$root = HIDDENCMS_CMS.'/upload';
+		$root = HIDDENCMS_CMS.'/upload/files';
 		dir_create($root);
 
 		return str_replace('\\', '/', realpath($root));
@@ -84,11 +84,216 @@ class Admin extends Controller_Module
 		return in_array($name, ['', '.', '..'], TRUE) ? '' : $name;
 	}
 
+	private function selected_items()
+	{
+		$items = [];
+
+		foreach ((array)@$_POST['paths'] as $path)
+		{
+			$path = (string)$path;
+
+			if (strpos($path, 'file:') === 0)
+			{
+				$id = (int)substr($path, 5);
+
+				if ($id > 0)
+				{
+					$items[] = ['type' => 'file', 'id' => $id];
+				}
+			}
+			else if (strpos($path, 'dir:') === 0)
+			{
+				$path = $this->normalize(substr($path, 4));
+
+				if ($path !== NULL && $path !== '')
+				{
+					$items[] = ['type' => 'dir', 'path' => $path];
+				}
+			}
+		}
+
+		return $items;
+	}
+
+	private function upload_dir($dir = '')
+	{
+		$dir = $this->normalize($dir);
+
+		return trim('files'.($dir ? '/'.$dir : ''), '/');
+	}
+
+	private function normalize_db_path($path)
+	{
+		$path = trim(str_replace('\\', '/', (string)$path));
+
+		if (strpos($path, './') === 0)
+		{
+			$path = substr($path, 2);
+		}
+
+		return trim($path, '/');
+	}
+
+	private function file_relative_path($file)
+	{
+		$path = $this->normalize_db_path($file['path']);
+		$prefix = 'upload/files/';
+
+		return strpos($path, $prefix) === 0 ? substr($path, strlen($prefix)) : NULL;
+	}
+
+	private function file_dir($file)
+	{
+		$path = $this->file_relative_path($file);
+
+		if ($path === NULL || strpos($path, '/') === FALSE)
+		{
+			return '';
+		}
+
+		return dirname($path);
+	}
+
+	private function file_full_path($file)
+	{
+		$path = $this->normalize_db_path($file['path']);
+		$full = str_replace('\\', '/', HIDDENCMS_CMS.'/'.$path);
+		$root = $this->root();
+		$check = file_exists($full) ? realpath($full) : NULL;
+
+		if (!$check)
+		{
+			return NULL;
+		}
+
+		$check = str_replace('\\', '/', $check);
+
+		return stripos($check, $root) === 0 ? $full : NULL;
+	}
+
+	private function file_public_slug($file)
+	{
+		return pathinfo(basename($this->normalize_db_path($file['path'])), PATHINFO_FILENAME);
+	}
+
+	private function file_records()
+	{
+		return $this->db	->select('id', 'user_id', 'name', 'path', 'date')
+						->from('file')
+						->order_by('name')
+						->get(FALSE);
+	}
+
+	private function file_record($id)
+	{
+		return $this->db	->select('id', 'user_id', 'name', 'path', 'date')
+						->from('file')
+						->where('id', (int)$id)
+						->row(FALSE);
+	}
+
+	private function directory_label($dir)
+	{
+		return $dir === '' ? 'Racine' : $dir;
+	}
+
+	private function directory_id($dir, $create = TRUE)
+	{
+		$dir = $this->normalize($dir);
+
+		if ($dir === NULL)
+		{
+			return NULL;
+		}
+
+		if (($directory_id = $this->db->select('directory_id')->from('files_directories')->where('path', $dir)->row()))
+		{
+			return (int)$directory_id;
+		}
+
+		if (!$create)
+		{
+			return NULL;
+		}
+
+		$directory_id = $this->db->insert('files_directories', [
+			'path' => $dir
+		]);
+
+		$this->ensure_access('files', 'read_directory', $directory_id, 'directory');
+
+		return (int)$directory_id;
+	}
+
+	private function ensure_access($module, $action, $id, $type)
+	{
+		if (!$this->db->select('access_id')->from('access')->where('module', $module)->where('action', $action)->where('id', $id)->row())
+		{
+			$this->access->init($module, $type, $id);
+		}
+
+		return $this;
+	}
+
+	private function access_id($module, $action, $id)
+	{
+		return $this->db	->select('access_id')
+						->from('access')
+						->where('module', $module)
+						->where('action', $action)
+						->where('id', $id)
+						->row();
+	}
+
+	private function copy_access($source_action, $source_id, $target_action, $target_id)
+	{
+		$this->ensure_access('files', $source_action, $source_id, $source_action === 'read_directory' ? 'directory' : 'file');
+		$this->ensure_access('files', $target_action, $target_id, $target_action === 'read_directory' ? 'directory' : 'file');
+
+		$source_access_id = $this->access_id('files', $source_action, $source_id);
+		$target_access_id = $this->access_id('files', $target_action, $target_id);
+
+		if (!$source_access_id || !$target_access_id)
+		{
+			return $this;
+		}
+
+		$this->db	->where('access_id', $target_access_id)
+					->delete('access_details');
+
+		foreach ($this->db->select('entity', 'type', 'authorized')->from('access_details')->where('access_id', $source_access_id)->get(FALSE) as $permission)
+		{
+			$this->db->insert('access_details', [
+				'access_id'  => $target_access_id,
+				'entity'     => $permission['entity'],
+				'type'       => $permission['type'],
+				'authorized' => $permission['authorized']
+			]);
+		}
+
+		$this->access->reload();
+
+		return $this;
+	}
+
+	private function delete_access($action, $id)
+	{
+		$this->db	->where('module', 'files')
+					->where('action', $action)
+					->where('id', $id)
+					->delete('access');
+
+		$this->access->reload();
+
+		return $this;
+	}
+
 	private function current_dir()
 	{
 		$dir = $this->normalize(isset($_GET['dir']) ? $_GET['dir'] : '');
+		$full = $dir !== NULL ? $this->full_path($dir) : NULL;
 
-		if ($dir === NULL || !is_dir($this->full_path($dir)))
+		if ($dir === NULL || !$full || !is_dir($full))
 		{
 			return '';
 		}
@@ -106,14 +311,6 @@ class Admin extends Controller_Module
 	private function index_url($dir = '')
 	{
 		return url($this->index_path($dir));
-	}
-
-	private function public_url($file)
-	{
-		$file = $this->normalize($file);
-		$parts = array_map('rawurlencode', explode('/', 'upload/'.$file));
-
-		return url(implode('/', $parts));
 	}
 
 	private function unique_path($dir, $name)
@@ -175,10 +372,11 @@ class Admin extends Controller_Module
 					continue;
 				}
 
-				list($relative, $target) = $this->unique_path($dir, $name);
-
-				if ($target && move_uploaded_file($_FILES['files']['tmp_name'][$i], $target))
+				if (($file = HB()->model2('file')->static_uploaded_file($_FILES['files'], $this->upload_dir($dir), NULL, $i)) && $file->id)
 				{
+					$this	->ensure_access('files', 'read_file', $file->id, 'file')
+							->copy_access('read_directory', $this->directory_id($dir), 'read_file', $file->id);
+
 					$count++;
 				}
 			}
@@ -195,15 +393,19 @@ class Admin extends Controller_Module
 			}
 
 			$name = $this->clean_name(post('name'));
+			$target_dir = $this->normalize(post('target_dir'));
 
-			if ($name === '')
+			if ($target_dir === NULL || !is_dir($this->full_path($target_dir)) || $name === '')
 			{
 				notify($this->lang('Nom de dossier invalide'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
-			list($relative, $target) = $this->unique_path($dir, $name);
+			list($relative, $target) = $this->unique_path($target_dir, $name);
 			dir_create($target);
+
+			$this->copy_access('read_directory', $this->directory_id($target_dir), 'read_directory', $this->directory_id($relative));
+
 			notify($this->lang('Dossier cree avec succes'));
 			redirect($this->index_path($dir));
 		}
@@ -226,6 +428,65 @@ class Admin extends Controller_Module
 
 			is_dir($full) ? dir_remove($full) : unlink($full);
 			notify($this->lang('Element supprime avec succes'));
+			redirect($this->index_path($dir));
+		}
+
+		if ($action === 'delete_selected')
+		{
+			if (!$this->is_authorized('delete_files'))
+			{
+				$this->error->unauthorized();
+			}
+
+			$count = 0;
+
+			foreach ($this->selected_items() as $item)
+			{
+				if ($item['type'] === 'file')
+				{
+					if (($file = HB()->model2('file', $item['id'])) && $file())
+					{
+						$file->delete();
+						$this->delete_access('read_file', $item['id']);
+						$count++;
+					}
+				}
+				else if ($item['type'] === 'dir')
+				{
+					$full = $this->full_path($item['path']);
+
+					if (!$full || !is_dir($full))
+					{
+						continue;
+					}
+
+					$prefix = $this->upload_dir($item['path']).'/';
+
+					foreach ($this->file_records() as $file)
+					{
+						$path = $this->normalize_db_path($file['path']);
+
+						if (strpos($path, 'upload/'.$prefix) === 0)
+						{
+							HB()->model2('file', $file['id'])->delete();
+						}
+					}
+
+					foreach ($this->db->select('directory_id', 'path')->from('files_directories')->get(FALSE) as $directory)
+					{
+						if ($directory['path'] === $item['path'] || strpos($directory['path'], $item['path'].'/') === 0)
+						{
+							$this->delete_access('read_directory', $directory['directory_id']);
+							$this->db->where('directory_id', $directory['directory_id'])->delete('files_directories');
+						}
+					}
+
+					dir_remove($full);
+					$count++;
+				}
+			}
+
+			notify($count ? $this->lang('%d element(s) supprime(s)', $count) : $this->lang('Aucun element supprime'), $count ? 'success' : 'warning');
 			redirect($this->index_path($dir));
 		}
 
@@ -267,6 +528,122 @@ class Admin extends Controller_Module
 			notify($this->lang('Element deplace avec succes'));
 			redirect($this->index_path($target_dir));
 		}
+
+		if ($action === 'move_selected')
+		{
+			if (!$this->is_authorized('modify_files'))
+			{
+				$this->error->unauthorized();
+			}
+
+			$items = $this->selected_items();
+			$target_dir = $this->normalize(post('target_dir'));
+
+			if (empty($items) || $target_dir === NULL || !is_dir($this->full_path($target_dir)))
+			{
+				notify($this->lang('Deplacement impossible'), 'danger');
+				redirect($this->index_path($dir));
+			}
+
+			$count = 0;
+			$single_name = count($items) === 1 ? $this->clean_name(post('name')) : '';
+
+			foreach ($items as $item)
+			{
+				if ($item['type'] === 'file')
+				{
+					$file = $this->file_record($item['id']);
+
+					if (!$file || !($source_full = $this->file_full_path($file)))
+					{
+						continue;
+					}
+
+					$name = $single_name ?: $file['name'];
+					$target = $this->upload_dir($target_dir).'/'.basename($this->normalize_db_path($file['path']));
+					$target_full = str_replace('\\', '/', HIDDENCMS_CMS.'/upload/'.$target);
+
+					if (file_exists($target_full) && realpath($target_full) !== realpath($source_full))
+					{
+						continue;
+					}
+
+					dir_create(dirname($target_full));
+
+					if ($target_full === $source_full || rename($source_full, $target_full))
+					{
+						HB()->model2('file', $file['id'])
+							->set('name', $name)
+							->set('path', 'upload/'.$target)
+							->update();
+
+						$this->copy_access('read_directory', $this->directory_id($target_dir), 'read_file', $file['id']);
+
+						$count++;
+					}
+				}
+				else if ($item['type'] === 'dir')
+				{
+					$source = $item['path'];
+					$source_full = $this->full_path($source);
+
+					if (!$source_full || !is_dir($source_full))
+					{
+						continue;
+					}
+
+					$name = $single_name ?: basename($source);
+					$target = $target_dir.($target_dir !== '' ? '/' : '').$name;
+
+					if ($target === $source || strpos($target.'/', $source.'/') === 0)
+					{
+						continue;
+					}
+
+					$target_full = $this->full_path($target);
+
+					if (!$target_full || file_exists($target_full))
+					{
+						continue;
+					}
+
+					if (rename($source_full, $target_full))
+					{
+						$source_prefix = 'upload/'.$this->upload_dir($source).'/';
+						$target_prefix = 'upload/'.$this->upload_dir($target).'/';
+						$directory_prefix = $source.'/';
+
+						foreach ($this->file_records() as $file)
+						{
+							$path = $this->normalize_db_path($file['path']);
+
+							if (strpos($path, $source_prefix) === 0)
+							{
+								HB()->model2('file', $file['id'])
+									->set('path', $target_prefix.substr($path, strlen($source_prefix)))
+									->update();
+							}
+						}
+
+						foreach ($this->db->select('directory_id', 'path')->from('files_directories')->get(FALSE) as $directory)
+						{
+							if ($directory['path'] === $source || strpos($directory['path'], $directory_prefix) === 0)
+							{
+								$this->db	->where('directory_id', $directory['directory_id'])
+											->update('files_directories', [
+												'path' => $target.substr($directory['path'], strlen($source))
+											]);
+							}
+						}
+
+						$count++;
+					}
+				}
+			}
+
+			notify($count ? $this->lang('%d element(s) deplace(s)', $count) : $this->lang('Aucun element deplace'), $count ? 'success' : 'warning');
+			redirect($this->index_path($target_dir));
+		}
 	}
 
 	private function directories($base = '')
@@ -299,24 +676,66 @@ class Admin extends Controller_Module
 		return $dirs;
 	}
 
-	private function render_tree($current)
+	private function immediate_directories($base = '')
 	{
-		$directories = $this->directories();
-		$html = '<div class="files-tree-heading">'.icon('far fa-folder-open').' '.$this->lang('Dossiers').'</div><ul class="files-tree">';
+		$base = $this->normalize($base);
+		$full = $this->full_path($base);
+		$dirs = [];
 
-		foreach ($directories as $path => $label)
+		if (!$full || !is_dir($full))
 		{
-			$depth = $path === '' ? 0 : substr_count($path, '/') + 1;
-			$title = $path === '' ? $this->lang('Racine') : basename($path);
+			return $dirs;
+		}
 
-			$html .= '<li style="padding-left: '.($depth * 14).'px">'
+		foreach (scandir($full) as $entry)
+		{
+			if (in_array($entry, ['.', '..'], TRUE) || !is_dir($full.'/'.$entry))
+			{
+				continue;
+			}
+
+			$path = $base.($base !== '' ? '/' : '').$entry;
+			$dirs[$path] = $entry;
+		}
+
+		return $dirs;
+	}
+
+	private function render_tree_branch($base, $current)
+	{
+		$directories = $this->immediate_directories($base);
+
+		if (empty($directories))
+		{
+			return '';
+		}
+
+		$html = '<ul>';
+
+		foreach ($directories as $path => $title)
+		{
+			$html .= '<li class="files-tree-node">'
 					.'<a class="'.($path === $current ? 'active' : '').'" href="'.$this->index_url($path).'">'
 						.icon('far fa-folder').' '.utf8_htmlentities($title)
 					.'</a>'
+					.$this->render_tree_branch($path, $current)
 				.'</li>';
 		}
 
 		return $html.'</ul>';
+	}
+
+	private function render_tree($current)
+	{
+		return '<div class="files-tree-heading">'.icon('far fa-folder-open').' '.$this->lang('Dossiers').'</div>'
+			.'<ul class="files-tree">'
+				.'<li class="files-tree-node files-tree-root">'
+					.'<a class="'.($current === '' ? 'active' : '').'" href="'.$this->index_url().'">'
+						.icon('far fa-folder').' '.$this->lang('Racine')
+					.'</a>'
+					.$this->render_tree_branch('', $current)
+				.'</li>'
+			.'</ul>';
 	}
 
 	private function render_breadcrumb($dir)
@@ -330,19 +749,29 @@ class Admin extends Controller_Module
 			$html .= '<span>/</span><a href="'.$this->index_url($path).'">'.utf8_htmlentities($part).'</a>';
 		}
 
-		return $html.'</nav>';
+		return $html.'<span class="files-breadcrumb-access">'.$this->button_access($this->directory_id($dir), 'directory', 'files', $this->lang('Permissions de lecture du dossier')).'</span></nav>';
 	}
 
-	private function render_select_dirs($selected = '')
+	private function directory_value($dir)
 	{
-		$html = '<select class="form-control form-control-sm" name="target_dir">';
+		return $dir === '' ? '/' : $dir;
+	}
+
+	private function render_directory_suggestions()
+	{
+		$html = '<datalist id="files-directory-paths">';
 
 		foreach ($this->directories() as $path => $label)
 		{
-			$html .= '<option value="'.utf8_htmlentities($path).'"'.($path === $selected ? ' selected' : '').'>'.utf8_htmlentities($label).'</option>';
+			$html .= '<option value="'.utf8_htmlentities($this->directory_value($path)).'">';
 		}
 
-		return $html.'</select>';
+		return $html.'</datalist>';
+	}
+
+	private function render_path_input($selected = '', $name = 'target_dir')
+	{
+		return '<input class="form-control form-control-sm files-path-input" type="text" name="'.$name.'" list="files-directory-paths" value="'.utf8_htmlentities($this->directory_value($selected)).'" placeholder="'.$this->lang('Chemin du dossier').'">';
 	}
 
 	private function render_items($dir)
@@ -360,12 +789,43 @@ class Admin extends Controller_Module
 			$path = $dir.($dir !== '' ? '/' : '').$entry;
 			$item_full = $this->full_path($path);
 
+			if (!$item_full || !is_dir($item_full))
+			{
+				continue;
+			}
+
 			$items[] = [
 				'name' => $entry,
 				'path' => $path,
-				'dir'  => is_dir($item_full),
-				'size' => is_file($item_full) ? filesize($item_full) : NULL,
-				'date' => filemtime($item_full)
+				'dir'  => TRUE,
+				'size' => NULL,
+				'date' => filemtime($item_full),
+				'type' => 'dir',
+				'id'   => $this->directory_id($path)
+			];
+		}
+
+		foreach ($this->file_records() as $file)
+		{
+			if ($this->file_dir($file) !== $dir || !($full_path = $this->file_full_path($file)))
+			{
+				continue;
+			}
+
+			if (!$this->access_id('files', 'read_file', $file['id']))
+			{
+				$this->copy_access('read_directory', $this->directory_id($dir), 'read_file', $file['id']);
+			}
+
+			$items[] = [
+				'name' => $file['name'],
+				'path' => $this->file_relative_path($file),
+				'dir'  => FALSE,
+				'size' => filesize($full_path),
+				'date' => strtotime($file['date']),
+				'type' => 'file',
+				'id'   => $file['id'],
+				'slug' => $this->file_public_slug($file)
 			];
 		}
 
@@ -389,50 +849,61 @@ class Admin extends Controller_Module
 		{
 			$name = utf8_htmlentities($item['name']);
 			$icon = $item['dir'] ? 'far fa-folder' : 'far fa-file';
-			$title = $item['dir'] ? '<a href="'.$this->index_url($item['path']).'">'.$name.'</a>' : '<a href="'.$this->public_url($item['path']).'" target="_blank" rel="noopener">'.$name.'</a>';
+			$title = $item['dir'] ? '<a href="'.$this->index_url($item['path']).'">'.$name.'</a>' : '<a href="'.url('files/'.$item['slug']).'" target="_blank" rel="noopener">'.$name.'</a>';
 			$size = $item['dir'] ? '-' : human_size($item['size']);
 			$date = date('d/m/Y H:i', $item['date']);
-			$move = '';
-			$delete = '';
+			$value = $item['type'] === 'file' ? 'file:'.$item['id'] : 'dir:'.$item['path'];
+			$access = $item['type'] === 'file' ? $this->button_access($item['id'], 'file', 'files', $this->lang('Permissions de lecture')) : $this->button_access($item['id'], 'directory', 'files', $this->lang('Permissions de lecture'));
 
-			if ($this->is_authorized('modify_files'))
-			{
-				$move = '<form class="files-inline-form" method="post" action="'.$this->index_url($dir).'">'
-						.'<input type="hidden" name="files_action" value="move">'
-						.'<input type="hidden" name="path" value="'.utf8_htmlentities($item['path']).'">'
-						.'<input class="form-control form-control-sm" type="text" name="name" value="'.$name.'">'
-						.$this->render_select_dirs($dir)
-						.'<button class="btn btn-outline-primary btn-sm" type="submit">'.icon('fas fa-exchange-alt').'</button>'
-					.'</form>';
-			}
-
-			if ($this->is_authorized('delete_files'))
-			{
-				$delete = '<form method="post" action="'.$this->index_url($dir).'" onsubmit="return confirm(\''.$this->lang('Supprimer cet element ?').'\');">'
-						.'<input type="hidden" name="files_action" value="delete">'
-						.'<input type="hidden" name="path" value="'.utf8_htmlentities($item['path']).'">'
-						.'<button class="btn btn-outline-danger btn-sm" type="submit">'.icon('far fa-trash-alt').'</button>'
-					.'</form>';
-			}
-
-			$rows .= '<tr>'
+			$rows .= '<tr data-file-row data-path="'.utf8_htmlentities($value).'" data-name="'.$name.'">'
+					.'<td class="files-select"><input type="checkbox" class="files-select-item" value="'.utf8_htmlentities($value).'" data-name="'.$name.'"></td>'
 					.'<td class="files-name">'.icon($icon).' '.$title.'</td>'
 					.'<td class="files-size">'.$size.'</td>'
 					.'<td class="files-date">'.$date.'</td>'
-					.'<td class="files-actions">'.$move.$delete.'</td>'
+					.'<td class="files-access">'.$access.'</td>'
 				.'</tr>';
 		}
 
 		return '<div class="table-responsive">'
 				.'<table class="table table-hover table-sm files-table mb-0">'
 					.'<thead><tr>'
+						.'<th class="files-select"><input type="checkbox" class="files-select-all"></th>'
 						.'<th>'.$this->lang('Nom').'</th>'
 						.'<th>'.$this->lang('Taille').'</th>'
 						.'<th>'.$this->lang('Date').'</th>'
-						.'<th class="text-right">'.$this->lang('Actions').'</th>'
+						.'<th class="text-right">'.$this->lang('Lecture').'</th>'
 					.'</tr></thead>'
 					.'<tbody>'.$rows.'</tbody>'
 				.'</table>'
+			.'</div>';
+	}
+
+	private function render_selection_actions()
+	{
+		if (!$this->is_authorized('modify_files') && !$this->is_authorized('delete_files'))
+		{
+			return '';
+		}
+
+		$buttons = '';
+
+		if ($this->is_authorized('modify_files'))
+		{
+			$buttons .= '<button class="btn btn-primary files-selection-action" type="button" data-toggle="modal" data-target="#files-move-modal" title="'.$this->lang('Deplacer').'" aria-label="'.$this->lang('Deplacer').'" disabled>'
+					.icon('fas fa-exchange-alt')
+				.'</button>';
+		}
+
+		if ($this->is_authorized('delete_files'))
+		{
+			$buttons .= '<button class="btn btn-danger files-selection-action" type="button" data-toggle="modal" data-target="#files-delete-modal" title="'.$this->lang('Supprimer').'" aria-label="'.$this->lang('Supprimer').'" disabled>'
+					.icon('far fa-trash-alt')
+				.'</button>';
+		}
+
+		return '<div class="files-selection-bar" data-files-selection>'
+				.'<span class="files-selection-count">'.$this->lang('Aucun element selectionne').'</span>'
+				.$buttons
 			.'</div>';
 	}
 
@@ -443,32 +914,168 @@ class Admin extends Controller_Module
 
 		if ($this->is_authorized('add_files'))
 		{
-			$upload = '<form class="files-toolbar-form" method="post" action="'.$this->index_url($dir).'" enctype="multipart/form-data">'
-					.'<input type="hidden" name="files_action" value="upload">'
-					.'<label>'.$this->lang('Ajouter des fichiers').'</label>'
-					.'<div class="files-toolbar-control">'
-						.'<input class="form-control form-control-sm" type="file" name="files[]" multiple>'
-						.'<button class="btn btn-primary btn-sm" type="submit">'.icon('fas fa-upload').' '.$this->lang('Ajouter').'</button>'
-					.'</div>'
-				.'</form>';
+			$upload = '<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#files-upload-modal" title="'.$this->lang('Ajouter').'" aria-label="'.$this->lang('Ajouter').'">'
+					.icon('fas fa-upload')
+				.'</button>';
 
-			$mkdir = '<form class="files-toolbar-form" method="post" action="'.$this->index_url($dir).'">'
-					.'<input type="hidden" name="files_action" value="mkdir">'
-					.'<label>'.$this->lang('Nouveau dossier').'</label>'
-					.'<div class="files-toolbar-control">'
-						.'<input class="form-control form-control-sm" type="text" name="name" placeholder="'.$this->lang('Nom du dossier').'">'
-						.'<button class="btn btn-outline-primary btn-sm" type="submit">'.icon('fas fa-folder-plus').' '.$this->lang('Creer').'</button>'
-					.'</div>'
-				.'</form>';
+			$mkdir = '<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#files-mkdir-modal" title="'.$this->lang('Creer un dossier').'" aria-label="'.$this->lang('Creer un dossier').'">'
+					.icon('fas fa-folder-plus')
+				.'</button>';
 		}
 
-		return '<div class="files-toolbar">'.$upload.$mkdir.'</div>';
+		return '<div class="files-toolbar">'
+				.'<div class="files-toolbar-main">'.$upload.$mkdir.'</div>'
+				.$this->render_selection_actions()
+			.'</div>';
+	}
+
+	private function render_mkdir_modal($dir)
+	{
+		if (!$this->is_authorized('add_files'))
+		{
+			return '';
+		}
+
+		return '<div class="modal fade files-mkdir-modal" id="files-mkdir-modal" tabindex="-1" role="dialog" aria-hidden="true">'
+				.'<div class="modal-dialog" role="document">'
+					.'<form class="modal-content files-mkdir-form" method="post" action="'.$this->index_url($dir).'">'
+						.'<input type="hidden" name="files_action" value="mkdir">'
+						.'<div class="modal-header">'
+							.'<h5 class="modal-title">'.icon('fas fa-folder-plus').' '.$this->lang('Creer un dossier').'</h5>'
+							.'<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'">'
+								.'<span aria-hidden="true">&times;</span>'
+							.'</button>'
+						.'</div>'
+						.'<div class="modal-body">'
+							.'<div class="form-group">'
+								.'<label>'.$this->lang('Nom du dossier').'</label>'
+								.'<input class="form-control" type="text" name="name" placeholder="'.$this->lang('Nouveau dossier').'" required>'
+							.'</div>'
+							.'<div class="form-group mb-0">'
+								.'<label>'.$this->lang('Chemin').'</label>'
+								.$this->render_path_input($dir)
+								.'<small class="form-text text-muted">'.$this->lang('Tapez pour afficher les dossiers existants').'</small>'
+							.'</div>'
+						.'</div>'
+						.'<div class="modal-footer">'
+							.'<button type="button" class="btn btn-secondary" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="btn btn-primary" title="'.$this->lang('Creer').'" aria-label="'.$this->lang('Creer').'">'.icon('fas fa-folder-plus').'</button>'
+						.'</div>'
+					.'</form>'
+				.'</div>'
+			.'</div>';
+	}
+
+	private function render_upload_modal($dir)
+	{
+		if (!$this->is_authorized('add_files'))
+		{
+			return '';
+		}
+
+		return '<div class="modal fade files-upload-modal" id="files-upload-modal" tabindex="-1" role="dialog" aria-hidden="true">'
+				.'<div class="modal-dialog modal-lg" role="document">'
+					.'<form class="modal-content files-upload-form" method="post" action="'.$this->index_url($dir).'" enctype="multipart/form-data">'
+						.'<input type="hidden" name="files_action" value="upload">'
+						.'<div class="modal-header">'
+							.'<h5 class="modal-title">'.icon('fas fa-upload').' '.$this->lang('Ajouter des fichiers').'</h5>'
+							.'<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'">'
+								.'<span aria-hidden="true">&times;</span>'
+							.'</button>'
+						.'</div>'
+						.'<div class="modal-body">'
+							.'<input class="files-upload-input" type="file" name="files[]" multiple>'
+							.'<button class="files-upload-dropzone" type="button">'
+								.'<span class="files-upload-dropzone-icon">'.icon('fas fa-cloud-upload-alt').'</span>'
+								.'<strong>'.$this->lang('Glisser-deposer les fichiers ici').'</strong>'
+								.'<small>'.$this->lang('ou cliquer pour choisir des fichiers').'</small>'
+							.'</button>'
+							.'<ul class="files-upload-list"></ul>'
+						.'</div>'
+						.'<div class="modal-footer">'
+							.'<button type="button" class="btn btn-secondary" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="btn btn-primary" title="'.$this->lang('Ajouter').'" aria-label="'.$this->lang('Ajouter').'">'.icon('fas fa-upload').'</button>'
+						.'</div>'
+					.'</form>'
+				.'</div>'
+			.'</div>';
+	}
+
+	private function render_move_modal($dir)
+	{
+		if (!$this->is_authorized('modify_files'))
+		{
+			return '';
+		}
+
+		return '<div class="modal fade files-move-modal" id="files-move-modal" tabindex="-1" role="dialog" aria-hidden="true">'
+				.'<div class="modal-dialog" role="document">'
+					.'<form class="modal-content files-selection-form" method="post" action="'.$this->index_url($dir).'">'
+						.'<input type="hidden" name="files_action" value="move_selected">'
+						.'<div class="files-selected-inputs"></div>'
+						.'<div class="modal-header">'
+							.'<h5 class="modal-title">'.icon('fas fa-exchange-alt').' '.$this->lang('Deplacer la selection').'</h5>'
+							.'<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'">'
+								.'<span aria-hidden="true">&times;</span>'
+							.'</button>'
+						.'</div>'
+						.'<div class="modal-body">'
+							.'<p class="files-selected-summary text-muted"></p>'
+							.'<div class="form-group files-rename-field">'
+								.'<label>'.$this->lang('Nom').'</label>'
+								.'<input class="form-control" type="text" name="name">'
+								.'<small class="form-text text-muted">'.$this->lang('Disponible uniquement pour un seul element selectionne').'</small>'
+							.'</div>'
+							.'<div class="form-group mb-0">'
+								.'<label>'.$this->lang('Chemin de destination').'</label>'
+								.$this->render_path_input($dir)
+							.'</div>'
+						.'</div>'
+						.'<div class="modal-footer">'
+							.'<button type="button" class="btn btn-secondary" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="btn btn-primary" title="'.$this->lang('Deplacer').'" aria-label="'.$this->lang('Deplacer').'">'.icon('fas fa-exchange-alt').'</button>'
+						.'</div>'
+					.'</form>'
+				.'</div>'
+			.'</div>';
+	}
+
+	private function render_delete_modal($dir)
+	{
+		if (!$this->is_authorized('delete_files'))
+		{
+			return '';
+		}
+
+		return '<div class="modal fade files-delete-modal" id="files-delete-modal" tabindex="-1" role="dialog" aria-hidden="true">'
+				.'<div class="modal-dialog" role="document">'
+					.'<form class="modal-content files-selection-form" method="post" action="'.$this->index_url($dir).'">'
+						.'<input type="hidden" name="files_action" value="delete_selected">'
+						.'<div class="files-selected-inputs"></div>'
+						.'<div class="modal-header">'
+							.'<h5 class="modal-title">'.icon('far fa-trash-alt').' '.$this->lang('Supprimer la selection').'</h5>'
+							.'<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'">'
+								.'<span aria-hidden="true">&times;</span>'
+							.'</button>'
+						.'</div>'
+						.'<div class="modal-body">'
+							.'<p class="files-selected-summary text-muted"></p>'
+							.'<div class="alert alert-danger mb-0">'.$this->lang('Cette action est definitive.').'</div>'
+						.'</div>'
+						.'<div class="modal-footer">'
+							.'<button type="button" class="btn btn-secondary" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="btn btn-danger" title="'.$this->lang('Supprimer').'" aria-label="'.$this->lang('Supprimer').'">'.icon('far fa-trash-alt').'</button>'
+						.'</div>'
+					.'</form>'
+				.'</div>'
+			.'</div>';
 	}
 
 	public function index()
 	{
 		$this->title($this->lang('Fichiers'));
 		$this->css('file_manager');
+		$this->js('file_manager');
 
 		$dir = $this->current_dir();
 		$this->handle_post($dir);
@@ -480,7 +1087,12 @@ class Admin extends Controller_Module
 					.$this->render_toolbar($dir)
 					.$this->render_items($dir)
 				.'</div>'
-			.'</div>';
+			.'</div>'
+			.$this->render_directory_suggestions()
+			.$this->render_upload_modal($dir)
+			.$this->render_mkdir_modal($dir)
+			.$this->render_move_modal($dir)
+			.$this->render_delete_modal($dir);
 
 		return $this->panel()
 					->heading($this->lang('Gestionnaire de fichiers'), 'far fa-folder-open')

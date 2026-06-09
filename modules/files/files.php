@@ -20,11 +20,14 @@ class Files extends Module
 			'author'      => 'HiddenCMS',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => TRUE,
+			'front'       => TRUE,
 			'version'     => '1.0',
+			'reserved_route' => 'files',
 			'depends'     => [
 				'HiddenCMS' => 'Alpha 0.2'
 			],
 			'routes'      => [
+				'{url_title}' => '_file',
 				'admin' => 'index'
 			]
 		];
@@ -53,6 +56,62 @@ class Files extends Module
 								'title' => 'Supprimer',
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
+							]
+						]
+					]
+				]
+			],
+			'directory' => [
+				'get_all' => function(){
+					return HiddenCMS()->db->select('directory_id', 'CONCAT_WS(" ", "Dossier", path)')->from('files_directories')->order_by('path')->get();
+				},
+				'check' => function($directory_id){
+					if (($path = HiddenCMS()->db->select('path')->from('files_directories')->where('directory_id', (int)$directory_id)->row()) !== [])
+					{
+						return 'Dossier '.$path;
+					}
+				},
+				'init' => [
+					'read_directory' => [
+						['visitors', TRUE]
+					]
+				],
+				'access' => [
+					[
+						'title'  => 'Dossiers',
+						'icon'   => 'far fa-folder',
+						'access' => [
+							'read_directory' => [
+								'title' => 'Lecture',
+								'icon'  => 'far fa-eye'
+							]
+						]
+					]
+				]
+			],
+			'file' => [
+				'get_all' => function(){
+					return HiddenCMS()->db->select('id', 'CONCAT_WS(" ", "Fichier", name)')->from('file')->where('path LIKE', 'upload/files/%')->order_by('name')->get();
+				},
+				'check' => function($file_id){
+					if (($name = HiddenCMS()->db->select('name')->from('file')->where('id', (int)$file_id)->where('path LIKE', 'upload/files/%')->row()) !== [])
+					{
+						return 'Fichier '.$name;
+					}
+				},
+				'init' => [
+					'read_file' => [
+						['visitors', TRUE]
+					]
+				],
+				'access' => [
+					[
+						'title'  => 'Fichiers',
+						'icon'   => 'far fa-file',
+						'access' => [
+							'read_file' => [
+								'title' => 'Lecture',
+								'icon'  => 'far fa-eye'
 							]
 						]
 					]

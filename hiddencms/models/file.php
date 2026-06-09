@@ -15,8 +15,8 @@ class File extends Model2
 		return [
 			'id'   => self::field()->primary(),
 			'user' => self::field()->depends('user/user')->default(HB()->user)->null(),
-			'name' => self::field()->text(100),
-			'path' => self::field()->text(100),
+			'name' => self::field()->text(255),
+			'path' => self::field()->text(255),
 			'date' => self::field()->datetime()
 		];
 	}
@@ -44,22 +44,23 @@ class File extends Model2
 
 	static public function uploaded_file($files, $dir = NULL, $file_id = NULL, $var = NULL)
 	{
-		$filename = static::filename($dir, extension(basename($var ? $files['name'][$var] : $files['name'])));
+		$is_multiple = $var !== NULL;
+		$filename = static::filename($dir, extension(basename($is_multiple ? $files['name'][$var] : $files['name'])));
 
-		if (move_uploaded_file($var ? $files['tmp_name'][$var] : $files['tmp_name'], $filename))
+		if (move_uploaded_file($is_multiple ? $files['tmp_name'][$var] : $files['tmp_name'], $filename))
 		{
 			if (($file = HB()->model2('file', $file_id)) && $file->id)
 			{
 				@unlink($file->path);
 
 				return $file->set('user', HB()->user)
-							->set('name', $var ? $files['name'][$var] : $files['name'])
+							->set('name', $is_multiple ? $files['name'][$var] : $files['name'])
 							->set('path', $filename)
 							->update();
 			}
 			else
 			{
-				return static::add($filename, $var ? $files['name'][$var] : $files['name']);
+				return static::add($filename, $is_multiple ? $files['name'][$var] : $files['name']);
 			}
 		}
 

@@ -10,6 +10,18 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Ajax_Checker extends Module_Checker
 {
+	public function _edit($module_name, $access = '0-default')
+	{
+		$this->ajax();
+
+		return $this->_check_object($module_name, $access);
+	}
+
+	public function edit($module_name, $access = '0-default')
+	{
+		return $this->_edit($module_name, $access);
+	}
+
 	public function index()
 	{
 		return $this->_check_actions();
@@ -71,11 +83,11 @@ class Admin_Ajax_Checker extends Module_Checker
 	{
 		if (list($action, $module_name, $type, $id) = array_values(post_check('action', 'module', 'type', 'id')))
 		{
-			$module = $this->module($module_name);
-
-			if (($permissions = $module->get_permissions($type)) && (empty($permissions['check']) || call_user_func($permissions['check'], $id)))
+			if ($checked = $this->_check_object($module_name, $id.'-'.$type))
 			{
-				foreach ($permissions['access'] as $permissions)
+				list($module, $type, $all_access, $id) = $checked;
+
+				foreach ($all_access as $permissions)
 				{
 					if (isset($permissions['access'][$action]))
 					{
@@ -83,6 +95,18 @@ class Admin_Ajax_Checker extends Module_Checker
 					}
 				}
 			}
+		}
+	}
+
+	private function _check_object($module_name, $access = '0-default')
+	{
+		$module = $this->module($module_name);
+
+		list($id, $type) = explode('-', $access);
+
+		if ($module && ($permissions = $module->get_permissions($type)) && (empty($permissions['check']) || $title = call_user_func($permissions['check'], $id)))
+		{
+			return [$module, $type, $permissions['access'], $id, isset($title) ? $title : NULL];
 		}
 	}
 }

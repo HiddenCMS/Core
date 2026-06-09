@@ -10,6 +10,59 @@ use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
+	public function _edit($module, $type, $access, $id, $title = NULL)
+	{
+		$this	->css('access')
+				->js('access')
+				->css('table')
+				->js('table');
+
+		$reset = $this->button()
+						->tooltip($this->lang('Réinitialiser toutes les permissions'))
+						->icon('fas fa-sync')
+						->color('info access-reset')
+						->compact()
+						->outline()
+						->data([
+							'module' => $module->info()->name,
+							'type'   => $type,
+							'id'     => $id
+						]);
+
+		$body = '<div class="module-access access-modal-layout">'
+				.'<div class="row no-gutters">'
+					.'<div class="col-12 col-lg-5 access-modal-master">'
+						.'<div class="access-modal-section">'
+							.'<div class="access-modal-section-header">'
+								.'<span>'.icon('fas fa-unlock-alt').' '.$this->lang('Permissions').'</span>'
+								.'<span>'.$reset.'</span>'
+							.'</div>'
+							.'<div class="access-modal-section-body">'
+								.$this->view('index', [
+									'loader' => $module,
+									'module' => $module->info()->name,
+									'type'   => $type,
+									'id'     => $id,
+									'access' => $access
+								])
+							.'</div>'
+						.'</div>'
+					.'</div>'
+				.'</div>'
+			.'</div>';
+
+		return $this	->modal($title ?: $this->lang('Gestion des permissions'), $module->info()->icon)
+						->set_id('access-permissions-modal-'.url_title($module->info()->name.'-'.$type.'-'.$id))
+						->body($body, FALSE)
+						->large()
+						->close();
+	}
+
+	public function edit($module, $type, $access, $id, $title = NULL)
+	{
+		return $this->_edit($module, $type, $access, $id, $title);
+	}
+
 	public function index($action, $title, $icon, $module_name, $id)
 	{
 		$groups = [];
@@ -19,14 +72,19 @@ class Admin_Ajax extends Controller_Module
 			$groups[$group_id] = HB()->access($module_name, $action, $id, $group_id);
 		}
 
-		return $this->col(
-			$this	->panel()
-					->heading('<span class="float-right">'.$this->button()->tooltip($this->lang('Utilisateurs'))->icon('fas fa-users')->color('info access-users')->compact()->outline().'</span>'.$title, $icon)
-					->body($this->view('details', [
-						'groups' => $groups
-					]), FALSE)
-					->size('col-12 col-lg-7')
-		);
+		return '<div class="col-12 col-lg-7 access-modal-details">'
+				.'<div class="access-modal-section">'
+					.'<div class="access-modal-section-header">'
+						.'<span>'.icon($icon).' '.$title.'</span>'
+						.'<span>'.$this->button()->tooltip($this->lang('Utilisateurs'))->icon('fas fa-users')->color('info access-users')->compact()->outline().'</span>'
+					.'</div>'
+					.'<div class="access-modal-section-body">'
+						.$this->view('details', [
+							'groups' => $groups
+						])
+					.'</div>'
+				.'</div>'
+			.'</div>';
 	}
 
 	public function update($module_name, $action, $id, $groups, $user, $title, $icon)
