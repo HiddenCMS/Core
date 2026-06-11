@@ -1,7 +1,7 @@
 $(function(){
-	$('body').on('click', '#modal-update .btn-primary', function(){
+	$('body').on('click', '#modal-update .ui.primary.button', function(){
 		var progressBar = [];
-		var $btn = $(this).button('loading');
+		var $btn = $(this).addClass('loading disabled');
 		$('#modal-update .step:eq(0)').addClass('active');
 
 		$('#modal-update .progress-bar').each(function(i){
@@ -15,7 +15,7 @@ $(function(){
 		});
 
 		$('#modal-update').on('hidden.bs.modal', function(){
-			$btn.button('reset');
+			$btn.removeClass('loading disabled');
 			$('#modal-update .step').removeClass('active');
 			$('#modal-update .progress-bar').data('value', 0).css('width', 0);
 		});
@@ -49,7 +49,7 @@ $(function(){
 			},
 			success: function(){
 				$('.module-monitoring .refresh').trigger('click');
-				$('#modal-update').modal('hide');
+				modal.hide($('#modal-update'));
 				notify('Mise à jour effectuée avec succès');
 				setTimeout(function(){
 					window.location.reload();

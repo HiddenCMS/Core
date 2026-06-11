@@ -41,7 +41,7 @@ class Button extends Label
 			else
 			{
 				$footers->each(function($buttons, $align){
-					return HB()->html()->attr('class', 'float-'.$align)->content($buttons);
+					return HB()->html()->attr('class', (($theme = HB()->output->theme()) && $theme->info()->name == 'admin' ? $align.' floated' : 'float-'.$align))->content($buttons);
 				});
 			}
 
@@ -61,26 +61,12 @@ class Button extends Label
 				$attrs['data-'.$key] = $value;
 			}
 
-			$class = [];
-
-			if ($this->_color || $this->_compact || $this->_outline)
-			{
-				$class[] = 'btn';
-				$class[] = $this->array()
-								->append('btn')
-								->append_if($this->_outline, 'outline')
-								->append($this->_color ?: 'secondary')
-								->implode('-');
-
-				if ($this->_compact)
-				{
-					$class[] = 'btn-sm';
-				}
-			}
-
 			if ($this->_style)
 			{
-				$class = array_merge($class, array_filter($this->_style, 'is_string'));
+				if ($classes = implode(' ', array_filter($this->_style, 'is_string')))
+				{
+					$attrs['class'] = trim((isset($attrs['class']) ? $attrs['class'].' ' : '').$classes);
+				}
 
 				$style = implode(';', array_map(function($a){
 					return implode(': ', $a);
@@ -94,13 +80,85 @@ class Button extends Label
 
 			if ($this->_disabled)
 			{
-				$class[] = 'disabled';
+				$attrs['disabled'] = NULL;
+				$attrs['aria-disabled'] = 'true';
 			}
-
-			$attrs['class'] = implode(' ', $class);
 		};
 
 		return $this;
+	}
+
+	public function __toString()
+	{
+		$tag     = $this->_tag;
+		$attrs   = $this->_attrs;
+		$content = $this->content();
+
+		if ($this->_template)
+		{
+			foreach ($this->_template as $template)
+			{
+				call_user_func_array($template, [&$content, &$attrs, &$tag]);
+			}
+		}
+
+		$content = $this->render_button_template($tag, $attrs, $content);
+
+		if ($this->_container)
+		{
+			$content = call_user_func_array($this->_container, [$content])->__toString();
+		}
+
+		return $content;
+	}
+
+	private function render_button_template($tag, array $attrs, $content)
+	{
+		$class = isset($attrs['class']) ? $attrs['class'] : '';
+		unset($attrs['class']);
+
+		$attrs_output = '';
+
+		foreach ($attrs as $key => $value)
+		{
+			$attrs_output .= ' '.$key.($value !== NULL ? '="'.utf8_htmlentities($value).'"' : '');
+		}
+
+		$data = [
+			'tag'                => $tag,
+			'attrs'              => $attrs,
+			'attrs_output'       => $attrs_output,
+			'attrs_except_class' => $attrs_output,
+			'class'              => $class,
+			'content'            => $content,
+			'color'              => $this->_color,
+			'compact'            => $this->_compact,
+			'outline'            => $this->_outline,
+			'disabled'           => $this->_disabled
+		];
+
+		$paths = [];
+		$templates = [];
+
+		if ($theme = $this->output->theme())
+		{
+			$templates[] = $theme;
+		}
+
+		$templates[] = HB();
+
+		foreach ($templates as $template_owner)
+		{
+			if ($path = $template_owner->__path('views', 'components/button.tpl.php', $paths))
+			{
+				extract($data);
+				ob_start();
+				include $path;
+				return ob_get_clean();
+			}
+		}
+
+		return '<'.$tag.$attrs_output.($class ? ' class="'.utf8_htmlentities($class).'"' : '').'>'.$content.'</'.$tag.'>';
 	}
 
 	public function compact($compact = TRUE)

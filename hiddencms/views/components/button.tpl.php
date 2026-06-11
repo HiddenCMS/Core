@@ -1,30 +1,31 @@
 <?php
-$variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark', 'light', 'link'];
-$tokens = array_values(array_filter(preg_split('/\s+/', trim((string)$class))));
-$color_tokens = array_values(array_filter(preg_split('/\s+/', trim((string)$color))));
-$classes = [];
-$variant = '';
+$tokens = array_merge(
+	array_values(array_filter(preg_split('/\s+/', trim((string)$class)))),
+	array_values(array_filter(preg_split('/\s+/', trim((string)$color))))
+);
 
-foreach (array_merge($tokens, $color_tokens) as $token)
+$classes = [];
+$visual_prefixes = ['btn-', 'button-', 'badge-', 'text-'];
+
+foreach ($tokens as $token)
 {
-	if (in_array($token, $variants, TRUE))
+	if (in_array($token, ['btn', 'button', 'badge'], TRUE))
 	{
-		$variant = $token;
 		continue;
+	}
+
+	foreach ($visual_prefixes as $prefix)
+	{
+		if (strpos($token, $prefix) === 0)
+		{
+			continue 2;
+		}
 	}
 
 	$classes[] = $token;
 }
 
-$classes[] = 'hb-btn';
-$classes[] = 'hb-btn-'.($variant ?: 'secondary');
+$final_class = trim(implode(' ', array_values(array_unique(array_filter($classes)))));
 
-if ($disabled)
-{
-	$classes[] = 'disabled';
-}
-
-$final_class = implode(' ', array_values(array_unique(array_filter($classes))));
-$attrs_output = $attrs_except_class.($final_class ? ' class="'.utf8_htmlentities($final_class).'"' : '');
-echo '<'.$tag.$attrs_output.'>'.$content.'</'.$tag.'>';
+echo '<'.$tag.$attrs_except_class.($final_class ? ' class="'.utf8_htmlentities($final_class).'"' : '').'>'.$content.'</'.$tag.'>';
 ?>

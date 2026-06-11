@@ -5,18 +5,18 @@
 </ul>
 <div class="tab-content border-light" id="pills-tabContent">
 	<div class="tab-pane fade show active" id="pills-options" role="tabpanel" aria-labelledby="pills-options-tab">
-		<div class="form-group row">
-			<label for="settings-display_panel" class="col-3 col-form-label">Dans un panel</label>
-			<div class="col-2">
+		<div class="fields">
+			<label for="settings-display_panel" class="four wide field">Dans un panel</label>
+			<div class="three wide field">
 				<select class="form-control" name="settings[display_panel]" id="settings-display_panel">
 					<option value="non"<?php if (!isset($display_panel) || $display_panel == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_panel) && $display_panel == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-social_display" class="col-3 col-form-label">Disposition</label>
-			<div class="col-9">
+		<div class="fields">
+			<label for="settings-social_display" class="four wide field">Disposition</label>
+			<div class="twelve wide field">
 				<select class="form-control" name="settings[social_display]" id="settings-display_teamname">
 					<option value="col-12"<?php if (!isset($social_display) || $social_display == 'col-12') echo ' selected="selected"' ?>>1 bouton par ligne</option>
 					<option value="col-6"<?php if (isset($social_display) && $social_display == 'col-6') echo ' selected="selected"' ?>>2 boutons par ligne</option>
@@ -32,9 +32,9 @@
 		</div>
 	</div>
 	<div class="tab-pane fade" id="pills-style" role="tabpanel" aria-labelledby="pills-style-tab">
-		<div class="form-group row">
-			<label for="settings-social_style" class="col-3 col-form-label">Apparence</label>
-			<div class="col-6">
+		<div class="fields">
+			<label for="settings-social_style" class="four wide field">Apparence</label>
+			<div class="eight wide field">
 				<select class="form-control" name="settings[social_style]" id="settings-social_style">
 					<option value="btn btn-social"<?php if (!isset($social_style) || $social_style == 'btn btn-social') echo ' selected="selected"' ?>>Bouton normal</option>
 					<option value="btn btn-social btn-sm"<?php if (isset($social_style) && $social_style == 'btn btn-social btn-sm') echo ' selected="selected"' ?>>Petit bouton</option>
@@ -43,9 +43,9 @@
 				</select>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-content_display" class="col-3 col-form-label">Contenu</label>
-			<div class="col-6">
+		<div class="fields">
+			<label for="settings-content_display" class="four wide field">Contenu</label>
+			<div class="eight wide field">
 				<select class="form-control" name="settings[content_display]" id="settings-content_display">
 					<option value="all"<?php if (!isset($content_display) || $content_display == 'all') echo ' selected="selected"' ?>>Icône et légende</option>
 					<option value="icon"<?php if (isset($content_display) && $content_display == 'icon') echo ' selected="selected"' ?>>Icône seule</option>
@@ -53,9 +53,9 @@
 				</select>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-icon_size" class="col-3 col-form-label">Taille de l'icône</label>
-			<div class="col-3">
+		<div class="fields">
+			<label for="settings-icon_size" class="four wide field">Taille de l'icône</label>
+			<div class="four wide field">
 				<select class="form-control" name="settings[icon_size]" id="settings-icon_size">
 					<option value="fa-1x"<?php if (!isset($icon_size) || $icon_size == 'fa-1x') echo ' selected="selected"' ?>>Par défaut</option>
 					<option value="fa-2x"<?php if (isset($icon_size) && $icon_size == 'fa-2x') echo ' selected="selected"' ?>>Grande</option>
@@ -66,10 +66,10 @@
 		</div>
 	</div>
 	<div class="tab-pane fade" id="pills-display" role="tabpanel" aria-labelledby="pills-display-tab">
-		<div class="form-group row">
-			<label for="settings-margin_top" class="col-3 col-form-label">Margin top</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-margin_top" class="four wide field">Margin top</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-up') ?></div>
@@ -82,10 +82,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-margin_right" class="col-3 col-form-label">Margin right</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-margin_right" class="four wide field">Margin right</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-right') ?></div>
@@ -98,10 +98,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-margin_bottom" class="col-3 col-form-label">Margin bottom</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-margin_bottom" class="four wide field">Margin bottom</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-down') ?></div>
@@ -114,10 +114,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-margin_left" class="col-3 col-form-label">Margin left</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-margin_left" class="four wide field">Margin left</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-left') ?></div>
@@ -130,10 +130,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-padding_top" class="col-3 col-form-label">Padding top</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-padding_top" class="four wide field">Padding top</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-up') ?></div>
@@ -146,10 +146,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-padding_right" class="col-3 col-form-label">Padding right</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-padding_right" class="four wide field">Padding right</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-right') ?></div>
@@ -162,10 +162,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-padding_bottom" class="col-3 col-form-label">Padding bottom</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-padding_bottom" class="four wide field">Padding bottom</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-down') ?></div>
@@ -178,10 +178,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-padding_left" class="col-3 col-form-label">Padding left</label>
-			<div class="col-4">
-				<div class="form-group mb-0">
+		<div class="fields">
+			<label for="settings-padding_left" class="four wide field">Padding left</label>
+			<div class="five wide field">
+				<div class="fields mb-0">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-left') ?></div>

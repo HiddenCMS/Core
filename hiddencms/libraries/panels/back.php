@@ -21,7 +21,7 @@ class Back extends Panel
 	public function __toString()
 	{
 		return $this->panel()
-					->style('card-transparent')
+					->style('ui basic')
 					->body($this->button_back($this->_url))
 					->__toString();
 	}

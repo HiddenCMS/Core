@@ -19,18 +19,18 @@ foreach ($front_urls as $path => $label)
 $picker_inline = '	<div class="hb-url-picker" data-menu-url-picker>
 						<div class="hb-url-picker-title">'.$this->lang('Type d\'URL').'</div>
 						<div class="hb-url-picker-modes">
-							<label class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="menu_url_mode" value="front"'.($is_front_url ? ' checked' : '').'>
-								<span class="form-check-label">'.$this->lang('Element front').'</span>
+							<label class="ui radio checkbox">
+								<input type="radio" name="menu_url_mode" value="front"'.($is_front_url ? ' checked' : '').'>
+								<span>'.$this->lang('Element front').'</span>
 							</label>
-							<label class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="menu_url_mode" value="custom"'.(!$is_front_url ? ' checked' : '').'>
-								<span class="form-check-label">'.$this->lang('Lien custom').'</span>
+							<label class="ui radio checkbox">
+								<input type="radio" name="menu_url_mode" value="custom"'.(!$is_front_url ? ' checked' : '').'>
+								<span>'.$this->lang('Lien custom').'</span>
 							</label>
 						</div>
 						<div class="hb-url-picker-front">
-							<label class="col-form-label" for="menu-front-url-select">'.$this->lang('Element front').'</label>
-							<select class="form-control" id="menu-front-url-select">
+							<label for="menu-front-url-select">'.$this->lang('Element front').'</label>
+							<select id="menu-front-url-select">
 								<option value="">'.$this->lang('Choisir un element').'</option>
 								'.$front_options.'
 							</select>

@@ -44,7 +44,7 @@ class Date extends Text
 					->js('bootstrap-datetimepicker/moment.min')
 					->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
 					->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
-					->js_load('$(".input-group.'.$this->_datetime_type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$this->_datetime_format.'"});');
+					->js_load('$("input.'.$this->_datetime_type.', .input-group.'.$this->_datetime_type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$this->_datetime_format.'"});');
 
 			$input->append_attr('class', $this->_datetime_type);
 		};

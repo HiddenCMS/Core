@@ -18,6 +18,11 @@ class Panel extends Library
 	protected $_style;
 	protected $_size;
 
+	private function admin_panel()
+	{
+		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+	}
+
 	public function __invoke()
 	{
 		return $this;
@@ -29,33 +34,54 @@ class Panel extends Library
 
 		if ($this->_heading)
 		{
-			$headers = $this->_heading;
+			if ($this->admin_panel())
+			{
+				$headers = $this->_heading;
+				$title   = array_shift($headers);
+				$actions = implode('', array_map('strval', $headers));
 
-			$headers[] = array_shift($headers);
+				$heading = '<div class="header">'.$title.($actions ? '<span class="right floated">'.$actions.'</span>' : '').'</div>';
+				$output  = '<div class="content">'.$heading.'</div>';
+			}
+			else
+			{
+				$headers = $this->_heading;
 
-			$output = $this	->button
-							->static_footer($headers, 'left')
-							->append_attr('class', 'card-header')
-							->tag('h6');
+				$headers[] = array_shift($headers);
+
+				$heading = $this	->button
+								->static_footer($headers, 'left')
+								->append_attr('class', 'card-header')
+								->tag('h6');
+
+				$output = $heading;
+			}
 		}
 
 		if ($this->_body)
 		{
-			$output .= $this->_body_tags ? '<div class="card-body">'.$this->_body.'</div>' : $this->_body;
+			if ($this->admin_panel())
+			{
+				$output .= '<div class="content">'.$this->_body.'</div>';
+			}
+			else
+			{
+				$output .= $this->_body_tags ? '<div class="card-body">'.$this->_body.'</div>' : $this->_body;
+			}
 		}
 
-		$table = $this	->html()
-						->attr('class', 'card')
+		$panel = $this	->html()
+						->attr('class', $this->admin_panel() ? 'ui fluid card' : 'card')
 						->append_attr_if($this->_style, 'class', $this->_style)
 						->content($output)
-						->append_if($this->_footer, $this->button->static_footer($this->_footer)->append_attr('class', 'card-footer'));
+						->append_if($this->_footer, $this->button->static_footer($this->_footer)->append_attr('class', $this->admin_panel() ? 'extra content' : 'card-footer'));
 
 		foreach ($this->_data as $key => $value)
 		{
-			$table->attr('data-'.$key, $value);
+			$panel->attr('data-'.$key, $value);
 		}
 
-		return (string)$table;
+		return (string)$panel;
 	}
 
 	public function title($label = '', $icon = '')
@@ -79,7 +105,7 @@ class Panel extends Library
 		{
 			if (!is_a($label, 'HB\HiddenCMS\Libraries\Html'))
 			{
-				$label = $this	->button()
+				$label = $this	->label()
 								->title($label)
 								->icon($icon)
 								->url_if($url, $url);

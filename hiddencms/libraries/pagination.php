@@ -145,7 +145,7 @@ class Pagination extends Library
 		if ($pagination = $this->get_pagination())
 		{
 			return parent	::panel()
-							->style('card-transparent text-right')
+							->style('ui basic right aligned')
 							->body($pagination, FALSE);
 		}
 	}

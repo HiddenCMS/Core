@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: Micha?l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Displayables;
@@ -28,6 +28,101 @@ class Col extends Displayable
 		return $this->_size;
 	}
 
+	private function admin_grid()
+	{
+		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+	}
+
+	private function semantic_width($size)
+	{
+		$size = max(1, min(12, (int)$size));
+		$width = max(1, min(16, (int)round($size * 16 / 12)));
+		$words = [
+			1 => 'one',
+			2 => 'two',
+			3 => 'three',
+			4 => 'four',
+			5 => 'five',
+			6 => 'six',
+			7 => 'seven',
+			8 => 'eight',
+			9 => 'nine',
+			10 => 'ten',
+			11 => 'eleven',
+			12 => 'twelve',
+			13 => 'thirteen',
+			14 => 'fourteen',
+			15 => 'fifteen',
+			16 => 'sixteen'
+		];
+
+		return $words[$width];
+	}
+
+	private function semantic_device($breakpoint)
+	{
+		$devices = [
+			'sm' => 'tablet',
+			'md' => 'tablet',
+			'lg' => 'computer',
+			'xl' => 'large screen'
+		];
+
+		return isset($devices[$breakpoint]) ? $devices[$breakpoint] : NULL;
+	}
+
+	private function semantic_size($size)
+	{
+		$tokens = preg_split('/\s+/', trim((string)$size));
+		$classes = [];
+		$base = NULL;
+		$responsive = [];
+
+		foreach ($tokens as $token)
+		{
+			if ($token === '')
+			{
+				continue;
+			}
+
+			if (preg_match('/^col-(\d+)$/', $token, $match))
+			{
+				$base = $this->semantic_width($match[1]);
+				continue;
+			}
+
+			if (preg_match('/^col-(sm|md|lg|xl)-(\d+)$/', $token, $match))
+			{
+				if ($device = $this->semantic_device($match[1]))
+				{
+					$responsive[] = $this->semantic_width($match[2]).' wide '.$device;
+				}
+				continue;
+			}
+
+			if ($token === 'col')
+			{
+				continue;
+			}
+
+			$classes[] = $token;
+		}
+
+		if ($responsive)
+		{
+			$classes[] = ($base ?: 'sixteen').' wide mobile';
+			$classes = array_merge($classes, $responsive);
+		}
+		else
+		{
+			$classes[] = ($base ?: 'sixteen').' wide';
+		}
+
+		$classes[] = 'column';
+
+		return implode(' ', array_unique($classes));
+	}
+
 	public function __toString()
 	{
 		$size = $this->_size;
@@ -40,7 +135,7 @@ class Col extends Displayable
 			}
 		}
 
-		if (!is_null($size) && preg_match('/^col-(\d+)$/', $size, $match) && $match[0] < 12)
+		if (!$this->admin_grid() && !is_null($size) && preg_match('/^col-(\d+)$/', $size, $match) && (int)$match[1] < 12)
 		{
 			$size = 'col-12 col-lg-'.$match[1];
 		}
@@ -68,8 +163,9 @@ class Col extends Displayable
 						</div>';
 		}
 
-		return '<div class="'.($size ?: 'col-12').'"'.($this->_id !== NULL ? ' data-col-id="'.$this->_id.'"' : '').'>'.$output.'</div>';
+		$class = $this->admin_grid() ? $this->semantic_size($size ?: 'col-12') : ($size ?: 'col-12');
+
+		return '<div class="'.$class.'"'.($this->_id !== NULL ? ' data-col-id="'.$this->_id.'"' : '').'>'.$output.'</div>';
 	}
 }
-
 

@@ -43,17 +43,15 @@ class Admin extends Theme
 			refresh();
 		}
 
-		$this	->css('bootstrap.min')
+		$this	->css('https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css')
 				->css('fonts/open-sans')
 				->css('fonts/titillium-web')
 				->css('icons/Pe-icon-7-stroke')
 				->css('icons/fontawesome.min')
-				->css('style')
 				->css('access-modal')
+				->css('fomantic-admin')
 				->js('jquery-3.2.1.min')
-				->js('popper.min')
-				->js('bootstrap.min')
-				->js('bootstrap-notify.min')
+				->js('https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js')
 				->js('modal')
 				->js('notify')
 				->js('sidebar');

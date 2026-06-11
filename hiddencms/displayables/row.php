@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: Micha?l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Displayables;
@@ -26,6 +26,11 @@ class Row extends Displayable
 		}
 
 		return $this->_style;
+	}
+
+	private function admin_grid()
+	{
+		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
 	}
 
 	public function __toString()
@@ -53,12 +58,18 @@ class Row extends Displayable
 			}
 		}
 
-		$output .= '<div class="row'.(!empty($this->_style) ? ' '.$this->_style.($live_editor ? '" data-original-style="'.$this->_style : '') : '').'"'.($this->_id !== NULL ? ' data-row-id="'.$this->_id.'"' : '').'>
+		$class = $this->admin_grid() ? 'ui stackable grid' : 'row';
+
+		if (!empty($this->_style))
+		{
+			$class .= ' '.$this->_style;
+		}
+
+		$output .= '<div class="'.$class.'"'.(!empty($this->_style) && $live_editor ? ' data-original-style="'.$this->_style.'"' : '').($this->_id !== NULL ? ' data-row-id="'.$this->_id.'"' : '').'>
 						'.parent::__toString().'
 					</div>';
 
 		return $live_editor ? '<div class="live-editor-row">'.$output.'</div>' : $output;
 	}
 }
-
 

@@ -17,7 +17,7 @@ class Text extends Labelable
 	{
 		$this->_template[] = function(&$input){
 			$input = parent	::html('input', TRUE)
-							->attr('class', 'form-control')
+							->attr_if(!$this->admin_grid(), 'class', 'form-control')
 							->attr('type',  $this->_type)
 							->attr_if($this->_value !== '', 'value', $this->_value)
 							->attr_if($this->_disabled,     'disabled')
@@ -81,10 +81,10 @@ class Text extends Labelable
 				if (!isset($addons[$align]))
 				{
 					$addons[$align] = $this	->html()
-											->attr('class', 'input-group-'.$align);
+											->attr('class', $this->admin_grid() ? 'ui label' : 'input-group-'.$align);
 				}
 
-				$addons[$align]->append('<div class="input-group-text">'.$addon.'</div>');
+				$addons[$align]->append($this->admin_grid() ? $addon : '<div class="input-group-text">'.$addon.'</div>');
 			};
 
 			if ($this->_iconpicker)
@@ -101,10 +101,11 @@ class Text extends Labelable
 				$add_group($addon, $addon->align());
 			}
 
-			if ($addons)
+			if ($addons['prepend'] || $addons['append'])
 			{
 				$input = parent	::html()
-								->attr('class', 'input-group')
+								->attr('class', $this->admin_grid() ? 'ui labeled input' : 'input-group')
+								->append_attr_if($this->admin_grid() && $addons['append'] && !$addons['prepend'], 'class', 'right')
 								->content($addons['prepend'].$input.$addons['append']);
 			}
 		};

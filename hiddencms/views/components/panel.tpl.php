@@ -2,7 +2,7 @@
 	<?php echo $header ?>
 	<?php if ($body !== ''): ?>
 		<?php if ($body_wrap): ?>
-			<div class="card-body"><?php echo $body ?></div>
+			<div class="content"><?php echo $body ?></div>
 		<?php else: ?>
 			<?php echo $body ?>
 		<?php endif ?>

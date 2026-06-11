@@ -1,71 +1,63 @@
 <div class="wrapper">
-	<nav id="sidebar">
+	<nav id="sidebar" class="ui vertical inverted menu">
 		<div class="sidebar-header">
 			<a class="logo" href="<?php echo url('admin') ?>">
 				<svg><use xlink:href="#logo"></use></svg>
-				<span class="badge badge-primary">HiddenCMS</span>
+				<span class="ui tiny primary label">HiddenCMS</span>
 			</a>
 		</div>
 		<?php echo $this->widget('navigation')->output('vertical', $this->__caller->data->get('sidebar')) ?>
 	</nav>
-	<div class="content">
-		<nav class="navbar navbar-expand-lg navbar-user navbar-dark mb-0">
-			<button type="button" id="sidebarCollapse" class="btn btn-primary">
+	<div class="admin-content">
+		<nav id="topbar" class="ui top attached menu">
+			<button type="button" id="sidebarCollapse" class="ui icon button">
 				<?php echo icon('fas fa-bars') ?>
 			</button>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_user" aria-controls="navbar_user" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbar_user">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a class="nav-link btn btn-link" href="<?php echo url('user') ?>"><?php echo $this->user->username ?></a></li>
-					<li class="nav-item"><a class="nav-link btn btn-link" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times') ?> Se déconnecter</a></li>
-					<li class="nav-item nav-item-separator d-none d-lg-block">/</li>
-					<li class="nav-item"><a class="nav-link btn btn-link" href="<?php echo url() ?>"><?php echo icon('fas fa-home') ?> Retourner sur le site</a></li>
-				</ul>
+			<div class="right menu">
+				<a class="item" href="<?php echo url('user') ?>"><?php echo $this->user->username ?></a>
+				<a class="item" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times') ?> Se déconnecter</a>
+				<a class="item" href="<?php echo url() ?>"><?php echo icon('fas fa-home') ?> Retourner sur le site</a>
 			</div>
 		</nav>
+
 		<?php if (!($error = $this->output->error())): ?>
-			<nav class="navbar navbar-expand-lg navbar-header navbar-light mb-4">
-				<span class="navbar-brand">
+			<?php
+				$module        = $this->output->module();
+				$module_name   = $module->info()->name;
+				$module_method = $this->output->data->get('module', 'method');
+
+				$actions = $this->array($this->output->data->get('module', 'actions'))
+								->append_if($module_method == 'index' && $module->get_permissions('default') && $this->module('access')->is_authorized(), $this->button('Permissions', 'fas fa-unlock-alt', 'success')->outline()->modal_ajax('admin/ajax/access/edit/'.$module_name.'/0-default'))
+								->append_if(isset($module->info()->settings) && $this->module('addons')->is_authorized(), $this->button('Configuration', 'fas fa-wrench', 'warning')->outline()->modal_ajax('admin/addons/settings/'.$module->__addon->id.'/'.$module_name))
+								->append_if(($help_controller = @$module->controller('admin_help')) && $help_controller->has_method($module_method), $this->button('Aide', 'far fa-life-ring', 'info')->outline()->modal_ajax('admin/addons/help/'.$module->__addon->id.'/'.$module_name.'/'.$module_method));
+			?>
+			<section id="page-header" class="ui clearing segment">
+				<div class="header">
 					<?php echo $this->label($this->output->data->get('module', 'title'), $this->output->data->get('module', 'icon')) ?>
 					<?php if ($subtitle = $this->output->data->get('module', 'subtitle')): ?>
 						<small class="subtitle"><?php echo $subtitle ?></small>
 					<?php endif ?>
-				</span>
-				<?php
-					$module        = $this->output->module();
-					$module_name   = $module->info()->name;
-					$module_method = $this->output->data->get('module', 'method');
-
-					$actions = $this->array($this->output->data->get('module', 'actions'))
-									->append_if($module_method == 'index' && $module->get_permissions('default') && $this->module('access')->is_authorized(), $this->button('Permissions', 'fas fa-unlock-alt', 'success')->outline()->modal_ajax('admin/ajax/access/edit/'.$module_name.'/0-default'))
-									->append_if(isset($module->info()->settings) && $this->module('addons')->is_authorized(), $this->button('Configuration', 'fas fa-wrench', 'warning')->outline()->modal_ajax('admin/addons/settings/'.$module->__addon->id.'/'.$module_name))
-									->append_if(($help_controller = @$module->controller('admin_help')) && $help_controller->has_method($module_method), $this->button('Aide', 'far fa-life-ring', 'info')->outline()->modal_ajax('admin/addons/help/'.$module->__addon->id.'/'.$module_name.'/'.$module_method));
-				?>
+				</div>
 				<?php if (!$actions->empty()): ?>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_header" aria-controls="navbar_header" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse flex-row-reverse" id="navbar_header">
-						<div class="actions">
-							<?php echo $actions ?>
-						</div>
+					<div class="actions">
+						<?php echo $actions ?>
 					</div>
 				<?php endif ?>
-			</nav>
+			</section>
+
 			<div class="module module-admin module-<?php echo $module->info()->name ?>"><?php echo $module ?></div>
 		<?php else: ?>
 			<div class="module module-admin module-error"><?php echo $error ?></div>
 		<?php endif ?>
+
 		<footer class="footer">
-			<span class="text-muted"><?php echo $this->lang('Propulsé par').' HiddenCMS' ?></span>
-			<ul class="mb-0 list-inline float-right">
+			<span class="muted"><?php echo $this->lang('Propulsé par').' HiddenCMS' ?></span>
+			<ul class="project-links">
 				<?php
 				foreach ([
 					[$this->lang('Projet'), 'https://github.com/HiddenCMS/Core']
 				] as list($title, $url)): ?>
-					<li class="list-inline-item">
+					<li>
 						<a href="<?php echo $url ?>" target="_blank"><?php echo $title ?></a>
 					</li>
 				<?php endforeach ?>

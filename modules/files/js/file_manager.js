@@ -19,6 +19,21 @@ $(function(){
 	};
 
 	var init = function(){
+		$('.files-path-dropdown').each(function(){
+			var $dropdown = $(this);
+
+			if ($dropdown.data('files-dropdown-bound'))
+			{
+				return;
+			}
+
+			$dropdown.data('files-dropdown-bound', true);
+			$dropdown.dropdown({
+				fullTextSearch: 'exact',
+				forceSelection: true
+			});
+		});
+
 		$('.files-manager').each(function(){
 			var $manager = $(this);
 
@@ -32,6 +47,7 @@ $(function(){
 			var $bar = $('[data-files-selection]');
 			var $count = $bar.find('.files-selection-count');
 			var $buttons = $bar.find('.files-selection-action');
+			var $singleButtons = $bar.find('[data-files-selection-single]');
 			var $selectAll = $manager.find('.files-select-all');
 			var $items = $manager.find('.files-select-item');
 
@@ -52,6 +68,7 @@ $(function(){
 				var checked = paths.length;
 
 				$buttons.prop('disabled', !checked);
+				$singleButtons.prop('disabled', checked !== 1);
 				$manager.find('[data-file-row]').removeClass('is-selected');
 
 				$items.filter(':checked').closest('[data-file-row]').addClass('is-selected');
@@ -73,8 +90,7 @@ $(function(){
 				var paths = selected();
 				var $inputs = $modal.find('.files-selected-inputs');
 				var $summary = $modal.find('.files-selected-summary');
-				var $rename = $modal.find('.files-rename-field');
-				var $name = $rename.find('input[name="name"]');
+				var $name = $modal.find('input[name="name"]');
 
 				$inputs.empty();
 
@@ -87,17 +103,7 @@ $(function(){
 				});
 
 				$summary.text(paths.length+' element'+(paths.length > 1 ? 's' : '')+' selectionne'+(paths.length > 1 ? 's' : ''));
-
-				if (paths.length === 1)
-				{
-					$rename.show();
-					$name.val(paths[0].name);
-				}
-				else
-				{
-					$rename.hide();
-					$name.val('');
-				}
+				$name.val(paths.length === 1 ? paths[0].name : '');
 			};
 
 			$selectAll.on('change', function(){
@@ -117,8 +123,10 @@ $(function(){
 				$checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
 			});
 
-			$('.files-move-modal, .files-delete-modal').on('show.bs.modal', function(e){
-				if (!selected().length)
+			$('.files-move-modal, .files-rename-modal, .files-delete-modal').on('show.bs.modal', function(e){
+				var paths = selected();
+
+				if (!paths.length || ($(this).hasClass('files-rename-modal') && paths.length !== 1))
 				{
 					e.preventDefault();
 					return;
@@ -190,7 +198,7 @@ $(function(){
 						}))
 						.append($('<button/>', {
 							type: 'button',
-							'class': 'btn btn-danger',
+							'class': 'ui negative mini icon button',
 							title: 'Retirer',
 							'aria-label': 'Retirer',
 							html: '<i class="fas fa-times"></i>'

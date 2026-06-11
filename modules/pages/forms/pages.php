@@ -234,9 +234,9 @@ if ($modules)
 			};
 
 			var addStatic = function(block){
-				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "static").data("type", "static");
-				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.static));
-				var $body = $("<div />").addClass("card-body p-2");
+				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "static").data("type", "static");
+				var $header = $("<div />").addClass("content").append($("<strong />").text(labels.static));
+				var $body = $("<div />").addClass("content");
 				var $content = $("<textarea />").addClass("form-control editor page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
@@ -264,9 +264,9 @@ if ($modules)
 			var addModule = function(block){
 				block = normalizeModuleBlock(block);
 
-				var $block = $("<div />").addClass("page-block card mb-2").attr("data-type", "module").data("type", "module");
-				var $header = $("<div />").addClass("card-header py-2 d-flex align-items-center").append($("<strong />").text(labels.module));
-				var $body = $("<div />").addClass("card-body p-2");
+				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "module").data("type", "module");
+				var $header = $("<div />").addClass("content").append($("<strong />").text(labels.module));
+				var $body = $("<div />").addClass("content");
 				var $module = moduleSelect(block.module);
 				var $type = blockSelect(block.module, block.block);
 				var $settings = $("<div />").addClass("page-block-settings");

@@ -174,6 +174,10 @@ class Form2 extends Library
 
 		return $this->_check;
 	}
+	private function admin_grid()
+	{
+		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+	}
 
 	public function token($id = NULL)
 	{
@@ -344,11 +348,11 @@ class Form2 extends Library
 		$this->_template = function($fields){
 			return $this->array()
 						->append($this	->html()
-										->attr('class', 'card-body')
+										->attr('class', 'content')
 										->content($fields)
 						)
 						->append_if($buttons = $this->_buttons(), $this	->html()
-																		->attr('class', 'card-footer text-right')
+																		->attr('class', 'right aligned extra content')
 																		->content($buttons)
 						);
 		};
@@ -490,7 +494,7 @@ class Form2 extends Library
 
 				if (!is_a($last, 'HB\HiddenCMS\Libraries\Html'))
 				{
-					$fields[] = $last = $this->html()->attr('class', 'form-row');
+					$fields[] = $last = $this->html()->attr('class', 'fields');
 				}
 
 				$last->append($rule);
@@ -518,7 +522,8 @@ class Form2 extends Library
 		}
 
 		return $this->html('form')
-					->attr_if($this->_display & self::FORM_INLINE, 'class', 'form-inline')
+					->attr('class', $this->admin_grid() ? 'ui form' : '')
+					->append_attr_if($this->_display & self::FORM_INLINE, 'class', $this->admin_grid() ? 'inline' : 'form-inline')
 					->attr('action', url($this->url->request))
 					->attr('method', 'post')
 					->attr_if($has_upload, 'enctype', 'multipart/form-data')

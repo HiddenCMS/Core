@@ -23,7 +23,7 @@ class Radio extends Multiple
 			foreach ($this->_data as $value => $label)
 			{
 				$input = $this	->html('input', TRUE)
-								->attr('class', 'form-check-input')
+								->attr_if(!$this->admin_grid(), 'class', 'form-check-input')
 								->attr('type',  $this->_type)
 								->attr('id',    $id = implode('_', [$this->_form->token(), $this->_name, ++$i]))
 								->attr('name',  $this->_name)
@@ -41,10 +41,20 @@ class Radio extends Multiple
 					$input->attr('data-bind');
 				}
 
-				$output[] = '<div class="form-check'.($this->_inline || ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_INLINE) ? ' form-check-inline' : '').'">
-								'.$input.'
-								<label class="form-check-label" for="'.$id.'">'.$label.'</label>
-							</div>';
+				if ($this->admin_grid())
+				{
+					$output[] = '<div class="ui '.($this->_type == 'radio' ? 'radio ' : '').'checkbox">
+									'.$input.'
+									<label for="'.$id.'">'.$label.'</label>
+								</div>';
+				}
+				else
+				{
+					$output[] = '<div class="form-check'.($this->_inline || ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_INLINE) ? ' form-check-inline' : '').'">
+									'.$input.'
+									<label class="form-check-label" for="'.$id.'">'.$label.'</label>
+								</div>';
+				}
 			}
 
 			$input = implode($output);

@@ -132,9 +132,9 @@ class Admin extends Controller_Module
 							)
 							->body($right_body, FALSE);
 
-		return '<div class="row menu-admin-layout">'
-				.'<div class="col-lg-3 mb-3">'.$left_panel.'</div>'
-				.'<div class="col-lg-9 mb-3">'.$right_panel.'</div>'
+		return '<div class="ui stackable grid menu-admin-layout">'
+				.'<div class="sixteen wide mobile four wide computer column">'.$left_panel.'</div>'
+				.'<div class="sixteen wide mobile twelve wide computer column">'.$right_panel.'</div>'
 			.'</div>';
 	}
 

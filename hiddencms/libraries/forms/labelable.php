@@ -77,6 +77,61 @@ abstract class Labelable extends Library
 		return parent::__call($name, $args);
 	}
 
+	protected function admin_grid()
+	{
+		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+	}
+
+	private function semantic_width($size)
+	{
+		$size = max(1, min(12, (int)$size));
+		$width = max(1, min(16, (int)round($size * 16 / 12)));
+		$words = [
+			1 => 'one',
+			2 => 'two',
+			3 => 'three',
+			4 => 'four',
+			5 => 'five',
+			6 => 'six',
+			7 => 'seven',
+			8 => 'eight',
+			9 => 'nine',
+			10 => 'ten',
+			11 => 'eleven',
+			12 => 'twelve',
+			13 => 'thirteen',
+			14 => 'fourteen',
+			15 => 'fifteen',
+			16 => 'sixteen'
+		];
+
+		return $words[$width];
+	}
+
+	private function semantic_size($size)
+	{
+		if (!$this->admin_grid())
+		{
+			return $size;
+		}
+
+		$classes = [];
+
+		foreach (preg_split('/\s+/', trim((string)$size)) as $token)
+		{
+			if (preg_match('/^col-(\d+)$/', $token, $match))
+			{
+				$classes[] = $this->semantic_width($match[1]).' wide';
+				continue;
+			}
+
+			$classes[] = $token;
+		}
+
+		$classes[] = 'field';
+
+		return implode(' ', array_unique(array_filter($classes)));
+	}
 	public function __toString()
 	{
 		$input = NULL;
@@ -97,13 +152,13 @@ abstract class Labelable extends Library
 		$display = $this->_form->display();
 
 		return parent	::html()
-						->attr('class', 'form-group')
-						->append_attr_if($this->_errors, 'class', 'has-danger')
-						->append_attr_if($this->_size, 'class', $this->_size)
+						->attr('class', $this->admin_grid() ? 'field' : 'form-group field')
+						->append_attr_if($this->_errors, 'class', $this->admin_grid() ? 'error' : 'has-danger')
+						->append_attr_if($this->_size, 'class', $this->semantic_size($this->_size))
 						->content($this	->array
 										->append_if(($label = (string)$this->_label()) && !($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT), function() use ($label){
 											return parent	::html(($multiple = is_a($this, 'HB\HiddenCMS\Libraries\Forms\Multiple')) ? 'legend' : 'label')
-															->attr('class', 'col-form-label')
+															->attr_if(!$this->admin_grid(), 'class', 'col-form-label')
 															->attr_if(!$multiple, 'for', $this->_form->token().'_'.$this->_name)
 															->content($label);
 										})
@@ -261,15 +316,11 @@ abstract class Labelable extends Library
 
 		if ($this->_info || $this->_errors)
 		{
-			$label	->icon_if(!$this->_errors, $icon = 'fas fa-info-circle text-info')
-					->attr('data-toggle',    'popover')
-					->attr('data-trigger',   'hover')
-					->attr('data-placement', 'auto')
-					->attr('data-html',      'true')
-					->attr('data-content',   utf8_htmlentities(implode('<br /><br />', array_filter([
-						$this->_info   ? $this->label($this->_info, $icon) : '',
-						$this->_errors ? $this->label(implode('<br />', $this->_errors), 'fas fa-exclamation-triangle')->attr('class', 'text-danger') : ''
-					]))));
+			$tooltip = trim(strip_tags(implode(' ', array_filter([$this->_info, implode(' ', $this->_errors)]))));
+
+			$label	->icon_if(!$this->_errors, 'fas fa-info-circle text-info')
+					->attr('data-tooltip', utf8_htmlentities($tooltip))
+					->attr('data-position', 'top left');
 		}
 
 		if ($this->_required)

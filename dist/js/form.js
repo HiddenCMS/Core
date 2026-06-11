@@ -49,6 +49,10 @@ var form = new function(){
 	return this;
 };
 
+form.find('.ui.checkbox', function(){
+	$(this).checkbox();
+});
+
 $(function(){
 	$('form').each(function(){
 		form.load($(this));

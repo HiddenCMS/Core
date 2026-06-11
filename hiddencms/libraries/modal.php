@@ -135,7 +135,7 @@ class Modal extends Library
 
 	public function open()
 	{
-		HB()->js_load('$(\'#'.$this->id.'\').modal(\'show\');');
+		HB()->js_load('modal.open($(\'#'.$this->id.'\'));');
 		return $this;
 	}
 
@@ -178,19 +178,24 @@ class Modal extends Library
 	private function template_data()
 	{
 		$body = '';
+		$body_content = '';
 
 		if ($this->_body)
 		{
-			$body .= $this->_body_tags ? '<div class="modal-body">'.$this->_body.'</div>' : $this->_body;
+			$body_content = $this->_body;
+			$body .= $this->_body_tags ? '<div class="modal-body">'.$body_content.'</div>' : $body_content;
 		}
 
 		if ($this->_callback)
 		{
 			$this->_callback->check();
-			$body .= $this->form_hidden('_', $this->_callback->token());
+			$hidden = $this->form_hidden('_', $this->_callback->token());
+			$body .= $hidden;
+			$body_content .= $hidden;
 		}
 
-		$footer = $this->_buttons ? (string)$this->button->static_footer($this->_buttons, 'right')->append_attr('class', 'modal-footer') : '';
+		$buttons = $this->_buttons ? (string)$this->button->static_footer($this->_buttons, 'right') : '';
+		$footer = $buttons ? $this->html()->attr('class', 'modal-footer')->content($buttons) : '';
 		$header = '<div class="modal-header">
 						<h5 class="modal-title">'.$this->_header.'</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"><span aria-hidden="true">&times;</span></button>
@@ -211,12 +216,31 @@ class Modal extends Library
 		return [
 			'id'          => $this->id,
 			'size'        => $this->_size ? ' modal-'.$this->_size : '',
+			'semantic_size' => $this->semantic_size(),
+			'header'      => $this->_header,
+			'body'        => $body_content,
+			'actions'     => $buttons,
 			'content'     => $content,
 			'has_form'    => (bool)$this->_callback,
 			'form_action' => url($this->url->request),
 			'form_method' => 'post',
 			'legacy'      => $this->legacy_markup($content)
 		];
+	}
+
+	private function semantic_size()
+	{
+		if ($this->_size == 'lg')
+		{
+			return 'large';
+		}
+
+		if ($this->_size == 'sm')
+		{
+			return 'tiny';
+		}
+
+		return '';
 	}
 
 	private function render_template($data)

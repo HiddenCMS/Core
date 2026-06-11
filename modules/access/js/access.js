@@ -13,11 +13,11 @@ $(function(){
 	};
 
 	var access_row = function($context){
-		return $context.find('> .row:first');
+		return $context.find('> .ui.grid:first');
 	};
 
 	var access_columns = function($context){
-		return access_row($context).children('[class^="col-"], [class*=" col-"]');
+		return access_row($context).children('.column');
 	};
 
 	var init_access = function($root){
@@ -172,8 +172,11 @@ $(function(){
 			type: 'POST',
 			data: data,
 			success: function(data){
-				$(data).appendTo('body').modal().on('hidden.bs.modal', function(){
-					$(this).remove();
+				var $modal = $(data).appendTo('body');
+
+				modal.open($modal);
+				$modal.on('hidden.bs.modal', function(){
+					$modal.remove();
 				});
 			}
 		});
@@ -182,28 +185,26 @@ $(function(){
 	});
 
 	$(document).on('click', '.access-reset', function(){
-		$('	<div class="modal modal-access-reset fade" tabindex="-1" role="dialog">\
-				<div class="modal-dialog">\
-					<div class="modal-content">\
-						<div class="modal-header">\
-							<h5 class="modal-title"><?php echo $this->lang('Confirmation de réinitialisation des permissions') ?></h5>\
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
-						</div>\
-						<div class="modal-body">\
-							<?php echo $this->lang('Êtes-vous sûr(e) de vouloir réinitialiser les permissions ?') ?>\
-						</div>\
-						<div class="modal-footer">\
-							<button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-							<button class="btn btn-info" data-module="'+$(this).data('module')+'" data-type="'+$(this).data('type')+'" data-id="'+$(this).data('id')+'"><?php echo $this->lang('Réinitialiser') ?></button>\
-						</div>\
-					</div>\
+		$('	<div class="ui modal modal-access-reset" tabindex="-1" role="dialog">\
+				<div class="header">\
+					<?php echo $this->lang('Confirmation de réinitialisation des permissions') ?>\
+					<i class="close icon" data-dismiss="modal" aria-label="<?php echo $this->lang('Fermer') ?>"></i>\
 				</div>\
-			</div>').appendTo('body').modal();
+				<div class="content">\
+					<?php echo $this->lang('Êtes-vous sûr(e) de vouloir réinitialiser les permissions ?') ?>\
+				</div>\
+				<div class="actions">\
+					<button type="button" class="ui secondary button" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
+					<button class="ui teal button access-reset-confirm" data-module="'+$(this).data('module')+'" data-type="'+$(this).data('type')+'" data-id="'+$(this).data('id')+'"><?php echo $this->lang('Réinitialiser') ?></button>\
+				</div>\
+			</div>').appendTo('body');
+
+		modal.open($('.modal-access-reset:last'));
 
 		return false;
 	});
 
-	$(document).on('click', '.modal-access-reset .btn-info', function(){
+	$(document).on('click', '.modal-access-reset .access-reset-confirm', function(){
 		$.ajax({
 			url: '<?php echo url('admin/ajax/access/reset') ?>',
 			type: 'POST',
@@ -226,3 +227,4 @@ $(function(){
 
 	init_access($(document));
 });
+

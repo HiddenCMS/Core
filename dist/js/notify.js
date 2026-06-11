@@ -3,25 +3,44 @@ function notify(message, type) {
 		type = 'success';
 	}
 
-	$(function(){
-		$.notify({
-			message: message
-		},{
-			mouse_over: 'pause',
-			newest_on_top: true,
-			type: type,
-			placement: {
-				from: 'top',
-				align: 'right'
-			},
-			offset: {
-				x: 16,
-				y: 16
-			},
-			template: '<div data-notify="container" class="notification is-{0}" role="alert">' +
-						'<button type="button" class="delete" data-notify="dismiss" aria-label="Close"></button>' +
-						'<span data-notify="message">{2}</span>' +
-					'</div>'
+	var map = {
+		success: 'success',
+		error: 'error',
+		danger: 'error',
+		warning: 'warning',
+		info: 'info'
+	};
+
+	var tone = map[type] || map.success;
+
+	if ($.fn.toast) {
+		$('body').toast({
+			class: tone,
+			message: message,
+			position: 'top right',
+			showProgress: 'bottom',
+			displayTime: 5000
 		});
-	});
+
+		return;
+	}
+
+	var fallbackTone = tone == 'error' ? 'negative' : (tone == 'success' ? 'positive' : tone);
+	var $notification = $('<div class="ui ' + fallbackTone + ' message admin-notification"></div>');
+
+	$notification
+		.append($('<i class="close icon" aria-label="Fermer"></i>'))
+		.append($('<div class="content"></div>').text(message))
+		.appendTo($('<div class="admin-notifications" aria-live="polite" aria-atomic="true"></div>').appendTo('body'));
+
+	var close = function(){
+		$notification.addClass('is-hiding');
+
+		setTimeout(function(){
+			$notification.remove();
+		}, 180);
+	};
+
+	$notification.find('.close').on('click', close);
+	setTimeout(close, 5000);
 }

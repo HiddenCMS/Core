@@ -3,18 +3,18 @@
 </ul>
 <div class="tab-content border-light" id="pills-tabContent">
 	<div class="tab-pane fade show active" id="pills-options" role="tabpanel" aria-labelledby="pills-options-tab">
-		<div class="form-group row">
-			<label for="settings-display" class="col-3 col-form-label"><?php echo $this->lang('Affichage') ?></label>
-			<div class="col-3">
+		<div class="fields">
+			<label for="settings-display" class="four wide field"><?php echo $this->lang('Affichage') ?></label>
+			<div class="four wide field">
 				<select class="form-control" name="settings[display]" id="settings-display">
 					<option value="logo"<?php if (isset($display) && $display == 'logo') echo ' selected="selected"' ?>><?php echo $this->lang('Logo') ?></option>
 					<option value="title"<?php if (!isset($display) || $display == 'title') echo ' selected="selected"' ?>><?php echo $this->lang('Titre et slogan') ?></option>
 				</select>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-align" class="col-3 col-form-label"><?php echo $this->lang('Alignement') ?></label>
-			<div class="col-3">
+		<div class="fields">
+			<label for="settings-align" class="four wide field"><?php echo $this->lang('Alignement') ?></label>
+			<div class="four wide field">
 				<select class="form-control" name="settings[align]" id="settings-align">
 					<option value="text-left"<?php if (isset($align) && $align == 'text-left') echo ' selected="selected"' ?>><?php echo $this->lang('Gauche') ?></option>
 					<option value="text-center"<?php if (!isset($align) || $align == 'text-center') echo ' selected="selected"' ?>><?php echo $this->lang('Centré') ?></option>
@@ -22,12 +22,12 @@
 				</select>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-title" class="col-3 col-form-label"><?php echo $this->lang('Titre du site') ?></label>
-			<div class="col-6">
+		<div class="fields">
+			<label for="settings-title" class="four wide field"><?php echo $this->lang('Titre du site') ?></label>
+			<div class="eight wide field">
 				<input type="text" class="form-control" name="settings[title]" value="<?php if (isset($title)) echo $title ?>" id="settings-title" placeholder="<?php echo $this->lang('Titre par défaut') ?>" />
 			</div>
-			<div class="col-3">
+			<div class="four wide field">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text"><?php echo icon('fas fa-paint-brush') ?></span>
@@ -36,12 +36,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="settings-description" class="col-3 col-form-label"><?php echo $this->lang('Description') ?></label>
-			<div class="col-6">
+		<div class="fields">
+			<label for="settings-description" class="four wide field"><?php echo $this->lang('Description') ?></label>
+			<div class="eight wide field">
 				<input type="text" class="form-control" name="settings[description]" value="<?php if (isset($description)) echo $description ?>" id="settings-description" placeholder="<?php echo $this->lang('Description par défaut') ?>" />
 			</div>
-			<div class="col-3">
+			<div class="four wide field">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text"><?php echo icon('fas fa-paint-brush') ?></span>

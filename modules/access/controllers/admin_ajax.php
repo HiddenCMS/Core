@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: Micha?l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Modules\Access\Controllers;
@@ -18,7 +18,7 @@ class Admin_Ajax extends Controller_Module
 				->js('table');
 
 		$reset = $this->button()
-						->tooltip($this->lang('Réinitialiser toutes les permissions'))
+						->tooltip($this->lang('R?initialiser toutes les permissions'))
 						->icon('fas fa-sync')
 						->color('info access-reset')
 						->compact()
@@ -30,8 +30,8 @@ class Admin_Ajax extends Controller_Module
 						]);
 
 		$body = '<div class="module-access access-modal-layout">'
-				.'<div class="row no-gutters">'
-					.'<div class="col-12 col-lg-5 access-modal-master">'
+				.'<div class="ui stackable grid">'
+					.'<div class="sixteen wide mobile seven wide computer column access-modal-master">'
 						.'<div class="access-modal-section">'
 							.'<div class="access-modal-section-header">'
 								.'<span>'.icon('fas fa-unlock-alt').' '.$this->lang('Permissions').'</span>'
@@ -72,7 +72,7 @@ class Admin_Ajax extends Controller_Module
 			$groups[$group_id] = HB()->access($module_name, $action, $id, $group_id);
 		}
 
-		return '<div class="col-12 col-lg-7 access-modal-details">'
+		return '<div class="sixteen wide mobile nine wide computer column access-modal-details">'
 				.'<div class="access-modal-section">'
 					.'<div class="access-modal-section-header">'
 						.'<span>'.icon($icon).' '.$title.'</span>'
@@ -174,7 +174,7 @@ class Admin_Ajax extends Controller_Module
 						'td'      => FALSE
 					],
 					[
-						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autorisé').'">'.icon('fas fa-check').'</i></div>',
+						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autoris?').'">'.icon('fas fa-check').'</i></div>',
 						'content' => function($data){
 							return $this->view('radio', [
 								'class'  => 'success',
@@ -223,5 +223,6 @@ class Admin_Ajax extends Controller_Module
 						->init($module, $type, $id);
 	}
 }
+
 
 

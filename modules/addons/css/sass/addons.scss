@@ -2,14 +2,11 @@
 	margin-top: 1rem;
 	margin-bottom: -30px;
 
-	.card {
+	.ui.card {
 		margin-bottom: 30px;
+		padding: 10px;
 
-		.card-body {
-			padding: 10px;
-		}
-
-		.badge {
+		.ui.label {
 			position: absolute;
 			top: 15px;
 			left: 15px;
@@ -44,21 +41,19 @@
 			}
 		}
 
-		.dropdown {
-			.dropdown-toggle {
-				background-color: #576069;
-				border-radius: .25rem;
-				font-size: 75%;
-				color: #fff;
-				padding: 7px 6px 5px 18px;
-				position: absolute;
-				top: 5px;
-				right: 5px;
-				vertical-align: middle;
+		.ui.dropdown > .fas {
+			background-color: #576069;
+			border-radius: .25rem;
+			font-size: 75%;
+			color: #fff;
+			padding: 7px 6px 5px 18px;
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			vertical-align: middle;
 
-				&:hover {
-					background-color: #222b2d;
-				}
+			&:hover {
+				background-color: #222b2d;
 			}
 		}
 

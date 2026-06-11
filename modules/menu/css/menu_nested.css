@@ -1,8 +1,8 @@
-.menu-admin-layout > [class*="col-"]{
+.menu-admin-layout > .column{
 	display: flex;
 }
 
-.menu-admin-layout .card{
+.menu-admin-layout .ui.segment{
 	width: 100%;
 }
 

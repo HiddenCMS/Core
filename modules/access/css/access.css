@@ -20,12 +20,12 @@ table.table-access td.no-padding {
 }
 
 @supports selector(:has(*)) {
-	.hb-modal:has(.access-modal-layout) .modal-dialog {
+	.modal-managed:has(.access-modal-layout) .modal-dialog {
 		max-width: 980px;
 	}
 }
 
-.access-modal-layout > .row {
+.access-modal-layout > .ui.grid {
 	min-height: 420px;
 }
 
@@ -174,7 +174,8 @@ table.table-access td.no-padding {
 		border-bottom: 1px solid #dee2e6;
 	}
 
-	.access-modal-layout > .row {
+	.access-modal-layout > .ui.grid {
 		min-height: 0;
 	}
 }
+

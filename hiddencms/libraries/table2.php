@@ -198,7 +198,7 @@ class Table2 extends Library
 							if ($this->session->get('table2', 'filters', $this->_filters->__id()))
 							{
 								$output = $this	->html()
-												->attr('class', 'btn-group')
+												->attr('class', 'ui buttons')
 												->align('right')
 												->append($output)
 												->append($this->_filters_reset());

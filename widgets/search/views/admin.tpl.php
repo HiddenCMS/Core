@@ -3,9 +3,9 @@
 </ul>
 <div class="tab-content border-light" id="pills-tabContent">
 	<div class="tab-pane fade show active" id="pills-options" role="tabpanel" aria-labelledby="pills-options-tab">
-		<div class="form-group row">
-			<label for="settings-title" class="col-3 col-form-label">Alignement</label>
-			<div class="col-4">
+		<div class="fields">
+			<label for="settings-title" class="four wide field">Alignement</label>
+			<div class="five wide field">
 				<label class="radio-inline">
 					<input type="radio" name="settings[align]" value="float-left"<?php if (!isset($align) || $align != 'float-left') echo ' checked="checked"' ?> /> à gauche
 				</label>

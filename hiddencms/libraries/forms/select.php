@@ -33,7 +33,7 @@ class Select extends Multiple
 			};
 
 			$input = parent ::html('select')
-							->attr('class', 'form-control selectize')
+							->attr('class', $this->admin_grid() ? 'selectize' : 'form-control selectize')
 							->attr('data-options', $encode($this->_data))
 							->attr_if($this->_multiple,                      'multiple')
 							->attr_if($this->_disabled || $this->_read_only, 'disabled')
@@ -49,7 +49,6 @@ class Select extends Multiple
 			}
 
 			$this	->css('selectize')
-					->css('selectize.bootstrap3')
 					->js('selectize.min')
 					->js('form')
 					->js('form_select');

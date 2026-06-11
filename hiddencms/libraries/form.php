@@ -468,8 +468,12 @@ class Form extends Library
 			$this->js('file');
 		}
 
-		$output .= '<form action="'.url($this->url->request).'" method="post"'.($has_upload ? ' enctype="multipart/form-data"' : '').'>
-						<fieldset>';
+		$output .= '<form action="'.url($this->url->request).'" method="post"'.($has_upload ? ' enctype="multipart/form-data"' : '').($this->admin_grid() ? ' class="ui form"' : '').'>';
+
+		if (!$this->admin_grid())
+		{
+			$output .= '<fieldset>';
+		}
 
 		$post = post($this->token());
 
@@ -488,22 +492,23 @@ class Form extends Library
 				}
 				else
 				{
-					$output .= '<div class="form-group row'.(isset($this->_errors[$var]) ? ' has-error' : '').'">';
+					$output .= '<div class="'.($this->admin_grid() ? 'fields' : 'form-group row').(isset($this->_errors[$var]) ? ' has-error' : '').'">';
 
 					if ($this->_fast_mode)
 					{
-						$output .= '<div class="col">'.$display.'</div>';
+						$output .= '<div class="'.($this->admin_grid() ? 'field' : 'col').'">'.$display.'</div>';
 					}
 					else
 					{
-						$output .= '<label class="col-sm-3 col-form-label col-form-label-sm"'.(!in_array($type, ['radio', 'checkbox']) ? ' for="form_'.$this->token().'_'.$var.'"' : '').$this->_display_popover($var, $options, $icons).'>'.$icons.' '.(!empty($options['label']) ? $options['label'] : '');
+						$output .= '<label class="'.($this->admin_grid() ? 'four wide field' : 'col-sm-3 col-form-label col-form-label-sm').'"'.(!in_array($type, ['radio', 'checkbox']) ? ' for="form_'.$this->token().'_'.$var.'"' : '').$this->_display_popover($var, $options, $icons).'>'.$icons.' '.(!empty($options['label']) ? $options['label'] : '');
 
 						if (isset($options['rules']) && in_array('required', $options['rules']) && $this->_display_required)
 						{
 							$output .= '<em>*</em>';
 						}
 
-						$output .= '</label><div class="'.(!empty($options['size']) && preg_match('/^col-([1-9])$/', $options['size'], $match) ? 'col-'.$match[1] : 'col-sm-9').'">'.$display.'</div>';
+						$size = !empty($options['size']) && preg_match('/^col-([1-9])$/', $options['size'], $match) ? 'col-'.$match[1] : 'col-9';
+						$output .= '</label><div class="'.($this->admin_grid() ? $this->semantic_size($size) : ($size == 'col-9' ? 'col-sm-9' : $size)).'">'.$display.'</div>';
 					}
 
 					$output .= '</div>';
@@ -514,21 +519,21 @@ class Form extends Library
 		if ($this->_display_captcha)
 		{
 			HB()->js('https://www.google.com/recaptcha/api.js?hl='.$this->config->lang->info()->name.'&_=');
-			$output .= '<div class="form-group row"><div class="'.($this->_fast_mode ? 'input-group' : 'offset-3 col-9').'">'.$this->captcha->display().'</div></div>';
+			$output .= $this->admin_grid() ? '<div class="fields"><div class="four wide field"></div><div class="twelve wide field">'.$this->captcha->display().'</div></div>' : '<div class="form-group row"><div class="'.($this->_fast_mode ? 'input-group' : 'offset-3 col-9').'">'.$this->captcha->display().'</div></div>';
 		}
 
 		if ($this->_display_required)
 		{
-			$output .= '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>';
+			$output .= $this->admin_grid() ? '<div class="fields"><div class="four wide field"></div><div class="twelve wide field"><em>'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>' : '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>';
 		}
 
 		if (!empty($this->_buttons))
 		{
-			$output .= '<div class="'.($this->_fast_mode ? 'text-center' : 'form-group row').'">';
+			$output .= '<div class="'.($this->_fast_mode ? 'text-center' : ($this->admin_grid() ? 'fields' : 'form-group row')).'">';
 
 			if (!$this->_fast_mode)
 			{
-				$output .= '<div class="offset-3 col-9">';
+				$output .= $this->admin_grid() ? '<div class="four wide field"></div><div class="twelve wide field">' : '<div class="offset-3 col-9">';
 			}
 
 			foreach ($this->_buttons as $i => $button)
@@ -549,8 +554,12 @@ class Form extends Library
 			$output .= '</div>';
 		}
 
-		$output .= '</fieldset>
-				</form>';
+		if (!$this->admin_grid())
+		{
+			$output .= '</fieldset>';
+		}
+
+		$output .= '</form>';
 
 		$this->save();
 
@@ -569,15 +578,71 @@ class Form extends Library
 		return $this;
 	}
 
+	private function admin_grid()
+	{
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
+	}
+
+	private function semantic_width($size)
+	{
+		$size = max(1, min(12, (int)$size));
+		$width = max(1, min(16, (int)round($size * 16 / 12)));
+		$words = [
+			1 => 'one',
+			2 => 'two',
+			3 => 'three',
+			4 => 'four',
+			5 => 'five',
+			6 => 'six',
+			7 => 'seven',
+			8 => 'eight',
+			9 => 'nine',
+			10 => 'ten',
+			11 => 'eleven',
+			12 => 'twelve',
+			13 => 'thirteen',
+			14 => 'fourteen',
+			15 => 'fifteen',
+			16 => 'sixteen'
+		];
+
+		return $words[$width];
+	}
+
+	private function semantic_size($size)
+	{
+		if (!$this->admin_grid())
+		{
+			return $size;
+		}
+
+		$classes = [];
+
+		foreach (preg_split('/\s+/', trim((string)$size)) as $token)
+		{
+			if (preg_match('/^col-(\d+)$/', $token, $match))
+			{
+				$classes[] = $this->semantic_width($match[1]).' wide';
+				continue;
+			}
+
+			$classes[] = $token;
+		}
+
+		$classes[] = 'field';
+
+		return implode(' ', array_unique(array_filter($classes)));
+	}
+
 	private function _display_button($button)
 	{
 		if (isset($button['type']) && $button['type'] == 'submit')
 		{
-			return '<button class="btn btn-primary" type="submit">'.$button['label'].'</button>';
+			return $this->admin_grid() ? '<button class="ui primary button" type="submit">'.$button['label'].'</button>' : '<button class="btn btn-primary" type="submit">'.$button['label'].'</button>';
 		}
 		else if (!empty($button['label']) && !empty($button['action']))
 		{
-			return '<a href="'.url($button['action']).'" class="btn btn-secondary">'.$button['label'].'</a>';
+			return '<a href="'.url($button['action']).'" class="'.($this->admin_grid() ? 'ui secondary button' : 'btn btn-secondary').'">'.$button['label'].'</a>';
 		}
 
 		return '';
@@ -699,7 +764,7 @@ class Form extends Library
 
 		if (isset($options['icon']))
 		{
-			$output .= '<div class="input-group'.(!empty($classes) ? ' '.implode(' ', $classes) : '').'">
+			$output .= $this->admin_grid() ? '<div class="ui left icon input'.(!empty($classes) ? ' '.implode(' ', $classes) : '').'">' : '<div class="input-group'.(!empty($classes) ? ' '.implode(' ', $classes) : '').'">
 				<div class="input-group-prepend"><span class="input-group-text">'.($options['icon'] ? icon($options['icon']) : '<i></i>').'</span></div>';
 		}
 
@@ -707,7 +772,7 @@ class Form extends Library
 
 		if ($type != 'file')
 		{
-			$class = ' class="form-control"';
+			$class = $this->admin_grid() ? '' : ' class="form-control"';
 			$value = ' value="'.addcslashes($this->_display_value($var, $options), '"').'"';
 
 			if (!empty($options['placeholder']))
@@ -731,7 +796,7 @@ class Form extends Library
 		{
 			$post = post();
 
-			$input = '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
+			$input = $this->admin_grid() ? '<div class="ui segment"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>' : '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
 
 			if (!empty($options['value']))
 			{
@@ -741,7 +806,19 @@ class Form extends Library
 				}
 				else
 				{
-					$input = '	<div class="row">
+					$input = $this->admin_grid() ? '	<div class="ui grid">
+									<div class="four wide column">
+										<div class="thumbnail">
+											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
+											<div class="caption text-center">
+												<a class="ui negative fluid mini button form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
+											</div>
+										</div>
+									</div>
+									<div class="twelve wide column">
+										'.$input.'
+									</div>
+								</div>' : '	<div class="row">
 									<div class="col-3">
 										<div class="thumbnail">
 											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
@@ -764,7 +841,11 @@ class Form extends Library
 		{
 			if (in_array('color', $classes))
 			{
-				$output .= '<div class="input-group-append"><span class="input-group-text"><span class="fas fa-eye-dropper"></span></span></div>';
+				$output .= $this->admin_grid() ? '<i class="fas fa-eye-dropper icon"></i>' : '<div class="input-group-append"><span class="input-group-text"><span class="fas fa-eye-dropper"></span></span></div>';
+			}
+			else if ($this->admin_grid() && $options['icon'])
+			{
+				$output .= icon($options['icon']);
 			}
 
 			$output .= '</div>';
@@ -885,12 +966,22 @@ class Form extends Library
 
 			foreach ($options['values'] as $value => $label)
 			{
-				 $output .= '	<div class="checkbox">
+				if ($this->admin_grid())
+				{
+					$output .= '<div class="ui checkbox">'
+							.'<input type="checkbox" name="'.$this->token().'['.$var.'][]" value="'.$value.'"'.(in_array((string)$value, $user_value) ? ' checked="checked"' : '').' />'
+							.'<label>'.$label.'</label>'
+						.'</div>';
+				}
+				else
+				{
+					$output .= '	<div class="checkbox">
 									<label>
 										<input type="checkbox" name="'.$this->token().'['.$var.'][]" value="'.$value.'"'.(in_array((string)$value, $user_value) ? ' checked="checked"' : '').' />
 										'.$label.'
 									</label>
 								</div>';
+				}
 			}
 		}
 
@@ -907,10 +998,20 @@ class Form extends Library
 
 			foreach ($options['values'] as $value => $label)
 			{
-				 $output .= '	<label class="radio-inline">
+				if ($this->admin_grid())
+				{
+					$output .= '<div class="ui radio checkbox">'
+							.'<input type="radio" name="'.$this->token().'['.$var.']" value="'.$value.'"'.($user_value == (string)$value ? ' checked="checked"' : '').' />'
+							.'<label>'.$label.'</label>'
+						.'</div>';
+				}
+				else
+				{
+					$output .= '	<label class="radio-inline">
 									<input type="radio" name="'.$this->token().'['.$var.']" value="'.$value.'"'.($user_value == (string)$value ? ' checked="checked"' : '').' />
 									'.$label.'
 								</label>';
+				}
 			}
 		}
 
@@ -924,7 +1025,7 @@ class Form extends Library
 			return;
 		}
 
-		$output = '<select class="form-control" id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']">
+		$output = '<select class="'.($this->admin_grid() ? 'selectize' : 'form-control').'" id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']">
 						<option></option>';
 
 		if (!empty($options['values']))
@@ -942,7 +1043,7 @@ class Form extends Library
 
 	private function _display_textarea($var, $options, $post, $editor = FALSE)
 	{
-		return '<textarea id="form_'.$this->token().'_'.$var.'" class="form-control'.($editor ? ' editor' : '').'" rows="10" name="'.$this->token().'['.$var.']">'.$this->_display_value($var, $options).'</textarea>';
+		return '<textarea id="form_'.$this->token().'_'.$var.'"'.($this->admin_grid() ? ($editor ? ' class="editor"' : '') : ' class="form-control'.($editor ? ' editor' : '').'"').' rows="10" name="'.$this->token().'['.$var.']">'.$this->_display_value($var, $options).'</textarea>';
 	}
 
 	private function _display_editor($var, $options, $post)
@@ -978,5 +1079,3 @@ class Form extends Library
 		return FALSE;
 	}
 }
-
-

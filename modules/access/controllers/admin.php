@@ -52,7 +52,7 @@ class Admin extends Controller_Module
 										'content' => function($data) use ($module, $action){
 											return $this->access->count($module->info()->name, $action, $data['id']);
 										},
-										'class'   => 'col-1'
+										'class'   => 'one wide'
 									]
 								]);
 					}

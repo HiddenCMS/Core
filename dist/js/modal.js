@@ -2,29 +2,44 @@ var modal = new function(){
 	var _modals = {};
 	var _scripts;
 	var _fallbackClass = 'is-open';
+	var _fallbackBodyClass = 'modal-fallback-open';
 	var _transitionMs = 180;
-	var _modalClass = 'hb-modal';
-	var _buttonToneRegex = /\bhb-btn-(primary|secondary|success|info|warning|danger|dark|light)\b/;
+	var _modalClass = 'modal-managed';
 
 	var buildBasicModal = function(bodyHtml){
-		return '<div class="modal fade ' + _modalClass + '" tabindex="-1" role="dialog" aria-hidden="true">'
-			+ '<div class="modal-dialog" role="document">'
-			+ '<div class="modal-content">'
-			+ '<div class="modal-header">'
-			+ '<h5 class="modal-title">Edition</h5>'
-			+ '<button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>'
+		return '<div class="ui modal" tabindex="-1" role="dialog" aria-hidden="true">'
+			+ '<div class="header">'
+			+ 'Edition'
+			+ '<i class="close icon" data-dismiss="modal" aria-label="Fermer"></i>'
 			+ '</div>'
-			+ '<div class="modal-body">' + (bodyHtml || '') + '</div>'
-			+ '</div>'
-			+ '</div>'
+			+ '<div class="content">' + (bodyHtml || '') + '</div>'
 			+ '</div>';
 	};
 
 	var isFomantic = function($modal){
-		return $modal.hasClass('ui') && $modal.hasClass('modal') && typeof $.fn.modal === 'function';
+		return $modal.hasClass('ui') && $modal.hasClass('modal') && typeof $.fn.modal === 'function' && typeof $.fn.modal.settings !== 'undefined';
 	};
 
 	var normalizeModalMarkup = function($modal){
+		$modal.children('.modal-dialog').each(function(){
+			var $dialog = $(this);
+			var $content = $dialog.children('.modal-content:first');
+
+			if ($content.length){
+				$content.children().appendTo($modal);
+			}
+			else {
+				$dialog.children().appendTo($modal);
+			}
+
+			$dialog.remove();
+		});
+
+		$modal.children('.modal-content').each(function(){
+			$(this).children().appendTo($modal);
+			$(this).remove();
+		});
+
 		$modal.find('.modal-header').each(function(){
 			$(this).removeClass('modal-header').addClass('header');
 		});
@@ -42,44 +57,30 @@ var modal = new function(){
 		});
 
 		$modal.find('[data-dismiss="modal"]').addClass('cancel');
-		$modal.find('.hb-btn').addClass('ui button');
-	};
-
-	var normalizeModalButtons = function($modal){
-		$modal.find('.hb-btn').each(function(){
-			var $button = $(this);
-
-			if ($button.hasClass('close'))
-			{
-				return;
-			}
-
-			if (!$button.hasClass('hb-btn-outline') && !_buttonToneRegex.test($button.attr('class') || ''))
-			{
-				$button.addClass('hb-btn-secondary');
-			}
-		});
 	};
 
 	var fallbackOpen = function($modal){
-		var timer = $modal.data('hbModalHideTimer');
+		var timer = $modal.data('modalHideTimer');
 
 		if (timer){
 			clearTimeout(timer);
-			$modal.removeData('hbModalHideTimer');
+			$modal.removeData('modalHideTimer');
 		}
 
 		$modal
 			.addClass(_modalClass)
 			.addClass(_fallbackClass)
+			.addClass('active')
 			.attr('aria-hidden', 'false')
 			.css('display', 'flex');
 
 		window.requestAnimationFrame(function(){
 			$modal.addClass('show');
+			$modal.trigger('shown.bs.modal');
 		});
 
-		$('body').addClass('hb-modal-open');
+		$('body').addClass('modal-open');
+		$('body').addClass(_fallbackBodyClass);
 	};
 
 	var fallbackHide = function($modal, onHidden){
@@ -87,42 +88,57 @@ var modal = new function(){
 			$modal
 				.removeClass(_fallbackClass)
 				.removeClass('show')
+				.removeClass('active')
 				.attr('aria-hidden', 'true')
 				.hide();
 
 			if (!$('.' + _modalClass + '.' + _fallbackClass + ', .modal.' + _fallbackClass + ', .ui.modal.active:visible, .modal.show:visible').length){
-				$('body').removeClass('hb-modal-open');
+				$('body').removeClass('modal-open');
+				$('body').removeClass(_fallbackBodyClass);
 			}
 
 			if (typeof onHidden === 'function'){
 				onHidden();
 			}
+
+			$modal.trigger('hidden.bs.modal');
 		};
 
-		$modal.removeClass('show').attr('aria-hidden', 'true');
+		$modal.removeClass('show active').attr('aria-hidden', 'true');
 
 		var timer = setTimeout(complete, _transitionMs);
-		$modal.data('hbModalHideTimer', timer);
+		$modal.data('modalHideTimer', timer);
 	};
 
 	var openModal = function($modal){
-		$modal.addClass(_modalClass);
-		normalizeModalButtons($modal);
+		var event = $.Event('show.bs.modal');
 
-		if (isFomantic($modal))
+		$modal.trigger(event);
+
+		if (event.isDefaultPrevented())
+		{
+			return;
+		}
+
+		if ($modal.hasClass('ui') && $modal.hasClass('modal'))
 		{
 			normalizeModalMarkup($modal);
 
-			$modal
-				.modal({
-					allowMultiple: true,
-					detachable: false,
-					autofocus: false,
-					observeChanges: true
-				})
-				.modal('show');
+			if (isFomantic($modal))
+			{
+				$modal
+					.modal({
+						allowMultiple: true,
+						autofocus: false,
+						observeChanges: true,
+						onVisible: function(){
+							$modal.trigger('shown.bs.modal');
+						}
+					})
+					.modal('show');
 
-			return;
+				return;
+			}
 		}
 
 		fallbackOpen($modal);
@@ -138,6 +154,8 @@ var modal = new function(){
 						{
 							onHidden();
 						}
+
+						$modal.trigger('hidden.bs.modal');
 					}
 				})
 				.modal('hide');
@@ -264,18 +282,15 @@ var modal = new function(){
 							return;
 						}
 
-						$modal.addClass(_modalClass);
-						normalizeModalButtons($modal);
-
 						$('body').trigger('nf.load');
 
-						var $form = $modal.find('form');
+						var $form = $modal.is('form') ? $modal : $modal.find('form');
 
 						if (typeof form != 'undefined' && $form.length){
-							$modal.on('submit', 'form', function(e){
+							$form.on('submit', function(e){
 								e.preventDefault();
 
-								var $submit = $modal.find('[type="submit"]');
+								var $submit = $form.find('[type="submit"]');
 
 								if ($submit.hasClass('disabled')){
 									return;
@@ -329,6 +344,16 @@ $(function(){
 		e.preventDefault();
 	});
 
+	$(document).on('click', '[data-modal-target]', function(e){
+		var target = $(this).data('modal-target');
+		var $modal = $(target);
+
+		if ($modal.length){
+			modal.open($modal);
+			e.preventDefault();
+		}
+	});
+
 	$(document).on('click', '[data-toggle="modal"][data-target]', function(e){
 		var target = $(this).data('target');
 		var $modal = $(target);
@@ -345,7 +370,7 @@ $(function(){
 		e.preventDefault();
 	});
 
-	$(document).on('click', '.hb-modal', function(e){
+	$(document).on('click', '.modal-managed', function(e){
 		if (e.target === this){
 			modal.hide($(this));
 		}

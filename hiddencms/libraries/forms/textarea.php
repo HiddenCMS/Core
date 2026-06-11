@@ -14,7 +14,7 @@ class Textarea extends Labelable
 	{
 		$this->_template[] = function(&$input){
 			$input = parent	::html('textarea')
-							->attr('class', 'form-control')
+							->attr_if(!$this->admin_grid(), 'class', 'form-control')
 							->attr('rows', $this->_rows)
 							->attr_if($this->_disabled,  'disabled')
 							->attr_if($this->_read_only, 'readonly')
