@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\Themes\Admin;
@@ -18,7 +18,7 @@ class Admin extends Theme
 			'title'       => 'Administration',
 			'description' => 'Panel d\'administration',
 			'link'        => 'https://neofr.ag',
-			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
+			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
 		];
@@ -53,6 +53,7 @@ class Admin extends Theme
 				->js('jquery-3.2.1.min')
 				->js('https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js')
 				->js('modal')
+				->js('form')
 				->js('notify')
 				->js('sidebar');
 
@@ -92,6 +93,67 @@ class Admin extends Theme
 						->set('url',   'admin/addons/customize/'.$theme->url());
 		}
 
+		$appearance_links = array_values(array_filter([
+			$customize->__toArray(),
+			[
+				'title'  => 'Themes',
+				'icon'   => 'far fa-image',
+				'access' => $this->user->admin,
+				'url'    => 'admin/addons/themes'
+			],
+			[
+				'title'  => 'Modules',
+				'icon'   => 'fas fa-cube',
+				'access' => $this->user->admin,
+				'url'    => 'admin/addons/modules'
+			],
+			[
+				'title'  => 'Widgets',
+				'icon'   => 'fas fa-cubes',
+				'access' => $this->user->admin,
+				'url'    => 'admin/addons/widgets'
+			],
+			[
+				'title'  => 'Live Editor',
+				'icon'   => 'fas fa-desktop',
+				'access' => $this->user->admin,
+				'url'    => 'admin/live-editor'
+			]
+		]));
+
+		$administration_links = array_values(array_filter([
+			[
+				'title'  => 'Parametres',
+				'icon'   => 'fas fa-cogs',
+				'access' => $this->user->admin,
+				'url'    => 'admin/settings'
+			],
+			[
+				'title'  => 'Membres / Groupes',
+				'icon'   => 'fas fa-users',
+				'access' => $this->user->admin,
+				'url'    => 'admin/user'
+			],
+			[
+				'title'  => 'Sessions',
+				'icon'   => 'fas fa-globe',
+				'access' => $this->user->admin,
+				'url'    => 'admin/user/sessions'
+			],
+			[
+				'title'  => 'Permissions',
+				'icon'   => 'fas fa-unlock-alt',
+				'access' => $this->user->admin,
+				'url'    => 'admin/access'
+			],
+			[
+				'title'  => 'Statistiques',
+				'icon'   => 'far fa-chart-bar',
+				'access' => $this->user->admin,
+				'url'    => 'admin/statistics'
+			]
+		]));
+
 		$this->data->set('sidebar', [
 			'panel' => FALSE,
 			'links' => array_filter([
@@ -101,53 +163,26 @@ class Admin extends Theme
 					'url'   => 'admin'
 				],
 				[
-					'title'  => 'Paramètres',
-					'icon'   => 'fas fa-cogs',
-					'access' => $this->user->admin,
-					'url'    => 'admin/settings'
-				],
-				[
 					'title' => 'Contenu',
 					'icon'  => 'fas fa-edit',
-					'url'   => $content_submenu['default']
+					'url'   => $content_submenu['default'] ?: NULL
 				],
 				[
 					'title' => 'Gaming',
 					'icon'  => 'fas fa-gamepad',
-					'url'   => $content_submenu['gaming']
+					'url'   => $content_submenu['gaming'] ?: NULL
 				],
 				[
-					'title' => 'Utilisateurs',
-					'icon'  => 'fas fa-users',
-					'url'   => [
-						['title' => 'Membres / Groupes',      'icon'  => 'fas fa-users',        'access' => $this->user->admin, 'url' => 'admin/user'],
-						['title' => 'Sessions',               'icon'  => 'fas fa-globe',        'access' => $this->user->admin, 'url' => 'admin/user/sessions'],
-						['title' => 'Permissions',            'icon'  => 'fas fa-unlock-alt',   'access' => $this->user->admin, 'url' => 'admin/access'],
-						//['title' => 'Bannissement',           'icon'  => 'fas fa-bomb',         'access' => $this->user->admin, 'url' => 'admin/user/ban']
-					]
-				],
-				[
-					'title'  => 'Thèmes & addons',
-					'icon'   => 'fas fa-puzzle-piece',
+					'title'  => 'Apparence',
+					'icon'   => 'fas fa-paint-brush',
 					'access' => $this->user->admin,
-					'url'   => [
-						['title' => 'Thèmes',      	'icon'  => 'far fa-image',        'access' => $this->user->admin, 'url' => 'admin/addons/themes'],
-						['title' => 'Modules',    	'icon'  => 'fas fa-cube',        'access' => $this->user->admin, 'url' => 'admin/addons/modules'],
-						['title' => 'Widgets',     	'icon'  => 'fas fa-cubes',   'access' => $this->user->admin, 'url' => 'admin/addons/widgets']
-					]
-				],
-				$customize->__toArray(),
-				[
-					'title' => 'Live Editor',
-					'icon'  => 'fas fa-desktop',
-					'access' => $this->user->admin,
-					'url'   => 'admin/live-editor'
+					'url'    => $appearance_links ?: NULL
 				],
 				[
-					'title' => 'Statistiques',
-					'icon'  => 'far fa-chart-bar',
+					'title'  => 'Administration',
+					'icon'   => 'fas fa-tools',
 					'access' => $this->user->admin,
-					'url'    => 'admin/statistics'
+					'url'    => $administration_links ?: NULL
 				]
 			])
 		]);
@@ -177,5 +212,3 @@ class Admin extends Theme
 		}
 	}
 }
-
-

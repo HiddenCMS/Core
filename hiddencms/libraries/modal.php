@@ -177,36 +177,21 @@ class Modal extends Library
 
 	private function template_data()
 	{
-		$body = '';
 		$body_content = '';
 
 		if ($this->_body)
 		{
 			$body_content = $this->_body;
-			$body .= $this->_body_tags ? '<div class="modal-body">'.$body_content.'</div>' : $body_content;
 		}
 
 		if ($this->_callback)
 		{
 			$this->_callback->check();
 			$hidden = $this->form_hidden('_', $this->_callback->token());
-			$body .= $hidden;
 			$body_content .= $hidden;
 		}
 
 		$buttons = $this->_buttons ? (string)$this->button->static_footer($this->_buttons, 'right') : '';
-		$footer = $buttons ? $this->html()->attr('class', 'modal-footer')->content($buttons) : '';
-		$header = '<div class="modal-header">
-						<h5 class="modal-title">'.$this->_header.'</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"><span aria-hidden="true">&times;</span></button>
-					</div>';
-
-		$content = $header.$body.$footer;
-
-		if ($this->_template)
-		{
-			call_user_func_array($this->_template, [&$content]);
-		}
 
 		if ($this->_callback)
 		{
@@ -219,12 +204,12 @@ class Modal extends Library
 			'semantic_size' => $this->semantic_size(),
 			'header'      => $this->_header,
 			'body'        => $body_content,
+			'body_wrap'   => (bool)$this->_body_tags,
 			'actions'     => $buttons,
-			'content'     => $content,
 			'has_form'    => (bool)$this->_callback,
 			'form_action' => url($this->url->request),
 			'form_method' => 'post',
-			'legacy'      => $this->legacy_markup($content)
+			'close_label' => $this->lang('Fermer')
 		];
 	}
 
@@ -245,42 +230,41 @@ class Modal extends Library
 
 	private function render_template($data)
 	{
-		if ($theme = $this->output->theme())
-		{
-			$paths = [];
+		$template = is_string($this->_template) && $this->_template ? $this->_template : 'modal';
+		$content = $this->template->render($template, $data, $this->legacy_markup($data));
 
-			if ($theme->__path('views', 'components/modal.tpl.php', $paths))
-			{
-				return (string)$theme->view('components/modal.tpl.php', $data);
-			}
+		if (is_callable($this->_template))
+		{
+			call_user_func_array($this->_template, [&$content]);
 		}
 
-		$paths = [];
-
-		if (HB()->__path('views', 'components/modal.tpl.php', $paths))
-		{
-			return (string)HB()->view('components/modal.tpl.php', $data);
-		}
-
-		return $data['legacy'];
+		return $content;
 	}
 
-	private function legacy_markup($content)
+	private function legacy_markup($data)
 	{
+		$header = '<div class="modal-header">
+						<h5 class="modal-title">'.$data['header'].'</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="'.$data['close_label'].'"><span aria-hidden="true">&times;</span></button>
+					</div>';
+
+		$body = $data['body'] !== '' ? ($data['body_wrap'] ? '<div class="modal-body">'.$data['body'].'</div>' : $data['body']) : '';
+		$footer = $data['actions'] ? '<div class="modal-footer">'.$data['actions'].'</div>' : '';
+
 		$content = $this->html()
 						->attr('class', 'modal-content')
-						->content($content);
+						->content($header.$body.$footer);
 
-		if ($this->_callback)
+		if ($data['has_form'])
 		{
 			$content = $this->html('form')
-							->attr('action', url($this->url->request))
-							->attr('method', 'post')
+							->attr('action', $data['form_action'])
+							->attr('method', $data['form_method'])
 							->content($content);
 		}
 
-		return '<div id="'.$this->id.'" class="modal fade" tabindex="-1" role="dialog">
-					<div class="modal-dialog'.($this->_size ? ' modal-'.$this->_size : '').'">
+		return '<div id="'.$data['id'].'" class="modal fade" tabindex="-1" role="dialog">
+					<div class="modal-dialog'.$data['size'].'">
 						'.$content.'
 					</div>
 				</div>';

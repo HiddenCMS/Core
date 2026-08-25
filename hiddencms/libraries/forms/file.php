@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -19,9 +19,13 @@ class File extends Labelable
 	public function __invoke($name, $upload_dir = '')
 	{
 		$this->_template[] = function(&$input){
-			$input = parent	::html('input', TRUE)
-							->attr('type', 'file')
-							->attr_if($this->_disabled, 'disabled');
+			$input = $this	->html('input', TRUE)
+							->attr('type', 'file');
+
+			if ($this->_disabled)
+			{
+				$input->attr('disabled');
+			}
 		};
 
 		parent::__invoke($name);
@@ -29,9 +33,10 @@ class File extends Labelable
 		$this->_template[] = function(&$input){
 			if ($this->_thumbnail)
 			{
-				$input = parent	::html()
-								->content(call_user_func_array($this->_thumbnail, []))
-								->append($input);
+				$input = $this->template->render('forms/file', [
+					'thumbnail' => call_user_func_array($this->_thumbnail, []),
+					'input'     => $input
+				], call_user_func_array($this->_thumbnail, []).$input);
 			}
 		};
 
@@ -41,20 +46,20 @@ class File extends Labelable
 				if (!empty($_FILES[$this->_name]['error']))
 				{
 					$errors = [
-						1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
-						2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
-						3 => 'Le fichier n\'a été que partiellement téléchargé',
-						4 => 'Aucun fichier n\'a été téléchargé',
+						1 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de upload_max_filesize, configurÃ©e dans le php.ini',
+						2 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de MAX_FILE_SIZE, qui a Ã©tÃ© spÃ©cifiÃ©e dans le formulaire HTML',
+						3 => 'Le fichier n\'a Ã©tÃ© que partiellement tÃ©lÃ©chargÃ©',
+						4 => 'Aucun fichier n\'a Ã©tÃ© tÃ©lÃ©chargÃ©',
 						6 => 'Un dossier temporaire est manquant',
-						7 => 'Échec de l\'écriture du fichier sur le disque',
-						8 => 'Une extension PHP a arrêté l\'envoi de fichier'
+						7 => 'Ã‰chec de l\'Ã©criture du fichier sur le disque',
+						8 => 'Une extension PHP a arrÃªtÃ© l\'envoi de fichier'
 					];
 
 					$this->_errors[] = $this->lang($errors[$_FILES[$this->_name]['error']]);
 				}
 				else if ($this->_mimes && !in_array($_FILES[$this->_name]['type'], $this->_mimes))
 				{
-					$this->_errors[] = HB()->lang('Type de fichier non autorisé');
+					$this->_errors[] = HB()->lang('Type de fichier non autorisÃ©');
 				}
 				else if (!empty($_FILES[$this->_name]['tmp_name']))
 				{
@@ -113,5 +118,3 @@ class File extends Labelable
 		return $this;
 	}
 }
-
-

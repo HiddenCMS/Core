@@ -47,7 +47,7 @@ $(function(){
 				return;
 			}
 
-			$el.removeAttr('title');
+			$el.removeAttr('title data-toggle data-html data-original-title');
 			$el.popup({
 				content: content,
 				variation: 'tiny',
@@ -65,6 +65,7 @@ $(function(){
 				return;
 			}
 
+			$el.removeAttr('data-toggle data-html');
 			$el.popup({
 				html: (title ? '<div class=\"header\">'+title+'</div>' : '')+'<div class=\"content\">'+content+'</div>',
 				on: $el.data('trigger') || 'hover',

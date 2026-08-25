@@ -42,9 +42,7 @@ $(function(){
 			request[table_id].abort();
 		}
 
-		if (!$input.next('.form-control-feedback').length){
-			$input.after('<span class="form-control-feedback" style="background: url(<?php echo image('ajax-loader.gif') ?>) 50% 50% no-repeat;"></span>');
-		}
+		$input.closest('.table-search').addClass('loading');
 
 		request[table_id] = $.ajax({
 			url: $table.data('ajax-url') ? $table.data('ajax-url') : window.location.pathname,
@@ -55,7 +53,7 @@ $(function(){
 				/*input.typeahead().data('typeahead').source = data.search;*/ //TODO
 
 				$table.find('.table-content').html(data.content);
-				$input.next('.form-control-feedback').remove();
+				$input.closest('.table-search').removeClass('loading');
 
 				$('body').trigger('nf.load');
 			}

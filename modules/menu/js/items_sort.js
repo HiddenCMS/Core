@@ -74,7 +74,7 @@ $(function(){
 				helper: function(event, item){
 					var $item = $(item);
 					var $children = collectDescendants($item);
-					var $helperTable = $('<table class="table table-hover table-striped"></table>');
+					var $helperTable = $('<table class="ui compact table"></table>');
 					var $helperBody = $('<tbody></tbody>');
 
 					$helperBody.append($item.clone());

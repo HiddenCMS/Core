@@ -181,15 +181,18 @@ class Form extends Library
 			{
 				return FALSE;
 			}
-			else if (is_array($value))
+
+			$rule_type = isset($this->_rules[$key]['type']) ? $this->_rules[$key]['type'] : NULL;
+
+			if (is_array($value))
 			{
-				array_walk_recursive($value, function(&$v, $k){
-					$v = utf8_htmlentities(trim($v));
+				array_walk_recursive($value, function(&$v, $k) use ($rule_type){
+					$v = $rule_type == 'editor' ? trim($v) : utf8_htmlentities(trim($v));
 				});
 			}
 			else if ($value !== NULL)
 			{
-				$value = utf8_htmlentities(trim($value));
+				$value = $rule_type == 'editor' ? trim($value) : utf8_htmlentities(trim($value));
 			}
 
 			unset($value);
@@ -414,17 +417,9 @@ class Form extends Library
 
 	private function _check_editor(&$post, $var, $options)
 	{
-		$decoded = utf8_html_entity_decode($post[$var], ENT_QUOTES);
-		$json    = json_decode($decoded, TRUE);
-
-		if (json_last_error() === JSON_ERROR_NONE && !empty($json['blocks']) && is_array($json['blocks']))
-		{
-			$post[$var] = trim($decoded);
-		}
-		else
-		{
-			$post[$var] = trim(preg_replace('/ {2,}/', ' ', preg_replace('/(^ +?)|( +?$)/m', '', str_replace('&nbsp;', ' ', $post[$var]))));
-		}
+		$post[$var] = trim($post[$var]);
+		$post[$var] = preg_replace('~^(?:<(?:p|div)>(?:&nbsp;|\s|<br\s*/?>)*</(?:p|div)>\s*)+$~i', '', $post[$var]);
+		$post[$var] = trim($post[$var]);
 
 		return $this->_check_text($post, $var, $options);
 	}
@@ -437,42 +432,25 @@ class Form extends Library
 
 			if ($this->url->ajax())
 			{
-				return '<div class="modal-header">
-							<h5 class="modal-title">'.$title.'</h5>
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">'.HB()->lang('Fermer').'</span></button>
-						</div>
-						<div class="modal-body">
-							'.$message.'
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">'.HB()->lang('Annuler').'</button>
-							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">'.HB()->lang('Supprimer').'</a>
-						</div>';
-			}
-			else
-			{
-				//TODO
-				/*return 	'<p>'.$message.'</p><p>
-							<button type="button" class="btn btn-secondary" onclick="$(this).parents(\'.alert\').alert(\'close\');">Annuler</button>
-							<a class="btn btn-danger delete-confirm" href="'.url($this->url->request).'" data-form-id="'.$this->token().'" onclick="return confirm_deletion(this);">Supprimer</a>
-						</p>';*/
+				return $this->_render('confirm_delete', [
+					'title'        => $title,
+					'message'      => $message,
+					'close_label'  => HB()->lang('Fermer'),
+					'cancel_label' => HB()->lang('Annuler'),
+					'delete_label' => HB()->lang('Supprimer'),
+					'request_url'  => url($this->url->request),
+					'token'        => $this->token()
+				]);
 			}
 
 			return;
 		}
 
-		$output = '';
+		$fields = [];
 
 		if ($has_upload = $this->_has_upload())
 		{
 			$this->js('file');
-		}
-
-		$output .= '<form action="'.url($this->url->request).'" method="post"'.($has_upload ? ' enctype="multipart/form-data"' : '').($this->admin_grid() ? ' class="ui form"' : '').'>';
-
-		if (!$this->admin_grid())
-		{
-			$output .= '<fieldset>';
 		}
 
 		$post = post($this->token());
@@ -488,30 +466,25 @@ class Form extends Library
 			{
 				if ($type == 'legend')
 				{
-					$output .= $display;
+					$fields[] = $display;
 				}
 				else
 				{
-					$output .= '<div class="'.($this->admin_grid() ? 'fields' : 'form-group row').(isset($this->_errors[$var]) ? ' has-error' : '').'">';
+					$is_required = isset($options['rules']) && in_array('required', $options['rules']);
 
-					if ($this->_fast_mode)
-					{
-						$output .= '<div class="'.($this->admin_grid() ? 'field' : 'col').'">'.$display.'</div>';
-					}
-					else
-					{
-						$output .= '<label class="'.($this->admin_grid() ? 'four wide field' : 'col-sm-3 col-form-label col-form-label-sm').'"'.(!in_array($type, ['radio', 'checkbox']) ? ' for="form_'.$this->token().'_'.$var.'"' : '').$this->_display_popover($var, $options, $icons).'>'.$icons.' '.(!empty($options['label']) ? $options['label'] : '');
-
-						if (isset($options['rules']) && in_array('required', $options['rules']) && $this->_display_required)
-						{
-							$output .= '<em>*</em>';
-						}
-
-						$size = !empty($options['size']) && preg_match('/^col-([1-9])$/', $options['size'], $match) ? 'col-'.$match[1] : 'col-9';
-						$output .= '</label><div class="'.($this->admin_grid() ? $this->semantic_size($size) : ($size == 'col-9' ? 'col-sm-9' : $size)).'">'.$display.'</div>';
-					}
-
-					$output .= '</div>';
+					$fields[] = $this->_render('field', [
+						'content'          => $display,
+						'fast_mode'        => $this->_fast_mode,
+						'label'            => !empty($options['label']) ? $options['label'] : '',
+						'label_tag'        => in_array($type, ['radio', 'checkbox']) ? 'legend' : 'label',
+						'label_for'        => !in_array($type, ['radio', 'checkbox']) ? 'form_'.$this->token().'_'.$var : '',
+						'description'      => !empty($options['description']) ? $options['description'] : '',
+						'error'            => !empty($this->_errors[$var]) ? $this->_errors[$var] : '',
+						'has_error'        => isset($this->_errors[$var]),
+						'is_required'      => $is_required,
+						'display_required' => $this->_display_required,
+						'size'             => !empty($options['size']) ? $options['size'] : ''
+					]);
 				}
 			}
 		}
@@ -519,47 +492,39 @@ class Form extends Library
 		if ($this->_display_captcha)
 		{
 			HB()->js('https://www.google.com/recaptcha/api.js?hl='.$this->config->lang->info()->name.'&_=');
-			$output .= $this->admin_grid() ? '<div class="fields"><div class="four wide field"></div><div class="twelve wide field">'.$this->captcha->display().'</div></div>' : '<div class="form-group row"><div class="'.($this->_fast_mode ? 'input-group' : 'offset-3 col-9').'">'.$this->captcha->display().'</div></div>';
+			$fields[] = $this->_render('captcha', [
+				'content'   => $this->captcha->display(),
+				'fast_mode' => $this->_fast_mode
+			]);
 		}
 
 		if ($this->_display_required)
 		{
-			$output .= $this->admin_grid() ? '<div class="fields"><div class="four wide field"></div><div class="twelve wide field"><em>'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>' : '<div class="form-group row"><div class="offset-3 col-9"><em class="text-muted">'.HB()->lang('* Toutes les informations marquées d\'une étoile sont requises').'</em></div></div>';
+			$fields[] = $this->_render('required_note', [
+				'message' => HB()->lang('* Toutes les informations marquées d\'une étoile sont requises')
+			]);
 		}
 
 		if (!empty($this->_buttons))
 		{
-			$output .= '<div class="'.($this->_fast_mode ? 'text-center' : ($this->admin_grid() ? 'fields' : 'form-group row')).'">';
+			$buttons = [];
 
-			if (!$this->_fast_mode)
+			foreach ($this->_buttons as $button)
 			{
-				$output .= $this->admin_grid() ? '<div class="four wide field"></div><div class="twelve wide field">' : '<div class="offset-3 col-9">';
+				$buttons[] = $this->_display_button($button);
 			}
 
-			foreach ($this->_buttons as $i => $button)
-			{
-				if ($i > 0)
-				{
-					$output .= ' ';
-				}
-
-				$output .= $this->_display_button($button);
-			}
-
-			if (!$this->_fast_mode)
-			{
-				$output .= '</div>';
-			}
-
-			$output .= '</div>';
+			$fields[] = $this->_render('actions', [
+				'buttons'   => array_filter($buttons),
+				'fast_mode' => $this->_fast_mode
+			]);
 		}
 
-		if (!$this->admin_grid())
-		{
-			$output .= '</fieldset>';
-		}
-
-		$output .= '</form>';
+		$output = $this->_render('form', [
+			'action'     => url($this->url->request),
+			'has_upload' => $has_upload,
+			'content'    => implode('', $fields)
+		]);
 
 		$this->save();
 
@@ -578,71 +543,27 @@ class Form extends Library
 		return $this;
 	}
 
-	private function admin_grid()
-	{
-		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
-	}
-
-	private function semantic_width($size)
-	{
-		$size = max(1, min(12, (int)$size));
-		$width = max(1, min(16, (int)round($size * 16 / 12)));
-		$words = [
-			1 => 'one',
-			2 => 'two',
-			3 => 'three',
-			4 => 'four',
-			5 => 'five',
-			6 => 'six',
-			7 => 'seven',
-			8 => 'eight',
-			9 => 'nine',
-			10 => 'ten',
-			11 => 'eleven',
-			12 => 'twelve',
-			13 => 'thirteen',
-			14 => 'fourteen',
-			15 => 'fifteen',
-			16 => 'sixteen'
-		];
-
-		return $words[$width];
-	}
-
-	private function semantic_size($size)
-	{
-		if (!$this->admin_grid())
-		{
-			return $size;
-		}
-
-		$classes = [];
-
-		foreach (preg_split('/\s+/', trim((string)$size)) as $token)
-		{
-			if (preg_match('/^col-(\d+)$/', $token, $match))
-			{
-				$classes[] = $this->semantic_width($match[1]).' wide';
-				continue;
-			}
-
-			$classes[] = $token;
-		}
-
-		$classes[] = 'field';
-
-		return implode(' ', array_unique(array_filter($classes)));
-	}
-
 	private function _display_button($button)
 	{
 		if (isset($button['type']) && $button['type'] == 'submit')
 		{
-			return $this->admin_grid() ? '<button class="ui primary button" type="submit">'.$button['label'].'</button>' : '<button class="btn btn-primary" type="submit">'.$button['label'].'</button>';
+			return $this->_render('button', [
+				'tag'     => 'button',
+				'type'    => 'submit',
+				'variant' => 'primary',
+				'label'   => $button['label'],
+				'url'     => ''
+			]);
 		}
 		else if (!empty($button['label']) && !empty($button['action']))
 		{
-			return '<a href="'.url($button['action']).'" class="'.($this->admin_grid() ? 'ui secondary button' : 'btn btn-secondary').'">'.$button['label'].'</a>';
+			return $this->_render('button', [
+				'tag'     => 'a',
+				'type'    => '',
+				'variant' => 'secondary',
+				'label'   => $button['label'],
+				'url'     => url($button['action'])
+			]);
 		}
 
 		return '';
@@ -651,6 +572,7 @@ class Form extends Library
 	private function _display_value($var, $options)
 	{
 		$post = post();
+		$type = isset($options['type']) ? $options['type'] : NULL;
 
 		if (isset($post[$this->token()][$var]))
 		{
@@ -660,7 +582,14 @@ class Form extends Library
 			}
 			else
 			{
-				return utf8_htmlentities(trim($post[$this->token()][$var]));
+				$value = trim($post[$this->token()][$var]);
+
+				if ($type == 'editor')
+				{
+					return $value;
+				}
+
+				return utf8_htmlentities($value);
 			}
 		}
 		else if (isset($options['checked']))
@@ -669,32 +598,34 @@ class Form extends Library
 		}
 		else if (isset($options['value']))
 		{
-			return (string)$options['value'];
+			$value = (string)$options['value'];
+
+			if ($type == 'editor' && !preg_match('/<\s*[a-z][^>]*>/i', $value))
+			{
+				return bbcode($value);
+			}
+
+			return $value;
 		}
 
-		return isset($options['default']) ? (string)$options['default'] : '';
+		if (isset($options['default']))
+		{
+			$value = (string)$options['default'];
+
+			if ($type == 'editor' && !preg_match('/<\s*[a-z][^>]*>/i', $value))
+			{
+				return bbcode($value);
+			}
+
+			return $value;
+		}
+
+		return '';
 	}
 
-	private function _display_popover($var, $options, &$icons = '')
+	private function _render($component, array $data = [])
 	{
-		$popover = $icons = [];
-
-		if (!empty($options['description']))
-		{
-			$popover[] = ($icons[] = '<span class="text-info">'.icon('fas fa-info-circle').'</span>').' '.$options['description'];
-		}
-
-		if (!empty($this->_errors[$var]))
-		{
-			$popover[] = ($icons[] = '<span class="text-danger">'.icon('fas fa-exclamation-triangle').'</span>').' <span class="text-danger">'.$this->_errors[$var].'</span>';
-		}
-
-		$icons = implode(' ', $icons);
-
-		if ($popover)
-		{
-			return ' data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="'.utf8_htmlentities(implode('<br /><br />', $popover)).'"';
-		}
+		return $this->template->render('legacy_form/'.$component, $data);
 	}
 
 	private function _display_text($var, $options, $post, $type = 'text')
@@ -709,7 +640,7 @@ class Form extends Library
 								->js('bootstrap-datetimepicker/moment.min')
 								->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
 								->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
-								->js_load('$(".input-group.'.$type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$types[$type].'"});');
+								->js_load('$(".'.$type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$types[$type].'"});');
 
 			$classes[] = $type;
 
@@ -760,118 +691,103 @@ class Form extends Library
 						->js('colorpicker');
 		}
 
-		$output = '';
-
-		if (isset($options['icon']))
-		{
-			$output .= $this->admin_grid() ? '<div class="ui left icon input'.(!empty($classes) ? ' '.implode(' ', $classes) : '').'">' : '<div class="input-group'.(!empty($classes) ? ' '.implode(' ', $classes) : '').'">
-				<div class="input-group-prepend"><span class="input-group-text">'.($options['icon'] ? icon($options['icon']) : '<i></i>').'</span></div>';
-		}
-
-		$placeholder = '';
+		$attrs = [
+			'id'   => 'form_'.$this->token().'_'.$var,
+			'name' => $this->token().'['.$var.']',
+			'type' => $type
+		];
 
 		if ($type != 'file')
 		{
-			$class = $this->admin_grid() ? '' : ' class="form-control"';
-			$value = ' value="'.addcslashes($this->_display_value($var, $options), '"').'"';
+			$attrs['value'] = $this->_display_value($var, $options);
 
 			if (!empty($options['placeholder']))
 			{
-				$placeholder = $options['placeholder'];
+				$attrs['placeholder'] = $options['placeholder'];
 			}
 			else if ($this->_fast_mode && !empty($options['label']))
 			{
-				$placeholder = $options['label'];
-			}
-
-			if ($placeholder)
-			{
-				$placeholder = ' placeholder="'.$placeholder.'"';
+				$attrs['placeholder'] = $options['label'];
 			}
 		}
 
-		$input = '<input id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']" type="'.$type.'"'.(!empty($value) ? $value : '').(!empty($class) ? $class : '').($type == 'password' && isset($options['autocomplete']) && $options['autocomplete'] === FALSE ? ' autocomplete="off"' : '').(!empty($options['rules']) && in_array('disabled', $options['rules']) ? ' disabled="disabled"' : '').$placeholder.' />';
+		if ($type == 'password' && isset($options['autocomplete']) && $options['autocomplete'] === FALSE)
+		{
+			$attrs['autocomplete'] = 'off';
+		}
+
+		if (!empty($options['rules']) && in_array('disabled', $options['rules']))
+		{
+			$attrs['disabled'] = NULL;
+		}
+
+		$input = $this->_render('input', [
+			'attrs'  => $attrs,
+			'is_file' => $type == 'file'
+		]);
 
 		if ($type == 'file')
 		{
 			$post = post();
-
-			$input = $this->admin_grid() ? '<div class="ui segment"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>' : '<div style="margin: 7px 0;"><p>'.icon('fas fa-download').' '.HB()->lang('Télécharger un fichier').(!empty($options['info']) ? $options['info'] : '').'</p>'.$input.'</div>';
+			$deleted = isset($post[$this->token()][$var]) && $post[$this->token()][$var] == 'delete';
+			$thumbnail = '';
 
 			if (!empty($options['value']))
 			{
-				if (isset($post[$this->token()][$var]) && $post[$this->token()][$var] == 'delete')
+				if (!$deleted)
 				{
-					$input = '<input type="hidden" name="'.$this->token().'['.$var.']" value="delete" />'.$input;
-				}
-				else
-				{
-					$input = $this->admin_grid() ? '	<div class="ui grid">
-									<div class="four wide column">
-										<div class="thumbnail">
-											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
-											<div class="caption text-center">
-												<a class="ui negative fluid mini button form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
-											</div>
-										</div>
-									</div>
-									<div class="twelve wide column">
-										'.$input.'
-									</div>
-								</div>' : '	<div class="row">
-									<div class="col-3">
-										<div class="thumbnail">
-											<img src="'.url($this->db->select('path')->from('file')->where('id', $options['value'])->row()).'" class="img-fluid mb-1" alt="" />
-											<div class="caption text-center">
-												<a class="btn btn-outline-danger btn-block btn-sm form-file-delete" href="#" data-input="'.$this->token().'['.$var.']">'.icon('far fa-trash-alt').' '.HB()->lang('Supprimer').'</a>
-											</div>
-										</div>
-									</div>
-									<div class="col-9">
-										'.$input.'
-									</div>
-								</div>';
+					$thumbnail = url($this->db->select('path')->from('file')->where('id', $options['value'])->row());
 				}
 			}
-		}
 
-		$output .= $input;
+			$input = $this->_render('file', [
+				'input'        => $input,
+				'info'         => !empty($options['info']) ? $options['info'] : '',
+				'upload_label' => HB()->lang('Télécharger un fichier'),
+				'delete_label' => HB()->lang('Supprimer'),
+				'confirm_label' => HB()->lang('Supprimer le fichier ?'),
+				'delete_name'  => $this->token().'['.$var.']',
+				'deleted'      => $deleted,
+				'thumbnail'    => $thumbnail
+			]);
+		}
 
 		if (isset($options['icon']))
 		{
-			if (in_array('color', $classes))
-			{
-				$output .= $this->admin_grid() ? '<i class="fas fa-eye-dropper icon"></i>' : '<div class="input-group-append"><span class="input-group-text"><span class="fas fa-eye-dropper"></span></span></div>';
-			}
-			else if ($this->admin_grid() && $options['icon'])
-			{
-				$output .= icon($options['icon']);
-			}
-
-			$output .= '</div>';
+			$input = $this->_render('input_wrapper', [
+				'input'   => $input,
+				'classes' => implode(' ', $classes),
+				'icon'    => $options['icon'] ? icon($options['icon']) : '',
+				'color'   => in_array('color', $classes)
+			]);
 		}
 
-		return $output;
+		return $input;
 	}
 
 	private function _display_iconpicker($var, $options, $post)
 	{
 		HB()	->css('bootstrap-iconpicker.min')
 					->js('bootstrap-iconpicker.bundle.min')
-					->js_load('	$(".btn.iconpicker").iconpicker({
+					->js_load('	$(".iconpicker").iconpicker({
 									arrowPrevIconClass: "fas fa-caret-left",
 									arrowNextIconClass: "fas fa-caret-right",
 									cols: 10,
 									rows: 5,
 									iconset: "fontawesome",
 									labelHeader: "'.HB()->lang('{0} sur {1} pages').'",
-									labelFooter: "<div class=\"float-right\">'.HB()->lang('{2} icônes').'</div>",
+									labelFooter: "'.HB()->lang('{2} icônes').'",
 									searchText: "'.HB()->lang('Rechercher...').'",
-									selectedClass: "btn-primary",
+									selectedClass: "active",
 									unselectedClass: ""
 								});');
 
-		return '<button id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']" class="btn btn-light'.((isset($this->_errors[$var])) ? ' btn-danger' : '').' iconpicker" data-icon="'.addcslashes($this->_display_value($var, $options), '"').'"></button>';
+		return $this->_render('iconpicker', [
+			'id'        => 'form_'.$this->token().'_'.$var,
+			'name'      => $this->token().'['.$var.']',
+			'data_icon' => $this->_display_value($var, $options),
+			'has_error' => isset($this->_errors[$var])
+		]);
 	}
 
 	private function _display_colorpicker($var, $options, $post)
@@ -958,7 +874,7 @@ class Form extends Library
 
 	private function _display_checkbox($var, $options, $post)
 	{
-		$output = '<input type="hidden" name="'.$this->token().'['.$var.'][]" value="" />';
+		$items = [];
 
 		if (!empty($options['values']))
 		{
@@ -966,31 +882,26 @@ class Form extends Library
 
 			foreach ($options['values'] as $value => $label)
 			{
-				if ($this->admin_grid())
-				{
-					$output .= '<div class="ui checkbox">'
-							.'<input type="checkbox" name="'.$this->token().'['.$var.'][]" value="'.$value.'"'.(in_array((string)$value, $user_value) ? ' checked="checked"' : '').' />'
-							.'<label>'.$label.'</label>'
-						.'</div>';
-				}
-				else
-				{
-					$output .= '	<div class="checkbox">
-									<label>
-										<input type="checkbox" name="'.$this->token().'['.$var.'][]" value="'.$value.'"'.(in_array((string)$value, $user_value) ? ' checked="checked"' : '').' />
-										'.$label.'
-									</label>
-								</div>';
-				}
+				$items[] = [
+					'type'    => 'checkbox',
+					'name'    => $this->token().'['.$var.'][]',
+					'value'   => $value,
+					'label'   => $label,
+					'checked' => in_array((string)$value, $user_value)
+				];
 			}
 		}
 
-		return $output;
+		return $this->_render('choices', [
+			'hidden_name' => $this->token().'['.$var.'][]',
+			'items'       => $items,
+			'inline'      => FALSE
+		]);
 	}
 
 	private function _display_radio($var, $options, $post)
 	{
-		$output = '<input type="hidden" name="'.$this->token().'['.$var.']" value="" />';
+		$items = [];
 
 		if (!empty($options['values']))
 		{
@@ -998,24 +909,21 @@ class Form extends Library
 
 			foreach ($options['values'] as $value => $label)
 			{
-				if ($this->admin_grid())
-				{
-					$output .= '<div class="ui radio checkbox">'
-							.'<input type="radio" name="'.$this->token().'['.$var.']" value="'.$value.'"'.($user_value == (string)$value ? ' checked="checked"' : '').' />'
-							.'<label>'.$label.'</label>'
-						.'</div>';
-				}
-				else
-				{
-					$output .= '	<label class="radio-inline">
-									<input type="radio" name="'.$this->token().'['.$var.']" value="'.$value.'"'.($user_value == (string)$value ? ' checked="checked"' : '').' />
-									'.$label.'
-								</label>';
-				}
+				$items[] = [
+					'type'    => 'radio',
+					'name'    => $this->token().'['.$var.']',
+					'value'   => $value,
+					'label'   => $label,
+					'checked' => $user_value == (string)$value
+				];
 			}
 		}
 
-		return $output;
+		return $this->_render('choices', [
+			'hidden_name' => $this->token().'['.$var.']',
+			'items'       => $items,
+			'inline'      => TRUE
+		]);
 	}
 
 	private function _display_select($var, $options, $post)
@@ -1025,45 +933,53 @@ class Form extends Library
 			return;
 		}
 
-		$output = '<select class="'.($this->admin_grid() ? 'selectize' : 'form-control').'" id="form_'.$this->token().'_'.$var.'" name="'.$this->token().'['.$var.']">
-						<option></option>';
+		$choices = [];
+		$user_value = $this->_display_value($var, $options);
 
 		if (!empty($options['values']))
 		{
-			$user_value = $this->_display_value($var, $options);
-
 			foreach ($options['values'] as $value => $label)
 			{
-				$output .= '<option value="'.$value.'"'.($user_value == (string)$value ? ' selected="selected"' : '').'>'.$label.'</option>';
+				$choices[] = [
+					'value'    => $value,
+					'label'    => $label,
+					'selected' => $user_value == (string)$value
+				];
 			}
 		}
 
-		return $output.'</select>';
+		return $this->_render('select', [
+			'id'          => 'form_'.$this->token().'_'.$var,
+			'name'        => $this->token().'['.$var.']',
+			'placeholder' => !isset($options['rules']) || !in_array('required', $options['rules']),
+			'choices'     => $choices
+		]);
 	}
 
 	private function _display_textarea($var, $options, $post, $editor = FALSE)
 	{
-		return '<textarea id="form_'.$this->token().'_'.$var.'"'.($this->admin_grid() ? ($editor ? ' class="editor"' : '') : ' class="form-control'.($editor ? ' editor' : '').'"').' rows="10" name="'.$this->token().'['.$var.']">'.$this->_display_value($var, $options).'</textarea>';
+		return $this->_render('textarea', [
+			'id'     => 'form_'.$this->token().'_'.$var,
+			'name'   => $this->token().'['.$var.']',
+			'rows'   => !empty($options['rows']) ? (int)$options['rows'] : 10,
+			'value'  => $this->_display_value($var, $options),
+			'editor' => $editor
+		]);
 	}
 
 	private function _display_editor($var, $options, $post)
 	{
-		$this	->css('editorjs')
-				->js('form')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.31.5/dist/editorjs.umd.js')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.8/dist/header.umd.js')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/list@2.0.8/dist/list.umd.js')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/quote@2.7.6/dist/quote.umd.js')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/code@2.9.3/dist/code.umd.js')
-				->js('https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.2/dist/delimiter.umd.js')
-				->js('form_editorjs');
+		$this	->js('https://cdn.jsdelivr.net/npm/tinymce@6.8.5/tinymce.min.js')
+				->js('form_tinymce');
 
 		return $this->_display_textarea($var, $options, $post, TRUE);
 	}
 
 	private function _display_legend($var, $options, $post)
 	{
-		return '<legend>'.(!empty($options['label']) ? $options['label'] : '').'</legend>';
+		return $this->_render('legend', [
+			'label' => !empty($options['label']) ? $options['label'] : ''
+		]);
 	}
 
 	private function _has_upload()

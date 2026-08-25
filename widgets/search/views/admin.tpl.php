@@ -1,17 +1,21 @@
-<ul class="nav nav-pills" id="pills-tab" role="tablist">
-	<li class="nav-item"><a class="nav-link active" id="pills-options-tab" data-toggle="pill" href="#pills-options" role="tab" aria-controls="pills-options" aria-selected="true"><?php echo icon('fas fa-cogs').' Options' ?></a></li>
-</ul>
-<div class="tab-content border-light" id="pills-tabContent">
-	<div class="tab-pane fade show active" id="pills-options" role="tabpanel" aria-labelledby="pills-options-tab">
-		<div class="fields">
-			<label for="settings-title" class="four wide field">Alignement</label>
-			<div class="five wide field">
-				<label class="radio-inline">
-					<input type="radio" name="settings[align]" value="float-left"<?php if (!isset($align) || $align != 'float-left') echo ' checked="checked"' ?> /> à gauche
-				</label>
-				<label class="radio-inline">
-					<input type="radio" name="settings[align]" value="float-right"<?php if (isset($align) && $align == 'float-right') echo ' checked="checked"' ?> /> à droite
-				</label>
+<h4 class="ui dividing header"><?php echo icon('fas fa-cogs').' Options' ?></h4>
+<div class="fields">
+	<div class="four wide field">
+		<label>Alignement</label>
+	</div>
+	<div class="five wide field">
+		<div class="inline fields">
+			<div class="field">
+				<div class="ui radio checkbox">
+					<input type="radio" name="settings[align]" value="float-left"<?php if (!isset($align) || $align != 'float-left') echo ' checked="checked"' ?> />
+					<label>a gauche</label>
+				</div>
+			</div>
+			<div class="field">
+				<div class="ui radio checkbox">
+					<input type="radio" name="settings[align]" value="float-right"<?php if (isset($align) && $align == 'float-right') echo ' checked="checked"' ?> />
+					<label>a droite</label>
+				</div>
 			</div>
 		</div>
 	</div>

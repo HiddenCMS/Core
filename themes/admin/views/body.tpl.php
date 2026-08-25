@@ -1,9 +1,9 @@
 <div class="wrapper">
-	<nav id="sidebar" class="ui vertical inverted menu">
+	<nav id="sidebar" class="ui vertical menu">
 		<div class="sidebar-header">
 			<a class="logo" href="<?php echo url('admin') ?>">
 				<svg><use xlink:href="#logo"></use></svg>
-				<span class="ui tiny primary label">HiddenCMS</span>
+				<span class="ui mini basic label">HiddenCMS</span>
 			</a>
 		</div>
 		<?php echo $this->widget('navigation')->output('vertical', $this->__caller->data->get('sidebar')) ?>
@@ -31,7 +31,7 @@
 								->append_if(isset($module->info()->settings) && $this->module('addons')->is_authorized(), $this->button('Configuration', 'fas fa-wrench', 'warning')->outline()->modal_ajax('admin/addons/settings/'.$module->__addon->id.'/'.$module_name))
 								->append_if(($help_controller = @$module->controller('admin_help')) && $help_controller->has_method($module_method), $this->button('Aide', 'far fa-life-ring', 'info')->outline()->modal_ajax('admin/addons/help/'.$module->__addon->id.'/'.$module_name.'/'.$module_method));
 			?>
-			<section id="page-header" class="ui clearing segment">
+			<section id="page-header" class="ui segment">
 				<div class="header">
 					<?php echo $this->label($this->output->data->get('module', 'title'), $this->output->data->get('module', 'icon')) ?>
 					<?php if ($subtitle = $this->output->data->get('module', 'subtitle')): ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -13,14 +13,30 @@ class Textarea extends Labelable
 	public function __invoke($name)
 	{
 		$this->_template[] = function(&$input){
-			$input = parent	::html('textarea')
-							->attr_if(!$this->admin_grid(), 'class', 'form-control')
-							->attr('rows', $this->_rows)
-							->attr_if($this->_disabled,  'disabled')
-							->attr_if($this->_read_only, 'readonly')
-							->content($this->_value);
+			$input = $this	->html('textarea')
+							->attr('rows', $this->_rows);
 
-			$this->_placeholder($input);
+			if ($this->_disabled)
+			{
+				$input->attr('disabled');
+			}
+
+			if ($this->_read_only)
+			{
+				$input->attr('readonly');
+			}
+
+			if ($this->_placeholder)
+			{
+				$input->attr('placeholder', $this->_placeholder);
+			}
+
+			if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
+			{
+				$input->attr('placeholder', $this->_title ?: $this->_placeholder);
+			}
+
+			$input->content(utf8_htmlentities($this->_value));
 		};
 
 		return parent::__invoke($name);

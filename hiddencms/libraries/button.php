@@ -1,54 +1,84 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
 
 class Button extends Label
 {
-	protected $_compact  = FALSE;
-	protected $_outline  = FALSE;
-	protected $_disabled = FALSE;
-	protected $_style    = [];
-	protected $_data     = [];
+	protected $_compact   = FALSE;
+	protected $_outline   = FALSE;
+	protected $_disabled  = FALSE;
+	protected $_size      = '';
+	protected $_fluid     = FALSE;
+	protected $_icon_only = FALSE;
+	protected $_style     = [];
+	protected $_data      = [];
+	protected $_template_name;
 
 	static public function footer($buttons, $default = 'left')
 	{
-		$output = HB()->html();
-
-		if ($buttons)
+		if (!$buttons)
 		{
-			$footers = HB()->array();
-
-			foreach ($buttons as $footer)
-			{
-				$align = '';
-
-				if (method_exists($footer, 'align'))
-				{
-					$align = $footer->align();
-				}
-
-				$footers->append($align ?: $default, $footer);
-			}
-
-			if ($footers->count() == 1 && $footers->get($default))
-			{
-				$footers->each('implode');
-			}
-			else
-			{
-				$footers->each(function($buttons, $align){
-					return HB()->html()->attr('class', (($theme = HB()->output->theme()) && $theme->info()->name == 'admin' ? $align.' floated' : 'float-'.$align))->content($buttons);
-				});
-			}
-
-			$output->content($footers);
+			return HB()->html();
 		}
 
-		return $output;
+		$footers = HB()->array();
+
+		foreach ($buttons as $footer)
+		{
+			$align = '';
+
+			if (method_exists($footer, 'align'))
+			{
+				$align = $footer->align();
+			}
+
+			$footers->append($align ?: $default, $footer);
+		}
+
+		$single_group = $footers->count() == 1 && $footers->get($default);
+		$groups = [];
+
+		if ($single_group)
+		{
+			$groups[] = [
+				'align'   => $default,
+				'content' => implode('', $footers->get($default))
+			];
+		}
+		else
+		{
+			foreach ($footers as $align => $group_buttons)
+			{
+				$groups[] = [
+					'align'   => $align,
+					'content' => implode('', $group_buttons)
+				];
+			}
+		}
+
+		$fallback = '';
+
+		if ($single_group)
+		{
+			$fallback = $groups[0]['content'];
+		}
+		else
+		{
+			foreach ($groups as $group)
+			{
+				$fallback .= '<div>'.$group['content'].'</div>';
+			}
+		}
+
+		return HB()->html()->content(HB()->template->render('buttons/footer', [
+			'groups'       => $groups,
+			'single_group' => $single_group,
+			'default'      => $default
+		], $fallback));
 	}
 
 	public function __invoke()
@@ -134,36 +164,55 @@ class Button extends Label
 			'color'              => $this->_color,
 			'compact'            => $this->_compact,
 			'outline'            => $this->_outline,
-			'disabled'           => $this->_disabled
+			'disabled'           => $this->_disabled,
+			'size'               => $this->_size,
+			'fluid'              => $this->_fluid,
+			'icon_only'          => $this->_icon_only
 		];
 
-		$paths = [];
-		$templates = [];
+		return $this->template->render(
+			$this->button_template_name(),
+			$data,
+			'<'.$tag.$attrs_output.($class ? ' class="'.utf8_htmlentities($class).'"' : '').'>'.$content.'</'.$tag.'>'
+		);
+	}
 
-		if ($theme = $this->output->theme())
+	private function button_template_name()
+	{
+		if (!$this->_template_name)
 		{
-			$templates[] = $theme;
+			return 'button';
 		}
 
-		$templates[] = HB();
-
-		foreach ($templates as $template_owner)
+		if (strpos($this->_template_name, '/') !== FALSE || preg_match('/\.tpl\.php$/', $this->_template_name))
 		{
-			if ($path = $template_owner->__path('views', 'components/button.tpl.php', $paths))
-			{
-				extract($data);
-				ob_start();
-				include $path;
-				return ob_get_clean();
-			}
+			return $this->_template_name;
 		}
 
-		return '<'.$tag.$attrs_output.($class ? ' class="'.utf8_htmlentities($class).'"' : '').'>'.$content.'</'.$tag.'>';
+		return 'buttons/'.$this->_template_name;
 	}
 
 	public function compact($compact = TRUE)
 	{
 		$this->_compact = $compact;
+		return $this;
+	}
+
+	public function size($size = '')
+	{
+		$this->_size = $size;
+		return $this;
+	}
+
+	public function fluid($fluid = TRUE)
+	{
+		$this->_fluid = $fluid;
+		return $this;
+	}
+
+	public function icon_only($icon_only = TRUE)
+	{
+		$this->_icon_only = $icon_only;
 		return $this;
 	}
 
@@ -176,6 +225,12 @@ class Button extends Label
 	public function disabled()
 	{
 		$this->_disabled = TRUE;
+		return $this;
+	}
+
+	public function template($template)
+	{
+		$this->_template_name = $template;
 		return $this;
 	}
 
@@ -228,5 +283,3 @@ class Button extends Label
 					]);
 	}
 }
-
-

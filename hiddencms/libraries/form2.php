@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -174,9 +174,10 @@ class Form2 extends Library
 
 		return $this->_check;
 	}
+
 	private function admin_grid()
 	{
-		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
 	}
 
 	public function token($id = NULL)
@@ -205,9 +206,9 @@ class Form2 extends Library
 	{
 		if (is_string($rule))
 		{
-			$rule = $this	->{'form_'.$type}($rule)
-							->title($title)
-							->value($value);
+			$rule = $this->{'form_'.$type}($rule)
+						 ->title($title)
+						 ->value($value);
 		}
 
 		$this->_rules[] = $rule;
@@ -346,31 +347,25 @@ class Form2 extends Library
 	public function panel()
 	{
 		$this->_template = function($fields){
-			return $this->array()
-						->append($this	->html()
-										->attr('class', 'content')
-										->content($fields)
-						)
-						->append_if($buttons = $this->_buttons(), $this	->html()
-																		->attr('class', 'right aligned extra content')
-																		->content($buttons)
-						);
+			$buttons = $this->_buttons();
+
+			return $this->template->render('forms/panel', [
+				'fields'  => $fields,
+				'buttons' => $buttons
+			], $this->legacy_panel($fields, $buttons));
 		};
 
-		return parent	::panel()
-						->heading()
-						->body($this->_exec(), FALSE);
+		return parent::panel()
+					->heading()
+					->body($this->_exec(), FALSE);
 	}
 
 	public function modal($title, $icon = '')
 	{
 		$form = $this->_exec();
 
-		$modal = parent	::modal($title, $icon)
-						->body($form->content())
-						->template(function(&$content) use ($form){
-							$content = $form->content($content);
-						});
+		$modal = parent::modal($title, $icon)
+						->body($form, FALSE);
 
 		foreach ($this->_buttons as $button)
 		{
@@ -474,12 +469,25 @@ class Form2 extends Library
 
 		foreach ($this->_errors as $error)
 		{
-			$errors[] = $this	->html('p')
-								->attr('class', 'text-danger')
-								->content($this->label($error, 'fas fa-exclamation-triangle'));
+			$errors[] = $this->html('p')
+							 ->attr('class', 'text-danger')
+							 ->content($this->label($error, 'fas fa-exclamation-triangle'))
+							 ->__toString();
 		}
 
 		$fields = [];
+		$grouped_fields = [];
+
+		$flush_group = function() use (&$fields, &$grouped_fields){
+			if ($grouped_fields)
+			{
+				$fields[] = $this->template->render('forms/group', [
+					'items' => $grouped_fields
+				], $this->legacy_group($grouped_fields));
+
+				$grouped_fields = [];
+			}
+		};
 
 		foreach ($rules as $rule)
 		{
@@ -490,20 +498,15 @@ class Form2 extends Library
 
 			if ((is_string($rule) || is_object($rule)) && method_exists($rule, 'size') && $rule->size())
 			{
-				$last = end($fields);
-
-				if (!is_a($last, 'HB\HiddenCMS\Libraries\Html'))
-				{
-					$fields[] = $last = $this->html()->attr('class', 'fields');
-				}
-
-				$last->append($rule);
+				$grouped_fields[] = (string)$rule;
+				continue;
 			}
-			else
-			{
-				$fields[] = $rule;
-			}
+
+			$flush_group();
+			$fields[] = (string)$rule;
 		}
+
+		$flush_group();
 
 		$this->js('form');
 
@@ -521,14 +524,78 @@ class Form2 extends Library
 			};
 		}
 
-		return $this->html('form')
-					->attr('class', $this->admin_grid() ? 'ui form' : '')
-					->append_attr_if($this->_display & self::FORM_INLINE, 'class', $this->admin_grid() ? 'inline' : 'form-inline')
-					->attr('action', url($this->url->request))
-					->attr('method', 'post')
-					->attr_if($has_upload, 'enctype', 'multipart/form-data')
-					->content(call_user_func($this->_template, array_merge($errors, $fields)));
+		return $this->render_form(call_user_func($this->_template, array_merge($errors, $fields)), $has_upload);
+	}
+
+	private function render_form($content, $has_upload)
+	{
+		$classes = [];
+
+		if ($this->admin_grid())
+		{
+			$classes[] = 'ui form';
+		}
+
+		if ($this->_display & self::FORM_INLINE)
+		{
+			$classes[] = $this->admin_grid() ? 'inline' : 'form-inline';
+		}
+
+		$attrs = [
+			'action' => url($this->url->request),
+			'method' => 'post'
+		];
+
+		if ($classes)
+		{
+			$attrs['class'] = implode(' ', $classes);
+		}
+
+		if ($has_upload)
+		{
+			$attrs['enctype'] = 'multipart/form-data';
+		}
+
+		$attrs_output = '';
+		foreach ($attrs as $key => $value)
+		{
+			$attrs_output .= ' '.$key.'="'.utf8_htmlentities($value).'"';
+		}
+
+		return $this->template->render('forms/form', [
+			'content'      => $content,
+			'attrs'        => $attrs,
+			'attrs_output' => $attrs_output
+		], $this->legacy_form($attrs_output, $content));
+	}
+
+	private function legacy_form($attrs_output, $content)
+	{
+		return '<form'.$attrs_output.'>'.$content.'</form>';
+	}
+
+	private function legacy_group(array $items)
+	{
+		return '<div class="fields">'.implode('', $items).'</div>';
+	}
+
+	private function legacy_panel($fields, array $buttons)
+	{
+		$content = $this->html()
+						->attr('class', 'content')
+						->content($fields)
+						->__toString();
+
+		$actions = '';
+
+		if ($buttons)
+		{
+			$actions = $this->html()
+							->attr('class', 'right aligned extra content')
+							->content($buttons)
+							->__toString();
+		}
+
+		return $content.$actions;
 	}
 }
-
-

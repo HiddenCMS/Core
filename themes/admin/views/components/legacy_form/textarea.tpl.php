@@ -1,0 +1,1 @@
+<textarea id="<?php echo utf8_htmlentities($id); ?>"<?php if ($editor): ?> class="wysiwyg"<?php endif ?> rows="<?php echo $rows; ?>" name="<?php echo utf8_htmlentities($name); ?>"><?php echo $value; ?></textarea>

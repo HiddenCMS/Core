@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -79,59 +79,9 @@ abstract class Labelable extends Library
 
 	protected function admin_grid()
 	{
-		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
 	}
 
-	private function semantic_width($size)
-	{
-		$size = max(1, min(12, (int)$size));
-		$width = max(1, min(16, (int)round($size * 16 / 12)));
-		$words = [
-			1 => 'one',
-			2 => 'two',
-			3 => 'three',
-			4 => 'four',
-			5 => 'five',
-			6 => 'six',
-			7 => 'seven',
-			8 => 'eight',
-			9 => 'nine',
-			10 => 'ten',
-			11 => 'eleven',
-			12 => 'twelve',
-			13 => 'thirteen',
-			14 => 'fourteen',
-			15 => 'fifteen',
-			16 => 'sixteen'
-		];
-
-		return $words[$width];
-	}
-
-	private function semantic_size($size)
-	{
-		if (!$this->admin_grid())
-		{
-			return $size;
-		}
-
-		$classes = [];
-
-		foreach (preg_split('/\s+/', trim((string)$size)) as $token)
-		{
-			if (preg_match('/^col-(\d+)$/', $token, $match))
-			{
-				$classes[] = $this->semantic_width($match[1]).' wide';
-				continue;
-			}
-
-			$classes[] = $token;
-		}
-
-		$classes[] = 'field';
-
-		return implode(' ', array_unique(array_filter($classes)));
-	}
 	public function __toString()
 	{
 		$input = NULL;
@@ -149,25 +99,60 @@ abstract class Labelable extends Library
 			return $input;
 		}
 
-		$display = $this->_form->display();
+		$display      = $this->_form->display();
+		$is_compact   = (bool)($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT);
+		$is_multiple  = is_a($this, 'HB\HiddenCMS\Libraries\Forms\Multiple');
+		$label_html   = (string)$this->_label();
+		$label_tag    = $is_multiple ? 'legend' : 'label';
+		$compact_html = '';
 
-		return parent	::html()
-						->attr('class', $this->admin_grid() ? 'field' : 'form-group field')
-						->append_attr_if($this->_errors, 'class', $this->admin_grid() ? 'error' : 'has-danger')
-						->append_attr_if($this->_size, 'class', $this->semantic_size($this->_size))
-						->content($this	->array
-										->append_if(($label = (string)$this->_label()) && !($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT), function() use ($label){
-											return parent	::html(($multiple = is_a($this, 'HB\HiddenCMS\Libraries\Forms\Multiple')) ? 'legend' : 'label')
-															->attr_if(!$this->admin_grid(), 'class', 'col-form-label')
-															->attr_if(!$multiple, 'for', $this->_form->token().'_'.$this->_name)
-															->content($label);
-										})
-										->append($input)
-										->append_if($this->_errors && ($display & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT), function(){
-											return $this->label(implode('<br />', $this->_errors), 'fas fa-exclamation-triangle')->attr('class', 'text-danger');
-										})
-						)
-						->__toString();
+		if ($this->_errors && $is_compact)
+		{
+			$compact_html = (string)$this->label(implode('<br />', $this->_errors), 'fas fa-exclamation-triangle')->attr('class', 'text-danger');
+		}
+
+		$data = [
+			'input'               => $input,
+			'label_html'          => $label_html,
+			'label_tag'           => $label_tag,
+			'label_for'           => !$is_multiple ? $this->_form->token().'_'.$this->_name : '',
+			'size'                => $this->_size ?: '',
+			'has_errors'          => !empty($this->_errors),
+			'required'            => $this->_required,
+			'errors'              => $this->_errors,
+			'compact'             => $is_compact,
+			'multiple'            => $is_multiple,
+			'compact_errors_html' => $compact_html
+		];
+
+		return $this->template->render('forms/field', $data, $this->legacy_field($data));
+	}
+
+	private function legacy_field(array $data)
+	{
+		$wrapper = parent	::html()
+							->attr('class', $this->admin_grid() ? 'field' : 'form-group field')
+							->append_attr_if($data['has_errors'], 'class', $this->admin_grid() ? 'error' : 'has-danger')
+							->append_attr_if($data['size'], 'class', $data['size']);
+
+		$content = $this->array();
+
+		if ($data['label_html'] && !$data['compact'])
+		{
+			$content[] = parent	::html($data['label_tag'])
+								->attr_if(!$this->admin_grid(), 'class', 'col-form-label')
+								->attr_if($data['label_for'], 'for', $data['label_for'])
+								->content($data['label_html']);
+		}
+
+		$content[] = $data['input'];
+
+		if ($data['compact_errors_html'])
+		{
+			$content[] = $data['compact_errors_html'];
+		}
+
+		return $wrapper->content($content)->__toString();
 	}
 
 	public function id()
@@ -323,11 +308,6 @@ abstract class Labelable extends Library
 					->attr('data-position', 'top left');
 		}
 
-		if ($this->_required)
-		{
-			$label .= '<em>*</em>';
-		}
-
 		return $label;
 	}
 
@@ -341,5 +321,3 @@ abstract class Labelable extends Library
 		}
 	}
 }
-
-

@@ -1,4 +1,4 @@
-<table class="table table-access table-hover">
+<table class="ui compact table table-access">
 	<thead>
 		<tr>
 			<th class="ten wide"><?php echo $this->lang('Groupes') ?></th>

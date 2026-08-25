@@ -8,7 +8,7 @@
 		<div class="fields">
 			<label for="settings-display_teamname" class="four wide field">Nom de l'équipe</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_teamname]" id="settings-display_teamname">
+				<select class="ui search selection dropdown" name="settings[display_teamname]" id="settings-display_teamname">
 					<option value="non"<?php if (!isset($display_teamname) || $display_teamname == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_teamname) && $display_teamname == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -30,7 +30,7 @@
 		<div class="fields">
 			<label for="settings-display_logo" class="four wide field">Logo de l'équipe</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_logo]" id="settings-display_logo">
+				<select class="ui search selection dropdown" name="settings[display_logo]" id="settings-display_logo">
 					<option value="non"<?php if (!isset($display_logo) || $display_logo == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_logo) && $display_logo == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -54,7 +54,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-arrows-alt-h') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[logo_width]" value="<?php echo $logo_width ? $logo_width : '200' ?>">
+						<input type="number" name="settings[logo_width]" value="<?php echo $logo_width ? $logo_width : '200' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -65,7 +65,7 @@
 		<div class="fields">
 			<label for="settings-display_type" class="four wide field">Type de structure</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_type]" id="settings-display_type">
+				<select class="ui search selection dropdown" name="settings[display_type]" id="settings-display_type">
 					<option value="non"<?php if (!isset($display_type) || $display_type == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_type) && $display_type == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -74,7 +74,7 @@
 		<div class="fields">
 			<label for="settings-display_date" class="four wide field">Date de création</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_date]" id="settings-display_date">
+				<select class="ui search selection dropdown" name="settings[display_date]" id="settings-display_date">
 					<option value="non"<?php if (!isset($display_date) || $display_date == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_date) && $display_date == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -83,7 +83,7 @@
 		<div class="fields">
 			<label for="settings-display_biographie" class="four wide field">Biographie</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_biographie]" id="settings-display_biographie">
+				<select class="ui search selection dropdown" name="settings[display_biographie]" id="settings-display_biographie">
 					<option value="non"<?php if (!isset($display_biographie) || $display_biographie == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_biographie) && $display_biographie == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -107,7 +107,7 @@
 		<div class="fields">
 			<label for="settings-display_panel" class="four wide field">Dans un panel</label>
 			<div class="three wide field">
-				<select class="form-control" name="settings[display_panel]" id="settings-display_panel">
+				<select class="ui search selection dropdown" name="settings[display_panel]" id="settings-display_panel">
 					<option value="non"<?php if (!isset($display_panel) || $display_panel == 'non') echo ' selected="selected"' ?>>Non</option>
 					<option value="oui"<?php if (isset($display_panel) && $display_panel == 'oui') echo ' selected="selected"' ?>>Oui</option>
 				</select>
@@ -121,7 +121,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-up') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[margin_top]" value="<?php echo $margin_top ? $margin_top : '0' ?>">
+						<input type="number" name="settings[margin_top]" value="<?php echo $margin_top ? $margin_top : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -137,7 +137,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-right') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[margin_right]" value="<?php echo $margin_right ? $margin_right : '0' ?>">
+						<input type="number" name="settings[margin_right]" value="<?php echo $margin_right ? $margin_right : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -153,7 +153,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-down') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[margin_bottom]" value="<?php echo $margin_bottom ? $margin_bottom : '0' ?>">
+						<input type="number" name="settings[margin_bottom]" value="<?php echo $margin_bottom ? $margin_bottom : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -169,7 +169,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('fas fa-caret-left') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[margin_left]" value="<?php echo $margin_left ? $margin_left : '0' ?>">
+						<input type="number" name="settings[margin_left]" value="<?php echo $margin_left ? $margin_left : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -185,7 +185,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-up') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[padding_top]" value="<?php echo $padding_top ? $padding_top : '0' ?>">
+						<input type="number" name="settings[padding_top]" value="<?php echo $padding_top ? $padding_top : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -201,7 +201,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-right') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[padding_right]" value="<?php echo $padding_right ? $padding_right : '0' ?>">
+						<input type="number" name="settings[padding_right]" value="<?php echo $padding_right ? $padding_right : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -217,7 +217,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-down') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[padding_bottom]" value="<?php echo $padding_bottom ? $padding_bottom : '0' ?>">
+						<input type="number" name="settings[padding_bottom]" value="<?php echo $padding_bottom ? $padding_bottom : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -233,7 +233,7 @@
 						<div class="input-group-prepend">
 							<div class="input-group-text"><?php echo icon('far fa-caret-square-left') ?></div>
 						</div>
-						<input type="number" class="form-control" name="settings[padding_left]" value="<?php echo $padding_left ? $padding_left : '0' ?>">
+						<input type="number" name="settings[padding_left]" value="<?php echo $padding_left ? $padding_left : '0' ?>">
 						<div class="input-group-append">
 							<div class="input-group-text">px</div>
 						</div>
@@ -250,7 +250,7 @@
 					<div class="input-group-prepend">
 						<div class="input-group-text"><?php echo icon('fas fa-paint-brush') ?></div>
 					</div>
-					<input type="text" class="form-control" name="settings[style_title]" value="<?php echo $style_title ?>" placeholder="#000000..." />
+					<input type="text" name="settings[style_title]" value="<?php echo $style_title ?>" placeholder="#000000..." />
 				</div>
 			</div>
 		</div>
@@ -261,7 +261,7 @@
 					<div class="input-group-prepend">
 						<div class="input-group-text"><?php echo icon('fas fa-paint-brush') ?></div>
 					</div>
-					<input type="text" class="form-control" name="settings[style_text]" value="<?php echo $style_text ?>" placeholder="#000000..." />
+					<input type="text" name="settings[style_text]" value="<?php echo $style_text ?>" placeholder="#000000..." />
 				</div>
 			</div>
 		</div>

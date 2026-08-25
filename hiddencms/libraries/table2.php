@@ -185,7 +185,8 @@ class Table2 extends Library
 		$panel = parent	::panel()
 						->heading()
 						->heading_if($this->_filters, function($filters){
-							$output = $this	->button('Filtrer', 'fas fa-filter', 'light btn-sm')
+							$output = $this	->button('Filtrer', 'fas fa-filter', 'light')
+											->compact()
 											->align('right')
 											->modal($this	->_filters
 															->info('<small>Le caractère % permet des recherches partielles</small>')
@@ -376,7 +377,7 @@ class Table2 extends Library
 			$i = 0;
 
 			$table = $this	->html('table')
-							->attr('class', 'table table-hover table-striped')
+							->attr('class', $this->admin_grid() ? 'ui striped selectable compact table' : 'table table-hover table-striped')
 							->content($this	->html('tbody')
 											->content(array_map(function($row) use ($table_id, &$i){
 												return $this->html('tr')
@@ -405,11 +406,11 @@ class Table2 extends Library
 		{
 			$this->_data = NULL;
 			$output .= $this->html()
-							->attr('class', 'table-empty')
+							->attr('class', $this->admin_grid() ? 'ui placeholder segment center aligned' : 'table-empty')
 							->exec(function($html){
 								if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
 								{
-									$html->content(HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger btn-sm'));
+									$html->content(HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger')->compact());
 								}
 								else
 								{
@@ -444,12 +445,19 @@ class Table2 extends Library
 		return $this->button()
 					->tooltip('Retirer tous les filtres')
 					->icon('fas fa-times')
-					->color('light text-danger btn-sm')
+					->color('danger')
+					->compact()
+					->outline()
 					->url($this->url->query($this->input->get	->clone()
 																->merge([
 																	'table_id' => $this->__id(),
 																	'action'   => 'reset_filters'
 																])));
+	}
+
+	private function admin_grid()
+	{
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
 	}
 }
 

@@ -30,7 +30,7 @@ $(function(){
 			},
 			dataType: 'json',
 			success: function(data){
-				$table.find('.table').html(data.content);
+				$table.find('table.table, .table-empty, .ui.placeholder.segment').first().replaceWith(data.content);
 			}
 		});
 

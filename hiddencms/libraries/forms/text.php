@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -16,15 +16,38 @@ class Text extends Labelable
 	public function __invoke($name)
 	{
 		$this->_template[] = function(&$input){
-			$input = parent	::html('input', TRUE)
-							->attr_if(!$this->admin_grid(), 'class', 'form-control')
-							->attr('type',  $this->_type)
-							->attr_if($this->_value !== '', 'value', $this->_value)
-							->attr_if($this->_disabled,     'disabled')
-							->attr_if($this->_read_only,    'readonly')
-							->attr_if(is_a($this, 'HB\HiddenCMS\Libraries\Forms\Password'), 'autocomplete');
+			$input = $this	->html('input', TRUE)
+							->attr('type', $this->_type);
 
-			$this->_placeholder($input);
+			if ($this->_value !== '')
+			{
+				$input->attr('value', $this->_value);
+			}
+
+			if ($this->_disabled)
+			{
+				$input->attr('disabled');
+			}
+
+			if ($this->_read_only)
+			{
+				$input->attr('readonly');
+			}
+
+			if (is_a($this, 'HB\HiddenCMS\Libraries\Forms\Password'))
+			{
+				$input->attr('autocomplete');
+			}
+
+			if ($this->_placeholder)
+			{
+				$input->attr('placeholder', $this->_placeholder);
+			}
+
+			if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
+			{
+				$input->attr('placeholder', $this->_title ?: $this->_placeholder);
+			}
 
 			if ($this->_data)
 			{
@@ -40,7 +63,7 @@ class Text extends Labelable
 						$data = $data->__toArray();
 					}
 
-					array_walk($data, function(&$value, $key){
+					array_walk($data, function(&$value){
 						$value = utf8_html_entity_decode($value);
 					});
 
@@ -49,7 +72,7 @@ class Text extends Labelable
 					return utf8_htmlentities(json_encode(array_values($data)));
 				};
 
-				$input	->append_attr('class', 'autocomplete')
+				$input	->class('autocomplete')
 						->attr('data-source', $encode($this->_data));
 			}
 		};
@@ -68,8 +91,8 @@ class Text extends Labelable
 
 		$this->_template[] = function(&$input){
 			$addons = [
-				'prepend' => NULL,
-				'append'  => NULL
+				'prepend' => [],
+				'append'  => []
 			];
 
 			$add_group = function($addon, $align) use (&$addons){
@@ -78,13 +101,7 @@ class Text extends Labelable
 					$align = 'prepend';
 				}
 
-				if (!isset($addons[$align]))
-				{
-					$addons[$align] = $this	->html()
-											->attr('class', $this->admin_grid() ? 'ui label' : 'input-group-'.$align);
-				}
-
-				$addons[$align]->append($this->admin_grid() ? $addon : '<div class="input-group-text">'.$addon.'</div>');
+				$addons[$align][] = (string)$addon;
 			};
 
 			if ($this->_iconpicker)
@@ -103,14 +120,41 @@ class Text extends Labelable
 
 			if ($addons['prepend'] || $addons['append'])
 			{
-				$input = parent	::html()
-								->attr('class', $this->admin_grid() ? 'ui labeled input' : 'input-group')
-								->append_attr_if($this->admin_grid() && $addons['append'] && !$addons['prepend'], 'class', 'right')
-								->content($addons['prepend'].$input.$addons['append']);
+				$input = $this->template->render('forms/input_group', [
+					'input'   => $input,
+					'prepend' => $addons['prepend'],
+					'append'  => $addons['append']
+				], $this->legacy_input_group($input, $addons));
 			}
 		};
 
 		return $this;
+	}
+
+	private function legacy_input_group($input, array $addons)
+	{
+		if ($this->admin_grid())
+		{
+			return $this	->html()
+						->attr('class', 'ui labeled input')
+						->append_attr_if($addons['append'] && !$addons['prepend'], 'class', 'right')
+						->content(implode('', $addons['prepend']).$input.implode('', $addons['append']))
+						->__toString();
+		}
+
+		$prepend = '';
+		foreach ($addons['prepend'] as $addon)
+		{
+			$prepend .= '<div class="input-group-prepend"><div class="input-group-text">'.$addon.'</div></div>';
+		}
+
+		$append = '';
+		foreach ($addons['append'] as $addon)
+		{
+			$append .= '<div class="input-group-append"><div class="input-group-text">'.$addon.'</div></div>';
+		}
+
+		return '<div class="input-group">'.$prepend.$input.$append.'</div>';
 	}
 
 	public function data($data)
@@ -138,5 +182,3 @@ class Text extends Labelable
 		return $this;
 	}
 }
-
-

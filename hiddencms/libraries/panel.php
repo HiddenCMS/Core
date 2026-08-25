@@ -18,11 +18,6 @@ class Panel extends Library
 	protected $_style;
 	protected $_size;
 
-	private function admin_panel()
-	{
-		return ($theme = HB()->output->theme()) && $theme->info()->name == 'admin';
-	}
-
 	public function __invoke()
 	{
 		return $this;
@@ -30,58 +25,56 @@ class Panel extends Library
 
 	public function __toString()
 	{
-		$output = '';
+		$headers = $this->_heading;
+		$title = $headers ? array_shift($headers) : '';
+		$actions = $headers ? implode('', array_map('strval', $headers)) : '';
+		$footer = $this->_footer ? (string)$this->button->static_footer($this->_footer) : '';
 
-		if ($this->_heading)
-		{
-			if ($this->admin_panel())
-			{
-				$headers = $this->_heading;
-				$title   = array_shift($headers);
-				$actions = implode('', array_map('strval', $headers));
-
-				$heading = '<div class="header">'.$title.($actions ? '<span class="right floated">'.$actions.'</span>' : '').'</div>';
-				$output  = '<div class="content">'.$heading.'</div>';
-			}
-			else
-			{
-				$headers = $this->_heading;
-
-				$headers[] = array_shift($headers);
-
-				$heading = $this	->button
-								->static_footer($headers, 'left')
-								->append_attr('class', 'card-header')
-								->tag('h6');
-
-				$output = $heading;
-			}
-		}
-
-		if ($this->_body)
-		{
-			if ($this->admin_panel())
-			{
-				$output .= '<div class="content">'.$this->_body.'</div>';
-			}
-			else
-			{
-				$output .= $this->_body_tags ? '<div class="card-body">'.$this->_body.'</div>' : $this->_body;
-			}
-		}
-
-		$panel = $this	->html()
-						->attr('class', $this->admin_panel() ? 'ui fluid card' : 'card')
-						->append_attr_if($this->_style, 'class', $this->_style)
-						->content($output)
-						->append_if($this->_footer, $this->button->static_footer($this->_footer)->append_attr('class', $this->admin_panel() ? 'extra content' : 'card-footer'));
+		$attrs = '';
 
 		foreach ($this->_data as $key => $value)
 		{
-			$panel->attr('data-'.$key, $value);
+			$attrs .= ' data-'.$key.'="'.utf8_htmlentities($value).'"';
 		}
 
-		return (string)$panel;
+		$data = [
+			'title'     => $title,
+			'actions'   => $actions,
+			'body'      => (string)$this->_body,
+			'body_wrap' => (bool)$this->_body_tags,
+			'footer'    => $footer,
+			'class'     => trim((string)$this->_style),
+			'attrs'     => $attrs,
+			'size'      => $this->_size
+		];
+
+		return $this->template->render('panel', $data, $this->legacy_markup($data));
+	}
+
+	private function legacy_markup(array $data)
+	{
+		$output = '';
+
+		if ($data['title'] || $data['actions'])
+		{
+			$header = $this->html()
+							->attr('class', 'card-header')
+							->content($data['title'].($data['actions'] ? '<span class="float-right">'.$data['actions'].'</span>' : ''));
+
+			$output .= $header;
+		}
+
+		if ($data['body'] !== '')
+		{
+			$output .= $data['body_wrap'] ? '<div class="card-body">'.$data['body'].'</div>' : $data['body'];
+		}
+
+		if ($data['footer'])
+		{
+			$output .= '<div class="card-footer">'.$data['footer'].'</div>';
+		}
+
+		return '<div class="card'.($data['class'] ? ' '.utf8_htmlentities($data['class']) : '').'"'.$data['attrs'].'>'.$output.'</div>';
 	}
 
 	public function title($label = '', $icon = '')

@@ -37,7 +37,7 @@ class Admin extends Controller_Module
 					'content' => function($data){
 						return '<span data-toggle="tooltip" title="'.timetostr($this->lang('l j F Y, H:i'), $data['registration_date']).'">'.time_span($data['registration_date']).'</span>';
 					},
-					'class'   => 'text-right'
+					'class'   => 'right aligned'
 				]
 			])
 			->data($this->db->from('user')->where('deleted', FALSE)->order_by('id DESC')->limit(5)->get())

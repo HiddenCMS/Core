@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries;
@@ -36,6 +36,7 @@ class Table extends Library
 	{
 		return (string)$this->_table;
 	}
+
 	public function add_column($title, $content, $size = NULL, $search = NULL, $sort = NULL, $align = 'left')
 	{
 		$this->_columns[] = [
@@ -97,8 +98,7 @@ class Table extends Library
 
 	public function display()
 	{
-		HB()	->css('table')
-							->js('table');
+		HB()->css('table')->js('table');
 
 		$output = '';
 		$search = trim((string)post('search'));
@@ -116,7 +116,7 @@ class Table extends Library
 			}
 		}
 
-		if (($session_sort = $this->session('table', $this->id, 'sort')) !== NULL )
+		if (($session_sort = $this->session('table', $this->id, 'sort')) !== NULL)
 		{
 			foreach ($session_sort as $session)
 			{
@@ -182,7 +182,7 @@ class Table extends Library
 			$search = $this->session('table', $this->id, 'search');
 		}
 
-		$count_results  = $this->_pagination && !empty($this->output->module()->pagination) ? $this->output->module()->pagination->count() : count($this->_data);
+		$count_results = $this->_pagination && !empty($this->output->module()->pagination) ? $this->output->module()->pagination->count() : count($this->_data);
 
 		if ($this->_is_searchable() && $search && $this->_pagination && !empty($this->output->module()->pagination))
 		{
@@ -195,18 +195,17 @@ class Table extends Library
 
 		$this->_preprocessing();
 
-		//Gestion des recherches
 		if ($this->_is_searchable())
 		{
 			if ($search)
 			{
 				$results = [];
-				$words   = explode(' ', trim($search));
+				$words = explode(' ', trim($search));
 
 				foreach ($this->_data as $data_id => $data)
 				{
 					$found = 0;
-					$data  = array_merge(['data_id' => $data_id], $data);
+					$data = array_merge(['data_id' => $data_id], $data);
 
 					foreach ($this->_columns as $value)
 					{
@@ -239,8 +238,8 @@ class Table extends Library
 
 				$this->session->set('table', $this->id, 'search', $search);
 
-				$this->_data    = $results;
-				$this->_no_data = HB()->lang('Aucun résultat ne correspond à la recherche');
+				$this->_data = $results;
+				$this->_no_data = HB()->lang('Aucun rÃ©sultat ne correspond Ã  la recherche');
 			}
 			else
 			{
@@ -261,27 +260,38 @@ class Table extends Library
 					}
 
 					$this->_words[] = $value = $this->_parse($value['search'], $data);
-					$words[]        = '"'.$value.'"';
+					$words[] = $value;
 				}
 			}
 		}
 
+		$wrapper_data = [
+			'id'                 => $this->id,
+			'ajax_url'           => $this->url->ajax ? url($this->url->request) : '',
+			'ajax_post'          => $this->url->ajax ? http_build_query(post()) : '',
+			'search_enabled'     => !$this->_ajax && $this->_is_searchable(),
+			'search_value'       => (string)$search,
+			'search_source_json' => utf8_htmlentities(json_encode(array_values(array_unique(array_filter($words ?? []))))),
+			'content'            => ''
+		];
+
 		if (empty($this->_data))
 		{
-			$output = '<div class="clearfix"></div>'.($this->_no_data ?: HB()->lang('Il n\'y a rien ici pour le moment'));
+			$output = $this->render_table_content([
+				'no_data'             => TRUE,
+				'no_data_message'     => $this->_no_data ?: HB()->lang('Il n\'y a rien ici pour le moment'),
+				'header_columns'      => [],
+				'rows'                => [],
+				'footer_columns'      => [],
+				'show_items_per_page' => FALSE,
+				'items_per_page'      => [],
+				'pagination_top'      => '',
+				'pagination_bottom'   => '',
+				'results_label'       => ''
+			]);
 		}
 		else
 		{
-			if (!$this->_ajax && $this->_is_searchable())
-			{
-				$search_input = '	<div class="table-search float-left">
-										<div class="form-group has-feedback">
-											<input class="form-control" data-provide="typeahead" data-items="5" data-source="'.utf8_htmlentities('['.implode(', ', array_unique(array_filter($words))).']').'" type="text"'.(!empty($search) ? ' value="'.$search.'"' : '').' placeholder="'.HB()->lang('Rechercher').'" autocomplete="off" />
-										</div>
-									</div>';
-			}
-
-			//Gestion des tris
 			if (!empty($this->_sortings))
 			{
 				$sortings = [];
@@ -302,7 +312,7 @@ class Table extends Library
 					}
 
 					$sortings[] = array_map('strtolower', $tmp);
-					$sortings   = array_merge($sortings, $order);
+					$sortings = array_merge($sortings, $order);
 					$has_valid_sorting = TRUE;
 				}
 
@@ -333,164 +343,71 @@ class Table extends Library
 				}
 				else
 				{
-					// Session sorting can reference legacy/non-sortable columns; clear it to preserve source order.
 					$this->_sortings = [];
 					$this->session->destroy('table', $this->id, 'sort');
 				}
 			}
 
+			$items_per_page = [];
+
 			if ($this->_pagination && !empty($this->output->module()->pagination) && $this->output->module()->pagination->count() > 10)
 			{
-				$output .= '<div class="form-group float-left">
-								<select class="form-control" style="width: auto;" onchange="window.location=\''.url($this->output->module()->pagination->get_url()).'/\'+$(this).find(\'option:selected\').data(\'url\')" autocomplete="off">
-									<option value="10"'. ($this->output->module()->pagination->get_items_per_page() == 10  ? ' selected="selected"' : '').' data-url="page/1/10">'.HB()->lang('%d résultat|%d résultats', 10, 10).'</option>
-									<option value="25"'. ($this->output->module()->pagination->get_items_per_page() == 25  ? ' selected="selected"' : '').' data-url="page/1/25">'.HB()->lang('%d résultat|%d résultats', 25, 25).'</option>
-									<option value="50"'. ($this->output->module()->pagination->get_items_per_page() == 50  ? ' selected="selected"' : '').' data-url="page/1/50">'.HB()->lang('%d résultat|%d résultats', 50, 50).'</option>
-									<option value="100"'.($this->output->module()->pagination->get_items_per_page() == 100 ? ' selected="selected"' : '').' data-url="page/1/100">'.HB()->lang('%d résultat|%d résultats', 100, 100).'</option>
-									<option value="all"'.($this->output->module()->pagination->get_items_per_page() == 0   ? ' selected="selected"' : '').' data-url="all">'.HB()->lang('Tout afficher').'</option>
-								</select>
-							</div>';
+				$current_items_per_page = $this->output->module()->pagination->get_items_per_page();
+
+				foreach ([10, 25, 50, 100] as $value)
+				{
+					$items_per_page[] = [
+						'value'    => (string)$value,
+						'selected' => $current_items_per_page == $value,
+						'url'      => 'page/1/'.$value,
+						'label'    => HB()->lang('%d rÃ©sultat|%d rÃ©sultats', $value, $value)
+					];
+				}
+
+				$items_per_page[] = [
+					'value'    => 'all',
+					'selected' => $current_items_per_page == 0,
+					'url'      => 'all',
+					'label'    => HB()->lang('Tout afficher')
+				];
 			}
+
+			$pagination_top = '';
 
 			if ($this->_pagination && !empty($this->output->module()->pagination) && ($pagination = $this->output->module()->pagination->get_pagination()))
 			{
-				$output .= $pagination;
+				$pagination_top = $pagination;
 			}
 
 			$count = count($this->_data);
-
-			$output .= '<table class="table table-hover table-striped">';
-
-			if ($this->_display_header())
-			{
-				$output .= '<thead>';
-
-				$header = '			<tr class="navbar-inner">';
-
-				$i = 0;
-
-				foreach ($this->_columns as $th)
-				{
-					$width = isset($th['size']) ? $th['size'] : FALSE;
-					$class = [];
-					$sort  = '';
-
-					if ($width === TRUE)
-					{
-						$class[] = 'action';
-					}
-
-					if (!empty($this->_data) && isset($th['sort']))
-					{
-						$class[] = 'sort';
-						$sort    = ' data-column="'.($i + 1).'"';
-
-						if (isset($this->_sortings[$i]) && $this->_sortings[$i][0] == SORT_ASC)
-						{
-							$class[] = 'sorting_asc';
-							$sort   .= ' data-order-by="desc"';
-						}
-						else if (isset($this->_sortings[$i]) && $this->_sortings[$i][0] == SORT_DESC)
-						{
-							$class[] = 'sorting_desc';
-							$sort   .= ' data-order-by="none"';
-						}
-						else
-						{
-							$class[] = 'sorting';
-							$sort   .= ' data-order-by="asc"';
-						}
-					}
-
-					if (!empty($th['align']) && in_array($th['align'], ['left', 'center', 'right']))
-					{
-						$class[] = 'text-'.$th['align'];
-					}
-
-					$header .= '		<th'.(!empty($class) ? ' class="'.implode(' ', $class).'"' : '').(!is_bool($width) ? ' style="width: '.$width.';"' : '').(!empty($sort) ? $sort : '').'>'.(!empty($th['title']) ? $th['title'] : '').'</th>';
-
-					$i++;
-				}
-
-				$header .= '		</tr>';
-
-				$output .= 		$header.'
-								</thead>';
-			}
-
-			$output .= '	<tbody>';
-
-			foreach ($this->_data as $data_id => $data)
-			{
-				$data = array_merge(['data_id' => $data_id], $data);
-
-				$output .= '<tr>';
-
-				foreach ($this->_columns as $value)
-				{
-					if (is_array($value['content']))
-					{
-						$actions = [];
-
-						foreach ($value['content'] as $val)
-						{
-							$actions[] = $this->_parse($val, $data);
-						}
-
-						$output .= '<td class="action">'.implode('&nbsp;', array_filter($actions)).'</td>';
-					}
-					else
-					{
-						$content = $this->_parse($value['content'], $data);
-
-						if (!isset($value['td']) || $value['td'])
-						{
-							$classes = [];
-
-							if (isset($value['size']) && $value['size'] === TRUE)
-							{
-								$classes[] = 'action';
-							}
-
-							if (!empty($value['class']))
-							{
-								$classes[] = $value['class'];
-							}
-
-							if (!empty($value['align']) && in_array($value['align'], ['left', 'center', 'right']))
-							{
-								$classes[] = 'text-'.$value['align'];
-							}
-
-							$content = '<td'.(!empty($classes) ? ' class="'.implode(' ', $classes).'"' : '').'>'.$content.'</td>';
-						}
-
-						$output .= $content;
-					}
-				}
-
-				$output .= '</tr>';
-			}
-
-			$output .= '	</tbody>';
+			$header_columns = $this->build_header_columns();
+			$rows = $this->build_rows();
+			$footer_columns = [];
 
 			if ($this->_pagination && !empty($this->output->module()->pagination) && $this->output->module()->pagination->get_items_per_page() >= 50 && $count >= 50)
 			{
-				$output .= '<tfoot>'.$header.'</tfoot>';
+				$footer_columns = $header_columns;
 			}
 
-			$output .= '</table>';
+			$pagination_bottom = !empty($pagination) ? $pagination : '';
 
-			if (!empty($pagination))
-			{
-				$output .= '<div class="float-right">'.$pagination.'</div>';
-			}
-
-			$output .= '<i>'.HB()->lang('%d résultat|%d résultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '').'</i>';
+			$output = $this->render_table_content([
+				'no_data'             => FALSE,
+				'no_data_message'     => '',
+				'header_columns'      => $header_columns,
+				'rows'                => $rows,
+				'footer_columns'      => $footer_columns,
+				'show_items_per_page' => !empty($items_per_page),
+				'items_per_page'      => $items_per_page,
+				'pagination_top'      => $pagination_top,
+				'pagination_bottom'   => $pagination_bottom,
+				'results_label'       => HB()->lang('%d rÃ©sultat|%d rÃ©sultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '')
+			]);
 
 			if (!$this->_ajax)
 			{
-				$output = '<div class="table-area" data-table-id="'.$this->id.'"'.($this->url->ajax ? ' data-ajax-url="'.url($this->url->request).'"  data-ajax-post="'.http_build_query(post()).'"' : '').'>'.(isset($search_input) ? $search_input : '').'<div class="table-content">'.$output.'</div></div>';
+				$wrapper_data['content'] = $output;
+				$output = $this->render_table_wrapper($wrapper_data);
 			}
 		}
 
@@ -499,14 +416,12 @@ class Table extends Library
 		if ($this->_ajax)
 		{
 			return $this->output->json([
-				'search'  => [],//array_values(array_unique($this->_words)),
+				'search'  => [],
 				'content' => $output
 			]);
 		}
-		else
-		{
-			return $output;
-		}
+
+		return $output;
 	}
 
 	public function save()
@@ -560,6 +475,269 @@ class Table extends Library
 
 		return $content;
 	}
+
+	private function build_header_columns()
+	{
+		if (!$this->_display_header())
+		{
+			return [];
+		}
+
+		$columns = [];
+		$i = 0;
+
+		foreach ($this->_columns as $th)
+		{
+			$width = isset($th['size']) ? $th['size'] : FALSE;
+			$sort_state = '';
+			$next_order = '';
+
+			if (!empty($this->_data) && isset($th['sort']))
+			{
+				if (isset($this->_sortings[$i]) && $this->_sortings[$i][0] == SORT_ASC)
+				{
+					$sort_state = 'asc';
+					$next_order = 'desc';
+				}
+				else if (isset($this->_sortings[$i]) && $this->_sortings[$i][0] == SORT_DESC)
+				{
+					$sort_state = 'desc';
+					$next_order = 'none';
+				}
+				else
+				{
+					$sort_state = 'none';
+					$next_order = 'asc';
+				}
+			}
+
+			$columns[] = [
+				'title'      => !empty($th['title']) ? $th['title'] : '',
+				'width'      => !is_bool($width) ? $width : '',
+				'compact'    => $width === TRUE,
+				'sortable'   => !empty($this->_data) && isset($th['sort']),
+				'sort_state' => $sort_state,
+				'next_order' => $next_order,
+				'column'     => $i + 1,
+				'align'      => !empty($th['align']) && in_array($th['align'], ['left', 'center', 'right']) ? $th['align'] : ''
+			];
+
+			$i++;
+		}
+
+		return $columns;
+	}
+
+	private function build_rows()
+	{
+		$rows = [];
+
+		foreach ($this->_data as $data_id => $data)
+		{
+			$data = array_merge(['data_id' => $data_id], $data);
+			$cells = [];
+
+			foreach ($this->_columns as $value)
+			{
+				if (is_array($value['content']))
+				{
+					$actions = [];
+
+					foreach ($value['content'] as $val)
+					{
+						$action = $this->_parse($val, $data);
+
+						if ($action !== '' && $action !== NULL)
+						{
+							$actions[] = $action;
+						}
+					}
+
+					$cells[] = [
+						'type'    => 'actions',
+						'actions' => $actions,
+						'compact' => TRUE,
+						'align'   => 'center'
+					];
+				}
+				else
+				{
+					$cells[] = [
+						'type'      => 'content',
+						'content'   => $this->_parse($value['content'], $data),
+						'render_td' => !isset($value['td']) || $value['td'],
+						'class'     => !empty($value['class']) ? $value['class'] : '',
+						'compact'   => isset($value['size']) && $value['size'] === TRUE,
+						'align'     => !empty($value['align']) && in_array($value['align'], ['left', 'center', 'right']) ? $value['align'] : ''
+					];
+				}
+			}
+
+			$rows[] = ['cells' => $cells];
+		}
+
+		return $rows;
+	}
+
+	private function render_table_wrapper(array $data)
+	{
+		return $this->template->render('table/wrapper', $data, $this->legacy_table_wrapper($data));
+	}
+
+	private function render_table_content(array $data)
+	{
+		return $this->template->render('table/content', $data, $this->legacy_table_content($data));
+	}
+
+	private function legacy_table_wrapper(array $data)
+	{
+		$search = '';
+
+		if ($data['search_enabled'])
+		{
+			$search = '<div class="table-search"><input data-provide="typeahead" data-items="5" data-source="'.$data['search_source_json'].'" type="text"'.($data['search_value'] !== '' ? ' value="'.utf8_htmlentities($data['search_value']).'"' : '').' placeholder="'.HB()->lang('Rechercher').'" autocomplete="off" /></div>';
+		}
+
+		return '<div class="table-area" data-table-id="'.$data['id'].'"'.($data['ajax_url'] ? ' data-ajax-url="'.$data['ajax_url'].'" data-ajax-post="'.$data['ajax_post'].'"' : '').'>'.$search.'<div class="table-content">'.$data['content'].'</div></div>';
+	}
+
+	private function legacy_table_content(array $data)
+	{
+		if ($data['no_data'])
+		{
+			return '<div>'.$data['no_data_message'].'</div>';
+		}
+
+		$output = '';
+
+		if ($data['show_items_per_page'])
+		{
+			$output .= '<div><select onchange="window.location=\''.url($this->output->module()->pagination->get_url()).'/\'+$(this).find(\'option:selected\').data(\'url\')" autocomplete="off">';
+
+			foreach ($data['items_per_page'] as $option)
+			{
+				$output .= '<option value="'.$option['value'].'"'.($option['selected'] ? ' selected="selected"' : '').' data-url="'.$option['url'].'">'.$option['label'].'</option>';
+			}
+
+			$output .= '</select></div>';
+		}
+
+		$output .= $data['pagination_top'];
+		$output .= '<table>';
+
+		if ($data['header_columns'])
+		{
+			$output .= '<thead><tr>';
+
+			foreach ($data['header_columns'] as $column)
+			{
+				$classes = [];
+
+				if ($column['compact'])
+				{
+					$classes[] = 'compact';
+				}
+
+				if ($column['sortable'])
+				{
+					$classes[] = 'sort';
+					$classes[] = $column['sort_state'] === 'asc' ? 'sorting_asc' : ($column['sort_state'] === 'desc' ? 'sorting_desc' : 'sorting');
+				}
+
+				if ($column['align'])
+				{
+					$classes[] = 'align-'.$column['align'];
+				}
+
+				$output .= '<th'.($classes ? ' class="'.implode(' ', $classes).'"' : '').($column['width'] ? ' style="width: '.$column['width'].';"' : '').($column['sortable'] ? ' data-column="'.$column['column'].'" data-order-by="'.$column['next_order'].'"' : '').'>'.$column['title'].'</th>';
+			}
+
+			$output .= '</tr></thead>';
+		}
+
+		$output .= '<tbody>';
+
+		foreach ($data['rows'] as $row)
+		{
+			$output .= '<tr>';
+
+			foreach ($row['cells'] as $cell)
+			{
+				if ($cell['type'] === 'actions')
+				{
+					$output .= '<td class="actions">'.implode(' ', $cell['actions']).'</td>';
+				}
+				else if ($cell['render_td'])
+				{
+					$classes = [];
+
+					if ($cell['compact'])
+					{
+						$classes[] = 'compact';
+					}
+
+					if ($cell['class'])
+					{
+						$classes[] = $cell['class'];
+					}
+
+					if ($cell['align'])
+					{
+						$classes[] = 'align-'.$cell['align'];
+					}
+
+					$output .= '<td'.($classes ? ' class="'.implode(' ', $classes).'"' : '').'>'.$cell['content'].'</td>';
+				}
+				else
+				{
+					$output .= $cell['content'];
+				}
+			}
+
+			$output .= '</tr>';
+		}
+
+		$output .= '</tbody>';
+
+		if ($data['footer_columns'])
+		{
+			$output .= '<tfoot><tr>';
+
+			foreach ($data['footer_columns'] as $column)
+			{
+				$classes = [];
+
+				if ($column['compact'])
+				{
+					$classes[] = 'compact';
+				}
+
+				if ($column['sortable'])
+				{
+					$classes[] = 'sort';
+					$classes[] = $column['sort_state'] === 'asc' ? 'sorting_asc' : ($column['sort_state'] === 'desc' ? 'sorting_desc' : 'sorting');
+				}
+
+				if ($column['align'])
+				{
+					$classes[] = 'align-'.$column['align'];
+				}
+
+				$output .= '<th'.($classes ? ' class="'.implode(' ', $classes).'"' : '').($column['width'] ? ' style="width: '.$column['width'].';"' : '').($column['sortable'] ? ' data-column="'.$column['column'].'" data-order-by="'.$column['next_order'].'"' : '').'>'.$column['title'].'</th>';
+			}
+
+			$output .= '</tr></tfoot>';
+		}
+
+		$output .= '</table>';
+
+		if ($data['pagination_bottom'])
+		{
+			$output .= '<div>'.$data['pagination_bottom'].'</div>';
+		}
+
+		$output .= '<i>'.$data['results_label'].'</i>';
+
+		return $output;
+	}
 }
-
-

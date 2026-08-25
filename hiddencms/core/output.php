@@ -208,6 +208,11 @@ class Output extends Core
 
 				$module->__init();
 
+				if ($this->url->admin && !$this->_theme)
+				{
+					$this->_theme = parent::theme($this->_admin_theme);
+				}
+
 				//Méthode par défault
 				if (empty($segments))
 				{

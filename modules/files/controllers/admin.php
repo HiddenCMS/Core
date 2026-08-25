@@ -951,14 +951,14 @@ class Admin extends Controller_Module
 				.'</tr>';
 		}
 
-		return '<div class="table-responsive">'
-				.'<table class="table table-hover table-sm files-table mb-0">'
+		return '<div class="files-table-wrapper">'
+				.'<table class="ui selectable compact table files-table">'
 					.'<thead><tr>'
 						.'<th class="files-select"><input type="checkbox" class="files-select-all"></th>'
 						.'<th>'.$this->lang('Nom').'</th>'
 						.'<th>'.$this->lang('Taille').'</th>'
 						.'<th>'.$this->lang('Date').'</th>'
-						.'<th class="text-right">'.$this->lang('Lecture').'</th>'
+						.'<th class="right aligned">'.$this->lang('Lecture').'</th>'
 					.'</tr></thead>'
 					.'<tbody>'.$rows.'</tbody>'
 				.'</table>'

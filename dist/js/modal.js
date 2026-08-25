@@ -16,6 +16,10 @@ var modal = new function(){
 			+ '</div>';
 	};
 
+	var hasModalRoot = function(content){
+		return /^\s*<(?:div|form)\b[^>]*\bclass=["'][^"']*\bmodal\b/i.test(content);
+	};
+
 	var isFomantic = function($modal){
 		return $modal.hasClass('ui') && $modal.hasClass('modal') && typeof $.fn.modal === 'function' && typeof $.fn.modal.settings !== 'undefined';
 	};
@@ -267,10 +271,11 @@ var modal = new function(){
 						content = data.content;
 					}
 					else if (typeof data.form != 'undefined' && data.form){
-						content = buildBasicModal(data.form);
+						var formContent = $.isArray(data.form) ? data.form.join('') : String(data.form);
+						content = hasModalRoot(formContent) ? formContent : buildBasicModal(formContent);
 					}
 					else if (typeof data === 'string' && data.length){
-						content = buildBasicModal(data);
+						content = hasModalRoot(data) ? data : buildBasicModal(data);
 					}
 
 					if (content){

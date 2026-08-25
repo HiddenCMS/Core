@@ -14,11 +14,6 @@ table.table-access td.no-padding {
 	padding: 5px !important;
 }
 
-.access-modal-layout {
-	margin: -1rem;
-	background: #f8f9fa;
-}
-
 @supports selector(:has(*)) {
 	.modal-managed:has(.access-modal-layout) .modal-dialog {
 		max-width: 980px;

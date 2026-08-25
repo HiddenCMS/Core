@@ -95,7 +95,7 @@ if ($modules)
 			var icons = '.json_encode($icons, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
 			var $field = $("[name$=\"[blocks]\"]");
 			var $form = $field.closest("form");
-			var $group = $field.closest(".form-group");
+			var $group = $field.closest(".field, .form-group").first();
 			var blocks = [];
 			var $list;
 
@@ -119,8 +119,18 @@ if ($modules)
 				return "";
 			};
 
+			var initUi = function($root){
+				if ($.fn.dropdown){
+					$root.find(".ui.dropdown").dropdown();
+				}
+
+				if ($.fn.checkbox){
+					$root.find(".ui.checkbox").checkbox();
+				}
+			};
+
 			var moduleSelect = function(selected){
-				var $select = $("<select />").addClass("form-control form-control-sm page-block-module");
+				var $select = $("<select />").addClass("ui search selection dropdown page-block-module");
 
 				$.each(modules, function(value, module){
 					$select.append(option(value, module.title, selected));
@@ -130,7 +140,7 @@ if ($modules)
 			};
 
 			var blockSelect = function(moduleName, selected){
-				var $select = $("<select />").addClass("form-control form-control-sm page-block-type");
+				var $select = $("<select />").addClass("ui search selection dropdown page-block-type");
 				var module = modules[moduleName] || {blocks: {}};
 				var blocks = module.blocks || {};
 
@@ -188,17 +198,20 @@ if ($modules)
 				var $settings = $block.find(".page-block-settings").empty();
 
 				$.each(fields, function(name, field){
-					var $group = $("<div />").addClass("mt-2");
+					var $group = $("<div />").addClass("field");
 					var value = values && values[name] !== undefined ? values[name] : "";
 					var $input;
 
-					$group.append($("<label />").addClass("mb-1").text(field.label));
-
 					if (field.type == "boolean" || field.type == "bool"){
-						$input = $("<input />").attr("type", "checkbox").addClass("page-block-setting").attr("data-field", name).prop("checked", value === true || value == "1");
+						$input = $("<input />").attr("type", "checkbox").addClass("hidden page-block-setting").attr("data-field", name).prop("checked", value === true || value == "1");
+						$group.append(
+							$("<div />").addClass("ui checkbox")
+								.append($input)
+								.append($("<label />").text(field.label))
+						);
 					}
 					else if (field.type == "select" || field.type == "multiselect" || field.type == "multi-select"){
-						$input = $("<select />").addClass("form-control form-control-sm page-block-setting").attr("data-field", name);
+						$input = $("<select />").addClass("ui search selection dropdown page-block-setting").attr("data-field", name);
 
 						if (field.type == "multiselect" || field.type == "multi-select"){
 							$input.attr("multiple", "multiple");
@@ -207,13 +220,18 @@ if ($modules)
 						$.each(field.values || {}, function(optionValue, optionLabel){
 							$input.append(option(optionValue, optionLabel, value));
 						});
+
+						$group.append($("<label />").text(field.label)).append($input);
 					}
 					else {
-						$input = $("<input />").attr("type", "text").addClass("form-control form-control-sm page-block-setting").attr("data-field", name).val(value);
+						$input = $("<input />").attr("type", "text").addClass("page-block-setting").attr("data-field", name).val(value);
+						$group.append($("<label />").text(field.label)).append($input);
 					}
 
-					$settings.append($group.append($input));
+					$settings.append($group);
 				});
+
+				initUi($settings);
 			};
 
 			var refreshBlock = function($block, values){
@@ -223,26 +241,29 @@ if ($modules)
 
 				$block.find(".page-block-type").replaceWith($type);
 				renderSettings($block, values || {});
+				initUi($block);
 				read();
 			};
 
 			var controls = function(){
-				return $("<div />").addClass("btn-group btn-group-sm ml-auto")
-					.append($("<button />").attr("type", "button").addClass("btn btn-light page-block-up").html(icons.up))
-					.append($("<button />").attr("type", "button").addClass("btn btn-light page-block-down").html(icons.down))
-					.append($("<button />").attr("type", "button").addClass("btn btn-danger page-block-delete").html(icons.delete));
+				return $("<div />").addClass("ui mini icon buttons page-block-actions")
+					.append($("<button />").attr("type", "button").addClass("ui button page-block-up").html(icons.up))
+					.append($("<button />").attr("type", "button").addClass("ui button page-block-down").html(icons.down))
+					.append($("<button />").attr("type", "button").addClass("ui red button page-block-delete").html(icons.delete));
 			};
 
 			var addStatic = function(block){
 				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "static").data("type", "static");
-				var $header = $("<div />").addClass("content").append($("<strong />").text(labels.static));
+				var $header = $("<div />").addClass("content page-block-header").append($("<strong />").text(labels.static));
 				var $body = $("<div />").addClass("content");
-				var $content = $("<textarea />").addClass("form-control editor page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
+				var $content = $("<textarea />").addClass("editor page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
-				$body	.append($("<label />").addClass("mb-1").text(labels.static))
-						.append($content);
+				$body	.append($("<div />").addClass("field")
+							.append($("<label />").text(labels.static))
+							.append($content));
 				$list.append($block.append($header).append($body));
+				initUi($block);
 
 				if (typeof form !== "undefined"){
 					form.load($form, true);
@@ -265,33 +286,39 @@ if ($modules)
 				block = normalizeModuleBlock(block);
 
 				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "module").data("type", "module");
-				var $header = $("<div />").addClass("content").append($("<strong />").text(labels.module));
+				var $header = $("<div />").addClass("content page-block-header").append($("<strong />").text(labels.module));
 				var $body = $("<div />").addClass("content");
 				var $module = moduleSelect(block.module);
 				var $type = blockSelect(block.module, block.block);
 				var $settings = $("<div />").addClass("page-block-settings");
 
 				$header.append(controls());
-				$body	.append($("<label />").addClass("mb-1").text(labels.module_type))
-						.append($module)
-						.append($("<label />").addClass("mb-1 mt-2").text(labels.block_type))
-						.append($type)
+				$body	.append($("<div />").addClass("two fields")
+							.append($("<div />").addClass("field").append($("<label />").text(labels.module_type)).append($module))
+							.append($("<div />").addClass("field").append($("<label />").text(labels.block_type)).append($type)))
 						.append($settings);
 
 				$list.append($block.append($header).append($body));
 				renderSettings($block, block.settings);
+				initUi($block);
 				read();
 			};
 
-			var $composer = $("<div />").addClass("page-composer");
-			var $toolbar = $("<div />").addClass("mb-2")
-				.append($("<button />").attr("type", "button").addClass("btn btn-sm btn-primary mr-2 page-block-add-static").html(icons.static+" "+labels.add_static))
-				.append($("<button />").attr("type", "button").addClass("btn btn-sm btn-info page-block-add-module").html(icons.module+" "+labels.add_module));
+			var $composer = $("<div />").addClass("page-composer ui form");
+			var $toolbar = $("<div />").addClass("ui mini buttons page-composer-toolbar")
+				.append($("<button />").attr("type", "button").addClass("ui primary button page-block-add-static").html(icons.static+" "+labels.add_static))
+				.append($("<button />").attr("type", "button").addClass("ui teal button page-block-add-module").html(icons.module+" "+labels.add_module));
 
 			$list = $("<div />").addClass("page-blocks");
 
-			$group.before($composer.append($toolbar).append($list));
-			$group.hide();
+			if ($group.length){
+				$group.before($composer.append($toolbar).append($list));
+				$group.hide();
+			}
+			else {
+				$field.before($composer.append($toolbar).append($list));
+				$field.hide();
+			}
 
 			if (!blocks.length){
 				addStatic({content: ""});
@@ -353,7 +380,15 @@ else
 	$this->js_load('
 		(function(){
 			var $field = $("[name$=\"[blocks]\"]");
-			$field.closest(".form-group").hide();
+			var $group = $field.closest(".field, .form-group").first();
+
+			if ($group.length){
+				$group.hide();
+			}
+			else {
+				$field.hide();
+			}
+
 			$field.val("[]");
 		})();
 	');

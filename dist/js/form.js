@@ -22,6 +22,10 @@ var form = new function(){
 	this.submit = function($form){
 		var d = $.Deferred();
 
+		if (window.tinymce && typeof tinymce.triggerSave == 'function'){
+			tinymce.triggerSave();
+		}
+
 		$.ajax({
 			url: $form[0].action,
 			type: $form[0].method,
@@ -30,6 +34,16 @@ var form = new function(){
 			contentType: false,
 			success: modal.exec(function(data){
 				if (typeof data.form != 'undefined'){
+					if (window.tinymce){
+						$form.find('textarea.wysiwyg').each(function(){
+							var editor = tinymce.get(this.id);
+
+							if (editor){
+								editor.remove();
+							}
+						});
+					}
+
 					$form.find('.modal-body').html(data.form);
 					form.load($form, true);
 				}
@@ -49,12 +63,20 @@ var form = new function(){
 	return this;
 };
 
-form.find('.ui.checkbox', function(){
-	$(this).checkbox();
-});
-
 $(function(){
 	$('form').each(function(){
 		form.load($(this));
 	});
+});
+
+form.find('.ui.dropdown', function(){
+	if (typeof $.fn.dropdown == 'function'){
+		$(this).dropdown({fullTextSearch: true});
+	}
+});
+
+form.find('.ui.checkbox', function(){
+	if (typeof $.fn.checkbox == 'function'){
+		$(this).checkbox();
+	}
 });

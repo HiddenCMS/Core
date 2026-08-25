@@ -13,11 +13,6 @@ body.modal-fallback-open::before {
 	pointer-events: none;
 }
 
-.access-modal-layout {
-	margin: -1rem;
-	background: #f8f9fa;
-}
-
 [id^="access-permissions-modal-"] {
 	align-items: center;
 	justify-content: center;

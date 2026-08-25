@@ -3,12 +3,31 @@
 	width: 200px;
 }
 
+.table-search.ui.input {
+	margin: 0 0 1rem;
+	width: 260px;
+}
+
 .table-content .pagination {
 	margin: 0;
+}
+
+.table-content .ui.table th.sort {
+	cursor: pointer;
+	user-select: none;
+}
+
+.table-content .ui.table th.sort i {
+	margin-left: .35rem;
+	color: #9aa5b1;
 }
 
 .table-content .action {
 	text-align: center;
 	width: 29px;
 	white-space: nowrap;
+}
+
+.table-content .ui.table .ui.icon.button + .ui.icon.button {
+	margin-left: .25rem;
 }

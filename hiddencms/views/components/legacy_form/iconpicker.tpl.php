@@ -1,0 +1,1 @@
+<button id="<?php echo utf8_htmlentities($id); ?>" name="<?php echo utf8_htmlentities($name); ?>" class="btn btn-light iconpicker<?php echo $has_error ? ' btn-danger' : ''; ?>" data-icon="<?php echo utf8_htmlentities($data_icon); ?>"></button>

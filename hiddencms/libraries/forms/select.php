@@ -1,7 +1,7 @@
 <?php
 /**
  * https://neofr.ag
- * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
+ * @author: MichaÃ«l BILCOT <michael.bilcot@neofr.ag>
  */
 
 namespace HB\HiddenCMS\Libraries\Forms;
@@ -32,20 +32,46 @@ class Select extends Multiple
 				return utf8_htmlentities(json_encode(array_values($data)));
 			};
 
-			$input = parent ::html('select')
-							->attr('class', $this->admin_grid() ? 'selectize' : 'form-control selectize')
-							->attr('data-options', $encode($this->_data))
-							->attr_if($this->_multiple,                      'multiple')
-							->attr_if($this->_disabled || $this->_read_only, 'disabled')
-							->attr_if(isset($this->_render[0]) && $this->_render[0] !== '', 'data-render-option', utf8_htmlentities($this->_render[0]))
-							->attr_if($this->_search,                        'data-search-field',  $this->_search + 1)
-							->attr_if(!is_empty($this->_value),              'data-value',         implode(',', (array)$this->_value));
+			$input = $this->html('select');
+
+			$input->attr('data-options', $encode($this->_data));
+
+			$classes = ['selectize'];
+
+			if ($this->_multiple)
+			{
+				$input->attr('multiple');
+			}
+
+			if ($this->_disabled || $this->_read_only)
+			{
+				$input->attr('disabled');
+			}
+
+			if (isset($this->_render[0]) && $this->_render[0] !== '')
+			{
+				$input->attr('data-render-option', utf8_htmlentities($this->_render[0]));
+			}
+
+			if ($this->_search)
+			{
+				$input->attr('data-search-field', $this->_search + 1);
+			}
+
+			if (!is_empty($this->_value))
+			{
+				$input->attr('data-value', implode(',', (array)$this->_value));
+			}
 
 			if (!empty($this->_optgroup) && isset($this->_optgroup[0], $this->_optgroup[1]))
 			{
-				$input	->attr('data-optgroups',      $encode($this->_optgroup[1]))
-						->attr('data-optgroup-field', $this->_optgroup[0] + 1)
-						->attr_if(isset($this->_render[1]) && $this->_render[1] !== '', 'data-render-optgroup', $this->_render[1]);
+				$input->attr('data-optgroups', $encode($this->_optgroup[1]));
+				$input->attr('data-optgroup-field', $this->_optgroup[0] + 1);
+
+				if (isset($this->_render[1]) && $this->_render[1] !== '')
+				{
+					$input->attr('data-render-optgroup', $this->_render[1]);
+				}
 			}
 
 			$this	->css('selectize')
@@ -53,13 +79,26 @@ class Select extends Multiple
 					->js('form')
 					->js('form_select');
 
-			$this->_placeholder($input, 'data-placeholder');
+			if ($this->_placeholder)
+			{
+				$input->attr('data-placeholder', $this->_placeholder);
+			}
+
+			if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
+			{
+				$input->attr('data-placeholder', $this->_title ?: $this->_placeholder);
+			}
+
+			$input->class($classes);
 		};
 
 		parent::__invoke($name);
 
 		$this->_template[] = function(&$input){
-			$input->append_attr_if($this->_multiple, 'name', '[]', '');
+			if ($this->_multiple)
+			{
+				$input->append_attr('name', '[]', '');
+			}
 		};
 
 		return $this;

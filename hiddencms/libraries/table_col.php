@@ -66,7 +66,7 @@ class Table_Col extends Library
 	public function display($table, $i, $data)
 	{
 		$content = $this->execute($table, $i, $data);
-		$class = trim(($this->_align ? 'text-'.$this->_align : '').' '.implode(' ', $this->_style));
+		$class = $this->_class();
 
 		return $this->render_component('cell', [
 			'class'   => $class,
@@ -154,18 +154,22 @@ class Table_Col extends Library
 
 			if (array_key_exists($i, $sorts))
 			{
-				$header .= icon($sorts[$i] == 'desc' ? 'fas fa-caret-down' : 'fas fa-caret-up');
+				$header .= ' '.icon($sorts[$i] == 'desc' ? 'fas fa-sort-down' : 'fas fa-sort-up');
 
 				if (count($sorts) > 1)
 				{
 					$header .= '<small>'.(array_search($i, array_keys($sorts)) + 1).'</small>';
 				}
 			}
+			else
+			{
+				$header .= ' '.icon('fas fa-sort');
+			}
 
 			$header = '<a href="#" data-col="'.$i.'">'.$header.'</a>';
 		}
 
-		$class = trim(($this->_align ? 'text-'.$this->_align : '').' '.($this->_size ?: '').' '.implode(' ', $this->_style));
+		$class = $this->_class(TRUE);
 
 		return $this->render_component('head_cell', [
 			'class'   => $class,
@@ -180,6 +184,46 @@ class Table_Col extends Library
 	public function has_header()
 	{
 		return $this->_title || $this->_sort;
+	}
+
+	private function _class($header = FALSE)
+	{
+		$classes = [];
+
+		if ($this->_align)
+		{
+			$classes[] = $this->admin_grid() ? $this->_align.' aligned' : 'text-'.$this->_align;
+		}
+
+		if ($this->_size == 'compact')
+		{
+			$classes[] = $this->admin_grid() ? 'collapsing' : 'compact';
+		}
+		else if ($header && $this->_size)
+		{
+			$classes[] = $this->_size;
+		}
+
+		foreach ($this->_style as $style)
+		{
+			if ($this->admin_grid() && $style == 'compact')
+			{
+				$style = 'collapsing';
+			}
+			else if ($this->admin_grid() && $style == 'text-nowrap')
+			{
+				$style = 'single line';
+			}
+
+			$classes[] = $style;
+		}
+
+		return trim(implode(' ', array_filter($classes)));
+	}
+
+	private function admin_grid()
+	{
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
 	}
 
 	public function collection($collection, $sort_by)

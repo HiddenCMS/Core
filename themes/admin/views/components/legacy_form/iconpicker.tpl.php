@@ -1,0 +1,1 @@
+<button id="<?php echo utf8_htmlentities($id); ?>" name="<?php echo utf8_htmlentities($name); ?>" class="ui icon button iconpicker<?php echo $has_error ? ' negative' : ''; ?>" data-icon="<?php echo utf8_htmlentities($data_icon); ?>"></button>
