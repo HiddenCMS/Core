@@ -363,12 +363,18 @@ class Form2 extends Library
 	public function modal($title, $icon = '')
 	{
 		$form = $this->_exec();
+		$form_id = $this->form_id();
 
 		$modal = parent::modal($title, $icon)
 						->body($form, FALSE);
 
 		foreach ($this->_buttons as $button)
 		{
+			if (is_a($button, 'HB\HiddenCMS\Libraries\Buttons\Submit'))
+			{
+				$button->attr('form', $form_id);
+			}
+
 			$modal->button($button);
 		}
 
@@ -542,6 +548,7 @@ class Form2 extends Library
 		}
 
 		$attrs = [
+			'id'     => $this->form_id(),
 			'action' => url($this->url->request),
 			'method' => 'post'
 		];
@@ -567,6 +574,11 @@ class Form2 extends Library
 			'attrs'        => $attrs,
 			'attrs_output' => $attrs_output
 		], $this->legacy_form($attrs_output, $content));
+	}
+
+	private function form_id()
+	{
+		return 'form_'.$this->__id();
 	}
 
 	private function legacy_form($attrs_output, $content)

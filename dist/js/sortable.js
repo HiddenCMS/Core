@@ -5,12 +5,12 @@ $(function(){
 			return;
 		}
 
-		$('.btn-sortable').each(function(){
+		$('.hb-sortable').each(function(){
 			var $btn = $(this);
 			var parentSelector = $btn.data('parent');
 			var itemSelector = $btn.data('items');
 			var directItemSelector = (itemSelector || '').replace(/^>\s*/, '');
-			var $container = $btn.parents(parentSelector + ':first');
+			var $container = $btn.closest(parentSelector);
 
 			if (!$container.length || $container.data('sortable-bound'))
 			{
@@ -27,13 +27,13 @@ $(function(){
 				cursor: 'move',
 				tolerance: 'pointer',
 				items: itemSelector,
-				handle: '.btn-sortable',
+				handle: '.hb-sortable',
 				opacity: 0.6,
 				revert: true,
 				forcePlaceholderSize: true,
 				update: function(event, ui){
 					$.post($btn.data('update'), {
-						id: $(ui.item).find('.btn-sortable:first').data('id'),
+						id: $(ui.item).find('.hb-sortable:first').data('id'),
 						position: $(this).children(directItemSelector).index(ui.item)
 					});
 				}

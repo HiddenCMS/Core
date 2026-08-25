@@ -947,7 +947,7 @@ class Admin extends Controller_Module
 					.'<td class="files-name">'.icon($icon).' '.$title.'</td>'
 					.'<td class="files-size">'.$size.'</td>'
 					.'<td class="files-date">'.$date.'</td>'
-					.'<td class="files-access">'.$access.'</td>'
+					.'<td class="files-access right aligned">'.$access.'</td>'
 				.'</tr>';
 		}
 
@@ -1070,6 +1070,7 @@ class Admin extends Controller_Module
 								.'<span class="files-upload-dropzone-icon">'.icon('fas fa-cloud-upload-alt').'</span>'
 								.'<strong>'.$this->lang('Glisser-deposer les fichiers ici').'</strong>'
 								.'<small>'.$this->lang('ou cliquer pour choisir des fichiers').'</small>'
+								.'<small>'.$this->lang('Taille maximale par fichier : %s', human_size(file_upload_max_size())).'</small>'
 							.'</button>'
 							.'<ul class="files-upload-list"></ul>'
 						.'</div>'

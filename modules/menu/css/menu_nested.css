@@ -14,6 +14,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	position: relative;
 	gap: 10px;
 	border: 1px solid #dee2e6;
 	border-radius: .25rem;
@@ -33,9 +34,17 @@
 
 .hb-menu-master-main{
 	display: block;
+	flex: 1 1 auto;
 	min-width: 0;
 	color: #212529;
 	text-decoration: none;
+}
+
+.hb-menu-master-main::after{
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
 }
 
 .hb-menu-master-main:hover{
@@ -70,10 +79,13 @@
 .hb-menu-master-actions{
 	display: flex;
 	align-items: center;
+	position: relative;
+	z-index: 1;
 	gap: 6px;
 	white-space: nowrap;
 }
 
+.hb-menu-master-actions .button,
 .hb-menu-master-actions .btn{
 	width: 28px;
 	height: 28px;
@@ -84,10 +96,23 @@
 	justify-content: center;
 }
 
+.hb-menu-master-actions .button .icon,
+.hb-menu-master-actions .button i,
 .hb-menu-master-actions .btn .icon,
 .hb-menu-master-actions .btn i{
 	margin: 0 !important;
 	font-size: 12px;
+	line-height: 1;
+}
+
+.menu-admin-layout .header .ui.icon.button{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.menu-admin-layout .header .ui.icon.button .icon{
+	margin: 0 !important;
 	line-height: 1;
 }
 
@@ -176,6 +201,9 @@
 
 .menu-nested-side .button,
 .menu-nested-side .btn{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	width: 26px;
 	height: 26px;
 	min-width: 26px;

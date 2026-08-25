@@ -18,7 +18,7 @@ class Sort extends Library
 					->tooltip($this->lang('Ordonner'))
 					->icon('fas fa-arrows-alt-v')
 					->color('link')
-					->style('btn-sortable')
+					->style('hb-sortable')
 					->data([
 						'id'     => $id,
 						'update' => url($url),

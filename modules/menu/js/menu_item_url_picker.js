@@ -1,23 +1,24 @@
 $(function(){
 	var init = function(){
 		var $url = $('[name="url"]');
-		var $picker = $('[data-menu-url-picker]');
-		var $mode = $picker.find('input[name="menu_url_mode"]');
-		var $select = $('#menu-front-url-select');
+		var $mode = $('[name="menu_url_mode"]');
+		var $select = $('[name="menu_front_url"]');
+		var $form = $url.closest('form');
 
-		if (!$url.length || !$picker.length || !$mode.length || !$select.length)
+		if (!$url.length || !$mode.length || !$select.length)
 		{
 			return;
 		}
 
 		var syncMode = function(forceApply){
-			var mode = ($mode.filter(':checked').val() || 'custom').toString();
+			var mode = ($mode.val() || 'custom').toString();
 			var isFront = mode === 'front';
 			var value = ($select.val() || '').toString();
+			var $dropdown = $select.closest('.ui.dropdown');
 
-			$picker.toggleClass('is-front', isFront).toggleClass('is-custom', !isFront);
 			$select.prop('disabled', !isFront);
-			$url.prop('readonly', isFront);
+			$dropdown.toggleClass('disabled', !isFront).attr('aria-disabled', !isFront ? 'true' : 'false');
+			$url.prop('disabled', isFront);
 
 			if (isFront && forceApply !== false && value.length)
 			{
@@ -28,27 +29,26 @@ $(function(){
 		$mode.off('change.menuurl').on('change.menuurl', function(){
 			syncMode(true);
 
-			if (($mode.filter(':checked').val() || '') === 'custom')
+			if (($mode.val() || '') === 'custom')
 			{
 				$url.trigger('focus');
 			}
 		});
 
 		$select.off('change.menuurl').on('change.menuurl', function(){
-			if (($mode.filter(':checked').val() || '') === 'front')
+			if (($mode.val() || '') === 'front')
 			{
 				syncMode(true);
 			}
 		});
 
-		if (!$mode.filter(':checked').length)
-		{
-			$mode.filter('[value="custom"]').prop('checked', true);
-		}
+		$form.off('submit.menuurl').on('submit.menuurl', function(){
+			$url.prop('disabled', false);
+		});
 
 		syncMode(false);
 
-		if (($mode.filter(':checked').val() || '') === 'front')
+		if (($mode.val() || '') === 'front')
 		{
 			syncMode(true);
 		}

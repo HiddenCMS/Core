@@ -34,10 +34,6 @@ class Select extends Multiple
 
 			$input = $this->html('select');
 
-			$input->attr('data-options', $encode($this->_data));
-
-			$classes = ['selectize'];
-
 			if ($this->_multiple)
 			{
 				$input->attr('multiple');
@@ -48,48 +44,93 @@ class Select extends Multiple
 				$input->attr('disabled');
 			}
 
-			if (isset($this->_render[0]) && $this->_render[0] !== '')
+			if ($this->admin_grid())
 			{
-				$input->attr('data-render-option', utf8_htmlentities($this->_render[0]));
-			}
-
-			if ($this->_search)
-			{
-				$input->attr('data-search-field', $this->_search + 1);
-			}
-
-			if (!is_empty($this->_value))
-			{
-				$input->attr('data-value', implode(',', (array)$this->_value));
-			}
-
-			if (!empty($this->_optgroup) && isset($this->_optgroup[0], $this->_optgroup[1]))
-			{
-				$input->attr('data-optgroups', $encode($this->_optgroup[1]));
-				$input->attr('data-optgroup-field', $this->_optgroup[0] + 1);
-
-				if (isset($this->_render[1]) && $this->_render[1] !== '')
+				if ($this->_search !== NULL)
 				{
-					$input->attr('data-render-optgroup', $this->_render[1]);
+					$input->attr('data-search');
 				}
+
+				$values = array_map('strval', (array)$this->_value);
+				$options = [];
+
+				foreach ($this->_data as $value => $label)
+				{
+					if (is_scalar($label) || (is_object($label) && method_exists($label, '__toString')))
+					{
+						$option_label = (string)$label;
+					}
+					else
+					{
+						$labels = (array)$label;
+						$option_label = (string)reset($labels);
+					}
+
+					$option_label = utf8_html_entity_decode($option_label);
+
+					$options[] = [
+						'value'    => (string)$value,
+						'label'    => $option_label,
+						'selected' => in_array((string)$value, $values, TRUE)
+					];
+				}
+
+				$input->content($this->template->render('forms/select_options', [
+					'options'     => $options,
+					'placeholder' => $this->_placeholder
+				]));
+
+				$this->js('form');
 			}
-
-			$this	->css('selectize')
-					->js('selectize.min')
-					->js('form')
-					->js('form_select');
-
-			if ($this->_placeholder)
+			else
 			{
-				$input->attr('data-placeholder', $this->_placeholder);
-			}
+				$input->attr('data-options', $encode($this->_data));
 
-			if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
-			{
-				$input->attr('data-placeholder', $this->_title ?: $this->_placeholder);
-			}
+				$classes = ['selectize'];
 
-			$input->class($classes);
+				if (isset($this->_render[0]) && $this->_render[0] !== '')
+				{
+					$input->attr('data-render-option', utf8_htmlentities($this->_render[0]));
+				}
+
+				if ($this->_search !== NULL)
+				{
+					$input->attr('data-search-field', $this->_search + 1);
+				}
+
+				if (!is_empty($this->_value))
+				{
+					$input->attr('data-value', implode(',', (array)$this->_value));
+				}
+
+				if (!empty($this->_optgroup) && isset($this->_optgroup[0], $this->_optgroup[1]))
+				{
+					$input->attr('data-optgroups', $encode($this->_optgroup[1]));
+					$input->attr('data-optgroup-field', $this->_optgroup[0] + 1);
+
+					if (isset($this->_render[1]) && $this->_render[1] !== '')
+					{
+						$input->attr('data-render-optgroup', $this->_render[1]);
+					}
+				}
+
+				$this	->css('selectize')
+						->js('selectize.min')
+						->js('form')
+						->js('form_select');
+
+				if ($this->_placeholder)
+				{
+					$input->attr('data-placeholder', $this->_placeholder);
+				}
+
+				if ($this->_form && ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_COMPACT))
+				{
+					$input->attr('data-placeholder', $this->_title ?: $this->_placeholder);
+				}
+
+				$input->class($classes);
+			}
 		};
 
 		parent::__invoke($name);

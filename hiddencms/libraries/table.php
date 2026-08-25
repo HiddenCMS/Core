@@ -239,7 +239,7 @@ class Table extends Library
 				$this->session->set('table', $this->id, 'search', $search);
 
 				$this->_data = $results;
-				$this->_no_data = HB()->lang('Aucun rÃ©sultat ne correspond Ã  la recherche');
+				$this->_no_data = HB()->lang('Aucun résultat ne correspond à la recherche');
 			}
 			else
 			{
@@ -360,7 +360,7 @@ class Table extends Library
 						'value'    => (string)$value,
 						'selected' => $current_items_per_page == $value,
 						'url'      => 'page/1/'.$value,
-						'label'    => HB()->lang('%d rÃ©sultat|%d rÃ©sultats', $value, $value)
+						'label'    => HB()->lang('%d résultat|%d résultats', $value, $value)
 					];
 				}
 
@@ -401,7 +401,7 @@ class Table extends Library
 				'items_per_page'      => $items_per_page,
 				'pagination_top'      => $pagination_top,
 				'pagination_bottom'   => $pagination_bottom,
-				'results_label'       => HB()->lang('%d rÃ©sultat|%d rÃ©sultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '')
+				'results_label'       => HB()->lang('%d résultat|%d résultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '')
 			]);
 
 			if (!$this->_ajax)

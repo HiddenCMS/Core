@@ -424,15 +424,27 @@ class Menu extends Model2
 	{
 		$urls = [];
 		$modules = [];
+		$pages_enabled = FALSE;
 
 		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
-			if (!$module->is_enabled() || !$module->is_front())
+			if (!$module->is_enabled())
 			{
 				continue;
 			}
 
 			$name = $module->info()->name;
+
+			if ($name === 'pages')
+			{
+				$pages_enabled = TRUE;
+			}
+
+			if (!$module->is_front())
+			{
+				continue;
+			}
+
 			$title = (string)$module->info()->title;
 			$base = !empty($module->info()->reserved_route) ? trim((string)$module->info()->reserved_route, '/') : trim((string)$name, '/');
 
@@ -449,7 +461,7 @@ class Menu extends Model2
 
 		$lang = $this->config->lang->info()->name;
 
-		if (isset($modules['pages']))
+		if ($pages_enabled)
 		{
 			foreach ($this->db	->select('p.name', 'pl.title')
 								->from('pages p')
@@ -480,7 +492,7 @@ class Menu extends Model2
 								->get(FALSE) as $category)
 			{
 				$path = trim($base.'/'.$category['name'], '/');
-				$label = '[News category] '.trim((string)$category['title']);
+				$label = '[Catégorie d\'actualités] '.trim((string)$category['title']);
 
 				$urls[$path] = $label;
 			}
@@ -495,7 +507,7 @@ class Menu extends Model2
 								->get(FALSE) as $news)
 			{
 				$path = trim($base.'/'.$news['category_name'].'/'.$news['slug'], '/');
-				$label = '[News] '.trim((string)$news['title']);
+				$label = '[Actualité] '.trim((string)$news['title']);
 
 				$urls[$path] = $label;
 			}
