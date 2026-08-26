@@ -81,20 +81,13 @@ class Widget extends Displayable
 			$widget->data = HB()->array;
 
 			$settings = HB()->storage->decode($widget_data['settings']);
-			$display_title = $widget->extract_display_title($settings);
+			$widget->extract_display_title($settings);
 			$output = $widget->output($widget_data['type'], $settings);
 
-			$style = function($output) use ($widget_data, $display_title){
+			$style = function($output) use ($widget_data){
 				if (is_a($output, 'HB\HiddenCMS\Libraries\Panel'))
 				{
-					if (!$display_title)
-					{
-						$output->title('');
-					}
-					else if (!empty($widget_data['title']))
-					{
-						$output->title($widget_data['title']);
-					}
+					$output->title(!empty($widget_data['title']) ? $widget_data['title'] : '');
 
 					if (!empty($this->_style))
 					{

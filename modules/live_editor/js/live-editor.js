@@ -87,12 +87,17 @@ var modal_settings = function(title, settings, callback){
 		$('#live-editor-settings').html('');
 		set_step_available('settings', false);
 
-		$.post('<?php echo url('admin/ajax/live-editor/widget-admin') ?>', data, function(data){
+		$.post('<?php echo url('admin/ajax/live-editor/widget-admin') ?>', data).done(function(data){
 			if (request == settings_request){
 				var has_settings = $.trim(data || '') != '';
 
 				$('#live-editor-settings').html(has_settings ? data : '');
 				set_step_available('settings', has_settings);
+				show_step(current_step);
+			}
+		}).fail(function(){
+			if (request == settings_request){
+				set_step_available('settings', false);
 				show_step(current_step);
 			}
 		});
@@ -234,7 +239,6 @@ var modal_settings = function(title, settings, callback){
 
 		if (widget_changed){
 			$modal.find('#live-editor-settings-title').val('').removeData('value');
-			$modal.find('.live-editor-display-title').checkbox('set checked');
 		}
 
 		if ($(this).val() == 'module'){
@@ -277,7 +281,7 @@ var modal_settings = function(title, settings, callback){
 		show_step(steps[index + direction]);
 	});
 
-	$modal.on('click', '.live-editor-settings-steps .completed.step', function(){
+	$modal.on('click', '.live-editor-settings-steps .step:not(.disabled)', function(){
 		show_step($(this).data('step'));
 	});
 
@@ -293,16 +297,19 @@ var modal_settings = function(title, settings, callback){
 	});
 
 	$modal.find('.ui.dropdown').dropdown();
-	$modal.find('.live-editor-display-title').checkbox();
-	$('#live-editor-settings-widget').trigger('change');
-	show_step('widget');
 	$modal.modal({
 		autofocus: false,
 		observeChanges: true,
 		onHidden: function(){
 			$modal.remove();
 		}
-	}).modal('show');
+	});
+	$modal.on('click', '.close.icon, .cancel', function(){
+		$modal.modal('hide');
+	});
+	$('#live-editor-settings-widget').trigger('change');
+	show_step('widget');
+	$modal.modal('show');
 
 	$modal.find('.live-editor-confirm').on('click', function(){
 		$('#live-editor-settings-form').trigger('nf.live-editor-settings.submit');
@@ -329,8 +336,6 @@ var modal_settings = function(title, settings, callback){
 		if (typeof settings.title == 'undefined'){
 			settings.title = '';
 		}
-
-		settings.display_title = $modal.find('.live-editor-display-title').checkbox('is checked') ? 1 : 0;
 
 		callback(settings);
 	});
@@ -402,6 +407,8 @@ $(function(){
 		});
 	}
 
+	$('.live-editor-screen[data-width="100%"]').addClass('active');
+
 	$('form[target="live-editor-iframe"]').submit();
 
 	$('.live-editor-screen[data-width]').click(function(){
@@ -418,7 +425,7 @@ $(function(){
 		$('.live-editor-iframe').width(width).css('left', size);
 		$('.live-editor-screen[data-width]').removeClass('active');
 		$(this).addClass('active');
-		$('.live-editor-screen-current').html($(this).html());
+		$('.live-editor-screen-current').html($(this).find('i.icon').first().prop('outerHTML'));
 
 		if ($.fn.dropdown){
 			$screen_picker.dropdown('hide');

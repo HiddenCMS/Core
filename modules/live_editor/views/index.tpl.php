@@ -32,22 +32,18 @@ if ($outline_id !== NULL)
 			<span id="live-editor-map" data-outline-mode="1"<?php echo $outline_title !== '' ? ' data-outline-title="'.utf8_htmlentities(icon('fas fa-layer-group').' '.$outline_title).'"' : '' ?>><?php echo $outline_title !== '' ? icon('fas fa-layer-group').' '.$outline_title : icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?></span>
 		</div>
 		<div class="right menu">
-			<div class="item">
-				<div class="ui tiny compact buttons live-editor-mode-group">
-					<button type="button" class="ui button live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ZONES ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ZONES ?>"><?php echo icon('far fa-square').' '.$this->lang('Zones') ?></button>
-					<button type="button" class="ui button live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ROWS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ROWS ?>"><?php echo icon('fas fa-columns fa-rotate-270').' '.$this->lang('Lignes') ?></button>
-					<button type="button" class="ui button live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::COLS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::COLS ?>"><?php echo icon('fas fa-columns').' '.$this->lang('Colonnes') ?></button>
-					<button type="button" class="ui button live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::WIDGETS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
-				</div>
-			</div>
+			<button type="button" class="item live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ZONES ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ZONES ?>"><?php echo icon('far fa-square').' '.$this->lang('Zones') ?></button>
+			<button type="button" class="item live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::ROWS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::ROWS ?>"><?php echo icon('fas fa-columns fa-rotate-270').' '.$this->lang('Lignes') ?></button>
+			<button type="button" class="item live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::COLS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::COLS ?>"><?php echo icon('fas fa-columns').' '.$this->lang('Colonnes') ?></button>
+			<button type="button" class="item live-editor-mode<?php echo $live_editor & \HB\HiddenCMS\Core\Output::WIDGETS ? ' active' : '' ?>" data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"><?php echo icon('fas fa-th-large').' '.$this->lang('Widgets') ?></button>
 			<div class="ui dropdown icon item live-editor-screen-picker" role="button" tabindex="0" aria-label="<?php echo $this->lang('Taille de l\'ecran') ?>">
 				<span class="live-editor-screen-current"><?php echo icon('fas fa-desktop') ?></span>
 				<i class="dropdown icon"></i>
 				<div class="menu screen">
-					<div class="item"><button type="button" class="ui icon button live-editor-screen active" data-width="100%" data-tooltip="<?php echo $this->lang('Ordinateur') ?>"><?php echo icon('fas fa-desktop') ?></button></div>
-					<div class="item"><button type="button" class="ui icon button live-editor-screen" data-width="992px" data-tooltip="<?php echo $this->lang('Tablette paysage') ?>"><?php echo icon('fas fa-tablet-alt fa-rotate-270') ?></button></div>
-					<div class="item"><button type="button" class="ui icon button live-editor-screen" data-width="768px" data-tooltip="<?php echo $this->lang('Tablette portrait') ?>"><?php echo icon('fas fa-tablet-alt') ?></button></div>
-					<div class="item"><button type="button" class="ui icon button live-editor-screen" data-width="400px" data-tooltip="<?php echo $this->lang('Smartphone') ?>"><?php echo icon('fas fa-mobile-alt') ?></button></div>
+					<button type="button" class="item live-editor-screen active" data-width="100%"><?php echo icon('fas fa-desktop') ?><span><?php echo $this->lang('Ordinateur') ?></span></button>
+					<button type="button" class="item live-editor-screen" data-width="992px"><?php echo icon('fas fa-tablet-alt fa-rotate-270') ?><span><?php echo $this->lang('Tablette paysage') ?></span></button>
+					<button type="button" class="item live-editor-screen" data-width="768px"><?php echo icon('fas fa-tablet-alt') ?><span><?php echo $this->lang('Tablette portrait') ?></span></button>
+					<button type="button" class="item live-editor-screen" data-width="400px"><?php echo icon('fas fa-mobile-alt') ?><span><?php echo $this->lang('Smartphone') ?></span></button>
 				</div>
 			</div>
 			<a href="<?php echo url('admin') ?>" class="item"><?php echo $this->label('Tableau de bord', 'fas fa-tachometer-alt') ?></a>

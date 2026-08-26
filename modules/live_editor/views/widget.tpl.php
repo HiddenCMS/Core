@@ -62,13 +62,8 @@
 	<div class="live-editor-settings-panel" data-step="title">
 		<div class="field">
 			<label for="live-editor-settings-title"><?php echo $this->lang('Titre') ?></label>
-			<input type="text" id="live-editor-settings-title" name="title" value="<?php echo $title ?>" placeholder="<?php echo $this->lang('Titre par defaut') ?>" />
-		</div>
-		<div class="field">
-			<div class="ui toggle checkbox live-editor-display-title">
-				<input type="checkbox" tabindex="0" class="hidden"<?php if ($display_title) echo ' checked="checked"' ?> />
-				<label><?php echo $this->lang('Afficher le titre') ?></label>
-			</div>
+			<input type="text" id="live-editor-settings-title" name="title" value="<?php echo $title ?>" />
+			<div class="ui tiny grey text"><?php echo icon('fas fa-info-circle').' '.$this->lang('Laissez ce champ vide pour ne pas afficher de titre.') ?></div>
 		</div>
 	</div>
 

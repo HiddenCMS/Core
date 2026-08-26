@@ -76,6 +76,8 @@ class Admin extends Controller_Module
 
 	public function add()
 	{
+		$this->css('pages');
+
 		$outlines = $this->model()->get_outlines();
 
 		$this	->subtitle($this->lang('Ajouter une page'))
@@ -123,6 +125,8 @@ class Admin extends Controller_Module
 
 	public function _edit($page_id, $name, $published, $outline_id, $title, $subtitle, $content, $tab)
 	{
+		$this->css('pages');
+
 		$this	->subtitle($title)
 				->form()
 				->add_rules('pages', [

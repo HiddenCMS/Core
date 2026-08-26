@@ -82,36 +82,6 @@ abstract class Widget extends Addon
 		return $display;
 	}
 
-	public function title_is_displayed($settings)
-	{
-		while (is_string($settings) && $settings !== '')
-		{
-			$decoded = $this->storage->decode($settings, NULL);
-
-			if ($decoded === NULL || $decoded === $settings)
-			{
-				break;
-			}
-
-			$settings = $decoded;
-		}
-
-		return !is_array($settings) || !array_key_exists(self::DISPLAY_TITLE_SETTING, $settings) || !empty($settings[self::DISPLAY_TITLE_SETTING]);
-	}
-
-	public function set_display_title($settings, $display)
-	{
-		$settings = $this->storage->decode($settings, []);
-
-		if (!is_array($settings))
-		{
-			$settings = [];
-		}
-
-		$settings[self::DISPLAY_TITLE_SETTING] = $display ? 1 : 0;
-
-		return $this->storage->encode($settings);
-	}
 }
 
 

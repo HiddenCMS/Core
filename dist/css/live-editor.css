@@ -79,6 +79,39 @@
 }
 
 /* Columns */
+.live-editor-row > [data-row-id] {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	width: 100%;
+}
+
+.live-editor-row > [data-row-id] > [data-col-id] {
+	box-sizing: border-box;
+	flex: 0 0 100%;
+	max-width: 100%;
+	min-width: 0;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	width: 100%;
+}
+
+@media (min-width: 992px) {
+	.live-editor-row > [data-row-id] > .col-lg-1 { flex-basis: 8.333333%; max-width: 8.333333%; }
+	.live-editor-row > [data-row-id] > .col-lg-2 { flex-basis: 16.666667%; max-width: 16.666667%; }
+	.live-editor-row > [data-row-id] > .col-lg-3 { flex-basis: 25%; max-width: 25%; }
+	.live-editor-row > [data-row-id] > .col-lg-4 { flex-basis: 33.333333%; max-width: 33.333333%; }
+	.live-editor-row > [data-row-id] > .col-lg-5 { flex-basis: 41.666667%; max-width: 41.666667%; }
+	.live-editor-row > [data-row-id] > .col-lg-6 { flex-basis: 50%; max-width: 50%; }
+	.live-editor-row > [data-row-id] > .col-lg-7 { flex-basis: 58.333333%; max-width: 58.333333%; }
+	.live-editor-row > [data-row-id] > .col-lg-8 { flex-basis: 66.666667%; max-width: 66.666667%; }
+	.live-editor-row > [data-row-id] > .col-lg-9 { flex-basis: 75%; max-width: 75%; }
+	.live-editor-row > [data-row-id] > .col-lg-10 { flex-basis: 83.333333%; max-width: 83.333333%; }
+	.live-editor-row > [data-row-id] > .col-lg-11 { flex-basis: 91.666667%; max-width: 91.666667%; }
+	.live-editor-row > [data-row-id] > .col-lg-12 { flex-basis: 100%; max-width: 100%; }
+}
+
 .live-editor-col {
 	background: rgba(222, 244, 246, .72);
 	border: 1px dashed rgba(22, 156, 166, .45);

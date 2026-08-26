@@ -393,3 +393,64 @@ else
 		})();
 	');
 }
+
+$layout_labels = [
+	'information' => (string)$this->lang('Informations'),
+	'content'     => (string)$this->lang('Contenu')
+];
+
+$layout_icons = [
+	'information' => (string)icon('fas fa-info-circle'),
+	'content'     => (string)icon('fas fa-align-left')
+];
+
+$this->js_load('
+	(function(){
+		var labels = '.json_encode($layout_labels, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
+		var icons = '.json_encode($layout_icons, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
+		var $title = $("[name$=\"[title]\"]").first();
+		var $form = $title.closest("form");
+
+		if (!$form.length || $form.find(".pages-form-grid").length){
+			return;
+		}
+
+		var field = function(name){
+			return $form.find("[name$=\"["+name+"]\"]").first().closest(".field, .form-group").first();
+		};
+
+		var heading = function(icon, label){
+			return $("<div />").addClass("pages-form-column-heading")
+				.append($("<span />").addClass("pages-form-column-icon").html(icon))
+				.append($("<strong />").text(label));
+		};
+
+		var $grid = $("<div />").addClass("ui stackable grid pages-form-grid");
+		var $information = $("<div />").attr("class", "sixteen wide mobile five wide computer column pages-form-information")
+			.append(heading(icons.information, labels.information));
+		var $content = $("<div />").attr("class", "sixteen wide mobile eleven wide computer column pages-form-content")
+			.append(heading(icons.content, labels.content));
+
+		$.each(["title", "subtitle", "name", "outline_id", "published"], function(i, name){
+			var $field = field(name);
+
+			if ($field.length){
+				$information.append($field);
+			}
+		});
+
+		var $composer = $form.find(".page-composer").first();
+		var $blocks = field("blocks");
+
+		if ($composer.length){
+			$content.append($composer);
+		}
+
+		if ($blocks.length){
+			$content.append($blocks);
+		}
+
+		$grid.append($information).append($content);
+		$form.prepend($grid);
+	})();
+');
