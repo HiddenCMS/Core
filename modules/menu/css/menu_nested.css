@@ -67,15 +67,6 @@
 	font-size: 12px;
 }
 
-.hb-menu-master-meta code,
-.menu-nested-url{
-	color: #495057;
-	background: #f8f9fa;
-	border: 1px solid #dee2e6;
-	padding: 2px 7px;
-	border-radius: 999px;
-}
-
 .hb-menu-master-actions{
 	display: flex;
 	align-items: center;

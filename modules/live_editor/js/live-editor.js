@@ -4,46 +4,49 @@ var modal_style = function(title, $element, styles, callback){
 	}
 
 	var $modal = $('\
-		<div class="modal live-editor-modal fade" role="dialog">\
-			<div class="modal-dialog modal-lg">\
-				<div class="modal-content">\
-					<div class="modal-header">\
-						<h5 class="modal-title"><?php echo icon('fas fa-paint-brush') ?> '+title+'</h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
-					</div>\
-					<div class="modal-body">\
-						'+$(styles).html()+'\
-					</div>\
-					<div class="modal-footer">\
-						<button type="button" class="btn btn-dark" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-						<button type="button" class="btn btn-info"><?php echo $this->lang('Valider') ?></button>\
-					</div>\
-				</div>\
+		<div class="ui large modal live-editor-modal" role="dialog">\
+			<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
+			<div class="content">'+$(styles).html()+'</div>\
+			<div class="actions">\
+				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
+				<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>\
 			</div>\
-		</div>').appendTo('body').data('element', $element).modal();
+		</div>').appendTo('body').data('element', $element);
 
-	var $widget = $element.parents('.widget:first');
+	var $widget = $element.parents('.live-editor-widget:first');
+	var original_style = $widget.length ? ($widget.data('widget-style') || '') : ($element.data('original-style') || '');
+	var accepted = false;
 
-	$element.data('previous-style', $widget.data('widget-style'));
+	$element.data('previous-style', original_style);
 
 	$modal.find('[data-style]').each(function(){
-		console.log($(this).data('style'));
-		if ($(this).data('style') == $widget.data('widget-style')){
+		if ($(this).data('style') == original_style){
 			$(this).addClass('active');
 			return false;
 		}
 	});
 
-	$modal.on('hidden.bs.modal', function(){
-		if ($element.data('previous-style') != $widget.data('widget-style')){
-			$element.switchClass($element.data('previous-style'), $widget.data('widget-style'), 200);
+	$modal.modal({
+		autofocus: false,
+		onHidden: function(){
+			if (!accepted && $element.data('previous-style') != original_style){
+				$element.switchClass($element.data('previous-style'), original_style, 200);
+			}
+			$modal.remove();
 		}
-		$(this).remove();
-	});
+	}).modal('show');
 
-	$modal.find('.btn-info:first').on('click', function(){
+	$modal.find('.live-editor-confirm').on('click', function(){
 		var style = $element.data('previous-style');
-		$widget.data('widget-style', style);
+		accepted = true;
+
+		if ($widget.length){
+			$widget.data('widget-style', style);
+		}
+		else {
+			$element.data('original-style', style);
+		}
+
 		$modal.modal('hide');
 		callback(style);
 	});
@@ -54,9 +57,19 @@ var modal_settings = function(title, settings, callback){
 		return;
 	}
 
+	var settings_request = 0;
+	var settings_key = null;
+
 	var load_settings = function(){
 		var widget = $('#live-editor-settings-widget').val();
 		var type   = $('#live-editor-settings-type').val();
+		var key    = widget+'::'+type;
+
+		if (settings_key == key){
+			return;
+		}
+
+		settings_key = key;
 
 		if ($('#live-editor-settings').data('widget-id') && $('#live-editor-settings').data('original-widget') == widget && $('#live-editor-settings').data('original-type') == type){
 			var data = {
@@ -70,98 +83,228 @@ var modal_settings = function(title, settings, callback){
 			};
 		}
 
+		var request = ++settings_request;
 		$('#live-editor-settings').html('');
+		set_step_available('settings', false);
 
 		$.post('<?php echo url('admin/ajax/live-editor/widget-admin') ?>', data, function(data){
-			if (data){
-				$('#live-editor-settings').html(data);
+			if (request == settings_request){
+				var has_settings = $.trim(data || '') != '';
+
+				$('#live-editor-settings').html(has_settings ? data : '');
+				set_step_available('settings', has_settings);
+				show_step(current_step);
 			}
 		});
 	};
 
 	var $modal = $('\
-		<div class="modal live-editor-modal fade" role="dialog">\
-			<div class="modal-dialog modal-lg">\
-				<div class="modal-content">\
-					<div class="modal-header">\
-						<h5 class="modal-title"><?php echo icon('fas fa-cogs') ?> '+title+'</h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
-					</div>\
-					<div class="modal-body">\
-						'+settings+'\
-					</div>\
-					<div class="modal-footer">\
-						<button type="button" class="btn btn-dark" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-						<button type="button" class="btn btn-info"><?php echo $this->lang('Valider') ?></button>\
-					</div>\
-				</div>\
+		<div class="ui large modal live-editor-modal" role="dialog">\
+			<div class="header"><?php echo icon('fas fa-cogs') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
+			<div class="content">'+settings+'</div>\
+			<div class="actions">\
+				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
+				<button type="button" class="ui button live-editor-previous"><?php echo icon('fas fa-chevron-left').' '.$this->lang('Précédent') ?></button>\
+				<button type="button" class="ui primary button live-editor-next"><?php echo $this->lang('Suivant').' '.icon('fas fa-chevron-right') ?></button>\
+				<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>\
 			</div>\
 		</div>').appendTo('body');
 
-	$modal.on('change', '#live-editor-settings-widget', function(){
-		var $widgets = $(this), count = 0;
+	var step_order = ['widget', 'type', 'title', 'settings'];
+	var current_step = 'widget';
+	var selected_widget = $modal.find('#live-editor-settings-widget').val();
 
-		$('#live-editor-settings-type option:selected').prop('selected', false);
+	var available_steps = function(){
+		return $.grep(step_order, function(step){
+			return $modal.find('.live-editor-settings-panel[data-step="'+step+'"]').data('available') !== false;
+		});
+	};
 
-		$('#live-editor-settings-type option').each(function(){
-			if ($(this).data('widget') == $widgets.val()){
-				$(this).show();
-				count++;
+	var set_step_available = function(step, available){
+		$modal.find('.live-editor-settings-panel[data-step="'+step+'"]').data('available', available);
+		$modal.find('.live-editor-settings-steps .step[data-step="'+step+'"]').toggleClass('disabled', !available);
+	};
+
+	var show_step = function(step){
+		var steps = available_steps();
+		var index = $.inArray(step, steps);
+		var previous_index = $.inArray(current_step, steps);
+
+		if (index == -1){
+			index = 0;
+			step = steps[index];
+		}
+
+		var $panels = $modal.find('.live-editor-settings-panels');
+		var $current_panel = $panels.find('.live-editor-settings-panel:visible').first();
+		var $next_panel = $panels.find('.live-editor-settings-panel[data-step="'+step+'"]');
+
+		if (!$current_panel.length){
+			$next_panel.show();
+		}
+		else if (!$current_panel.is($next_panel)){
+			var current_height = $current_panel.outerHeight(true);
+			var direction = index >= previous_index ? 1 : -1;
+
+			$next_panel.css({
+				display: 'block',
+				left: 0,
+				opacity: 0,
+				position: 'absolute',
+				top: 0,
+				transform: 'translateX('+(direction * 12)+'px)',
+				width: '100%'
+			});
+
+			var next_height = $next_panel.outerHeight(true);
+
+			$current_panel.css({
+				left: 0,
+				position: 'absolute',
+				top: 0,
+				width: '100%'
+			});
+			$panels.css('height', current_height).stop(true).animate({height: next_height}, 220);
+
+			window.requestAnimationFrame(function(){
+				$current_panel.css({opacity: 0, transform: 'translateX('+(-direction * 8)+'px)'});
+				$next_panel.css({opacity: 1, transform: 'translateX(0)'});
+			});
+
+			window.setTimeout(function(){
+				$current_panel.hide().removeAttr('style');
+				$next_panel.css({position: 'relative', top: 'auto', left: 'auto', width: 'auto'});
+				$panels.css('height', 'auto');
+			}, 230);
+		}
+
+		current_step = step;
+		$modal.find('.live-editor-settings-steps .step').removeClass('active completed');
+		$.each(steps, function(i, name){
+			var $step = $modal.find('.live-editor-settings-steps .step[data-step="'+name+'"]');
+
+			if (i < index){
+				$step.addClass('completed');
 			}
-			else {
-				$(this).hide();
+			else if (i == index){
+				$step.addClass('active');
 			}
 		});
 
-		if (count){
-			$('#live-editor-settings-type').parents('.form-group:first').show();
-			$('#live-editor-settings-type option[data-widget="'+$(this).val()+'"]:first').prop('selected', true);
+		$modal.find('.live-editor-previous').toggle(index > 0);
+		$modal.find('.live-editor-next').toggle(index < steps.length - 1);
+		$modal.find('.live-editor-confirm').toggle(index == steps.length - 1);
+	};
+
+	set_step_available('widget', true);
+	set_step_available('type', false);
+	set_step_available('title', true);
+	set_step_available('settings', false);
+
+	$modal.on('change', '#live-editor-settings-widget', function(){
+		var $widgets = $(this);
+		var $widget_card = $modal.find('.live-editor-widget-card[data-widget="'+$widgets.val()+'"]');
+		var $types = $modal.find('#live-editor-settings-type');
+		var $type_cards = $modal.find('.live-editor-type-card');
+		var $available_types = $type_cards.filter('[data-widget="'+$widgets.val()+'"]');
+		var $selected_type = $available_types.filter('[data-type="'+$types.val()+'"]');
+		var widget_changed = selected_widget != null && selected_widget != $widgets.val();
+
+		$modal.find('.live-editor-widget-card').removeClass('active').attr('aria-selected', 'false');
+		$widget_card.addClass('active').attr('aria-selected', 'true');
+		$modal.find('.live-editor-settings-choice-icon').html($widget_card.find('.live-editor-widget-card-icon').html());
+		$modal.find('.live-editor-settings-choice-name').text($widget_card.find('.header').text());
+
+		$type_cards.hide().removeClass('active').attr('aria-selected', 'false');
+		$available_types.show();
+
+		if ($available_types.length){
+			if (!$selected_type.length || widget_changed){
+				$selected_type = $available_types.first();
+			}
+
+			$types.val($selected_type.data('type'));
+			$selected_type.addClass('active').attr('aria-selected', 'true');
+			set_step_available('type', true);
 		}
 		else {
-			$('#live-editor-settings-type').parents('.form-group:first').hide();
+			$types.val('index');
+			set_step_available('type', false);
+		}
+
+		if (widget_changed){
+			$modal.find('#live-editor-settings-title').val('').removeData('value');
+			$modal.find('.live-editor-display-title').checkbox('set checked');
 		}
 
 		if ($(this).val() == 'module'){
-			$('#live-editor-settings-title').data('value', $('#live-editor-settings-title').val());
-			$('#live-editor-settings-title').val('').parents('.form-group:first').hide();
+			$modal.find('#live-editor-settings-title').val('');
+			set_step_available('title', false);
 		}
 		else {
-			if (!$('#live-editor-settings-title').val()){
-				var value = $('#live-editor-settings-title').data('value');
-
-				if (value){
-					$('#live-editor-settings-title').val(value);
-				}
-			}
-
-			$('#live-editor-settings-title').parents('.form-group:first').show();
+			set_step_available('title', true);
 		}
 
-		if (!$modal.find('#live-editor-settings-type option[data-widget="'+$('#live-editor-settings-widget').val()+'"]').length){
-			$('#live-editor-settings-type').val('index').parents('.form-group:first').hide();
-		}
-
+		selected_widget = $widgets.val();
+		show_step(current_step);
 		load_settings();
 	});
 
-	$modal.on('change', '#live-editor-settings-type', function(){
-		load_settings();
+	$modal.on('click', '.live-editor-widget-card', function(){
+		var widget = $(this).data('widget');
+
+		if ($modal.find('#live-editor-settings-widget').val() != widget){
+			$modal.find('#live-editor-settings-widget').val(widget).trigger('change');
+		}
 	});
 
-	$('#live-editor-settings-type').trigger('change');
+	$modal.on('click', '.live-editor-type-card', function(){
+		var type = $(this).data('type');
+
+		if ($modal.find('#live-editor-settings-type').val() != type){
+			$modal.find('.live-editor-type-card').removeClass('active').attr('aria-selected', 'false');
+			$(this).addClass('active').attr('aria-selected', 'true');
+			$modal.find('#live-editor-settings-type').val(type);
+			load_settings();
+		}
+	});
+
+	$modal.on('click', '.live-editor-previous, .live-editor-next', function(){
+		var steps = available_steps();
+		var index = $.inArray(current_step, steps);
+		var direction = $(this).hasClass('live-editor-next') ? 1 : -1;
+
+		show_step(steps[index + direction]);
+	});
+
+	$modal.on('click', '.live-editor-settings-steps .completed.step', function(){
+		show_step($(this).data('step'));
+	});
 
 	$modal.find('#live-editor-settings-form').submit(function(){
-		$modal.find('.btn-info:first').trigger('click');
+		if ($modal.find('.live-editor-next:visible').length){
+			$modal.find('.live-editor-next').trigger('click');
+		}
+		else {
+			$modal.find('.live-editor-confirm').trigger('click');
+		}
+
 		return false;
 	});
 
-	$modal.modal();
+	$modal.find('.ui.dropdown').dropdown();
+	$modal.find('.live-editor-display-title').checkbox();
+	$('#live-editor-settings-widget').trigger('change');
+	show_step('widget');
+	$modal.modal({
+		autofocus: false,
+		observeChanges: true,
+		onHidden: function(){
+			$modal.remove();
+		}
+	}).modal('show');
 
-	$modal.on('hidden.bs.modal', function(){
-		$(this).remove();
-	});
-
-	$modal.find('.btn-info:first').on('click', function(){
+	$modal.find('.live-editor-confirm').on('click', function(){
 		$('#live-editor-settings-form').trigger('nf.live-editor-settings.submit');
 
 		$modal.modal('hide');
@@ -187,6 +330,8 @@ var modal_settings = function(title, settings, callback){
 			settings.title = '';
 		}
 
+		settings.display_title = $modal.find('.live-editor-display-title').checkbox('is checked') ? 1 : 0;
+
 		callback(settings);
 	});
 };
@@ -197,29 +342,23 @@ var modal_fork = function(callback){
 	}
 
 	var $modal = $('\
-		<div class="modal live-editor-modal fade" role="dialog">\
-			<div class="modal-dialog">\
-				<div class="modal-content">\
-					<div class="modal-header">\
-						<h5 class="modal-title"><?php echo $this->lang('Revenir à la disposition commune') ?></h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
-					</div>\
-					<div class="modal-body">\
-						<?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?>\
-					</div>\
-					<div class="modal-footer">\
-						<button type="button" class="btn btn-dark" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-						<button type="button" class="btn btn-danger"><?php echo $this->lang('Continuer') ?></button>\
-					</div>\
-				</div>\
+		<div class="ui small modal live-editor-modal" role="dialog">\
+			<div class="header"><?php echo $this->lang('Revenir à la disposition commune') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
+			<div class="content"><?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?></div>\
+			<div class="actions">\
+				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
+				<button type="button" class="ui negative button live-editor-confirm"><?php echo $this->lang('Continuer') ?></button>\
 			</div>\
-		</div>').appendTo('body').modal();
+		</div>').appendTo('body');
 
-	$modal.on('hidden.bs.modal', function(){
-		$(this).remove();
-	});
+	$modal.modal({
+		autofocus: false,
+		onHidden: function(){
+			$modal.remove();
+		}
+	}).modal('show');
 
-	$modal.find('.btn-danger:first').on('click', function(){
+	$modal.find('.live-editor-confirm').on('click', function(){
 		$modal.modal('hide');
 		callback();
 	});
@@ -231,29 +370,23 @@ var modal_delete = function(message, callback){
 	}
 
 	var $modal = $('\
-		<div class="modal live-editor-modal fade" role="dialog">\
-			<div class="modal-dialog">\
-				<div class="modal-content">\
-					<div class="modal-header">\
-						<h5 class="modal-title"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?></h5>\
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only"><?php echo $this->lang('Fermer') ?></span></button>\
-					</div>\
-					<div class="modal-body">\
-						'+message+'\
-					</div>\
-					<div class="modal-footer">\
-						<button type="button" class="btn btn-dark" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-						<button type="button" class="btn btn-danger"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Supprimer') ?></button>\
-					</div>\
-				</div>\
+		<div class="ui small modal live-editor-modal" role="dialog">\
+			<div class="header"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
+			<div class="content">'+message+'</div>\
+			<div class="actions">\
+				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
+				<button type="button" class="ui negative button live-editor-confirm"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Supprimer') ?></button>\
 			</div>\
-		</div>').appendTo('body').modal();
+		</div>').appendTo('body');
 
-	$modal.on('hidden.bs.modal', function(){
-		$(this).remove();
-	});
+	$modal.modal({
+		autofocus: false,
+		onHidden: function(){
+			$modal.remove();
+		}
+	}).modal('show');
 
-	$modal.find('.btn-danger:first').on('click', function(){
+	$modal.find('.live-editor-confirm').on('click', function(){
 		$modal.modal('hide');
 		callback();
 	});
@@ -261,6 +394,13 @@ var modal_delete = function(message, callback){
 
 $(function(){
 	var $widgets = $('[data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"]');
+	var $screen_picker = $('.live-editor-screen-picker');
+
+	if ($.fn.dropdown){
+		$('.live-editor-navbar .ui.dropdown').dropdown({
+			action: 'nothing'
+		});
+	}
 
 	$('form[target="live-editor-iframe"]').submit();
 
@@ -276,9 +416,13 @@ $(function(){
 		}
 
 		$('.live-editor-iframe').width(width).css('left', size);
-		$('.live-editor-screen').removeClass('active');
+		$('.live-editor-screen[data-width]').removeClass('active');
 		$(this).addClass('active');
-		$('#navbarDropdownScreen').html($(this).html()+' <?php echo icon('fas fa-angle-down') ?>');
+		$('.live-editor-screen-current').html($(this).html());
+
+		if ($.fn.dropdown){
+			$screen_picker.dropdown('hide');
+		}
 	});
 
 	$('.live-editor-mode').click(function(){

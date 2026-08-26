@@ -27,6 +27,18 @@ class Admin extends Controller_Module
 		return $url;
 	}
 
+	private function component($name, array $data, $fallback = '')
+	{
+		$template = HB()->template('menu/'.$name, $data, $fallback);
+
+		if ($theme = $this->output->theme())
+		{
+			$template->owner($theme);
+		}
+
+		return (string)$template->owner($this->module);
+	}
+
 	public function index($menus)
 	{
 		$this->title($this->lang('Menus'));
@@ -80,7 +92,10 @@ class Admin extends Controller_Module
 				$left_body .= '<div class="hb-menu-master-item'.($is_active ? ' is-active' : '').'">'
 							.'<a class="hb-menu-master-main" href="'.$select_url.'">'
 								.'<span class="hb-menu-master-title">'.$menu['title'].'</span>'
-								.'<span class="hb-menu-master-meta"><code>'.$menu['name'].'</code> <strong>'.(int)$menu['nb_items'].'</strong></span>'
+								.'<span class="hb-menu-master-meta">'.$this->component('technical_name', [
+									'value' => $menu['name'],
+									'class' => ''
+								], '<code>'.utf8_htmlentities($menu['name']).'</code>').' <strong>'.(int)$menu['nb_items'].'</strong></span>'
 							.'</a>'
 							.'<div class="hb-menu-master-actions">'.implode('', array_filter($item_actions)).'</div>'
 						.'</div>';
@@ -238,6 +253,11 @@ class Admin extends Controller_Module
 			{
 				$actions = [];
 
+				if ($this->user->admin)
+				{
+					$actions[] = $this->button_access($item['item_id'], 'link', 'menu', $this->lang('Droits de visibilité'));
+				}
+
 				if ($this->is_authorized('modify_menus'))
 				{
 					$actions[] = (string)$this->button_update('', $this->lang('Editer'))
@@ -267,7 +287,10 @@ class Admin extends Controller_Module
 							.'<div class="menu-nested-main">'
 								.$sort
 								.'<span class="menu-nested-title">'.$item['title'].'</span>'
-								.'<code class="menu-nested-url">'.$item['url'].'</code>'
+								.$this->component('technical_name', [
+									'value' => $item['url'],
+									'class' => 'menu-nested-url'
+								], '<code class="menu-nested-url">'.utf8_htmlentities($item['url']).'</code>')
 							.'</div>'
 							.'<div class="menu-nested-side">'
 								.$status

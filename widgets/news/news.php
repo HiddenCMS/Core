@@ -14,6 +14,7 @@ class News extends Widget
 	{
 		return [
 			'title'       => $this->lang('Actualités'),
+			'icon'        => 'fas fa-newspaper',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

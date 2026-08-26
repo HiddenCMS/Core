@@ -14,6 +14,7 @@ class Breadcrumb extends Widget
 	{
 		return [
 			'title'       => $this->lang('Fil d\'Ariane'),
+			'icon'        => 'fas fa-sitemap',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

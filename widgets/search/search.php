@@ -14,6 +14,7 @@ class Search extends Widget
 	{
 		return [
 			'title'       => $this->lang('Rechercher'),
+			'icon'        => 'fas fa-search',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

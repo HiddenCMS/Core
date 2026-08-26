@@ -14,6 +14,7 @@ class Navigation extends Widget
 	{
 		return [
 			'title'       => $this->lang('Navigation'),
+			'icon'        => 'fas fa-bars',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

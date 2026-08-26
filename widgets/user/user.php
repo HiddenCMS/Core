@@ -14,6 +14,7 @@ class User extends Widget
 	{
 		return [
 			'title'       => $this->lang('Espace membre'),
+			'icon'        => 'fas fa-user',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

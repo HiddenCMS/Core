@@ -31,9 +31,12 @@ class Css extends Library
 		}
 		else
 		{
-			$path = path($this->_file.'.css', 'css', $this->__caller);
+			$file = $this->_file.'.css';
+			$path = path($file, 'css', $this->__caller);
+			$asset = $this->__caller->__path('assets', 'css/'.$file);
+			$version = $asset ? (int)filemtime($asset) : 0;
 
-			if ($v = (int)$this->config->version_css)
+			if ($v = max((int)$this->config->version_css, $version))
 			{
 				$path .= '?v='.$v;
 			}

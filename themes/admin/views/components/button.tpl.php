@@ -122,14 +122,15 @@ $classes = array_merge($classes, $extra_classes);
 $classes[] = 'button';
 $final_class = implode(' ', array_values(array_unique(array_filter($classes))));
 
+if (isset($attrs['title']) && (!isset($attrs['data-toggle']) || $attrs['data-toggle'] !== 'popover'))
+{
+	$attrs['data-tooltip'] = $attrs['title'];
+	unset($attrs['title'], $attrs['data-html']);
+}
+
 if (isset($attrs['data-toggle']) && $attrs['data-toggle'] === 'tooltip')
 {
-	if (isset($attrs['title']))
-	{
-		$attrs['data-tooltip'] = $attrs['title'];
-	}
-
-	unset($attrs['data-toggle'], $attrs['data-html'], $attrs['title']);
+	unset($attrs['data-toggle']);
 }
 
 $attrs_output = '';

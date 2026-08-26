@@ -14,6 +14,7 @@ class Header extends Widget
 	{
 		return [
 			'title'       => $this->lang('Header'),
+			'icon'        => 'fas fa-heading',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

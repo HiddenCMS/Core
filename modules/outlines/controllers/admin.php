@@ -20,6 +20,18 @@ class Admin extends Controller_Module
 		return is_array($values) && in_array('on', $values, TRUE);
 	}
 
+	private function component($name, array $data, $fallback = '')
+	{
+		$template = HB()->template('outlines/'.$name, $data, $fallback);
+
+		if ($theme = $this->output->theme())
+		{
+			$template->owner($theme);
+		}
+
+		return (string)$template->owner($this->module);
+	}
+
 	public function index($outlines)
 	{
 		$actions = function($outline){
@@ -37,19 +49,27 @@ class Admin extends Controller_Module
 										->icon('far fa-trash-alt')
 										->color('danger')
 										->compact()
-										->outline()
 										->modal($this->_delete($outline));
 			}
 
-			return '<span style="white-space: nowrap;">'.implode('&nbsp;', array_filter($buttons)).'</span>';
+			$buttons = array_filter($buttons);
+
+			return $this->component('actions', [
+				'buttons' => $buttons
+			], implode('', $buttons));
 		};
 
 		$table = $this	->table2($this->array($outlines), $this->lang('Il n\'y a pas encore d\'outline'))
 						->col($this->lang('Outline'), function($outline){
-							return '<span class="hb-outline-title">'.$outline['title'].'</span><code class="hb-code-pill">'.$outline['name'].'</code>';
+							return $this->component('identity', [
+								'title' => $outline['title'],
+								'name'  => $outline['name']
+							], utf8_htmlentities($outline['title']).' <code>'.utf8_htmlentities($outline['name']).'</code>');
 						})
 						->col($this->lang('Theme'), function($outline){
-							return '<code>'.$outline['theme'].'</code>';
+							return $this->component('theme', [
+								'theme' => $outline['theme']
+							], '<code>'.utf8_htmlentities($outline['theme']).'</code>');
 						})
 						->col($this->lang('Base'), 'compact', 'center', function($outline){
 							return $outline['base'] ? icon('fas fa-check') : '';

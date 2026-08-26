@@ -10,6 +10,8 @@ use HB\HiddenCMS\Loadables\Addon;
 
 abstract class Widget extends Addon
 {
+	const DISPLAY_TITLE_SETTING = '__display_title';
+
 	static public $core = [
 		'breadcrumb' => TRUE,
 		'html'       => TRUE,
@@ -45,6 +47,8 @@ abstract class Widget extends Addon
 
 	public function get_admin($type, $settings = [])
 	{
+		$this->extract_display_title($settings);
+
 		if (($controller = @$this->controller('admin')) && $controller->has_method($type))
 		{
 			if (!is_array($output = call_user_func_array([$controller, $type], [$settings])))
@@ -64,6 +68,49 @@ abstract class Widget extends Addon
 		{
 			return $this->storage->encode(call_user_func_array([$controller, $type], [$settings]));
 		}
+	}
+
+	public function extract_display_title(&$settings)
+	{
+		$display = !is_array($settings) || !array_key_exists(self::DISPLAY_TITLE_SETTING, $settings) || !empty($settings[self::DISPLAY_TITLE_SETTING]);
+
+		if (is_array($settings))
+		{
+			unset($settings[self::DISPLAY_TITLE_SETTING]);
+		}
+
+		return $display;
+	}
+
+	public function title_is_displayed($settings)
+	{
+		while (is_string($settings) && $settings !== '')
+		{
+			$decoded = $this->storage->decode($settings, NULL);
+
+			if ($decoded === NULL || $decoded === $settings)
+			{
+				break;
+			}
+
+			$settings = $decoded;
+		}
+
+		return !is_array($settings) || !array_key_exists(self::DISPLAY_TITLE_SETTING, $settings) || !empty($settings[self::DISPLAY_TITLE_SETTING]);
+	}
+
+	public function set_display_title($settings, $display)
+	{
+		$settings = $this->storage->decode($settings, []);
+
+		if (!is_array($settings))
+		{
+			$settings = [];
+		}
+
+		$settings[self::DISPLAY_TITLE_SETTING] = $display ? 1 : 0;
+
+		return $this->storage->encode($settings);
 	}
 }
 

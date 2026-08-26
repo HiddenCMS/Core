@@ -14,6 +14,7 @@ class Module extends Widget
 	{
 		return [
 			'title'       => $this->lang('Contenu de page'),
+			'icon'        => 'fas fa-file-alt',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

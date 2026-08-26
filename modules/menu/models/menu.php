@@ -90,8 +90,15 @@ class Menu extends Model2
 
 	public function delete_menu($menu_id)
 	{
+		foreach ($this->db->select('item_id')->from('menus_items')->where('menu_id', $menu_id)->get(FALSE) as $item)
+		{
+			$this->delete_item_access((int)$item['item_id']);
+		}
+
 		$this->db	->where('menu_id', $menu_id)
 					->delete('menus');
+
+		HB()->access->reload();
 	}
 
 	public function get_menu_items($menu_id)
@@ -102,6 +109,11 @@ class Menu extends Model2
 						->where('i.menu_id', $menu_id)
 						->order_by('i.position ASC')
 						->get(FALSE);
+
+		foreach ($items as $item)
+		{
+			$this->ensure_item_access((int)$item['item_id']);
+		}
 
 		return $this->flatten_items($items);
 	}
@@ -160,7 +172,7 @@ class Menu extends Model2
 
 	public function add_item($menu_id, $title, $url, $target, $parent_id, $position, $enabled)
 	{
-		$this->db->insert('menus_items', [
+		$item_id = $this->db->insert('menus_items', [
 			'menu_id'   => $menu_id,
 			'parent_id' => $parent_id ?: NULL,
 			'title'     => $title,
@@ -169,6 +181,10 @@ class Menu extends Model2
 			'position'  => $position ?: $this->next_position($menu_id),
 			'enabled'   => (bool)$enabled
 		]);
+
+		$this->ensure_item_access($item_id);
+
+		return $item_id;
 	}
 
 	public function check_item($item_id, $menu_id = NULL, $title_slug = '')
@@ -404,8 +420,23 @@ class Menu extends Model2
 
 	public function delete_item($item_id)
 	{
+		$item = $this->check_item($item_id);
+		$item_ids = [$item_id];
+
+		if ($item)
+		{
+			$item_ids = array_merge($item_ids, $this->descendant_ids((int)$item['menu_id'], $item_id));
+		}
+
+		foreach ($item_ids as $access_item_id)
+		{
+			$this->delete_item_access((int)$access_item_id);
+		}
+
 		$this->db	->where('item_id', $item_id)
 					->delete('menus_items');
+
+		HB()->access->reload();
 	}
 
 	public function get_menu_links($menu_id)
@@ -417,7 +448,37 @@ class Menu extends Model2
 						->order_by('position ASC')
 						->get(FALSE);
 
+		$items = array_values(array_filter($items, function($item){
+			return !$this->has_item_access((int)$item['item_id']) || HB()->access('menu', 'view_link', (int)$item['item_id']);
+		}));
+
 		return $this->build_links_tree($items);
+	}
+
+	private function ensure_item_access($item_id)
+	{
+		if (!$this->has_item_access($item_id))
+		{
+			HB()->access->init('menu', 'link', $item_id);
+		}
+	}
+
+	private function has_item_access($item_id)
+	{
+		return (bool)$this->db	->select('access_id')
+							->from('access')
+							->where('module', 'menu')
+							->where('action', 'view_link')
+							->where('id', $item_id)
+							->row();
+	}
+
+	private function delete_item_access($item_id)
+	{
+		$this->db	->where('module', 'menu')
+					->where('action', 'view_link')
+					->where('id', $item_id)
+					->delete('access');
 	}
 
 	public function get_front_url_choices()

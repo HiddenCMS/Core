@@ -75,20 +75,23 @@ class Live_Editor extends Model
 		}
 	}
 
-	public function get_widgets(&$widgets, &$types)
+	public function get_widgets(&$widgets, &$types, &$icons = [])
 	{
 		foreach (HB()->model2('addon')->get('widget') as $widget)
 		{
-			$widgets[$name = $widget->info()->name] = $widget->info()->title;
+			$info = $widget->info();
+			$widgets[$name = $info->name] = $info->title;
+			$icons[$name] = !empty($info->icon) ? $info->icon : 'fas fa-puzzle-piece';
 
-			if (!empty($widget->info()->types))
+			if (!empty($info->types))
 			{
-				$types[$name] = $widget->info()->types;
+				$types[$name] = $info->types;
 				array_natsort($types[$name]);
 			}
 		}
 
 		array_natsort($widgets);
+		$icons = array_replace(array_fill_keys(array_keys($widgets), 'fas fa-puzzle-piece'), $icons);
 	}
 }
 

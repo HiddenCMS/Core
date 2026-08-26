@@ -143,13 +143,14 @@ class Admin_Ajax extends Controller_Module
 		$this->model()->set_disposition($disposition_id, $disposition);
 	}
 
-	public function widget_add($disposition_id, $disposition, $row_id, $col_id, $title, $widget_name, $type, $settings)
+	public function widget_add($disposition_id, $disposition, $row_id, $col_id, $title, $display_title, $widget_name, $type, $settings)
 	{
+		$widget_addon = $this->widget($widget_name);
 		$widget_id = $this->db	->insert('widgets', [
 									'title'    => $title ? utf8_htmlentities($title) : NULL,
 									'widget'   => $widget_name,
 									'type'     => $type,
-									'settings' => $this->widget($widget_name)->get_settings($type, $settings)
+									'settings' => $widget_addon->set_display_title($widget_addon->get_settings($type, $settings), $display_title)
 								]);
 
 		$disposition[$row_id][$col_id]->append($widget = $this->widget($widget_id));
@@ -178,21 +179,24 @@ class Admin_Ajax extends Controller_Module
 
 	public function widget_settings($widget_id = 0, $widget = '', $type = 'index', $title = '', $settings = '')
 	{
-		$this->model()->get_widgets($widgets, $types);
+		$this->model()->get_widgets($widgets, $types, $icons);
 
 		return $this->view('widget', [
 			'widget_id' => $widget_id,
 			'title'     => $title,
 			'widget'    => $widget ?: array_keys($widgets)[0],
 			'widgets'   => $widgets,
+			'icons'     => $icons,
+			'display_title' => $this->widget($widget ?: array_keys($widgets)[0])->title_is_displayed($settings),
 			'type'      => $type,
 			'types'     => $types
 		]);
 	}
 
-	public function widget_update($disposition_id, $disposition, $row_id, $col_id, $widget_id, $id, $widget, $type, $title, $settings)
+	public function widget_update($disposition_id, $disposition, $row_id, $col_id, $widget_id, $id, $widget, $type, $title, $display_title, $settings)
 	{
-		$settings = $this->widget($widget)->get_settings($type, $settings);
+		$widget_addon = $this->widget($widget);
+		$settings = $widget_addon->set_display_title($widget_addon->get_settings($type, $settings), $display_title);
 
 		$this->db	->where('widget_id', $id)
 					->update('widgets', [

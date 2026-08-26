@@ -14,6 +14,7 @@ class About extends Widget
 	{
 		return [
 			'title'       => $this->lang('À propos'),
+			'icon'        => 'fas fa-info-circle',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

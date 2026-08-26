@@ -14,6 +14,7 @@ class Socials extends Widget
 	{
 		return [
 			'title'       => $this->lang('Réseaux sociaux'),
+			'icon'        => 'fas fa-share-alt',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Jérémy VALENTIN <jeremy.valentin@neofr.ag>',

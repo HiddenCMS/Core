@@ -71,6 +71,34 @@ class Menu extends Module
 						]
 					]
 				]
+			],
+			'link' => [
+				'get_all' => function(){
+					return HB()->db->select('item_id', 'CONCAT_WS(" ", "Lien", title)')->from('menus_items')->order_by('title')->get();
+				},
+				'check' => function($item_id){
+					if (($title = HB()->db->select('title')->from('menus_items')->where('item_id', (int)$item_id)->row()) !== [])
+					{
+						return 'Lien '.$title;
+					}
+				},
+				'init' => [
+					'view_link' => [
+						['visitors', TRUE]
+					]
+				],
+				'access' => [
+					[
+						'title' => 'Liens',
+						'icon' => 'fas fa-link',
+						'access' => [
+							'view_link' => [
+								'title' => 'Visibilité',
+								'icon' => 'far fa-eye'
+							]
+						]
+					]
+				]
 			]
 		];
 	}

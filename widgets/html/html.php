@@ -14,6 +14,7 @@ class Html extends Widget
 	{
 		return [
 			'title'       => $this->lang('Contenu libre / Code HTML'),
+			'icon'        => 'fas fa-code',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',

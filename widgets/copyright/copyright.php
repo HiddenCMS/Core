@@ -14,6 +14,7 @@ class Copyright extends Widget
 	{
 		return [
 			'title'       => 'Copyright',
+			'icon'        => 'fas fa-copyright',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
