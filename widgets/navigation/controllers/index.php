@@ -47,11 +47,12 @@ class Index extends Controller_Widget
 				}
 
 				$link = array_merge([
-					'title'  => '',
-					'url'    => '',
-					'icon'   => '',
-					'access' => TRUE,
-					'target' => ''
+					'title'     => '',
+					'url'       => '',
+					'icon'      => '',
+					'access'    => TRUE,
+					'target'    => '',
+					'indicator' => NULL
 				], $link);
 
 				if (is_array($link['url']))
@@ -135,7 +136,13 @@ class Index extends Controller_Widget
 								}
 							}
 						})
-						->content(icon($item['icon']).' '.$this->lang($item['title']));
+						->content(
+							icon($item['icon']).
+							' <span class="nav-link-title">'.$this->lang($item['title']).'</span>'.
+							($item['indicator'] !== NULL && $item['indicator'] !== FALSE
+								? '<span class="nav-update-indicator">'.htmlspecialchars((string)$item['indicator'], ENT_QUOTES, 'UTF-8').'</span>'
+								: '')
+						);
 		};
 
 		$render_items = function($items, $depth = 0) use (&$render_items, $nav_link, $actives){

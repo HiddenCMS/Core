@@ -239,6 +239,26 @@ body {
 	text-align: center;
 }
 
+#sidebar .nav-link-title {
+	min-width: 0;
+}
+
+#sidebar .nav-update-indicator {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1.35rem;
+	height: 1.35rem;
+	margin-left: auto;
+	padding: 0 .38rem;
+	border-radius: 999px;
+	background: #fff0c7;
+	color: #805600;
+	font-size: .75rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
 #sidebar > .nav > .nav-item > .nav-link {
 	border-bottom: 0;
 }

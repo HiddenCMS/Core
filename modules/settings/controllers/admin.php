@@ -579,7 +579,7 @@ class Admin extends Controller_Module
 
 	public function updates()
 	{
-		$this	->subtitle('Mises à jour')
+		$this	->title('Mises à jour')
 				->icon('fas fa-cloud-download-alt')
 				->css('admin/updates');
 
@@ -588,12 +588,10 @@ class Admin extends Controller_Module
 
 		$this->add_action($this->button('Rechercher', 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
 
-		return $this->_layout(function($col) use ($status){
-			$col->append($this->view('admin/updates', [
-				'status'  => $status,
-				'backups' => $this->core_updater->backups()
-			]));
-		});
+		return $this->view('admin/updates', [
+			'status'  => $status,
+			'backups' => $this->core_updater->backups()
+		]);
 	}
 
 	public function copyright()
@@ -646,11 +644,6 @@ class Admin extends Controller_Module
 					'title' => 'Maintenance',
 					'icon'  => 'fas fa-power-off',
 					'url'   => 'admin/settings/maintenance'
-				],
-				[
-					'title' => 'Mises à jour',
-					'icon'  => 'fas fa-cloud-download-alt',
-					'url'   => 'admin/settings/updates'
 				],
 				[
 					'title' => 'Gestions des inscriptions',

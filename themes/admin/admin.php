@@ -137,6 +137,21 @@ class Admin extends Theme
 			]
 		]));
 
+		$updates_count = 0;
+
+		if ($this->user->admin)
+		{
+			try
+			{
+				$updates_status = $this->core_updater->status();
+				$updates_count = (!empty($updates_status['core']['available']) ? 1 : 0) + count(isset($updates_status['addons']) && is_array($updates_status['addons']) ? $updates_status['addons'] : []);
+			}
+			catch (\Throwable $e)
+			{
+				$updates_count = 0;
+			}
+		}
+
 		$this->data->set('sidebar', [
 			'panel' => FALSE,
 			'links' => array_filter([
@@ -144,6 +159,13 @@ class Admin extends Theme
 					'title' => 'Tableau de bord',
 					'icon'  => 'fas fa-tachometer-alt',
 					'url'   => 'admin'
+				],
+				[
+					'title'     => 'Mises à jour',
+					'icon'      => 'fas fa-cloud-download-alt',
+					'access'    => $this->user->admin,
+					'url'       => 'admin/settings/updates',
+					'indicator' => $updates_count ?: NULL
 				],
 				[
 					'title' => 'Contenu',
