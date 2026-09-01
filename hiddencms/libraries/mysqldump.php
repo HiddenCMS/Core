@@ -91,7 +91,7 @@ class Mysqldump extends Library
 		fwrite($handle, '-- HiddenCMS '.HIDDENCMS_VERSION.PHP_EOL.
 						'-- https://github.com/HiddenCMS/Core'.PHP_EOL.
 						'--'.PHP_EOL.
-						'-- Host: '.$_SERVER['HTTP_HOST'].PHP_EOL.
+						'-- Host: '.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : php_uname('n')).PHP_EOL.
 						'-- Generation Time: '.date('r').PHP_EOL.
 						'-- Server version: '.$db()->get_info('server').' '.$db()->get_info('version').PHP_EOL.
 						'-- PHP Version: '.PHP_VERSION.PHP_EOL.PHP_EOL.
@@ -105,7 +105,7 @@ class Mysqldump extends Library
 
 		if ($tables)
 		{
-			$db()->lock($tables);
+			$db()->lock(array_keys($tables));
 
 			if (is_callable($callback))
 			{

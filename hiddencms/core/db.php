@@ -463,6 +463,12 @@ class Db extends Core
 		return $this;
 	}
 
+	public function execute_script($sql)
+	{
+		$this->_driver('execute_script', $sql);
+		return $this;
+	}
+
 	public function query($query)
 	{
 		$this->_request['query'] = $query;

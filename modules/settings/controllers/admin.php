@@ -577,6 +577,25 @@ class Admin extends Controller_Module
 		});
 	}
 
+	public function updates()
+	{
+		$this	->subtitle('Mises à jour')
+				->icon('fas fa-cloud-download-alt')
+				->css('admin/updates');
+
+		$refresh = (bool)$this->input->get->get('refresh');
+		$status = $this->core_updater->status($refresh);
+
+		$this->add_action($this->button('Rechercher', 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
+
+		return $this->_layout(function($col) use ($status){
+			$col->append($this->view('admin/updates', [
+				'status'  => $status,
+				'backups' => $this->core_updater->backups()
+			]));
+		});
+	}
+
 	public function copyright()
 	{
 		return $this->subtitle('Copyright')
@@ -627,6 +646,11 @@ class Admin extends Controller_Module
 					'title' => 'Maintenance',
 					'icon'  => 'fas fa-power-off',
 					'url'   => 'admin/settings/maintenance'
+				],
+				[
+					'title' => 'Mises à jour',
+					'icon'  => 'fas fa-cloud-download-alt',
+					'url'   => 'admin/settings/updates'
 				],
 				[
 					'title' => 'Gestions des inscriptions',

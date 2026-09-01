@@ -57,7 +57,7 @@ class Mysqli extends Driver
 	{
 		$total = 0;
 
-		$sql = $this->db->query('SHOW TABLE STATUS LIKE "nf\_%"');
+		$sql = $this->db->query('SHOW TABLE STATUS');
 		while ($table = $sql->fetch_object())
 		{
 			$total += $table->Data_length + $table->Index_length;
@@ -103,6 +103,30 @@ class Mysqli extends Driver
 		return $this->db->rollback();
 	}
 
+	public function execute_script($sql)
+	{
+		if (!$this->db->multi_query($sql))
+		{
+			throw new \RuntimeException($this->db->error);
+		}
+
+		do
+		{
+			if ($result = $this->db->store_result())
+			{
+				$result->free();
+			}
+
+			if ($this->db->errno)
+			{
+				throw new \RuntimeException($this->db->error);
+			}
+		}
+		while ($this->db->more_results() && $this->db->next_result());
+
+		return TRUE;
+	}
+
 	public function fetch($results, $type = 'assoc')
 	{
 		if ($results[1]->fetch())
@@ -132,7 +156,7 @@ class Mysqli extends Driver
 	{
 		$tables = [];
 
-		$sql = $this->db->query('SHOW TABLE STATUS LIKE "nf\_%"');
+		$sql = $this->db->query('SHOW TABLE STATUS');
 		while ($table = $sql->fetch_object())
 		{
 			$tables[] = $table->Name;

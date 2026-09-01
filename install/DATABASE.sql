@@ -107,6 +107,18 @@ CREATE TABLE `addon_migrations` (
   PRIMARY KEY (`package`,`migration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `core_migrations`;
+CREATE TABLE `core_migrations` (
+  `migration` varchar(190) NOT NULL,
+  `version` varchar(50) NOT NULL,
+  `batch` int unsigned NOT NULL,
+  `applied_at` datetime NOT NULL,
+  PRIMARY KEY (`migration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VALUES
+('0.3.0', '0.3.0', 1, NOW());
+
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

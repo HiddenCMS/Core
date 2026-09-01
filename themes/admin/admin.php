@@ -26,23 +26,6 @@ class Admin extends Theme
 
 	public function __init()
 	{
-		if ($this->config->update_callback)
-		{
-			$this->config('update_callback', '');
-
-			if ($patch = @HiddenCMS()->install($this->config->update_callback))
-			{
-				if (method_exists($patch, 'post'))
-				{
-					$patch->post();
-				}
-
-				unlink('HiddenCMS/install/'.$this->config->update_callback.'.php');
-			}
-
-			refresh();
-		}
-
 		$this	->css('https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.css')
 				->css('fonts/open-sans')
 				->css('fonts/titillium-web')
@@ -198,17 +181,4 @@ class Admin extends Theme
 		//Nothing to do
 	}
 
-	public function update()
-	{
-		if (file_exists($file = 'cache/monitoring/version.json'))
-		{
-			$versions = json_decode(file_get_contents($file));
-			$version  = isset($versions->hiddencms) ? $versions->hiddencms : (isset($versions->HiddenCMS) ? $versions->HiddenCMS : NULL);
-
-			if ($version && version_compare(version_format($version->version), version_format(HIDDENCMS_VERSION), '>'))
-			{
-				return $version;
-			}
-		}
-	}
 }

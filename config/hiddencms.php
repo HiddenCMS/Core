@@ -7,4 +7,4 @@ define('HIDDENCMS_LOGS_DB',    FALSE);
 define('HIDDENCMS_LOGS_I18N',  FALSE);
 define('HIDDENCMS_UPDATE_BASE',       'https://github.com/HiddenCMS/Core');
 define('HIDDENCMS_DOWNLOAD_BASE',     'https://github.com/HiddenCMS/Core/releases/download');
-define('HIDDENCMS_VERSION_CHECK_URL', 'https://vc.nf.hiddenblob.com/version.json');
+define('HIDDENCMS_VERSION_CHECK_URL', 'https://api.github.com/repos/HiddenCMS/Core/releases/latest');

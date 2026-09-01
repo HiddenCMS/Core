@@ -1,0 +1,131 @@
+.updates-page {
+	width: 100%;
+	min-width: 0;
+}
+
+.updates-page .ui.message {
+	overflow-wrap: anywhere;
+}
+
+.updates-overview,
+.updates-release,
+.updates-section-header,
+.updates-backup-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.updates-overview {
+	padding: 1.35rem 1.5rem;
+	border-left: 3px solid var(--admin-primary);
+	background: rgba(0, 188, 212, .06);
+}
+
+.updates-eyebrow,
+.updates-backup-row span {
+	display: block;
+	color: var(--admin-muted);
+	font-size: .82rem;
+}
+
+.updates-version {
+	display: inline-block;
+	margin: .15rem .65rem 0 0;
+	font-size: 1.65rem;
+}
+
+.updates-overview-actions {
+	display: flex;
+	gap: .6rem;
+}
+
+.updates-label-success {
+	background: #e5f5eb !important;
+	color: #287a49 !important;
+}
+
+.updates-label-warning {
+	background: #fff2d7 !important;
+	color: #9a6400 !important;
+}
+
+.updates-release {
+	padding: 1rem 1.5rem;
+	border-bottom: 1px solid var(--admin-border);
+}
+
+.updates-section {
+	margin-top: 1.5rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--admin-border);
+}
+
+.updates-section-header h3 {
+	margin: 0;
+}
+
+.updates-section-header p {
+	margin: .25rem 0 0;
+	color: var(--admin-muted);
+}
+
+.updates-table {
+	margin-top: 1rem;
+}
+
+.updates-empty {
+	margin-top: 1rem;
+	padding: 1.1rem;
+	background: #f7f9fa;
+	color: var(--admin-muted);
+}
+
+.updates-compatibility {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: .5rem;
+	margin-top: 1rem;
+}
+
+.updates-compatibility > div {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: .65rem;
+	padding: .7rem .8rem;
+	background: #f7f9fa;
+}
+
+.updates-compatibility code {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.updates-backups {
+	margin-top: .75rem;
+}
+
+.updates-backup-row {
+	padding: .8rem 0;
+	border-bottom: 1px solid var(--admin-border);
+}
+
+.updates-backup-row > div {
+	flex: 1 1 auto;
+}
+
+@media (max-width: 767px) {
+	.updates-overview,
+	.updates-release,
+	.updates-section-header,
+	.updates-backup-row {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.updates-overview-actions {
+		flex-wrap: wrap;
+	}
+}

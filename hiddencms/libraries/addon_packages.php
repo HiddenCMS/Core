@@ -3,6 +3,7 @@
 namespace HB\HiddenCMS\Libraries;
 
 use Composer\InstalledVersions;
+use Composer\Semver\Semver;
 use HB\HiddenCMS\Addons\Migration;
 use HB\HiddenCMS\Addons\Seeder;
 use HB\HiddenCMS\Library;
@@ -77,6 +78,8 @@ class Addon_Packages extends Library
 				'package'    => $package,
 				'path'       => str_replace('\\', '/', $path),
 				'version'    => InstalledVersions::getPrettyVersion($package) ?: InstalledVersions::getVersion($package),
+				'constraint' => isset($composer['require']['hiddencms/core']) ? $composer['require']['hiddencms/core'] : NULL,
+				'compatible' => $this->is_core_compatible(isset($composer['require']['hiddencms/core']) ? $composer['require']['hiddencms/core'] : NULL),
 				'addons'     => $addons,
 				'migrations' => $this->class_list(isset($info['migrations']) ? $info['migrations'] : []),
 				'seeders'    => $this->class_list(isset($info['seeders']) ? $info['seeders'] : [])
@@ -165,6 +168,56 @@ class Addon_Packages extends Library
 		return $this->run_composer(['update', $package, '--with-dependencies']);
 	}
 
+	public function install_dependencies()
+	{
+		return $this->run_composer(['install', '--prefer-dist', '--optimize-autoloader']);
+	}
+
+	public function outdated()
+	{
+		$output = $this->run_composer(['outdated', '--direct', '--format=json'], FALSE);
+		$start = strpos($output, '{');
+		$end = strrpos($output, '}');
+
+		if ($start === FALSE || $end === FALSE || !is_array($data = json_decode(substr($output, $start, $end - $start + 1), TRUE)))
+		{
+			throw new RuntimeException('Composer n\'a pas retourné un diagnostic de mises à jour valide.');
+		}
+
+		$result = [];
+
+		foreach (isset($data['installed']) && is_array($data['installed']) ? $data['installed'] : [] as $package)
+		{
+			if (!empty($package['name']))
+			{
+				$result[$package['name']] = [
+					'package' => $package['name'],
+					'current' => isset($package['version']) ? $package['version'] : NULL,
+					'latest'  => isset($package['latest']) ? $package['latest'] : NULL,
+					'status'  => isset($package['latest-status']) ? $package['latest-status'] : NULL,
+					'description' => isset($package['description']) ? $package['description'] : ''
+				];
+			}
+		}
+
+		return $result;
+	}
+
+	public function compatibility()
+	{
+		$result = [];
+
+		foreach ($this->discover() as $package => $info)
+		{
+			$result[$package] = [
+				'constraint' => $info['constraint'],
+				'compatible' => $info['compatible']
+			];
+		}
+
+		return $result;
+	}
+
 	public function remove_package($package, $purge = FALSE)
 	{
 		$package = $this->validate_package($package);
@@ -196,14 +249,19 @@ class Addon_Packages extends Library
 		return $output;
 	}
 
-	protected function run_composer(array $arguments)
+	protected function run_composer(array $arguments, $no_progress = TRUE)
 	{
 		if (!function_exists('proc_open'))
 		{
 			throw new RuntimeException('proc_open est requis pour lancer Composer depuis l\'administration.');
 		}
 
-		$command = array_merge($this->composer_command(), $arguments, ['--no-interaction', '--no-progress']);
+		$command = array_merge($this->composer_command(), $arguments, ['--no-interaction']);
+
+		if ($no_progress)
+		{
+			$command[] = '--no-progress';
+		}
 		$process = proc_open($command, [
 			0 => ['pipe', 'r'],
 			1 => ['pipe', 'w'],
@@ -459,6 +517,25 @@ class Addon_Packages extends Library
 		return array_values(array_filter((array)$classes, function($class){
 			return is_string($class) && $class !== '';
 		}));
+	}
+
+	protected function is_core_compatible($constraint)
+	{
+		if (!$constraint)
+		{
+			return FALSE;
+		}
+
+		try
+		{
+			return class_exists(Semver::class)
+				? Semver::satisfies(HIDDENCMS_VERSION, $constraint)
+				: version_compare(HIDDENCMS_VERSION, trim($constraint, '^~>=< '), '>=');
+		}
+		catch (\Throwable $e)
+		{
+			return FALSE;
+		}
 	}
 
 	protected function validate_package($package, $constraint = FALSE)

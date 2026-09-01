@@ -36,6 +36,7 @@ abstract class Driver
 	abstract public function begin_transaction();
 	abstract public function commit();
 	abstract public function rollback();
+	abstract public function execute_script($sql);
 
 	public function query($request)
 	{

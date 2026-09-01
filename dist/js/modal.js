@@ -23,11 +23,25 @@ var modal = new function(){
 			return;
 		}
 
-		var isInstall = ($form.attr('action') || '').indexOf('/addons/install') !== -1;
-		var title = isInstall ? 'Installation en cours' : 'Traitement en cours';
+		var action = $form.attr('action') || '';
+		var isInstall = action.indexOf('/addons/install') !== -1;
+		var isCoreUpdate = action.indexOf('/settings/core-update') !== -1;
+		var isBackup = action.indexOf('/settings/backup') !== -1;
+		var isRollback = action.indexOf('/settings/rollback') !== -1;
+		var title = isInstall ? 'Installation en cours'
+			: isCoreUpdate ? 'Mise à jour en cours'
+			: isBackup ? 'Sauvegarde en cours'
+			: isRollback ? 'Restauration en cours'
+			: 'Traitement en cours';
 		var detail = isInstall
 			? 'Composer télécharge et configure le paquet. Cette opération peut prendre quelques instants.'
-			: 'Merci de patienter pendant la finalisation de cette opération.';
+			: isCoreUpdate
+				? 'HiddenCMS sauvegarde le site, installe le core et applique les migrations.'
+				: isBackup
+					? 'La base de données et les fichiers gérés sont en cours d\'archivage.'
+					: isRollback
+						? 'Les fichiers et la base de données sont restaurés depuis le point de retour.'
+						: 'Merci de patienter pendant la finalisation de cette opération.';
 
 		if (!$status.length){
 			$status = $('<div class="modal-processing-status" role="status" aria-live="polite">'

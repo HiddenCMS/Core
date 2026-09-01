@@ -4,6 +4,18 @@ HiddenCMS découvre les paquets Composer dont le type est `hiddencms-addon` ou
 `hiddencms-addon-{type}`. Les types disponibles sont `module`, `widget`, `theme`,
 `language` et `authenticator`.
 
+Chaque paquet doit déclarer une contrainte explicite sur le core :
+
+```json
+"require": {
+    "php": ">=8.1",
+    "hiddencms/core": "^0.3"
+}
+```
+
+L'administration signale les addons sans contrainte de compatibilité ou ceux
+dont la contrainte n'accepte pas la version installée de HiddenCMS.
+
 Exemple de manifeste :
 
 ```json

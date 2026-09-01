@@ -10,7 +10,11 @@ require 'vendor/autoload.php';
 define('HIDDENCMS_MEMORY',  memory_get_usage());
 define('HIDDENCMS_TIME',    microtime(TRUE));
 define('HIDDENCMS_CMS',     __DIR__);
-define('HIDDENCMS_VERSION', 'Alpha 0.2.3');
+
+$hiddencms_manifest = is_file(__DIR__.'/hiddencms.json') ? json_decode(file_get_contents(__DIR__.'/hiddencms.json'), TRUE) : [];
+define('HIDDENCMS_VERSION', !empty($hiddencms_manifest['version']) ? $hiddencms_manifest['version'] : '0.3.0');
+define('HIDDENCMS_SCHEMA_VERSION', !empty($hiddencms_manifest['schema']) ? $hiddencms_manifest['schema'] : HIDDENCMS_VERSION);
+unset($hiddencms_manifest);
 
 error_reporting(E_ALL);
 

@@ -16,6 +16,24 @@ class Admin_Ajax_Checker extends Module_Checker
 
 		return [];
 	}
+
+	public function core_update()
+	{
+		return [];
+	}
+
+	public function backup()
+	{
+		return [];
+	}
+
+	public function rollback($id)
+	{
+		if (preg_match('/^[a-z0-9-]+$/i', $id))
+		{
+			return [$id];
+		}
+	}
 }
 
 
