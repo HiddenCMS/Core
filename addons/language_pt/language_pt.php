@@ -14,7 +14,7 @@ class Language_Pt extends Language
 	{
 		return [
 			'title'   => 'Português',
-			'icon'    => 'ðŸ‡µðŸ‡¹',
+			'icon'    => '🇵🇹',
 			'version' => '1.0',
 			'depends' => [
 				'HiddenCMS' => 'Alpha 0.2'

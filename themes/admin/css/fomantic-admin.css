@@ -331,6 +331,43 @@ body {
 	line-height: 1;
 }
 
+.ui.modal > .modal-processing-status {
+	display: flex;
+	align-items: center;
+	gap: .9rem;
+	margin: 0 1.5rem 1.25rem;
+	padding: .9rem 1rem;
+	border: 1px solid rgba(0, 188, 212, .2);
+	border-radius: 4px;
+	background: rgba(0, 188, 212, .08);
+	color: var(--admin-primary-text);
+}
+
+.ui.modal > .modal-processing-status .loader {
+	flex: 0 0 auto;
+	margin: 0;
+}
+
+.ui.modal > .modal-processing-status strong,
+.ui.modal > .modal-processing-status span {
+	display: block;
+}
+
+.ui.modal > .modal-processing-status strong {
+	margin-bottom: .12rem;
+}
+
+.ui.modal > .modal-processing-status span {
+	color: var(--admin-muted);
+	font-size: .92rem;
+}
+
+.ui.modal.is-processing > form,
+.ui.modal.is-processing > .content {
+	pointer-events: none;
+	opacity: .62;
+}
+
 #topbar.ui.menu {
 	min-height: 56px;
 	margin: 0;
@@ -590,6 +627,7 @@ body {
 
 .footer {
 	position: fixed;
+	z-index: 20;
 	right: 0;
 	bottom: 0;
 	left: 250px;

@@ -37,6 +37,12 @@ class Js extends Library
 			$file = $this->_file.'.js';
 			$path = path($file, 'js', $this->__caller);
 			$asset = $this->__caller->__path('assets', 'js/'.$file);
+
+			if (!$asset && check_file('dist/js/'.$file))
+			{
+				$asset = 'dist/js/'.$file;
+			}
+
 			$version = $asset ? (int)filemtime($asset) : 0;
 
 			if ($v = max((int)$this->config->version_css, $version))

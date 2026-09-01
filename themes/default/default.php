@@ -162,10 +162,6 @@ class Default_ extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Actualités')),
-												'url'   => 'news'
-											],
-											[
 												'title' => utf8_htmlentities($this->lang('Membres')),
 												'url'   => 'members'
 											],
@@ -202,10 +198,6 @@ class Default_ extends Theme
 										]))
 										->style('panel-default'),
 								$this->widget($this->db->insert('widgets', [
-									'widget' => 'news',
-									'type'   => 'categories'
-								])),
-								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'talks',
 									'type'     => 'index',
 									'settings' => $this->storage->encode([
@@ -230,15 +222,7 @@ class Default_ extends Theme
 									'widget' => 'forum',
 									'type'   => 'topics'
 								]))
-								->size('col-4')
-					),
-					$this->col(
-						$this	->widget($this->db->insert('widgets', [
-									'widget' => 'news',
-									'type'   => 'index'
-								]))
-								->style('panel-default')
-								->size('col-4')
+								->size('col-6')
 					),
 					$this->col(
 						$this	->widget($this->db->insert('widgets', [
@@ -246,7 +230,7 @@ class Default_ extends Theme
 									'type'   => 'index'
 								]))
 								->style('panel-default')
-								->size('col-4')
+								->size('col-6')
 					)
 				)
 				->style('row-default')
@@ -324,7 +308,7 @@ class Default_ extends Theme
 				->style('row-default')
 		]));
 
-		foreach (['forum/*', 'news/_news/*', 'user/*', 'search/*', 'gallery/*'] as $page)
+		foreach (['forum/*', 'user/*', 'search/*', 'gallery/*'] as $page)
 		{
 			$dispositions->set($page, 'Contenu', $this->array([
 				$breadcrumb($page != 'search/*'),

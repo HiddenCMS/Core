@@ -214,10 +214,6 @@ class Azuro extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Actualités')),
-												'url'   => 'news'
-											],
-											[
 												'title' => utf8_htmlentities($this->lang('Membres')),
 												'url'   => 'members'
 											],
@@ -254,10 +250,6 @@ class Azuro extends Theme
 								$this->widget($this->db->insert('widgets', [
 									'widget' => 'user',
 									'type'   => 'index'
-								])),
-								$this->widget($this->db->insert('widgets', [
-									'widget' => 'news',
-									'type'   => 'categories'
 								])),
 								$this->widget($this->db->insert('widgets', [
 									'widget'   => 'talks',
@@ -305,26 +297,19 @@ class Azuro extends Theme
 								'widget' => 'forum',
 								'type'   => 'topics'
 							]))
-							->size('col-4')
-				),
-				$this->col(
-					$this	->widget($this->db->insert('widgets', [
-								'widget' => 'news',
-								'type'   => 'index'
-							]))
-							->size('col-4')
+							->size('col-6')
 				),
 				$this->col(
 					$this	->widget($this->db->insert('widgets', [
 								'widget' => 'members',
 								'type'   => 'index'
 							]))
-							->size('col-4')
+							->size('col-6')
 				)
 			)
 		]));
 
-		foreach (['forum/*', 'news/_news/*', 'user/*', 'search/*', 'gallery/*'] as $page)
+		foreach (['forum/*', 'user/*', 'search/*', 'gallery/*'] as $page)
 		{
 			$dispositions->set($page, 'Contenu', $this->array([
 				$this->row(

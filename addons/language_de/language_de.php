@@ -14,7 +14,7 @@ class Language_De extends Language
 	{
 		return [
 			'title'   => 'Deutsch',
-			'icon'    => 'ðŸ‡©ðŸ‡ª',
+			'icon'    => '🇩🇪',
 			'version' => '1.0',
 			'depends' => [
 				'HiddenCMS' => 'Alpha 0.2'

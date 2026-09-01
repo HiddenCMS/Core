@@ -75,7 +75,16 @@ $labels = [
 	'module_type' => (string)$this->lang('Type de module'),
 	'block_type'  => (string)$this->lang('Affichage'),
 	'add_static'  => (string)$this->lang('Ajouter du contenu'),
-	'add_module'  => (string)$this->lang('Ajouter un module')
+	'add_module'  => (string)$this->lang('Ajouter un module'),
+	'source'      => (string)$this->lang('Source'),
+	'display'     => (string)$this->lang('Affichage'),
+	'configuration' => (string)$this->lang('Configuration'),
+	'previous'    => (string)$this->lang('Précédent'),
+	'next'        => (string)$this->lang('Suivant'),
+	'cancel'      => (string)$this->lang('Annuler'),
+	'confirm'     => (string)$this->lang('Valider'),
+	'edit'        => (string)$this->lang('Configurer'),
+	'selection'   => (string)$this->lang('Sélection actuelle')
 ];
 
 $icons = [
@@ -88,6 +97,9 @@ $icons = [
 
 if ($modules)
 {
+	$this	->js('https://cdn.jsdelivr.net/npm/tinymce@6.8.5/tinymce.min.js')
+			->js('form_tinymce');
+
 	$this->js_load('
 		(function(){
 			var modules = '.json_encode($modules, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).';
@@ -156,6 +168,10 @@ if ($modules)
 			};
 
 			var read = function(){
+				if (window.tinymce && typeof tinymce.triggerSave == "function"){
+					tinymce.triggerSave();
+				}
+
 				blocks = [];
 
 				$list.children(".page-block").each(function(){
@@ -168,23 +184,9 @@ if ($modules)
 						});
 					}
 					else {
-						var settings = {};
-
-						$block.find(".page-block-setting").each(function(){
-							if ($(this).attr("type") == "checkbox"){
-								settings[$(this).data("field")] = $(this).is(":checked");
-							}
-							else {
-								settings[$(this).data("field")] = $(this).val() || "";
-							}
-						});
-
-						blocks.push({
-							type: "module",
-							module: $block.find(".page-block-module").val() || "",
-							block: $block.find(".page-block-type").val() || "index",
-							settings: settings
-						});
+						var moduleBlock = $.extend(true, {}, $block.data("pageBlock") || {});
+						moduleBlock.type = "module";
+						blocks.push(moduleBlock);
 					}
 				});
 
@@ -256,7 +258,8 @@ if ($modules)
 				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "static").data("type", "static");
 				var $header = $("<div />").addClass("content page-block-header").append($("<strong />").text(labels.static));
 				var $body = $("<div />").addClass("content");
-				var $content = $("<textarea />").addClass("editor page-block-content").attr("rows", 8).val(block && block.content ? block.content : "");
+				var editorId = "page-block-editor-"+Date.now()+"-"+Math.floor(Math.random()*10000);
+				var $content = $("<textarea />").addClass("wysiwyg page-block-content").attr({id: editorId, rows: 12}).val(block && block.content ? block.content : "");
 
 				$header.append(controls());
 				$body	.append($("<div />").addClass("field")
@@ -266,7 +269,7 @@ if ($modules)
 				initUi($block);
 
 				if (typeof form !== "undefined"){
-					form.load($form, true);
+					form.load($block, true);
 				}
 
 				read();
@@ -282,26 +285,182 @@ if ($modules)
 				return block;
 			};
 
-			var addModule = function(block){
+			var moduleSummary = function($block){
+				var data = $block.data("pageBlock") || {};
+				var module = modules[data.module] || {};
+				var source = (module.blocks || {})[data.block] || {};
+				var display = (source.displays || {})[(data.settings || {}).display] || {};
+				var $summary = $block.find(".page-block-summary").empty();
+
+				$summary
+					.append($("<span />").append($("<small />").text(labels.module_type)).append($("<strong />").text(module.title || data.module || "-")))
+					.append($("<span />").append($("<small />").text(labels.source)).append($("<strong />").text(source.title || data.block || "-")))
+					.append($("<span />").append($("<small />").text(labels.display)).append($("<strong />").text(display.title || "-")));
+			};
+
+			var addModule = function(block, openWizard){
 				block = normalizeModuleBlock(block);
+				block.settings.display = block.settings.display || firstKey((((modules[block.module] || {}).blocks || {})[block.block] || {}).displays || {});
 
 				var $block = $("<div />").addClass("page-block ui fluid card").attr("data-type", "module").data("type", "module");
 				var $header = $("<div />").addClass("content page-block-header").append($("<strong />").text(labels.module));
-				var $body = $("<div />").addClass("content");
-				var $module = moduleSelect(block.module);
-				var $type = blockSelect(block.module, block.block);
-				var $settings = $("<div />").addClass("page-block-settings");
+				var $body = $("<div />").addClass("content page-block-module-body");
+				var $summary = $("<div />").addClass("page-block-summary");
+				var $edit = $("<button />").attr("type", "button").addClass("ui mini button page-block-edit").html(icons.module+" "+labels.edit);
 
 				$header.append(controls());
-				$body	.append($("<div />").addClass("two fields")
-							.append($("<div />").addClass("field").append($("<label />").text(labels.module_type)).append($module))
-							.append($("<div />").addClass("field").append($("<label />").text(labels.block_type)).append($type)))
-						.append($settings);
-
+				$body.append($summary).append($edit);
 				$list.append($block.append($header).append($body));
-				renderSettings($block, block.settings);
-				initUi($block);
+				$block.data("pageBlock", $.extend(true, {}, block));
+				moduleSummary($block);
 				read();
+
+				if (openWizard){
+					openModuleWizard($block, true);
+				}
+			};
+
+			var openModuleWizard = function($block, removeOnCancel){
+				var state = $.extend(true, {}, $block.data("pageBlock") || normalizeModuleBlock({}));
+				var steps = ["module", "source", "display", "configuration"];
+				var stepIndex = 0;
+				var stepIcons = {module: "fas fa-cube", source: "fas fa-layer-group", display: "fas fa-th-large", configuration: "fas fa-sliders-h"};
+				var card = function(kind, value, title, iconClass, active){
+					return $("<button />").attr({type: "button", "data-kind": kind, "data-value": value}).addClass("card page-module-choice"+(active ? " active" : ""))
+						.append($("<div />").addClass("content").append($("<span />").addClass("page-module-choice-icon").append($("<i />").addClass(iconClass || "fas fa-cube"))).append($("<div />").addClass("header").text(title)));
+				};
+				var $modalHeader = $("<div />").addClass("header page-module-modal-header").append($("<span />").text(labels.add_module)).append($("<button />").attr({type: "button", "aria-label": labels.cancel}).addClass("page-module-close").html("&times;"));
+				var $choice = $("<div />").addClass("page-module-current").attr("aria-live", "polite")
+					.append($("<span />").addClass("page-module-current-icon"))
+					.append($("<span />").addClass("page-module-current-copy").append($("<small />").text(labels.selection)).append($("<strong />")));
+				var $modal = $("<div />").addClass("ui large modal page-module-modal")
+					.append($modalHeader)
+					.append($("<div />").addClass("content page-module-modal-content")
+						.append($("<div />").addClass("ui mini fluid steps page-module-steps"))
+						.append($choice)
+						.append($("<div />").addClass("page-module-panels")))
+					.append($("<div />").addClass("actions")
+						.append($("<button />").attr("type", "button").addClass("ui button page-module-cancel").text(labels.cancel))
+						.append($("<button />").attr("type", "button").addClass("ui button page-module-previous").text(labels.previous))
+						.append($("<button />").attr("type", "button").addClass("ui primary button page-module-next").text(labels.next))
+						.append($("<button />").attr("type", "button").addClass("ui primary button page-module-confirm").text(labels.confirm)));
+
+				$.each(steps, function(i, step){
+					$modal.find(".page-module-steps").append($("<button />").attr({type: "button", "data-step": step}).addClass("step").append($("<i />").addClass(stepIcons[step])).append($("<div />").addClass("content").append($("<div />").addClass("title").text(labels[step] || step))));
+				});
+
+				var currentSource = function(){
+					return (((modules[state.module] || {}).blocks || {})[state.block] || {});
+				};
+				var defaults = function(){
+					var source = currentSource();
+					state.settings = state.settings || {};
+					state.settings.display = state.settings.display || firstKey(source.displays || {});
+					$.each(source.fields || {}, function(name, field){
+						if (state.settings[name] === undefined || state.settings[name] === "") state.settings[name] = field.default;
+					});
+				};
+				var updateCurrent = function(){
+					var module = modules[state.module] || {};
+					var source = currentSource();
+					var display = (source.displays || {})[state.settings.display] || {};
+					$choice.find(".page-module-current-icon").empty().append($("<i />").addClass(module.icon || "fas fa-cube"));
+					$choice.find("strong").text($.grep([module.title, source.title, display.title], function(value){ return !!value; }).join(" · "));
+				};
+
+				var buildPanel = function(step){
+					var source = currentSource();
+					var $panel = $("<div />").addClass("page-module-panel").attr("data-step", step);
+
+					if (step === "module"){
+						var $cards = $("<div />").addClass("ui cards page-module-cards");
+						$.each(modules, function(name, module){ $cards.append(card("module", name, module.title, module.icon, name === state.module)); });
+						$panel.append($cards);
+					}
+					else if (step === "source"){
+						var $cards = $("<div />").addClass("ui cards page-module-cards");
+						$.each((modules[state.module] || {}).blocks || {}, function(name, item){ $cards.append(card("source", name, item.title, item.icon, name === state.block)); });
+						$panel.append($cards);
+					}
+					else if (step === "display"){
+						var $cards = $("<div />").addClass("ui cards page-module-cards");
+						$.each(source.displays || {}, function(name, item){ $cards.append(card("display", name, item.title, item.icon, name === state.settings.display)); });
+						$panel.append($cards);
+					}
+					else {
+						var $fields = $("<div />").addClass("ui form");
+						$.each(source.fields || {}, function(name, field){
+							var attrs = {type: field.type === "number" ? "number" : "text", "data-setting": name};
+							if (field.min !== null) attrs.min = field.min;
+							if (field.max !== null) attrs.max = field.max;
+							if (field.step !== null) attrs.step = field.step;
+							$fields.append($("<div />").addClass("field").append($("<label />").text(field.label)).append($("<input />").attr(attrs).val(state.settings[name])));
+						});
+						$panel.append($fields.children().length ? $fields : $("<div />").addClass("ui message").text(labels.configuration));
+					}
+
+					return $panel;
+				};
+
+				var showStep = function(index, animate){
+					var previousIndex = stepIndex;
+					stepIndex = Math.max(0, Math.min(steps.length - 1, index));
+					var $panels = $modal.find(".page-module-panels");
+					var $current = $panels.children(".page-module-panel").first();
+					var $next = buildPanel(steps[stepIndex]);
+
+					updateCurrent();
+					$modal.find(".page-module-steps .step").removeClass("active completed").each(function(i){
+						$(this).toggleClass("active", i === stepIndex).toggleClass("completed", i < stepIndex);
+					});
+
+					if (!$current.length || !animate){
+						$current.remove();
+						$panels.empty().append($next);
+					}
+					else {
+						var direction = stepIndex >= previousIndex ? 1 : -1;
+						var currentHeight = $current.outerHeight(true);
+						$next.css({display: "block", left: 0, opacity: 0, position: "absolute", top: 0, transform: "translateX("+(direction * 14)+"px)", width: "100%"});
+						$panels.append($next).css("height", currentHeight);
+						var nextHeight = $next.outerHeight(true);
+						$current.css({left: 0, position: "absolute", top: 0, width: "100%"});
+						$panels.stop(true).animate({height: nextHeight}, 220);
+						window.requestAnimationFrame(function(){
+							$current.css({opacity: 0, transform: "translateX("+(-direction * 10)+"px)"});
+							$next.css({opacity: 1, transform: "translateX(0)"});
+						});
+						window.setTimeout(function(){
+							$current.remove();
+							$next.css({position: "relative", top: "auto", left: "auto", width: "auto"});
+							$panels.css("height", "auto");
+						}, 230);
+					}
+
+					$modal.find(".page-module-previous").toggle(stepIndex > 0);
+					$modal.find(".page-module-next").toggle(stepIndex < steps.length - 1);
+					$modal.find(".page-module-confirm").toggle(stepIndex === steps.length - 1);
+				};
+
+				$modal.on("click", ".page-module-choice", function(){
+					var kind = $(this).data("kind");
+					var value = String($(this).data("value"));
+					if (kind === "module" && state.module !== value){ state.module = value; state.block = firstKey((modules[value] || {}).blocks || {}); state.settings = {}; }
+					if (kind === "source" && state.block !== value){ state.block = value; state.settings = {}; }
+					if (kind === "display") state.settings.display = value;
+					defaults();
+					showStep(stepIndex, false);
+				});
+				$modal.on("change input", "[data-setting]", function(){ state.settings[$(this).data("setting")] = $(this).val(); });
+				$modal.on("click", ".page-module-next", function(){ if (stepIndex < steps.length - 1) showStep(stepIndex + 1, true); });
+				$modal.on("click", ".page-module-previous", function(){ if (stepIndex > 0) showStep(stepIndex - 1, true); });
+				$modal.on("click", ".page-module-steps .step", function(){ showStep(steps.indexOf($(this).data("step")), true); });
+				$modal.on("click", ".page-module-confirm", function(){ defaults(); $block.data("pageBlock", $.extend(true, {}, state)); moduleSummary($block); read(); $modal.modal("hide"); });
+				$modal.on("click", ".page-module-cancel", function(){ if (removeOnCancel) $block.remove(); $modal.modal("hide"); });
+				$modal.on("click", ".page-module-close", function(){ if (removeOnCancel) $block.remove(); $modal.modal("hide"); });
+				$modal.modal({autofocus: false, closable: false, onHidden: function(){ $modal.remove(); }}).modal("show");
+				defaults();
+				showStep(0, false);
 			};
 
 			var $composer = $("<div />").addClass("page-composer ui form");
@@ -326,7 +485,7 @@ if ($modules)
 			else {
 				$.each(blocks, function(i, block){
 					if (block.type == "module"){
-						addModule(block);
+						addModule(block, false);
 					}
 					else {
 						addStatic(block);
@@ -339,11 +498,22 @@ if ($modules)
 			});
 
 			$composer.on("click", ".page-block-add-module", function(){
-				addModule({type: "module"});
+				addModule({type: "module"}, true);
+			});
+
+			$composer.on("click", ".page-block-edit", function(){
+				openModuleWizard($(this).closest(".page-block"), false);
 			});
 
 			$composer.on("click", ".page-block-delete", function(){
-				$(this).closest(".page-block").remove();
+				var $block = $(this).closest(".page-block");
+				var editorId = $block.find("textarea.wysiwyg").attr("id");
+
+				if (editorId && window.tinymce && tinymce.get(editorId)){
+					tinymce.get(editorId).remove();
+				}
+
+				$block.remove();
 				read();
 			});
 

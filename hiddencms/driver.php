@@ -33,6 +33,9 @@ abstract class Driver
 	abstract public function tables();
 	abstract public function table_create($table);
 	abstract public function table_columns($table);
+	abstract public function begin_transaction();
+	abstract public function commit();
+	abstract public function rollback();
 
 	public function query($request)
 	{

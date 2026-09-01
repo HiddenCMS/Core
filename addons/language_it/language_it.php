@@ -14,7 +14,7 @@ class Language_It extends Language
 	{
 		return [
 			'title'   => 'Italiano',
-			'icon'    => 'ðŸ‡®ðŸ‡¹',
+			'icon'    => '🇮🇹',
 			'version' => '1.0',
 			'depends' => [
 				'HiddenCMS' => 'Alpha 0.2'

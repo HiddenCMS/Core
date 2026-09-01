@@ -23,13 +23,21 @@ class Admin_Checker extends Module_Checker
 	{
 		if (($addon = $this->_check_addon($id, $title)) && ($controller = $addon->controller()))
 		{
+			$object = $addon->addon();
+
+			if (in_array($action, ['package-update', 'package-remove'], TRUE) && $object->composer_package())
+			{
+				$this->ajax();
+				return [$object, $controller, $action];
+			}
+
 			$actions = $controller->__actions();
 
-			if (isset($actions[$action]) && (!isset($actions[$action][4]) || $actions[$action][4]($addon->addon())))
+			if (isset($actions[$action]) && (!isset($actions[$action][4]) || $actions[$action][4]($object)))
 			{
 				$this->ajax_if(!empty($actions[$action][3]));
 
-				return [$addon->addon(), $controller, $action];
+				return [$object, $controller, $action];
 			}
 		}
 	}

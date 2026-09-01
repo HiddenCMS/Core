@@ -272,6 +272,14 @@ class Db extends Core
 		return $this->_exec('last_id');
 	}
 
+	public function insert_checked($table, $data)
+	{
+		$this->_request['insert'] = $table;
+		$this->_request['values'] = $data;
+
+		return $this->_exec_checked('last_id');
+	}
+
 	public function replace($table, $data)
 	{
 		$this->_request['replace'] = $table;
@@ -298,6 +306,18 @@ class Db extends Core
 		}
 
 		return $this->_exec('affected_rows');
+	}
+
+	public function delete_checked($table, $multi_tables = '')
+	{
+		$this->_request['delete'] = $table;
+
+		if ($multi_tables)
+		{
+			$this->_request['multi_tables'] = $multi_tables;
+		}
+
+		return $this->_exec_checked('affected_rows');
 	}
 
 	public function get($cast = TRUE)
@@ -401,6 +421,48 @@ class Db extends Core
 		return $this;
 	}
 
+	public function execute_checked($query)
+	{
+		$request = $this->_driver('query', ['query' => $query]);
+
+		if (!empty($request->error))
+		{
+			throw new \RuntimeException($request->error.' ['.$request->sql.']');
+		}
+
+		return $this;
+	}
+
+	public function begin_transaction()
+	{
+		if (!$this->_driver('begin_transaction'))
+		{
+			throw new \RuntimeException('Impossible de démarrer la transaction SQL.');
+		}
+
+		return $this;
+	}
+
+	public function commit()
+	{
+		if (!$this->_driver('commit'))
+		{
+			throw new \RuntimeException('Impossible de valider la transaction SQL.');
+		}
+
+		return $this;
+	}
+
+	public function rollback()
+	{
+		if (!$this->_driver('rollback'))
+		{
+			throw new \RuntimeException('Impossible d\'annuler la transaction SQL.');
+		}
+
+		return $this;
+	}
+
 	public function query($query)
 	{
 		$this->_request['query'] = $query;
@@ -479,6 +541,25 @@ class Db extends Core
 		{
 			return $request->$callback();
 		}
+	}
+
+	protected function _exec_checked($callback = NULL)
+	{
+		$request = $this->_driver('query', $this->_request);
+
+		$this->_request = [];
+
+		if (HIDDENCMS_DEBUG_BAR || HIDDENCMS_LOGS)
+		{
+			self::$_requests[] = $request;
+		}
+
+		if (!empty($request->error))
+		{
+			throw new \RuntimeException($request->error.' ['.$request->sql.']');
+		}
+
+		return $callback ? $request->$callback() : $this;
 	}
 }
 

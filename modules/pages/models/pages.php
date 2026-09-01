@@ -119,11 +119,19 @@ class Pages extends Model
 
 		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
-			if ($module->is_enabled() && $module->is_front())
+			if ($module->is_enabled() && $module->is_front() && !empty($module->info()->page_blocks))
 			{
+				$blocks = $this->normalize_page_blocks($module->page_blocks());
+
+				if (!$blocks)
+				{
+					continue;
+				}
+
 				$modules[$module->info()->name] = [
 					'title'  => (string)$module->info()->title,
-					'blocks' => $this->normalize_page_blocks($module->page_blocks())
+					'icon'   => !empty($module->info()->icon) ? (string)$module->info()->icon : 'fas fa-cube',
+					'blocks' => $blocks
 				];
 			}
 		}
@@ -143,8 +151,23 @@ class Pages extends Model
 		{
 			$output[$name] = [
 				'title'  => !empty($block['title']) ? (string)$block['title'] : $name,
+				'icon'   => !empty($block['icon']) ? (string)$block['icon'] : 'fas fa-layer-group',
+				'displays' => [],
 				'fields' => []
 			];
+
+			foreach (!empty($block['displays']) && is_array($block['displays']) ? $block['displays'] : [] as $display => $settings)
+			{
+				if (!is_array($settings))
+				{
+					$settings = ['title' => $settings];
+				}
+
+				$output[$name]['displays'][$display] = [
+					'title' => !empty($settings['title']) ? (string)$settings['title'] : $display,
+					'icon'  => !empty($settings['icon']) ? (string)$settings['icon'] : 'fas fa-th-large'
+				];
+			}
 
 			foreach (!empty($block['fields']) && is_array($block['fields']) ? $block['fields'] : [] as $field => $settings)
 			{
@@ -158,7 +181,11 @@ class Pages extends Model
 				$output[$name]['fields'][$field] = [
 					'label'  => !empty($settings['label']) ? (string)$settings['label'] : $field,
 					'type'   => !empty($settings['type']) ? (string)$settings['type'] : 'text',
-					'values' => $values
+					'values' => $values,
+					'default' => isset($settings['default']) ? $settings['default'] : '',
+					'min'     => isset($settings['min']) ? $settings['min'] : NULL,
+					'max'     => isset($settings['max']) ? $settings['max'] : NULL,
+					'step'    => isset($settings['step']) ? $settings['step'] : NULL
 				];
 			}
 		}
@@ -389,12 +416,19 @@ class Pages extends Model
 
 	private function build_module_block($block)
 	{
-		if (!($module = @HiddenCMS()->module($block['module'])) || !$module->is_enabled() || !$module->is_front())
+		if (!($module = @HiddenCMS()->module($block['module'])) || !$module->is_enabled() || !$module->is_front() || empty($module->info()->page_blocks))
 		{
 			return FALSE;
 		}
 
 		$type = !empty($block['block']) ? $block['block'] : 'index';
+		$available = $module->page_blocks();
+
+		if (!is_array($available) || !isset($available[$type]))
+		{
+			return FALSE;
+		}
+
 		$settings = !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : [];
 		$data = $module->page_block($type, $settings);
 

@@ -45,14 +45,14 @@ class Admin extends Controller_Module
 
 		return $this->array(
 			$this->row(
-				$this->col(
+				(($news_module = $this->module('news')) && $news_module->is_enabled()) ? $this->col(
 					$this	->panel_box()
 							->heading($this->lang('Actualité|Actualités', $count = $this->db->from('news')->where('published', TRUE)->count()), 'far fa-newspaper', 'admin/news')
 							->body($count)
 							->color('bg-aqua')
 							->size('col-4 col-lg-2')
 							->footer($this->lang('Voir la liste').' '.icon('fas fa-arrow-circle-right'))
-				),
+				) : '',
 				$this->col(
 					$this	->panel_box()
 							->heading($this->lang('Membre|Membres', $count = $this->db->from('user')->where('deleted', FALSE)->count()), 'fas fa-users', 'admin/user')

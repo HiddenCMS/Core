@@ -28,5 +28,10 @@
         "allow-plugins": {
             "php-http/discovery": true
         }
+    },
+    "scripts": {
+        "hiddencms:addons": "@php tools/addons.php sync",
+        "post-install-cmd": "@php tools/addons.php sync --composer-hook",
+        "post-update-cmd": "@php tools/addons.php sync --composer-hook"
     }
 }

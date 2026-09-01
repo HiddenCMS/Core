@@ -49,7 +49,6 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (5, 1, 'comments', '{"enabled":true}'),
 (6, 1, 'contact', '{"enabled":true}'),
 (7, 1, 'live_editor', '{"enabled":true}'),
-(9, 1, 'news', '{"enabled":true}'),
 (10, 1, 'pages', '{"enabled":true}'),
 (11, 1, 'search', '{"enabled":true}'),
 (12, 1, 'settings', '{"enabled":true}'),
@@ -62,7 +61,6 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (19, 3, 'html', '{"enabled":true}'),
 (20, 3, 'module', '{"enabled":true}'),
 (21, 3, 'navigation', '{"enabled":true}'),
-(22, 3, 'news', '{"enabled":true}'),
 (23, 3, 'search', '{"enabled":true}'),
 (24, 3, 'user', '{"enabled":true}'),
 (25, 4, 'de', '{"order":3,"enabled":true}'),
@@ -101,6 +99,14 @@ INSERT INTO `addon_type` (`id`, `name`) VALUES
 (4, 'language'),
 (5, 'authenticator');
 
+DROP TABLE IF EXISTS `addon_migrations`;
+CREATE TABLE `addon_migrations` (
+  `package` varchar(190) NOT NULL,
+  `migration` varchar(190) NOT NULL,
+  `applied_at` datetime NOT NULL,
+  PRIMARY KEY (`package`,`migration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -133,19 +139,18 @@ INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposit
 (1, 'azuro', '*', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":"col-7"}]},{"size":null,"widgets":[{"id":2,"style":null,"size":"col-3"}]}]}]'),
 (2, 'azuro', '*', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":27,"style":null,"size":null}]}]}]'),
 (3, 'azuro', '*', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":26,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":"col-7"}]}]}]'),
-(4, 'azuro', '*', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":28,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":"card-dark","size":null},{"id":9,"style":null,"size":null},{"id":11,"style":null,"size":null}]}]}]'),
+(4, 'azuro', '*', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":28,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":"card-dark","size":null}]}]}]'),
 (5, 'azuro', '*', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":29,"style":"card-transparent","size":null}]}]}]'),
 (6, 'azuro', '*', 3, '[]'),
 (7, 'azuro', '*', 4, '[]'),
 (8, 'azuro', '*', 6, '[]'),
-(13, 'azuro', 'news/_news/*', 5, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":20,"style":null,"size":null}]}]}]'),
 (17, 'azuro', 'user/*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":33,"style":null,"size":null}]}]}]'),
 (18, 'azuro', 'outline:1', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":null}]},{"size":"col-3","widgets":[{"id":2,"style":null,"size":null}]}]}]'),
 (19, 'azuro', 'outline:1', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":3,"style":null,"size":null}]}]}]'),
 (20, 'azuro', 'outline:1', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":4,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":null}]}]}]'),
 (21, 'azuro', 'outline:1', 3, '[]'),
 (22, 'azuro', 'outline:1', 4, '[]'),
-(23, 'azuro', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":6,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":9,"style":null,"size":null},{"id":8,"style":null,"size":null}]}]}]'),
+(23, 'azuro', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":6,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":null,"size":null}]}]}]'),
 (24, 'azuro', 'outline:1', 6, '[]'),
 (25, 'azuro', 'outline:1', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":10,"style":"card-transparent","size":null}]}]}]');
 
@@ -163,7 +168,6 @@ CREATE TABLE `file` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 INSERT INTO `file` (`id`, `user_id`, `name`, `path`, `date`) VALUES
-(1, 1, 'Sans-titre-2.jpg', './upload/news/categories/ubfuejdfooirqya0pyltfeklja4ew4sn.jpg', '2015-05-30 00:34:16'),
 (2, 1, 'logo.png', 'upload/partners/zwvmsjijfljaka4rdblgvlype1lnbwaw.png', '2016-05-07 18:51:53'),
 (3, 1, 'logo_black.png', 'upload/partners/y4ofwq2ekppwnfpmnrmnafeivszlg5bd.png', '2016-05-07 18:51:53');
 
@@ -302,9 +306,6 @@ CREATE TABLE `pages_instances` (
   CONSTRAINT `pages_instances_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`page_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `pages_instances` (`instance_id`, `page_id`, `module`, `route`, `settings`, `position`, `enabled`) VALUES
-(1, 1, 'news', '', '[]', 0, '1');
-
 DROP TABLE IF EXISTS `search_keywords`;
 CREATE TABLE `search_keywords` (
   `keyword` varchar(100) NOT NULL,
@@ -358,7 +359,6 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('azuro_primary_color', '', '', '#00d7b3', 'string'),
 ('azuro_secondary_color', '', '', '#00c7e4', 'string'),
 ('azuro_text_color', '', '', '#212529', 'string'),
-('news_per_page', '', '', '5', 'int'),
 ('analytics', '', '', '', 'string'),
 ('captcha_private_key', '', '', '', 'string'),
 ('captcha_public_key', '', '', '', 'string'),
@@ -433,69 +433,6 @@ CREATE TABLE `tracking` (
   UNIQUE KEY `user_id` (`user_id`,`model`,`model_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `news`;
-CREATE TABLE `news` (
-  `news_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `category_id` int(11) unsigned NOT NULL,
-  `user_id` int(11) unsigned NOT NULL,
-  `image_id` int(11) unsigned DEFAULT NULL,
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `published` enum('0','1') NOT NULL DEFAULT '0',
-  `views` int(11) unsigned NOT NULL DEFAULT '0',
-  `vote` enum('0','1') NOT NULL DEFAULT '0',
-  PRIMARY KEY (`news_id`),
-  KEY `category_id` (`category_id`),
-  KEY `user_id` (`user_id`),
-  KEY `image_id` (`image_id`),
-  CONSTRAINT `news_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `news_ibfk_2` FOREIGN KEY (`image_id`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `news_ibfk_4` FOREIGN KEY (`category_id`) REFERENCES `news_categories` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `news_categories`;
-CREATE TABLE `news_categories` (
-  `category_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `image_id` int(11) unsigned DEFAULT NULL,
-  `icon_id` int(11) unsigned DEFAULT NULL,
-  `name` varchar(100) NOT NULL,
-  PRIMARY KEY (`category_id`),
-  KEY `image_id` (`image_id`),
-  KEY `icon_id` (`icon_id`),
-  CONSTRAINT `news_categories_ibfk_1` FOREIGN KEY (`image_id`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `news_categories_ibfk_2` FOREIGN KEY (`icon_id`) REFERENCES `files` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-INSERT INTO `news_categories` (`category_id`, `image_id`, `icon_id`, `name`) VALUES
-(1, 1, NULL, 'general');
-
-DROP TABLE IF EXISTS `news_categories_lang`;
-CREATE TABLE `news_categories_lang` (
-  `category_id` int(11) unsigned NOT NULL,
-  `lang` varchar(5) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  PRIMARY KEY (`category_id`,`lang`),
-  KEY `lang` (`lang`),
-  CONSTRAINT `news_categories_lang_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `news_categories` (`category_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `news_categories_lang` (`category_id`, `lang`, `title`) VALUES
-(1, 'fr', 'G&eacute;n&eacute;ral');
-
-DROP TABLE IF EXISTS `news_lang`;
-CREATE TABLE `news_lang` (
-  `news_id` int(11) unsigned NOT NULL,
-  `lang` varchar(5) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `slug` varchar(150) NOT NULL,
-  `introduction` text NOT NULL,
-  `content` text NOT NULL,
-  `tags` text NOT NULL,
-  PRIMARY KEY (`news_id`,`lang`),
-  KEY `lang` (`lang`),
-  KEY `slug` (`slug`),
-  CONSTRAINT `news_lang_ibfk_1` FOREIGN KEY (`news_id`) REFERENCES `news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `menus`;
 CREATE TABLE `menus` (
   `menu_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -539,7 +476,6 @@ INSERT INTO `menus_items` (`item_id`, `menu_id`, `parent_id`, `title`, `url`, `t
 (8, 2, NULL, 'Matchs', 'events/matches', '_parent', 4, '1'),
 (9, 2, NULL, 'Partenaires', 'partners', '_parent', 5, '1'),
 (10, 2, NULL, 'Palmares', 'awards', '_parent', 6, '1'),
-(11, 3, NULL, 'Actualites', 'news', '_parent', 1, '1'),
 (12, 3, NULL, 'Membres', 'members', '_parent', 2, '1'),
 (13, 3, NULL, 'Recrutement', 'recruits', '_parent', 3, '1'),
 (14, 3, NULL, 'Photos', 'gallery', '_parent', 4, '1'),
@@ -686,9 +622,7 @@ INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUE
 (6, 'module', 'index', NULL, NULL),
 (7, 'navigation', 'vertical', NULL, '{"menu_id":3,"panel":1}'),
 (8, 'user', 'index', NULL, NULL),
-(9, 'news', 'categories', NULL, NULL),
 (10, 'copyright', 'index', NULL, NULL),
-(11, 'news', 'index', NULL, NULL),
 (12, 'module', 'index', NULL, NULL),
 (13, 'module', 'index', NULL, NULL),
 (14, 'module', 'index', NULL, NULL),

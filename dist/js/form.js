@@ -44,12 +44,25 @@ var form = new function(){
 						});
 					}
 
-					$form.find('.modal-body').html(data.form);
+					var $formBody = $form.children('.content:first');
+
+					if (!$formBody.length){
+						$formBody = $form.find('.modal-body:first');
+					}
+
+					if (!$formBody.length){
+						$formBody = $form;
+					}
+
+					$formBody.html(data.form);
 					form.load($form, true);
 				}
 
 				d.resolve(data);
-			})
+			}),
+			error: function(xhr){
+				d.reject(xhr);
+			}
 		});
 
 

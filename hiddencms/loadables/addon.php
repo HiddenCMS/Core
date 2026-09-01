@@ -33,8 +33,16 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 			{
 				static::$_objects[$class][$name] = NULL;
 			}
-			else if (static::$_objects[$class][$name] = $addon = $caller->___load('addons', static::__class($name), [$addon]))
+			else
 			{
+				$addon_class = $addon->data->get('composer', 'class') ?: static::__class($name);
+				$addon_class = preg_replace('/^HB\\\\/', '', ltrim($addon_class, '\\'));
+
+				if (!(static::$_objects[$class][$name] = $addon = $caller->___load('addons', $addon_class, [$addon])))
+				{
+					return NULL;
+				}
+
 				$addon->__path(function($caller, $type, $file) use ($dir){
 					$file = [$file];
 
@@ -43,7 +51,20 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 						array_unshift($file, $type);
 					}
 
-					$file = $dir.'/'.$caller->info()->name.'/'.implode('/', $file);
+					$file = implode('/', $file);
+					$namespace = preg_replace('/\\\\[^\\\\]+$/', '', preg_replace('/^HB\\\\/', '', get_class($caller)));
+
+					if ($namespace)
+					{
+						yield str_replace('\\', '/', $namespace).'/'.$file;
+					}
+
+					if ($package_path = $caller->package_path())
+					{
+						yield $package_path.'/'.$file;
+					}
+
+					$file = $dir.'/'.$caller->info()->name.'/'.$file;
 
 					if (!HIDDENCMS_SAFE_MODE)
 					{
@@ -102,6 +123,36 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 	public function is_enabled()
 	{
 		return !$this->is_removable() || !empty($this->settings()->enabled);
+	}
+
+	public function composer_package()
+	{
+		return $this->settings()->get('composer', 'package');
+	}
+
+	public function package_path()
+	{
+		if (($package = $this->composer_package()) && class_exists('Composer\\InstalledVersions') && \Composer\InstalledVersions::isInstalled($package))
+		{
+			$path = str_replace('\\', '/', \Composer\InstalledVersions::getInstallPath($package));
+			$root = rtrim(str_replace('\\', '/', HIDDENCMS_CMS), '/').'/';
+
+			if (strpos($path.'/', $root) === 0)
+			{
+				$path = rtrim(substr($path, strlen($root)), '/');
+			}
+			else
+			{
+				$path = rtrim($path, '/');
+			}
+
+			if ($addon_path = trim((string)$this->settings()->get('composer', 'path'), '/'))
+			{
+				$path .= '/'.$addon_path;
+			}
+
+			return $path;
+		}
 	}
 
 	public function is_deactivatable()

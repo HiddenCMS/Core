@@ -145,12 +145,7 @@ abstract class Module extends Addon
 
 	public function page_blocks()
 	{
-		return [
-			'index' => [
-				'title'  => (string)$this->info()->title,
-				'fields' => []
-			]
-		];
+		return [];
 	}
 
 	public function page_block($block = 'index', $settings = [])
@@ -171,6 +166,11 @@ abstract class Module extends Addon
 			'block'    => !empty($block['settings']['block']) ? $block['settings']['block'] : 'index',
 			'settings' => !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : []
 		];
+	}
+
+	public function page_block_content($block = 'index', $settings = [])
+	{
+		return FALSE;
 	}
 
 	public function is_authorized()

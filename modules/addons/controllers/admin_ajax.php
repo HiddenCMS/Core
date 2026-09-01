@@ -6,183 +6,47 @@
 
 namespace HB\Modules\Addons\Controllers;
 
-use HB\HiddenCMS\Core\Debug;
 use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
-use ZipArchive;
+use Throwable;
 
 class Admin_Ajax extends Controller_Module
 {
 	public function install()
 	{
 		return $this->form2()
-					->rule($this->form_file('addon')
-								->mime('application/x-zip-compressed')
-								->mime('application/zip')
-								->temp()
+					->rule($this->form_text('package')
+								->title('Paquet Composer')
+								->placeholder('vendor/package')
+								->info('Indiquez le nom Composer du module, thème, widget ou autre addon compatible HiddenCMS.')
+								->required()
+								->check(function($post){
+									$package = isset($post['package']) ? trim($post['package']) : '';
+
+									if (!preg_match('#^[a-z0-9](?:[a-z0-9_.-]*[a-z0-9])?/[a-z0-9](?:[a-z0-9_.-]*[a-z0-9])?(?::[^\s]+)?$#i', $package))
+									{
+										return 'Le nom du paquet Composer est invalide.';
+									}
+								})
 					)
-					->success(function($data){
-						$zip = new ZipArchive;
-						if ($zip->open($tmp_file = $data['addon']) === TRUE)
+					->success(function($data, $form){
+						try
 						{
-							dir_create($tmp = dir_temp());
-																			
-							$zip->extractTo($tmp);
-							$zip->close();
-				    
-							$folders = array_filter(scandir($tmp), function($a) use ($tmp){
-								return !in_array($a, ['.', '..']) && is_dir($tmp.'/'.$a);
-							});
+							$package = trim($data['package']);
+							$this->addon_packages->require_package($package);
+							$this->addon_packages->sync();
 
-							$install_addon = function ($dir, $types = NULL){
-								if ($types === NULL)
-								{
-									$types = ['Module', 'Widget', 'Theme'];
-								}
-								else if (!is_array($types))
-								{
-									$types = (array)$types;
-								}
-
-								foreach (scandir($dir) as $filename)
-								{
-									if (!is_dir($file = $dir.'/'.$filename) &&
-										preg_match('/^(.+?)\.php$/', $filename, $match) &&
-										preg_match('/use HB\\\\HiddenCMS\\\Addons\\\('.implode('|', $types).');/m', $content = file_get_contents($file), $match2))
-									{
-										file_put_contents($file, preg_replace('/^(namespace )HB\\\/m', '\1HB_Temp\\', $content));
-
-										require_once $file;
-
-										try
-										{
-											$class = new \ReflectionClass('HB_Temp\\'.$match2[1].'s\\'.$match[1].'\\'.$match[1]);
-										}
-										catch (\ReflectionException $e)
-										{
-											break;
-										}
-
-										$addon = $class->newInstanceArgs([HiddenCMS()]);
-
-										$version = $addon->info()->version;
-										$depends = $addon->info()->depends;
-
-										$nf_version = $depends['HiddenCMS'];
-
-										if (!empty($version) && !empty($nf_version))
-										{
-											$type = strtolower($match2[1]);
-
-											$addon = HiddenCMS()->$type($name = strtolower($match[1]));
-
-											if ($addon)
-											{
-												$update = TRUE;
-
-												if (($cmp = version_compare($version, version_format($addon->info()->version))) === 0)
-												{
-													return [
-														'warning' => 'Le '.$type.' '.$addon->info()->title.' est déjà installé en version '.$version
-													];
-												}
-												else if ($cmp === -1)
-												{
-													return [
-														'danger' => 'Le '.$type.' '.$addon->info()->title.' est déjà installé avec une version supérieure'
-													];
-												}
-											}
-
-											if (($cmp = version_compare($nf_version, version_format(HIDDENCMS_VERSION))) !== 1)
-											{
-												file_put_contents($file, $content);
-												dir_copy($dir, $type.'s/'.$name);
-
-												if (!HiddenCMS()->collection('addon')->where('name', $name)->where('type_id', $type_id = HiddenCMS()->collection('addon_type')->where('name', $type)->row()->id)->row()->id)
-												{
-													HiddenCMS()	->model2('addon')
-																->set('name', $name)
-																->set('type', $type_id)
-																->set('data', [
-																	'enabled' => TRUE
-																])
-																->create();
-												}
-
-												if ($addon = HiddenCMS()->$type($name))
-												{
-													$addon->reset();
-
-													return [
-														'success' => 'Le '.$type.' '.$addon->info()->title.' a été '.(empty($update) ? 'installé' : 'mis-à-jour')
-													];
-												}
-
-												return [
-													'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' n\'a pas pu être '.(empty($update) ? 'installé' : 'mis-à-jour')
-												];
-											}
-
-											return [
-												'danger' => 'Le '.$type.' '.($addon ? $addon->info()->title : $name).' nécessite la version '.$nf_version.' de HiddenCMS, veuillez mettre jour votre site'
-											];
-										}
-
-										return [
-											'danger' => 'Le composant ne peut pas être installé, veuillez vérifier la présence des numéros de version'
-										];
-									}
-								}
-
-								return [
-									'danger' => 'Le composant ne peut pas être installé, veuillez vérifier son contenu'
-								];
-							};
-
-							$types   = ['modules', 'widgets', 'themes'];
-
-							$results = [
-								'danger'  => [],
-								'success' => [],
-								'warning' => []
-							];
-
-							if (count($folders) == 1 && !in_array($folder = current($folders), $types))
-							{
-								$results = array_merge_recursive($results, $install_addon($tmp.'/'.$folder));
-							}
-							else
-							{
-								foreach (array_intersect($folders, $types) as $folder)
-								{
-									foreach (scandir($tmp.'/'.$folder) as $dir)
-									{
-										if (!in_array($dir, ['.', '..']) && is_dir($dir = $tmp.'/'.$folder.'/'.$dir))
-										{
-											$results = array_merge_recursive($results, $install_addon($dir, substr(ucfirst($folder), 0, -1)));
-										}
-									}
-								}
-							}
-
-							dir_remove($tmp);
-							unlink($tmp_file);
-
-							foreach (array_filter($results) as $type => $messages)
-							{
-								foreach ($messages as $message)
-								{
-									notify($message, $type);
-								}
-							}
-
+							notify('Le paquet '.$package.' a été installé. Vous pouvez maintenant activer son addon.', 'success');
 							$this->modal->dispose();
+							refresh();
+						}
+						catch (Throwable $e)
+						{
+							$form->error($e->getMessage());
+							notify($e->getMessage(), 'danger');
 						}
 					})
-					->submit('Ajouter')
-					->modal('Ajouter', 'fas fa-plus')
+					->submit('Installer')
+					->modal('Installer un addon', 'fas fa-puzzle-piece')
 					->cancel();
 	}
 }
-
-

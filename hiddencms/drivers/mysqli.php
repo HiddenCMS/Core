@@ -88,6 +88,21 @@ class Mysqli extends Driver
 		return $this->db->query('SET FOREIGN_KEY_CHECKS = '.(int)$check);
 	}
 
+	public function begin_transaction()
+	{
+		return $this->db->begin_transaction();
+	}
+
+	public function commit()
+	{
+		return $this->db->commit();
+	}
+
+	public function rollback()
+	{
+		return $this->db->rollback();
+	}
+
 	public function fetch($results, $type = 'assoc')
 	{
 		if ($results[1]->fetch())

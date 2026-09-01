@@ -6,6 +6,41 @@ var modal = new function(){
 	var _transitionMs = 180;
 	var _modalClass = 'modal-managed';
 
+	var formSubmitButtons = function($modal, $form){
+		return $modal.find('[type="submit"]').filter(function(){
+			return this.form === $form[0];
+		});
+	};
+
+	var setFormProcessing = function($modal, $form, $submit, processing){
+		var $status = $modal.children('.modal-processing-status:first');
+
+		$modal.toggleClass('is-processing', processing).attr('aria-busy', processing ? 'true' : 'false');
+		$submit.toggleClass('loading disabled', processing).attr('aria-disabled', processing ? 'true' : 'false');
+
+		if (!processing){
+			$status.remove();
+			return;
+		}
+
+		var isInstall = ($form.attr('action') || '').indexOf('/addons/install') !== -1;
+		var title = isInstall ? 'Installation en cours' : 'Traitement en cours';
+		var detail = isInstall
+			? 'Composer télécharge et configure le paquet. Cette opération peut prendre quelques instants.'
+			: 'Merci de patienter pendant la finalisation de cette opération.';
+
+		if (!$status.length){
+			$status = $('<div class="modal-processing-status" role="status" aria-live="polite">'
+				+ '<div class="ui active inline loader"></div>'
+				+ '<div><strong></strong><span></span></div>'
+				+ '</div>');
+			$status.insertBefore($modal.children('.actions:first'));
+		}
+
+		$status.find('strong').text(title);
+		$status.find('span').text(detail);
+	};
+
 	var buildBasicModal = function(bodyHtml){
 		return '<div class="ui modal" tabindex="-1" role="dialog" aria-hidden="true">'
 			+ '<div class="header">'
@@ -237,6 +272,10 @@ var modal = new function(){
 				});
 			}
 
+			if (typeof data.error != 'undefined'){
+				notify(data.error, 'danger');
+			}
+
 			$.when.apply($, promises).then(function(){
 				callback(data);
 			});
@@ -295,23 +334,23 @@ var modal = new function(){
 							$form.on('submit', function(e){
 								e.preventDefault();
 
-								var $submit = $form.find('[type="submit"]');
+								var $submit = formSubmitButtons($modal, $form);
 
 								if ($submit.hasClass('disabled')){
 									return;
 								}
 
-								$submit.addClass('disabled');
+								setFormProcessing($modal, $form, $submit, true);
 
 								form.submit($form).then(function(data){
-									$submit.removeClass('disabled');
-
 									if (typeof data.modal != 'undefined' && data.modal == 'dispose'){
 										hideModal($modal, function(){
 											$modal.remove();
 											delete _modals[url];
 										});
 									}
+								}).always(function(){
+									setFormProcessing($modal, $form, $submit, false);
 								});
 							});
 

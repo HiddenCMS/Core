@@ -74,6 +74,18 @@ class Index extends Controller_Module
 			return $this->static_block(NULL, NULL, isset($block['settings']['content']) ? $block['settings']['content'] : '');
 		}
 
+		if (($module = @HB()->module($block['module'])) && $module->is_enabled())
+		{
+			$settings = !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : [];
+			$type = !empty($settings['block']) ? $settings['block'] : 'index';
+			$content = $module->page_block_content($type, $settings);
+
+			if ($content !== FALSE)
+			{
+				return $content;
+			}
+		}
+
 		return HB()->output->module_content($block['module'], strtoarray('/', $block['route']), FALSE);
 	}
 

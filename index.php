@@ -217,4 +217,7 @@ if (defined('HIDDENCMS_INSTALL'))
 	require_once 'install/index.php';
 }
 
-HB()->output();
+if (!defined('HIDDENCMS_CLI'))
+{
+	HB()->output();
+}
