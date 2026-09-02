@@ -34,6 +34,40 @@ class Admin_Ajax extends Controller_Module
 					});
 	}
 
+	public function addon_update($vendor, $name)
+	{
+		$package = strtolower($vendor.'/'.$name);
+		$status = $this->core_updater->status();
+		$update = isset($status['addons'][$package]) ? $status['addons'][$package] : NULL;
+
+		if (!$update)
+		{
+			return $this->modal('Mettre à jour un addon', 'fas fa-sync')
+						->body('<div class="ui message">Aucune mise à jour n\'est actuellement disponible pour <code>'.htmlspecialchars($package, ENT_QUOTES, 'UTF-8').'</code>.</div>')
+						->close();
+		}
+
+		return $this->modal('Mettre à jour '.$package, 'fas fa-sync')
+					->body('<div class="ui info message"><div class="header">Mise à jour Composer</div><p>Le paquet <code>'.htmlspecialchars($package, ENT_QUOTES, 'UTF-8').'</code> passera de <strong>'.htmlspecialchars($update['current'], ENT_QUOTES, 'UTF-8').'</strong> à <strong>'.htmlspecialchars($update['latest'], ENT_QUOTES, 'UTF-8').'</strong>. Les migrations fournies par l\'addon seront ensuite appliquées.</p></div>')
+					->submit('Mettre à jour', 'primary')
+					->cancel()
+					->callback(function() use ($package){
+						try
+						{
+							$this->addon_packages->update_package($package);
+							$this->core_updater->clear_status_cache();
+							$this->addon_packages->sync();
+							notify($this->lang('Le paquet <b>%s</b> a été mis à jour.', $package), 'success');
+						}
+						catch (\Throwable $e)
+						{
+							notify($e->getMessage(), 'danger');
+						}
+
+						refresh('admin/settings/updates');
+					});
+	}
+
 	public function backup()
 	{
 		return $this->modal('Créer une sauvegarde', 'fas fa-archive')

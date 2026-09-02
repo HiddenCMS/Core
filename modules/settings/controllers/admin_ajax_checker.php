@@ -22,6 +22,14 @@ class Admin_Ajax_Checker extends Module_Checker
 		return [];
 	}
 
+	public function addon_update($vendor, $name)
+	{
+		if (strtolower($vendor) === 'hiddencms' && preg_match('/^[a-z0-9](?:[a-z0-9_.-]*[a-z0-9])?$/i', $name))
+		{
+			return ['hiddencms', strtolower($name)];
+		}
+	}
+
 	public function backup()
 	{
 		return [];

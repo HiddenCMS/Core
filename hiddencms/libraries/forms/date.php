@@ -39,7 +39,7 @@ class Date extends Text
 			$this->value($data[$this->_name]);
 		};
 
-		$this->_template[] = function(&$input){
+		array_splice($this->_template, 1, 0, function(&$input){
 			$this	->css('bootstrap-datetimepicker.min')
 					->js('bootstrap-datetimepicker/moment.min')
 					->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
@@ -47,7 +47,7 @@ class Date extends Text
 					->js_load('$("input.'.$this->_datetime_type.', .input-group.'.$this->_datetime_type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$this->_datetime_format.'"});');
 
 			$input->append_attr('class', $this->_datetime_type);
-		};
+		});
 
 		return $this->addon($this->_datetime_icon)
 					->size($this->_datetime_size);

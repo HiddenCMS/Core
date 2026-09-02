@@ -23,7 +23,6 @@ class Admin extends Controller_Module
 
 				if ($object->composer_package())
 				{
-					$actions->set('package-update', ['Mettre à jour', 'fas fa-sync', 'info', TRUE]);
 					$actions->set('package-remove', ['Supprimer', 'fas fa-trash-alt', 'danger', TRUE]);
 				}
 
@@ -54,14 +53,11 @@ class Admin extends Controller_Module
 
 		$this->add_action($this->button('Installer', 'fas fa-download', 'primary')->modal_ajax('admin/ajax/addons/install'));
 
-		return $this->module('settings')->controller('admin')->_layout(function($col) use ($addons){
-			$col->append($this	->js('addons')
-								->css('addons')
-								->view('admin', [
-									'addons' => $addons
-								])
-			);
-		});
+		return $this	->js('addons')
+					->css('addons')
+					->view('admin', [
+						'addons' => $addons
+					]);
 	}
 
 	public function help($controller, $method)
@@ -74,37 +70,13 @@ class Admin extends Controller_Module
 
 	public function _action($addon, $controller, $action)
 	{
-		if (in_array($action, ['package-update', 'package-remove'], TRUE))
+		if ($action === 'package-remove')
 		{
 			$method = '_'.str_replace('-', '_', $action);
 			return $this->$method($addon);
 		}
 
 		return $controller->$action($addon, $this);
-	}
-
-	protected function _package_update($addon)
-	{
-		$package = $addon->composer_package();
-
-		return $this->modal('Mettre à jour '.$addon->info()->title, 'fas fa-sync')
-					->body($this->lang('Composer recherchera et installera la dernière version compatible du paquet <code>%s</code>.', $package))
-					->submit('Mettre à jour', 'info')
-					->cancel()
-					->callback(function() use ($package){
-						try
-						{
-							$this->addon_packages->update_package($package);
-							$this->addon_packages->sync();
-							notify($this->lang('Le paquet <b>%s</b> a été mis à jour.', $package));
-						}
-						catch (\Throwable $e)
-						{
-							notify($e->getMessage(), 'danger');
-						}
-
-						refresh();
-					});
 	}
 
 	protected function _package_remove($addon)

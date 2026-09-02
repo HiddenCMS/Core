@@ -6,6 +6,8 @@
 
 $outline_id = isset($model['outline_id']) ? (int)$model['outline_id'] : 0;
 $themes = isset($model['themes']) && is_array($model['themes']) ? $model['themes'] : [];
+$reserved_routes = isset($model['reserved_routes']) && is_array($model['reserved_routes']) ? $model['reserved_routes'] : [];
+$selected_reserved_routes = isset($model['selected_reserved_routes']) && is_array($model['selected_reserved_routes']) ? $model['selected_reserved_routes'] : [];
 $enabled_default = array_key_exists('enabled', $model) ? (bool)$model['enabled'] : TRUE;
 $base_default = !empty($model['base']);
 
@@ -34,6 +36,14 @@ $this	->rule($this->form_text('title')
 					->data($themes)
 					->required()
 		)
+		->rule($this->form_select('reserved_routes')
+					->title($this->lang('Routes réservées'))
+					->info($this->lang('Les routes sélectionnées utiliseront cet outline. Sans affectation, elles utilisent l\'outline de base.'))
+					->data($reserved_routes)
+					->value($selected_reserved_routes)
+					->multiple()
+					->search(0)
+		)
 		->rule($this->form_checkbox('base')
 					->data([
 						'on' => $this->lang('Outline de base')
@@ -46,4 +56,3 @@ $this	->rule($this->form_text('title')
 					])
 					->value($enabled_default ? ['on'] : [])
 		);
-

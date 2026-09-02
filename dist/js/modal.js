@@ -26,10 +26,12 @@ var modal = new function(){
 		var action = $form.attr('action') || '';
 		var isInstall = action.indexOf('/addons/install') !== -1;
 		var isCoreUpdate = action.indexOf('/settings/core-update') !== -1;
+		var isAddonUpdate = action.indexOf('/settings/addon-update') !== -1;
 		var isBackup = action.indexOf('/settings/backup') !== -1;
 		var isRollback = action.indexOf('/settings/rollback') !== -1;
 		var title = isInstall ? 'Installation en cours'
 			: isCoreUpdate ? 'Mise à jour en cours'
+			: isAddonUpdate ? 'Mise à jour de l\'addon'
 			: isBackup ? 'Sauvegarde en cours'
 			: isRollback ? 'Restauration en cours'
 			: 'Traitement en cours';
@@ -37,6 +39,8 @@ var modal = new function(){
 			? 'Composer télécharge et configure le paquet. Cette opération peut prendre quelques instants.'
 			: isCoreUpdate
 				? 'HiddenCMS sauvegarde le site, installe le core et applique les migrations.'
+				: isAddonUpdate
+					? 'Composer installe la dernière version compatible puis HiddenCMS applique les migrations de l\'addon.'
 				: isBackup
 					? 'La base de données et les fichiers gérés sont en cours d\'archivage.'
 					: isRollback

@@ -12,7 +12,7 @@ class Admin extends Controller_Module
 {
 	public function index()
 	{
-		$this	->subtitle($this->lang('Préférences générales'))
+		$this	->subtitle($this->lang('Général'))
 				->icon('fas fa-cog');
 
 		$pages = [];
@@ -51,14 +51,14 @@ class Admin extends Controller_Module
 						'check'  => function($filename, $ext){
 							if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png', 'ico']))
 							{
-								return $this->lang('Veuiller choisir un fichier d\'image');
+								return $this->lang('Veuillez choisir un fichier d\'image');
 							}
 
 							list($w, $h) = getimagesize($filename);
 
 							if ($w != $h)
 							{
-								return $this->lang('L\'image doit être carré');
+								return $this->lang('L\'image doit être carrée');
 							}
 							else if ($w < 16)
 							{
@@ -111,14 +111,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Préférences générales sauvegardées avec succès');
+			notify('Paramètres généraux sauvegardés avec succès');
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading($this->lang('Préférences générales'), 'fas fa-cog')
+								->heading($this->lang('Général'), 'fas fa-cog')
 								->body($this->form()->display())
 			);
 		});
@@ -126,7 +126,7 @@ class Admin extends Controller_Module
 
 	public function registration()
 	{
-		$this	->subtitle('Gestions des inscriptions')
+		$this	->subtitle('Inscriptions')
 				->icon('fas fa-sign-in-alt fa-rotate-90');
 
 		$users = $this->db	->select('id as user_id', 'username')
@@ -174,7 +174,7 @@ class Admin extends Controller_Module
 					'welcome' => [
 						'type'    => 'checkbox',
 						'checked' => ['on' => $this->config->welcome],
-						'values'  => ['on' => 'Envoyer un message privé aux nouveaux membres']
+						'values'  => ['on' => 'Envoyer un message privé aux nouveaux utilisateurs']
 					],
 					'welcome_user_id' => [
 						'label'   => 'Auteur du message',
@@ -210,14 +210,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Gestion des inscriptions sauvegardée avec succès');
+			notify('Paramètres d\'inscription sauvegardés avec succès');
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Gestions des inscriptions', 'fas fa-sign-in-alt fa-rotate-90')
+								->heading('Inscriptions', 'fas fa-sign-in-alt fa-rotate-90')
 								->body($this->form()->display())
 			);
 		});
@@ -225,13 +225,13 @@ class Admin extends Controller_Module
 
 	public function team()
 	{
-		$this	->subtitle('Notre structure')
-				->icon('fas fa-users');
+		$this	->subtitle('Identité du site')
+				->icon('fas fa-id-card');
 
 		$this	->form()
 				->add_rules([
 					'team_name' => [
-						'label'       => 'Nom de l\'équipe',
+						'label'       => 'Nom de la structure',
 						'value'       => $this->config->team_name,
 						'type'        => 'text'
 					],
@@ -244,17 +244,17 @@ class Admin extends Controller_Module
 						'check'       => function($filename, $ext){
 							if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 							{
-								return 'Veuiller choisir un fichier d\'image';
+								return 'Veuillez choisir un fichier d\'image';
 							}
 						},
-						'description' => 'Le logo pourra être affiché dans le widget type <b>header</b> <i>(en remplacement du titre et slogan)</i>.'
+						'description' => 'Ce logo peut être utilisé par le thème et les widgets à la place du titre du site.'
 					],
 					'team_type' => [
 						'label'       => 'Type de structure',
 						'value'       => $this->config->team_type,
 						'type'        => 'text',
 						'size'        => 'col-4',
-						'description' => '<b>Exemple:</b> Association, entreprise, marque, etc...'
+						'description' => '<b>Exemples :</b> association, entreprise, marque, collectif ou projet.'
 					],
 					'team_creation' => [
 						'label'       => 'Date de création',
@@ -263,7 +263,7 @@ class Admin extends Controller_Module
 						'size'        => 'col-4'
 					],
 					'team_biographie' => [
-						'label'       => 'Biographie',
+						'label'       => 'Présentation',
 						'value'       => $this->config->team_biographie,
 						'type'        => 'textarea'
 					]
@@ -285,7 +285,7 @@ class Admin extends Controller_Module
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Notre structure', 'fas fa-users')
+								->heading('Identité du site', 'fas fa-id-card')
 								->body($this->form()->display())
 			);
 		});
@@ -317,7 +317,7 @@ class Admin extends Controller_Module
 						'type'  => 'url'
 					],
 					'social_steam' => [
-						'label' => 'Page Steam',
+						'label' => 'Steam',
 						'icon'  => 'fab fa-steam',
 						'value' => $this->config->social_steam,
 						'type'  => 'url'
@@ -353,7 +353,7 @@ class Admin extends Controller_Module
 						'type'  => 'url'
 					],
 					'social_github' => [
-						'label' => 'Github',
+						'label' => 'GitHub',
 						'icon'  => 'fab fa-github',
 						'value' => $this->config->social_github,
 						'type'  => 'url'
@@ -365,7 +365,7 @@ class Admin extends Controller_Module
 						'type'  => 'url'
 					],
 					'social_youtube' => [
-						'label' => 'Youtube',
+						'label' => 'YouTube',
 						'icon'  => 'fab fa-youtube',
 						'value' => $this->config->social_youtube,
 						'type'  => 'url'
@@ -396,7 +396,7 @@ class Admin extends Controller_Module
 
 	public function captcha()
 	{
-		$this	->subtitle('Sécurité anti-bots')
+		$this	->subtitle('Protection anti-robots')
 				->icon('fas fa-shield-alt');
 
 		$this	->form()
@@ -429,7 +429,7 @@ class Admin extends Controller_Module
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Configuration de Google reCAPTCHA', 'fas fa-shield-alt')
+								->heading('Google reCAPTCHA', 'fas fa-shield-alt')
 								->body('<div class="alert alert-info"><a href="https://www.google.com/recaptcha/intro/index.html" target="_blank">https://www.google.com/recaptcha/intro/index.html</a></div>'.$this->form()->display())
 			);
 		});
@@ -476,7 +476,7 @@ class Admin extends Controller_Module
 					'check'  => function($filename, $ext){
 						if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 						{
-							return $this->lang('Veuiller choisir un fichier d\'image');
+							return $this->lang('Veuillez choisir un fichier d\'image');
 						}
 					}
 				],
@@ -489,7 +489,7 @@ class Admin extends Controller_Module
 					'check'  => function($filename, $ext){
 						if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 						{
-							return $this->lang('Veuiller choisir un fichier d\'image');
+							return $this->lang('Veuillez choisir un fichier d\'image');
 						}
 					}
 				],
@@ -628,32 +628,25 @@ class Admin extends Controller_Module
 
 	public function _layout($callback)
 	{
-		$menu = $this->widget('navigation')->output('vertical', [
+		$this->css('admin/settings');
+
+		$navigation = $this->widget('navigation')->output('vertical', [
+			'panel' => FALSE,
 			'links' => [
 				[
-					'title' => 'Préférences générales',
+					'title' => 'Général',
 					'icon'  => 'fas fa-cog',
 					'url'   => 'admin/settings'
 				],
 				[
-					'title' => 'Thèmes & addons',
-					'icon'  => 'fas fa-puzzle-piece',
-					'url'   => 'admin/addons'
+					'title' => 'Identité du site',
+					'icon'  => 'fas fa-id-card',
+					'url'   => 'admin/settings/team'
 				],
 				[
-					'title' => 'Maintenance',
-					'icon'  => 'fas fa-power-off',
-					'url'   => 'admin/settings/maintenance'
-				],
-				[
-					'title' => 'Gestions des inscriptions',
+					'title' => 'Inscriptions',
 					'icon'  => 'fas fa-sign-in-alt fa-rotate-90',
 					'url'   => 'admin/settings/registration'
-				],
-				[
-					'title' => 'Notre structure',
-					'icon'  => 'fas fa-users',
-					'url'   => 'admin/settings/team'
 				],
 				[
 					'title' => 'Réseaux sociaux',
@@ -661,9 +654,14 @@ class Admin extends Controller_Module
 					'url'   => 'admin/settings/socials'
 				],
 				[
-					'title' => 'Sécurité anti-bots',
+					'title' => 'Protection anti-robots',
 					'icon'  => 'fas fa-shield-alt',
 					'url'   => 'admin/settings/captcha'
+				],
+				[
+					'title' => 'Maintenance',
+					'icon'  => 'fas fa-power-off',
+					'url'   => 'admin/settings/maintenance'
 				],
 				[
 					'title' => 'Copyright',
@@ -672,6 +670,10 @@ class Admin extends Controller_Module
 				]
 			]
 		]);
+		$menu = $this->panel()
+					 ->style('settings-navigation')
+					 ->heading('Sections', 'fas fa-sliders-h')
+					 ->body($navigation);
 
 		$row = $this->row(
 			$left  = $this->col($menu)->size('col-3'),

@@ -22,7 +22,7 @@
 					'steam'      => 'Steam',
 					'twitch'     => 'Twitch',
 					'twitter'    => 'Twitter',
-					'youtube'    => 'Youtube'
+					'youtube'    => 'YouTube'
 				] as $name => $title)
 				{
 					if ($url = $this->config->{'nf_social_'.$name})

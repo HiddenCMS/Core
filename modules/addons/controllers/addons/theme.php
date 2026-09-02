@@ -28,6 +28,16 @@ class Theme extends Controller
 
 	public function enable($addon)
 	{
+		if (!$this->db->select('id')->from('dispositions')->where('theme', $addon->info()->name)->row())
+		{
+			$addon->install();
+		}
+
+		$this->db	->where('base', TRUE)
+					->update('outlines', [
+						'theme' => $addon->info()->name
+					]);
+
 		$this->config('default_theme', $addon->info()->name);
 
 		notify($this->lang('<b>%s</b> activé', $addon->info()->title));

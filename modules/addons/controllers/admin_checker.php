@@ -25,7 +25,7 @@ class Admin_Checker extends Module_Checker
 		{
 			$object = $addon->addon();
 
-			if (in_array($action, ['package-update', 'package-remove'], TRUE) && $object->composer_package())
+			if ($action === 'package-remove' && $object->composer_package())
 			{
 				$this->ajax();
 				return [$object, $controller, $action];

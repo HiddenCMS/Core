@@ -40,8 +40,8 @@ $escape = function($value){
 <section class="updates-section">
 	<header class="updates-section-header">
 		<div>
-			<h3><?php echo icon('fas fa-puzzle-piece').' '.$this->lang('Dépendances et addons') ?></h3>
-			<p><?php echo $this->lang('Versions directes suivies par Composer et compatibilité déclarée avec le core.') ?></p>
+			<h3><?php echo icon('fas fa-puzzle-piece').' '.$this->lang('Paquets HiddenCMS') ?></h3>
+			<p><?php echo $this->lang('Mises à jour des paquets officiels et compatibilité déclarée avec le core.') ?></p>
 		</div>
 	</header>
 
@@ -55,14 +55,14 @@ $escape = function($value){
 						<td><code><?php echo $escape($package['package']) ?></code></td>
 						<td><?php echo $escape($package['current']) ?></td>
 						<td><span class="ui tiny label updates-label-warning"><?php echo $escape($package['latest']) ?></span></td>
-						<td class="right aligned"><a href="<?php echo url('admin/addons') ?>" class="ui mini button"><?php echo $this->lang('Gérer') ?></a></td>
+						<td class="right aligned"><a href="#" class="ui mini primary button" data-modal-ajax="<?php echo url('admin/ajax/settings/addon-update/'.$package['package']) ?>"><?php echo icon('fas fa-sync').' '.$this->lang('Mettre à jour') ?></a></td>
 					</tr>
 				<?php endforeach ?>
 				</tbody>
 			</table>
 		</div>
 	<?php else: ?>
-		<div class="updates-empty"><?php echo icon('fas fa-check-circle').' '.$this->lang('Aucune mise à jour de dépendance détectée.') ?></div>
+		<div class="updates-empty"><?php echo icon('fas fa-check-circle').' '.$this->lang('Aucune mise à jour HiddenCMS détectée.') ?></div>
 	<?php endif ?>
 
 	<?php if (!empty($status['compatibility'])): ?>

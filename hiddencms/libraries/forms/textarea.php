@@ -13,7 +13,7 @@ class Textarea extends Labelable
 	public function __invoke($name)
 	{
 		$this->_template[] = function(&$input){
-			$input = $this	->html('textarea')
+			$input = parent	::html('textarea')
 							->attr('rows', $this->_rows);
 
 			if ($this->_disabled)

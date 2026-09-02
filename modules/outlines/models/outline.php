@@ -70,6 +70,62 @@ class Outline extends Model2
 		return $themes;
 	}
 
+	public function get_reserved_route_choices()
+	{
+		$routes = [];
+
+		foreach ($this->reserved_modules() as $module)
+		{
+			$route = trim((string)$module->info()->reserved_route, '/');
+			$routes[$module->info()->name] = $module->info()->title.' (/'.$route.')';
+		}
+
+		return $routes;
+	}
+
+	public function get_reserved_routes($outline_id)
+	{
+		$routes = [];
+
+		foreach ($this->reserved_modules() as $module)
+		{
+			if ((int)$module->settings()->get('outline_id') === (int)$outline_id)
+			{
+				$routes[] = $module->info()->name;
+			}
+		}
+
+		return $routes;
+	}
+
+	public function set_reserved_routes($outline_id, $routes)
+	{
+		$routes = array_map('strval', (array)$routes);
+
+		foreach ($this->reserved_modules() as $module)
+		{
+			$name = (string)$module->info()->name;
+			$current_outline_id = (int)$module->settings()->get('outline_id');
+
+			if (in_array($name, $routes, TRUE))
+			{
+				$module->__addon->data->set('outline_id', (int)$outline_id);
+			}
+			else if ($current_outline_id === (int)$outline_id)
+			{
+				$module->__addon->data->destroy('outline_id');
+			}
+			else
+			{
+				continue;
+			}
+
+			$module->__addon->set('data', $module->__addon->data)->update();
+		}
+
+		return $this;
+	}
+
 	public function get_outline($outline_id = NULL)
 	{
 		$this->db	->select('*')
@@ -232,6 +288,8 @@ class Outline extends Model2
 			return FALSE;
 		}
 
+		$this->set_reserved_routes($outline_id, []);
+
 		foreach ($this->get_outline_dispositions($outline) as $disposition)
 		{
 			HiddenCMS()->module('live_editor')->model()->delete_widgets($this->disposition->decode($disposition['disposition']));
@@ -362,6 +420,21 @@ class Outline extends Model2
 		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->info()->zones;
 	}
 
+	private function reserved_modules()
+	{
+		$modules = [];
+
+		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
+		{
+			if ($module->is_enabled() && $module->is_front() && !empty($module->info()->reserved_route))
+			{
+				$modules[] = $module;
+			}
+		}
+
+		return $modules;
+	}
+
 	private function default_disposition($zone_title)
 	{
 		if (url_title($zone_title) == 'contenu')
@@ -381,4 +454,3 @@ class Outline extends Model2
 		return $this->array();
 	}
 }
-

@@ -85,7 +85,12 @@ abstract class Theme extends Addon
 			}
 		}
 
-		$this->module('tools')->api()->scss();
+		$theme_path = $this->package_path() ?: 'themes/'.$this->info()->name;
+
+		if (is_dir(rtrim($theme_path, '/\\').'/css/sass'))
+		{
+			$this->module('tools')->api()->scss();
+		}
 
 		return parent::install();
 	}

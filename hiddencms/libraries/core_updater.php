@@ -34,7 +34,7 @@ class Core_Updater extends Library
 		{
 			if (is_array($status = json_decode(file_get_contents($cache), TRUE)))
 			{
-				return $status;
+				return $this->official_status($status);
 			}
 		}
 
@@ -80,7 +80,32 @@ class Core_Updater extends Library
 		}
 
 		$status['compatibility'] = $this->addon_packages->compatibility();
+		$status = $this->official_status($status);
 		$this->write_json($cache, $status);
+
+		return $status;
+	}
+
+	public function clear_status_cache()
+	{
+		$cache = HIDDENCMS_CMS.'/cache/updates/status.json';
+
+		if (is_file($cache))
+		{
+			@unlink($cache);
+		}
+
+		return $this;
+	}
+
+	protected function official_status(array $status)
+	{
+		$status['addons'] = array_filter(isset($status['addons']) && is_array($status['addons']) ? $status['addons'] : [], function($package){
+			return !empty($package['package']) && strpos(strtolower($package['package']), 'hiddencms/') === 0;
+		});
+		$status['compatibility'] = array_filter(isset($status['compatibility']) && is_array($status['compatibility']) ? $status['compatibility'] : [], function($package){
+			return strpos(strtolower($package), 'hiddencms/') === 0;
+		}, ARRAY_FILTER_USE_KEY);
 
 		return $status;
 	}

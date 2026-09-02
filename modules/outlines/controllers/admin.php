@@ -94,6 +94,8 @@ class Admin extends Controller_Module
 						'outline_id' => 0,
 						'theme'      => $this->config->default_theme,
 						'themes'     => $this->outline_model()->get_themes(),
+						'reserved_routes' => $this->outline_model()->get_reserved_route_choices(),
+						'selected_reserved_routes' => [],
 						'enabled'    => TRUE
 					])
 					->success(function($data, $form){
@@ -108,6 +110,8 @@ class Admin extends Controller_Module
 							$form->error($this->lang('Impossible d\'enregistrer l\'outline'));
 							return;
 						}
+
+						$this->outline_model()->set_reserved_routes($outline_id, $data['reserved_routes'] ?? []);
 
 						notify($this->lang('Outline ajoute avec succes'));
 						redirect('admin/live-editor?outline_id='.$outline_id);
@@ -128,6 +132,8 @@ class Admin extends Controller_Module
 						'title'      => $title,
 						'theme'      => $theme,
 						'themes'     => $this->outline_model()->get_themes(),
+						'reserved_routes' => $this->outline_model()->get_reserved_route_choices(),
+						'selected_reserved_routes' => $this->outline_model()->get_reserved_routes($outline_id),
 						'base'       => (bool)$base,
 						'enabled'    => (bool)$enabled
 					])
@@ -146,6 +152,8 @@ class Admin extends Controller_Module
 							$form->error($this->lang('Impossible d\'enregistrer l\'outline'));
 							return;
 						}
+
+						$this->outline_model()->set_reserved_routes($outline_id, $data['reserved_routes'] ?? []);
 
 						notify($this->lang('Outline edite avec succes'));
 						redirect_back('admin/outlines');

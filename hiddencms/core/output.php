@@ -137,6 +137,11 @@ class Output extends Core
 					{
 						if (($reserved_module = $this->reserved_module($segments[0])) && $reserved_module->is_enabled())
 						{
+							if ($outline_id = (int)$reserved_module->settings()->get('outline_id'))
+							{
+								$this->data->set('page', 'outline', $outline_id);
+							}
+
 							return $this->module_content($reserved_module->info()->name, array_slice($segments, 1));
 						}
 

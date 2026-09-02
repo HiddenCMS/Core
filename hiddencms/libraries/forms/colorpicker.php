@@ -19,13 +19,13 @@ class Colorpicker extends Text
 			}
 		};
 
-		$this->_template[] = function(&$input){
+		array_splice($this->_template, 1, 0, function(&$input){
 			$this	->css('bootstrap-colorpicker.min')
 					->js('bootstrap-colorpicker.min')
 					->js('colorpicker');
 
 			$input->append_attr('class', 'color');
-		};
+		});
 
 		return $this->addon('fas fa-eye-dropper', 'right')
 					->addon($this->label()->title('<i></i>'))

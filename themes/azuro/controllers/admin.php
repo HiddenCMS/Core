@@ -12,7 +12,8 @@ class Admin extends Controller
 {
 	public function index()
 	{
-		$this->js('admin');
+		$this	->css('admin')
+				->js('admin');
 
 		$form_background = $this->form()
 								->add_rules([
@@ -25,7 +26,7 @@ class Admin extends Controller
 										'check'  => function($filename, $ext){
 											if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 											{
-												return $this->lang('Veuiller choisir un fichier d\'image');
+											return $this->lang('Veuillez choisir un fichier d\'image');
 											}
 										}
 									],
@@ -143,19 +144,14 @@ class Admin extends Controller
 		return $this->row(
 			$this	->col(
 						$this	->panel()
-								->body($this->view('admin/menu'), FALSE)
-					)
-					->size('col-4 col-lg-3'),
-			$this	->col(
-						$this	->panel()
-								->heading($this->lang('Tableau de bord'), 'fas fa-cog')
+								->style('theme-customizer-shell')
 								->body($this->view('admin/index', [
 									'theme'           => $this->__caller->info(),
 									'form_background' => $form_background->display(),
 									'form_colors'     => $form_colors->display()
-								]))
+								]), FALSE)
 					)
-					->size('col-8 col-lg-9')
+					->size('col-12')
 		);
 	}
 }

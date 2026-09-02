@@ -46,16 +46,26 @@ class Admin extends Theme
 			'default' => [],
 			'gaming'  => []
 		];
+		$relocated_links = [];
 
 		foreach (HiddenCMS()->model2('addon')->get('module') as $module)
 		{
 			if ($module->is_enabled() && $module->is_administrable($category) && $category != 'none' && $module->is_authorized())
 			{
-				$content_submenu[isset($content_submenu[$category]) ? $category : 'default'][] = [
+				$link = [
 					'title' => (string)$module->info()->title,
 					'icon'  => $module->info()->icon,
 					'url'   => 'admin/'.$module->info()->name
 				];
+
+				if (in_array($module->info()->name, ['files', 'menu', 'outlines'], TRUE))
+				{
+					$relocated_links[$module->info()->name] = $link;
+				}
+				else
+				{
+					$content_submenu[isset($content_submenu[$category]) ? $category : 'default'][] = $link;
+				}
 			}
 		}
 
@@ -76,41 +86,25 @@ class Admin extends Theme
 						->set('url',   'admin/addons/customize/'.$theme->url());
 		}
 
-		$appearance_links = array_values(array_filter([
+		$configuration_links = array_values(array_filter([
 			$customize->__toArray(),
 			[
-				'title'  => 'Themes',
-				'icon'   => 'far fa-image',
+				'title'  => 'Paramètres',
+				'icon'   => 'fas fa-cogs',
 				'access' => $this->user->admin,
-				'url'    => 'admin/addons/themes'
+				'url'    => 'admin/settings'
 			],
-			[
-				'title'  => 'Modules',
-				'icon'   => 'fas fa-cube',
-				'access' => $this->user->admin,
-				'url'    => 'admin/addons/modules'
-			],
-			[
-				'title'  => 'Widgets',
-				'icon'   => 'fas fa-cubes',
-				'access' => $this->user->admin,
-				'url'    => 'admin/addons/widgets'
-			],
+			isset($relocated_links['menu']) ? $relocated_links['menu'] : [],
+			isset($relocated_links['outlines']) ? $relocated_links['outlines'] : [],
 			[
 				'title'  => 'Live Editor',
 				'icon'   => 'fas fa-desktop',
 				'access' => $this->user->admin,
 				'url'    => 'admin/live-editor'
-			]
+			],
 		]));
 
-		$administration_links = array_values(array_filter([
-			[
-				'title'  => 'Parametres',
-				'icon'   => 'fas fa-cogs',
-				'access' => $this->user->admin,
-				'url'    => 'admin/settings'
-			],
+		$user_links = array_values(array_filter([
 			[
 				'title'  => 'Membres / Groupes',
 				'icon'   => 'fas fa-users',
@@ -122,18 +116,6 @@ class Admin extends Theme
 				'icon'   => 'fas fa-globe',
 				'access' => $this->user->admin,
 				'url'    => 'admin/user/sessions'
-			],
-			[
-				'title'  => 'Permissions',
-				'icon'   => 'fas fa-unlock-alt',
-				'access' => $this->user->admin,
-				'url'    => 'admin/access'
-			],
-			[
-				'title'  => 'Statistiques',
-				'icon'   => 'far fa-chart-bar',
-				'access' => $this->user->admin,
-				'url'    => 'admin/statistics'
 			]
 		]));
 
@@ -161,33 +143,46 @@ class Admin extends Theme
 					'url'   => 'admin'
 				],
 				[
+					'title' => 'Contenu',
+					'icon'  => 'fas fa-edit',
+					'url'   => $content_submenu['default'] ?: NULL
+				],
+				isset($relocated_links['files']) ? $relocated_links['files'] : [],
+				$content_submenu['gaming'] ? [
+					'title' => 'Gaming',
+					'icon'  => 'fas fa-gamepad',
+					'url'   => $content_submenu['gaming']
+				] : [],
+				[
+					'title'  => 'Utilisateurs',
+					'icon'   => 'fas fa-users',
+					'access' => $this->user->admin,
+					'url'    => $user_links ?: NULL
+				],
+				[
+					'title'  => 'Statistiques',
+					'icon'   => 'far fa-chart-bar',
+					'access' => $this->user->admin,
+					'url'    => 'admin/statistics'
+				],
+				[
+					'title'  => 'Configurations',
+					'icon'   => 'fas fa-sliders-h',
+					'access' => $this->user->admin,
+					'url'    => $configuration_links ?: NULL
+				],
+				[
+					'title'  => 'Thèmes & Addons',
+					'icon'   => 'fas fa-puzzle-piece',
+					'access' => $this->user->admin,
+					'url'    => 'admin/addons'
+				],
+				[
 					'title'     => 'Mises à jour',
 					'icon'      => 'fas fa-cloud-download-alt',
 					'access'    => $this->user->admin,
 					'url'       => 'admin/settings/updates',
 					'indicator' => $updates_count ?: NULL
-				],
-				[
-					'title' => 'Contenu',
-					'icon'  => 'fas fa-edit',
-					'url'   => $content_submenu['default'] ?: NULL
-				],
-				[
-					'title' => 'Gaming',
-					'icon'  => 'fas fa-gamepad',
-					'url'   => $content_submenu['gaming'] ?: NULL
-				],
-				[
-					'title'  => 'Apparence',
-					'icon'   => 'fas fa-paint-brush',
-					'access' => $this->user->admin,
-					'url'    => $appearance_links ?: NULL
-				],
-				[
-					'title'  => 'Administration',
-					'icon'   => 'fas fa-tools',
-					'access' => $this->user->admin,
-					'url'    => $administration_links ?: NULL
 				]
 			])
 		]);
