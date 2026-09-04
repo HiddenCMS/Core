@@ -32,6 +32,12 @@ a.logo {
 	position: absolute;
 }
 
+a.logo img {
+	display: block;
+	height: auto;
+	width: 250px;
+}
+
 section.step {
 	display: none;
 	padding: 60px 0;

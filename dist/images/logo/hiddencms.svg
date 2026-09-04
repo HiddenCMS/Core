@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 144" role="img" aria-labelledby="logo-title logo-description">
+	<title id="logo-title">HiddenCMS</title>
+	<desc id="logo-description">Un H modulaire suivi du nom HiddenCMS</desc>
+	<rect x="8" y="20" width="104" height="104" rx="8" fill="#1f2933"/>
+	<rect x="92" y="8" width="24" height="24" rx="4" fill="#00bcd4"/>
+	<path fill="#fff" d="M33 43h19v28h23V43h19v73H75V89H52v27H33z"/>
+	<text x="139" y="98" fill="#1f2933" font-family="Titillium Web, Segoe UI, sans-serif" font-size="68" font-weight="700">Hidden</text>
+	<text x="373" y="98" fill="#007f91" font-family="Titillium Web, Segoe UI, sans-serif" font-size="68" font-weight="600">CMS</text>
+</svg>

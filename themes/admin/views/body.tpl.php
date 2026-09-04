@@ -1,9 +1,8 @@
 <div class="wrapper">
 	<nav id="sidebar" class="ui vertical menu">
 		<div class="sidebar-header">
-			<a class="logo" href="<?php echo url('admin') ?>">
-				<svg><use xlink:href="#logo"></use></svg>
-				<span class="ui mini basic label">HiddenCMS</span>
+			<a class="logo" href="<?php echo url('admin') ?>" aria-label="HiddenCMS">
+				<img src="<?php echo image('logo/hiddencms.svg') ?>" alt="HiddenCMS">
 			</a>
 		</div>
 		<?php echo $this->widget('navigation')->output('vertical', $this->__caller->data->get('sidebar')) ?>
@@ -65,4 +64,3 @@
 		</footer>
 	</div>
 </div>
-<?php echo $this->view('theme/logo') ?>

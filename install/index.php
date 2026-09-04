@@ -101,7 +101,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH
 <link rel="stylesheet" href="dist/css/icons/fontawesome.min.css" type="text/css">
 </head>
 <body>
-	<a class="logo" href="https://github.com/HiddenCMS/Core" target="_blank"><img src="install/logo.png" alt="" /></a>
+	<a class="logo" href="https://github.com/HiddenCMS/Core" target="_blank"><img src="dist/images/logo/hiddencms-light.svg" alt="HiddenCMS" /></a>
 	<div class="container">
 		<?php if (!file_exists('install/db.txt')): ?>
 			<section class="step check-init">
