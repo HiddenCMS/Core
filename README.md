@@ -35,6 +35,8 @@ Le mode interactif est aussi disponible :
 php install/cli.php
 ```
 
+Il demande notamment le nom de la base, l'utilisateur MySQL et son mot de passe. Pour ne pas exposer le mot de passe dans l'historique du terminal, il peut aussi etre lu depuis une variable d'environnement avec `--db-pass-env=VARIABLE`.
+
 Quand le dossier `install/` est conserve, l'installation CLI ecrit `install/installed.txt` pour desactiver l'installateur web.
 
 ## Installation web

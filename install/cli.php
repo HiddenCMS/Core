@@ -28,8 +28,8 @@ function main($argv)
 		'db_host'       => option($options, 'db-host', 'localhost'),
 		'db_port'       => (int)option($options, 'db-port', 3306),
 		'db_name'       => option($options, 'db-name'),
-		'db_user'       => option($options, 'db-user', 'root'),
-		'db_pass'       => option($options, 'db-pass', ''),
+		'db_user'       => option($options, 'db-user'),
+		'db_pass'       => option($options, 'db-pass'),
 		'create_db'     => isset($options['create-db']),
 		'admin_user'    => option($options, 'admin-user', 'admin'),
 		'admin_pass'    => option($options, 'admin-pass'),
@@ -42,6 +42,16 @@ function main($argv)
 		'no_htaccess'   => isset($options['no-htaccess']),
 		'remove_install' => isset($options['remove-installer'])
 	];
+
+	if (isset($options['db-pass-env']))
+	{
+		$config['db_pass'] = getenv($options['db-pass-env']);
+
+		if ($config['db_pass'] === FALSE)
+		{
+			exit_with_error('Database password environment variable not found: '.$options['db-pass-env']);
+		}
+	}
 
 	if (isset($options['admin-pass-env']))
 	{
@@ -98,6 +108,7 @@ function parse_options($argv)
 		'db-name',
 		'db-user',
 		'db-pass',
+		'db-pass-env',
 		'admin-user',
 		'admin-pass',
 		'admin-pass-env',
@@ -160,6 +171,16 @@ function interactive_config(&$config)
 	if (!$config['db_name'])
 	{
 		$config['db_name'] = prompt('Database name', 'hiddencms');
+	}
+
+	if ($config['db_user'] === NULL)
+	{
+		$config['db_user'] = prompt('Database user', 'root');
+	}
+
+	if ($config['db_pass'] === NULL)
+	{
+		$config['db_pass'] = prompt('Database password (leave empty if none)', '');
 	}
 
 	if (!$config['admin_email'])
@@ -686,6 +707,7 @@ function print_usage()
 	line('  --db-name=hiddencms       Database name');
 	line('  --db-user=root            Database user');
 	line('  --db-pass=secret          Database password');
+	line('  --db-pass-env=NAME        Read database password from an environment variable');
 	line('  --create-db               Create the database if it does not exist');
 	line('');
 	line('Admin options:');
