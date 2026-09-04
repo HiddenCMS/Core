@@ -10,6 +10,28 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Checker extends Module_Checker
 {
+	public function create()
+	{
+		$this->error_if(!$this->user->admin);
+		return [];
+	}
+
+	public function fields($id = 0)
+	{
+		$this->error_if(!$this->user->admin);
+		$field = $id ? $this->model('fields')->find($id) : NULL;
+		$this->error_if($id && !$field);
+		return [$field];
+	}
+
+	public function field_delete($id)
+	{
+		$this->error_if(!$this->user->admin);
+		$field = $this->model('fields')->find($id);
+		$this->error_if(!$field);
+		return [$field];
+	}
+
 	public function index($page = '')
 	{
 		return [

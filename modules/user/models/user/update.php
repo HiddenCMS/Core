@@ -69,9 +69,11 @@ class Update extends \HB\HiddenCMS\Actions\Update
 		$this->module()	->title($this->lang('Édition du membre'))
 						->subtitle($user->username)
 						->css('groups')
-						->js('groups');
+						->css('admin/user_editor')
+						->js('groups')
+						->js('admin/user_editor');
 
-		return $this->row()
+		$account = $this->row()
 					->append(
 						$this	->col()
 								->size('col-12 col-lg-7')
@@ -91,16 +93,6 @@ class Update extends \HB\HiddenCMS\Actions\Update
 											->panel()
 											->title('Membre')
 								)
-								->append(
-									$this	->form2('profile', $user->profile())
-											->panel()
-											->title('Profil', 'fas fa-pencil-alt')
-								)
-								->append(
-									$this	->form2('profile_socials', $user->profile())
-											->panel()
-											->title('Liens', 'fas fa-globe')
-								)
 					)
 					->append(
 						$this	->col()
@@ -113,22 +105,39 @@ class Update extends \HB\HiddenCMS\Actions\Update
 												'form_id' => $form_groups->token()
 											]))
 								)
+					);
+
+		$images = $this->row()
+					->append(
+						$this->col()->size('col-12 col-lg-6')
 								->append(
 									$this	->form2('avatar', $user->profile())
 											->panel()
 											->title('Avatar', 'fas fa-user-circle')
 								)
+					)
+					->append(
+						$this->col()->size('col-12 col-lg-6')
 								->append(
 									$this	->form2('cover', $user->profile())
 											->panel()
 											->title('Photo de couverture', 'far fa-image')
 								)
-								->append(
-									$this	->table2('session', $user->sessions(), 'Aucune session active')
-											->panel()
-											->title($this->lang('Sessions actives'), 'fas fa-globe')
-								)
 					);
+
+		$tabs = [
+			'account' => ['title' => 'Compte', 'icon' => 'fas fa-user', 'content' => $account],
+			'profile' => ['title' => 'Profil', 'icon' => 'fas fa-pencil-alt', 'content' => $this->form2('profile', $user->profile())->panel()->title('Profil', 'fas fa-pencil-alt')],
+			'links' => ['title' => 'Liens', 'icon' => 'fas fa-globe', 'content' => $this->form2('profile_socials', $user->profile())->panel()->title('Liens', 'fas fa-globe')],
+			'images' => ['title' => 'Images', 'icon' => 'far fa-image', 'content' => $images]
+		];
+		if ($custom = $this->module('user')->model('fields')->profile_panel($user))
+		{
+			$tabs['custom'] = ['title' => 'Champs personnalisés', 'icon' => 'fas fa-list', 'content' => $custom];
+		}
+		$tabs['sessions'] = ['title' => 'Sessions', 'icon' => 'fas fa-desktop', 'content' => $this->table2('session', $user->sessions(), 'Aucune session active')->panel()->title('Sessions actives', 'fas fa-globe')];
+
+		return $this->view('admin/user_editor', ['tabs' => $tabs]);
 	}
 }
 

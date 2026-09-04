@@ -1,5 +1,5 @@
 <?php
-	$avatar = $user->profile()->avatar() ? $user->profile()->avatar->path() : image($user->profile()->sex == 'female' ? 'default_avatar_female.jpg' : 'default_avatar_male.jpg');
+	$avatar = $user->profile()->avatar() ? $user->profile()->avatar->path() : image(privacy_profile_value($user->profile(), 'sex') == 'female' ? 'default_avatar_female.jpg' : 'default_avatar_male.jpg');
 ?>
 <div class="inner-ring"></div>
 <figure>

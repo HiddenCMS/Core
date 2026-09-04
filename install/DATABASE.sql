@@ -117,7 +117,35 @@ CREATE TABLE `core_migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VALUES
-('0.3.0', '0.3.0', 1, NOW());
+('0.3.0', '0.3.0', 1, NOW()),
+('0.3.1', '0.3.1', 1, NOW());
+
+DROP TABLE IF EXISTS `user_field_value`;
+DROP TABLE IF EXISTS `user_field`;
+CREATE TABLE `user_field` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `options` text NOT NULL,
+  `required` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`), UNIQUE KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `user_field_value` (
+  `user_id` int unsigned NOT NULL,
+  `field_id` int unsigned NOT NULL,
+  `value` text NOT NULL,
+  `login_value` varchar(190) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`user_id`, `field_id`),
+  UNIQUE KEY `user_field_login` (`field_id`, `login_value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `user_login`;
+CREATE TABLE `user_login` (
+  `id` tinyint unsigned NOT NULL,
+  `identifier` varchar(80) NOT NULL DEFAULT 'username',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `user_login` (`id`, `identifier`) VALUES (1, 'username');
 
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
@@ -372,6 +400,12 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('azuro_secondary_color', '', '', '#00c7e4', 'string'),
 ('azuro_text_color', '', '', '#212529', 'string'),
 ('analytics', '', '', '', 'string'),
+('privacy_profile_first_name', '', '', 'disabled', 'string'),
+('privacy_profile_last_name', '', '', 'disabled', 'string'),
+('privacy_profile_date_of_birth', '', '', 'disabled', 'string'),
+('privacy_profile_sex', '', '', 'disabled', 'string'),
+('privacy_profile_country', '', '', 'disabled', 'string'),
+('privacy_profile_location', '', '', 'disabled', 'string'),
 ('captcha_private_key', '', '', '', 'string'),
 ('captcha_public_key', '', '', '', 'string'),
 ('contact', '', '', 'noreply@hiddencms.local', 'string'),

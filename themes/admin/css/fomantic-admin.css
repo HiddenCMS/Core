@@ -18,6 +18,73 @@ body {
 	color: var(--admin-text);
 }
 
+/* Shared labels still emit Bootstrap badge classes. */
+.badge {
+	--badge-text: #4f5f6d;
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	max-width: 100%;
+	padding: .4em .65em;
+	border-radius: 4px;
+	background: #eef2f5;
+	color: var(--badge-text);
+	font-size: .85rem;
+	font-weight: 600;
+	line-height: 1.25;
+	vertical-align: middle;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.badge > i {
+	flex: 0 0 auto;
+	margin: 0;
+}
+
+.badge-default,
+.badge-primary {
+	background: var(--admin-primary-soft);
+	--badge-text: var(--admin-primary-text);
+}
+
+.badge-success {
+	background: #e4f6ea;
+	--badge-text: #287d49;
+}
+
+.badge-danger {
+	background: #fdebed;
+	--badge-text: #b83a4b;
+}
+
+.badge-warning {
+	background: #fff4d8;
+	--badge-text: #916000;
+}
+
+.badge-info {
+	background: #e2f7f4;
+	--badge-text: #087d76;
+}
+
+.badge-light {
+	background: #f7f9fa;
+	--badge-text: #697386;
+}
+
+.badge-dark {
+	background: #e1e8ed;
+	--badge-text: #35434f;
+}
+
+a.badge:hover,
+a.badge:focus-visible {
+	color: var(--badge-text);
+	text-decoration: none;
+	filter: brightness(.95);
+}
+
 .ui.button,
 .ui.secondary.button,
 .ui.basic.button,
@@ -531,6 +598,9 @@ body {
 
 .module-admin > .ui.grid > .column {
 	display: flex !important;
+	flex-direction: column;
+	min-width: 0;
+	gap: 1.5rem;
 }
 
 .module-admin > .ui.grid > .column + .column {
@@ -551,12 +621,37 @@ body {
 	position: relative;
 	container-type: inline-size;
 	width: 100%;
-	height: 100%;
+	height: auto;
+	flex: 0 0 auto;
 	margin: 0;
 	padding: 0;
 	border: 0;
 	background: transparent;
 	box-shadow: none;
+}
+
+.module-admin > .ui.grid > .column > .ui.card:only-child {
+	flex: 1 1 auto;
+}
+
+.module-admin .ui.form .fields {
+	flex-wrap: wrap;
+	row-gap: 1rem;
+}
+
+.module-admin .ui.form .field {
+	min-width: 0;
+}
+
+.module-admin .ui.form input[type="file"] {
+	max-width: 100%;
+}
+
+.module-admin .ui.form .img-thumbnail {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 0 auto 1rem;
 }
 
 .module-admin > .ui.card > .content,
@@ -676,6 +771,13 @@ body {
 
 .footer .project-links > li {
 	display: inline-block;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+	.module-admin > .ui.grid > .sixteen.wide.tablet.column + .sixteen.wide.tablet.column {
+		border-top: 1px solid var(--admin-border);
+		border-left: 0;
+	}
 }
 
 @media (max-width: 768px) {

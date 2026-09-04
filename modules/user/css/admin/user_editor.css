@@ -1,0 +1,106 @@
+.user-editor {
+	padding: 0 1.25rem 1.25rem;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, .82);
+}
+
+.user-editor .user-editor-tabs.ui.menu {
+	flex-wrap: wrap;
+	margin: 0 0 1.5rem;
+	gap: 0 .5rem;
+	border-color: var(--admin-border);
+}
+
+.user-editor .user-editor-tabs.ui.menu > .item {
+	background: transparent;
+	font: inherit;
+	color: var(--admin-muted);
+	border: 0;
+	border-bottom: 2px solid transparent;
+	margin: 0 0 -2px;
+	padding: 1.1rem .85rem;
+}
+
+.user-editor .user-editor-tabs.ui.menu > .active.item {
+	color: var(--admin-primary-text);
+	border-bottom-color: var(--admin-primary);
+}
+
+.user-editor .user-editor-tabs.ui.menu > .item:hover {
+	color: var(--admin-primary-text);
+	background: var(--admin-primary-soft);
+}
+
+.user-editor .user-editor-tabs > .item:focus-visible {
+	outline: 2px solid var(--admin-primary);
+	outline-offset: -3px;
+}
+
+.user-editor-pane > .ui.grid {
+	margin: 0 -.75rem;
+}
+
+.user-editor-pane > .ui.grid > .column {
+	min-width: 0;
+	padding: 0 .75rem;
+}
+
+.user-editor-pane > .ui.grid > .column + .column {
+	border-left: 1px solid var(--admin-border);
+}
+
+.user-editor-pane .ui.card {
+	width: 100%;
+	margin: 0;
+	border: 0;
+	box-shadow: none;
+	background: transparent;
+}
+
+.user-editor-pane > .ui.card {
+	max-width: 64rem;
+}
+
+.user-editor-pane[data-tab="sessions"] > .ui.card {
+	max-width: none;
+}
+
+.user-editor-pane .ui.card > .content {
+	padding: 0;
+	border: 0;
+}
+
+.user-editor-pane .ui.card > .content:first-child {
+	display: flex;
+	align-items: center;
+	min-height: 2.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.user-editor-pane .ui.card > .content:first-child > .header {
+	margin: 0;
+}
+
+.user-editor-pane .ui.form > .extra.content,
+.user-editor-pane .ui.form > .ui.right.aligned.basic.segment {
+	display: flex;
+	justify-content: flex-end;
+	gap: .75rem;
+	margin: 1.5rem 0 0;
+	padding: 1rem 0 0;
+	border-top: 1px solid var(--admin-border);
+}
+
+@media (max-width: 991px) {
+	.user-editor-pane > .ui.grid > .column + .column {
+		margin-top: 1.5rem;
+		padding-top: 1.5rem;
+		border-left: 0;
+		border-top: 1px solid var(--admin-border);
+	}
+}
+
+@media (max-width: 575px) {
+	.user-editor { padding: 0 1rem 1rem; }
+	.user-editor .user-editor-tabs.ui.menu > .item { padding: 1rem .5rem; }
+}

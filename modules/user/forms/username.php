@@ -5,12 +5,12 @@
  */
 
 $this	->rule($this->form_text('username')
-					->title('Identifiant')
+					->title('Pseudo')
 					->required()
 					->check(function($data){
 						if ($data['username'] && !$this->db()->from('user')->where('username', $data['username'])->where('deleted', FALSE)->where_if($this->_values, 'id <>', $this->_values->id)->empty())
 						{
-							return 'Identifiant déjà pris';
+							return 'Pseudo déjà utilisé';
 						}
 					})
 		);

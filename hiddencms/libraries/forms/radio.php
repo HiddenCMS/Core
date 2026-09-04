@@ -10,6 +10,7 @@ class Radio extends Multiple
 {
 	protected $_type   = 'radio';
 	protected $_inline = TRUE;
+	protected $_toggle = FALSE;
 
 	public function __invoke($name)
 	{
@@ -49,6 +50,7 @@ class Radio extends Multiple
 			$data = [
 				'items'  => $items,
 				'type'   => $this->_type,
+				'toggle' => $this->_toggle,
 				'inline' => $this->_inline || ($this->_form->display() & \HB\HiddenCMS\Libraries\Form2::FORM_INLINE)
 			];
 

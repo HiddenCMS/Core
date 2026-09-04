@@ -7,7 +7,7 @@
 <?php if ($this->config->theme_color): ?>
 <meta name="theme-color" content="<?php echo $this->config->theme_color ?>">
 <?php endif ?>
-<?php if ($this->config->analytics) echo $this->view('theme/analytics') ?>
+<link rel="stylesheet" href="<?php echo css('privacy.css') ?>">
 <?php if ($this->config->humans_txt): ?>
 <link rel="author" href="<?php echo url('humans.txt') ?>" type="text/plain">
 <?php endif ?>
@@ -31,6 +31,7 @@
 <?php endif ?>
 <?php echo $body ?>
 <?php echo $debug_bar ?>
+<?php echo $this->view('theme/privacy') ?>
 <?php echo $this->output->js() ?>
 <script type="text/javascript">
 $(function(){

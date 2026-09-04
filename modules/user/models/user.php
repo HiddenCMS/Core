@@ -161,7 +161,7 @@ class User extends Model2
 
 	public function name()
 	{
-		return $this->profile()->first_name.' '.$this->profile()->last_name;
+		return trim(privacy_profile_value($this->profile(), 'first_name').' '.privacy_profile_value($this->profile(), 'last_name'));
 	}
 
 	public function delete()
@@ -172,6 +172,8 @@ class User extends Model2
 				->update([
 					'user_id' => NULL
 				]);
+
+		$this->db->where('user_id', $this->id)->update('user_field_value', ['login_value' => NULL]);
 
 		return $this;
 	}

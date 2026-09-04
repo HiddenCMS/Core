@@ -111,6 +111,10 @@ class Col extends Displayable
 		if ($responsive)
 		{
 			$classes[] = ($base ?: 'sixteen').' wide mobile';
+			if (!preg_grep('/ wide tablet$/', $responsive))
+			{
+				$classes[] = ($base ?: 'sixteen').' wide tablet';
+			}
 			$classes = array_merge($classes, $responsive);
 		}
 		else

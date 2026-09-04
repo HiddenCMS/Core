@@ -167,6 +167,7 @@ class Index extends Controller_Module
 												->panel()
 												->title('Liens', 'fas fa-globe')
 								)
+								->append($this->model('fields')->profile_panel($this->user))
 				)
 				->append($this	->col()
 								->size('col-12 col-lg-5')

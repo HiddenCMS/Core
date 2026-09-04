@@ -143,6 +143,7 @@ foreach ([
 			'input',
 			'location',
 			'notify',
+			'privacy',
 			'statistics',
 			'string',
 			'system',

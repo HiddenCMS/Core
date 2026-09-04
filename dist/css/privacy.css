@@ -1,0 +1,39 @@
+.privacy-banner[hidden], .privacy-fallback[hidden], .privacy-dialog [hidden], .privacy-embed [hidden] { display: none !important; }
+.privacy-banner, .privacy-dialog, .privacy-embed, .privacy-fallback { box-sizing: border-box; font: 14px/1.5 system-ui, sans-serif; letter-spacing: 0; color: #283d45; }
+.privacy-banner *, .privacy-dialog *, .privacy-embed * { box-sizing: border-box; }
+.privacy-banner { position: fixed; z-index: 1100; inset: auto 16px 16px; max-width: 1080px; margin: auto; padding: 20px 24px; display: flex; align-items: center; gap: 24px; background: #fff; border: 1px solid #dce5e8; border-radius: 6px; box-shadow: 0 8px 30px #122b3426; }
+.privacy-banner p, .privacy-dialog p { margin: 8px 0 0; }
+.privacy-banner strong { font-size: 17px; }
+.privacy-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.privacy-banner .privacy-actions { flex: 0 0 290px; }
+.privacy-button { appearance: none; border: 0; border-radius: 4px; padding: 10px 15px; margin: 0; background: #e4f3f3; color: #006e78; font: 600 13px/1.4 system-ui, sans-serif; cursor: pointer; min-height: 38px; }
+.privacy-button:hover { background: #cdebec; }
+.privacy-button:focus-visible, .privacy-close:focus-visible, .privacy-preferences-link:focus-visible { outline: 2px solid #008d98; outline-offset: 3px; }
+.privacy-dialog { position: fixed; inset: 0; width: min(620px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; background: #fff; border: 1px solid #dce5e8; border-radius: 6px; box-shadow: 0 18px 60px #122b3440; overflow: auto; }
+.privacy-dialog::backdrop { background: #152a3280; }
+.privacy-dialog header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 1px solid #e0e7e9; }
+.privacy-dialog h2 { margin: 0; font: 600 20px/1.3 system-ui, sans-serif; letter-spacing: 0; }
+.privacy-close { border: 0; background: #edf2f4; color: #546772; border-radius: 4px; width: 34px; height: 34px; flex: 0 0 34px; padding: 0; cursor: pointer; font: 24px/1 system-ui, sans-serif; }
+.privacy-dialog-body { padding: 16px 24px; }
+.privacy-necessary { margin-top: 20px; padding: 16px 0; border-top: 1px solid #e0e7e9; }
+.privacy-necessary > span { display: block; color: #527562; font-size: 12px; margin-top: 4px; }
+.privacy-service { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; border-top: 1px solid #e0e7e9; cursor: pointer; }
+.privacy-service span span { display: block; margin-top: 6px; color: #526671; }
+.privacy-service input { appearance: auto !important; position: static !important; opacity: 1 !important; width: 20px !important; height: 20px !important; flex: 0 0 20px; accent-color: #008c95; cursor: pointer; }
+.privacy-dialog footer { padding: 18px 24px; border-top: 1px solid #e0e7e9; background: #f7f9fa; }
+.privacy-dialog .privacy-notice { margin-bottom: 10px; }
+.privacy-storage-warning { color: #974020; }
+.privacy-preferences-link { border: 0; border-radius: 4px; background: transparent; color: inherit; font: inherit; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.privacy-fallback { position: fixed; z-index: 1000; bottom: 12px; left: 12px; padding: 4px 12px; background: #fff; border: 1px solid #dce5e8; border-radius: 4px; }
+.privacy-embed { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; min-height: 180px; background: #f0f5f6; border: 1px solid #dce5e8; border-radius: 4px; overflow: hidden; position: relative; }
+.privacy-embed-placeholder { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center; gap: 12px; }
+.privacy-embed-placeholder p { margin: 0; }
+.privacy-embed iframe { display: block; width: 100%; height: 100%; border: 0; }
+@media (max-width: 720px) {
+	.privacy-banner { inset: auto 8px 8px; display: block; padding: 16px; max-height: calc(100dvh - 16px); overflow: auto; }
+	.privacy-banner .privacy-actions { margin-top: 14px; }
+	.privacy-dialog header, .privacy-dialog-body, .privacy-dialog footer { padding: 16px; }
+	.privacy-dialog h2 { font-size: 18px; }
+	.privacy-actions .privacy-button { flex: 1 1 auto; }
+	.privacy-embed { aspect-ratio: auto; height: 240px; }
+}

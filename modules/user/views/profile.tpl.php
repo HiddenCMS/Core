@@ -4,20 +4,18 @@
 	<?php
 		if (($profile = $user->profile()) && $profile())
 		{
+			$sex = privacy_profile_value($profile, 'sex');
+			$date_of_birth = privacy_profile_value($profile, 'date_of_birth');
+			$country = privacy_profile_value($profile, 'country');
+			$location = privacy_profile_value($profile, 'location');
 			echo $this	->array
 						->append_if($quote = $profile->quote, '<i class="text-muted">'.$quote.'</i>')
-						->append($profile->first_name.' '.$profile->last_name)
-						->append_if($profile->sex || $profile->date_of_birth, function() use ($profile){
-							$sex = $profile->sex;
-							$date_of_birth = $profile->date_of_birth;
-							return $this->label($date_of_birth ? $this->lang('%d an|%d ans', $age = $date_of_birth->interval('today')->y, $age) : ($sex == 'female' ? 'Femme' : 'Homme'), $sex ? ($sex == 'female' ? 'fas fa-venus' : 'fas fa-mars').' '.$sex : 'fas fa-birthday-cake')
-										->tooltip_if($date_of_birth, function($date){
-											return $this->no_translate($date->short_date());
-										});
+						->append(trim(privacy_profile_value($profile, 'first_name').' '.privacy_profile_value($profile, 'last_name')))
+						->append_if($sex || $date_of_birth, function() use ($sex, $date_of_birth){
+							return $this->label($date_of_birth ? $this->lang('%d an|%d ans', $age = $date_of_birth->interval('today')->y, $age) : ($sex == 'female' ? 'Femme' : 'Homme'), $sex ? ($sex == 'female' ? 'fas fa-venus' : 'fas fa-mars').' '.$sex : 'fas fa-birthday-cake');
 						})
-						->append_if($profile->location || $profile->country, function() use ($profile){
-							$country = $profile->country;
-							return $this->label($this->no_translate($profile->location) ?: get_countries()[$country], $country && ($flag = image('flags/'.$country.'.png', $this->theme('default'))) ? '<img src="'.$flag.'" alt="" />' : 'fas fa-map-marker-alt');
+						->append_if($location || $country, function() use ($location, $country){
+							return $this->label($this->no_translate($location) ?: (get_countries()[$country] ?? ''), $country && ($flag = image('flags/'.$country.'.png', $this->theme('default'))) ? '<img src="'.$flag.'" alt="" />' : 'fas fa-map-marker-alt');
 						})
 						->filter()
 						->each(function($a){

@@ -262,7 +262,7 @@ function bbcode($string)
 
 	if (preg_match('/<\s*[a-z][^>]*>/i', $string))
 	{
-		return $string;
+		return privacy_media_html($string);
 	}
 
 	if (function_exists('NeoFrag') && NeoFrag())

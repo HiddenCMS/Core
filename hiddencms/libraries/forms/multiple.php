@@ -16,6 +16,20 @@ abstract class Multiple extends Labelable
 		parent::__invoke($name);
 
 		$this->_check[1] = function($post, &$data){
+			if (isset($post[$this->_name]))
+			{
+				$values = $post[$this->_name];
+				$valid = $this->_multiple ? is_array($values) : is_scalar($values);
+				foreach ($this->_multiple && is_array($values) ? $values : [] as $value)
+				{
+					$valid = $valid && is_scalar($value);
+				}
+				if (!$valid)
+				{
+					$this->_errors[] = $this->lang('Choix invalide');
+					return FALSE;
+				}
+			}
 			if ($this->_multiple)
 			{
 				$data[$this->_name] = [];

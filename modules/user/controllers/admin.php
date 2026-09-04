@@ -96,9 +96,81 @@ class Admin extends Controller_Module
 						->counter('COUNT(*)', '%s membre|%s membres')
 						->panel()
 						->title('Membres', 'fas fa-users')
+						->footer_if($this->user->admin, $this->button_create('admin/user/create', 'Créer un utilisateur'))
+						->footer_if($this->user->admin, $this->button()->title('Champs et connexion')->icon('fas fa-sliders-h')->color('secondary')->url('admin/user/fields'))
 						->size('col-12 col-lg-9')
 			)
 		);
+	}
+
+	public function create()
+	{
+		$this->title('Créer un utilisateur')->icon('fas fa-user-plus');
+		return $this->form2('username email password_required custom_fields', $this->model2('user'))
+			->success(function($user, $form){
+				try
+				{
+					// An admin-created account does not wait for registration e-mail validation.
+					$user->set('data', $user->data->set('registration_verified', TRUE));
+					$this->model('fields')->save_user($user, TRUE);
+				}
+				catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
+				notify('Utilisateur créé');
+				redirect('admin/user/user/update/'.$user->url());
+			})
+			->submit('Créer')->back('admin/user')->panel()->title('Nouvel utilisateur', 'fas fa-user-plus');
+	}
+
+	public function fields($field)
+	{
+		$this->title('Champs et connexion')->icon('fas fa-sliders-h')->js('user_fields');
+		$model = $this->model('fields');
+		$choices = ['username' => 'Pseudo', 'email' => 'Adresse e-mail'];
+		foreach ($model->all() as $item)
+		{
+			if ($item['type'] === 'text') $choices['field:'.$item['id']] = utf8_htmlentities($item['label']);
+		}
+		$login = $this->form2()
+			->rule($this->form_select('identifier')->title('Identifiant de connexion')->data($choices)->value($model->identifier())->required())
+			->success(function($data, $form) use ($model){
+				try { $model->set_identifier($data['identifier']); }
+				catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
+				notify('Identifiant de connexion enregistré');
+				refresh();
+			})
+			->submit('Enregistrer')->panel()->title('Connexion', 'fas fa-sign-in-alt');
+		$options = [];
+		foreach ($field['options'] ?? [] as $key => $label) $options[] = $key.'|'.$label;
+		$form = $this->form2()
+			->rule($this->form_text('label')->title('Libellé')->value(utf8_htmlentities($field['label'] ?? ''))->required())
+			->rule($this->form_text('name')->title('Nom technique')->value($field['name'] ?? '')->required()->read_only_if($field))
+			->rule($this->form_select('type')->title('Type')->data($model->types())->value($field['type'] ?? 'text')->required()->disabled_if($field))
+			->rule($this->form_textarea('options')->title('Choix (un par ligne : valeur|libellé)')->rows(5)->value(utf8_htmlentities(implode("\n", $options))))
+			->rule($this->form_checkbox('required')->data(['1' => 'Champ obligatoire'])->value(!empty($field['required']) ? ['1'] : []))
+			->success(function($data, $form) use ($model, $field){
+				try { $model->save_definition($data, $field['id'] ?? 0); }
+				catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
+				notify('Champ enregistré');
+				redirect('admin/user/fields');
+			})
+			->submit($field ? 'Enregistrer' : 'Ajouter')->back('admin/user')->panel()->title($field ? 'Modifier le champ' : 'Nouveau champ', 'fas fa-list');
+		return $this->row(
+			$this->col($this->panel()->heading('Champs personnalisés', 'fas fa-list')->body($this->view('admin/fields', ['fields' => $model->all(), 'types' => $model->types(), 'identifier' => $model->identifier()]))->footer($this->button_create('admin/user/fields', 'Ajouter un champ')), $login)->size('col-12 col-lg-5'),
+			$this->col($form)->size('col-12 col-lg-7')
+		);
+	}
+
+	public function field_delete($field)
+	{
+		return $this->form2()
+			->rule($this->form_checkbox('confirm')->data(['1' => 'Supprimer le champ '.utf8_htmlentities($field['label']).' et les valeurs enregistrées'])->required())
+			->success(function($data, $form) use ($field){
+				try { $this->model('fields')->delete_definition($field['id']); }
+				catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
+				notify('Champ supprimé');
+				redirect('admin/user/fields');
+			})
+			->submit('Supprimer', 'danger')->back('admin/user/fields')->panel()->title('Supprimer le champ', 'fas fa-trash');
 	}
 
 	public function _groups_add()

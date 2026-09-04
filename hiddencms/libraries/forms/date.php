@@ -40,6 +40,19 @@ class Date extends Text
 		};
 
 		array_splice($this->_template, 1, 0, function(&$input){
+			if ($this->admin_grid())
+			{
+				$this->js('bootstrap-datetimepicker/moment.min')
+					->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
+					->js('form')
+					->js('form_calendar');
+				$input->attr('data-calendar-type', $this->_datetime_type)
+					->attr('data-calendar-format', $this->_datetime_format)
+					->attr('data-calendar-locale', $this->config->lang->info()->name)
+					->attr('autocomplete', 'off');
+				return;
+			}
+
 			$this	->css('bootstrap-datetimepicker.min')
 					->js('bootstrap-datetimepicker/moment.min')
 					->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')

@@ -71,7 +71,8 @@ class Ajax extends Controller_Module
 
 	public function register()
 	{
-		return $this->form2(!empty($this->config->registration_charte) ? 'username password_required email charte' : 'username password_required email', $this->model2('user'))
+		return $this->form2(!empty($this->config->registration_charte) ? 'username password_required email custom_fields charte' : 'username password_required email custom_fields', $this->model2('user'))
+					->info(privacy_notice())
 					->compact()
 					->captcha()
 					->success(function($user, $form){
@@ -100,7 +101,8 @@ class Ajax extends Controller_Module
 							}
 						}
 
-						$user->set_password($user->password)->create();
+						try { $this->model('fields')->save_user($user, TRUE); }
+						catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
 
 						if ($this->config->welcome && $this->config->welcome_user_id && !empty($this->config->welcome_title) && !empty($this->config->welcome_content))
 						{

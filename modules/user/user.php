@@ -39,6 +39,9 @@ class User extends Module
 
 				//Admin
 				'admin{pages}'                                   => 'index',
+				'admin/create'                                   => 'create',
+				'admin/fields(?:/{id})?'                          => 'fields',
+				'admin/fields/delete/{id}'                        => 'field_delete',
 				'admin/groups/add'                               => '_groups_add',
 				'admin/groups/edit/(admins|members|visitors)'    => '_groups_edit',
 				'admin/groups/edit/{url_title}-{id}/{url_title}' => '_groups_edit',

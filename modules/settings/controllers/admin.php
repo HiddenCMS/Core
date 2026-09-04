@@ -81,10 +81,10 @@ class Admin extends Controller_Module
 					],
 					'analytics' => [
 						'label'       => '<a href="https://analytics.google.com" target="_blank">'.$this->lang('Code Google Analytics').'</a>',
-						'description' => 'Format UA-XXXXXXXXX-Y',
+						'description' => 'Format G-XXXXXXXXXX (GA4). Chargé uniquement après accord du visiteur, hors administration. Les anciens codes UA ne sont plus chargés.',
 						'value'       => $this->config->analytics,
 						'check'       => function($code){
-							if (!is_empty($code) && !preg_match('/^UA-\d+-\d+$/', $code))
+							if (!is_empty($code) && !preg_match('/^(?:G-[A-Z0-9]+|UA-\d+-\d+)$/D', $code))
 							{
 								return $this->lang('Ce code est invalide');
 							}
@@ -594,6 +594,46 @@ class Admin extends Controller_Module
 		]);
 	}
 
+	public function privacy()
+	{
+		if (!$this->user->admin) return $this->error->unauthorized();
+		$this->subtitle('Confidentialité')->icon('fas fa-user-shield');
+		$pages = ['0' => 'Aucune page sélectionnée'];
+		foreach (privacy_pages() as $id => $page) $pages[$id] = $page['title'];
+		return $this->_layout(function($col) use ($pages){
+			$form = $this->form2()
+				->info($this->html()->attr('class', 'ui warning message')->content('La politique doit correspondre aux traitements réels du site. Le gestionnaire bloque Google Analytics et les vidéos YouTube intégrées avant accord. Les autres services doivent être intégrés explicitement. reCAPTCHA nécessite encore un examen séparé : ces réglages ne valent pas validation de conformité.'))
+				->rule($this->form_text('privacy_controller')->title('Responsable du traitement')->value($this->config->privacy_controller ?? ''))
+				->rule($this->form_email('privacy_contact')->title('Email de contact pour les données personnelles')->value($this->config->privacy_contact ?? ''))
+				->rule($this->form_select('privacy_page')->title('Politique de confidentialité')->data($pages)->search(0)->value((string)(($this->config->privacy_page ?? '') ?: '0'))
+					->check(function($post) use ($pages){
+						if (!is_scalar($post['privacy_page'] ?? NULL) || !array_key_exists($post['privacy_page'], $pages)) return 'Veuillez sélectionner une page publiée accessible aux visiteurs.';
+					}));
+			$form->legend('Champs du profil');
+			foreach (privacy_profile_fields() as $field => $label)
+			{
+				$key = 'privacy_profile_'.$field;
+				$form->rule($this->form_select($key)->title($label)->size('col-6')
+					->data(['disabled' => 'Désactivé', 'private' => 'Privé', 'public' => 'Public'])
+					->value(privacy_profile_mode($field))
+					->check(function($post) use ($key){
+						if (!in_array($post[$key] ?? NULL, ['disabled', 'private', 'public'], TRUE)) return 'Choix invalide';
+					}));
+			}
+			$col->append($form->success(function($data){
+					foreach (['privacy_controller', 'privacy_contact', 'privacy_page'] as $name) $this->config($name, $data[$name]);
+					foreach (array_keys(privacy_profile_fields()) as $field)
+					{
+						$key = 'privacy_profile_'.$field;
+						$this->config($key, $data[$key]);
+					}
+					notify('Paramètres de confidentialité enregistrés');
+					refresh();
+				})
+				->submit('Enregistrer')->panel()->title('Confidentialité', 'fas fa-user-shield'));
+		});
+	}
+
 	public function copyright()
 	{
 		return $this->subtitle('Copyright')
@@ -662,6 +702,11 @@ class Admin extends Controller_Module
 					'title' => 'Maintenance',
 					'icon'  => 'fas fa-power-off',
 					'url'   => 'admin/settings/maintenance'
+				],
+				[
+					'title' => 'Confidentialité',
+					'icon'  => 'fas fa-user-shield',
+					'url'   => 'admin/settings/privacy'
 				],
 				[
 					'title' => 'Copyright',

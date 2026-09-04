@@ -11,6 +11,12 @@ class Checkbox extends Radio
 	protected $_type     = 'checkbox';
 	protected $_multiple = TRUE;
 
+	public function toggle()
+	{
+		$this->_toggle = TRUE;
+		return $this;
+	}
+
 	protected function _value(&$input, $value)
 	{
 		$input	->append_attr('name', '[]', '')

@@ -1,14 +1,9 @@
 $(function(){
 	$('ul.groups input[type=checkbox]').change(function(){
 		if ($(this).prop('value') == 'admins' || $(this).prop('value') == 'members'){
-			other = $(this).prop('value') == 'admins' ? $('ul.groups input[type=checkbox][value=members]') : $('ul.groups input[type=checkbox][value=admins]');
-
-			if ($(this).prop('checked')){
-				other.prop('checked', false);
-			}
-			else{
-				other.prop('checked', 'checked');
-			}
+			var value = this.value === 'admins' ? 'members' : 'admins';
+			var other = $(this).closest('ul.groups').find('input[type=checkbox][value="' + value + '"]');
+			other.prop('checked', !this.checked).closest('.ui.checkbox').toggleClass('checked', !this.checked);
 		}
 	});
 });

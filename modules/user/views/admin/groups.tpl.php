@@ -1,18 +1,20 @@
 <?php $groups = $this->groups(); if (!empty($groups)): ?>
-	<form action="<?php echo url($this->url->request) ?>" method="post">
-		<ul class="groups">
+	<form class="ui form" action="<?php echo url($this->url->request) ?>" method="post">
+		<ul class="groups user-group-list">
 		<?php foreach ($groups as $group_id => $group): ?>
 			<?php if ($group['users'] === NULL) continue ?>
-			<li class="col-12">
-				<label>
-					<input type="checkbox" name="<?php echo $form_id ?>[groups][]" value="<?php echo $group_id ?>"<?php if (in_array($user_id, $group['users'])) echo ' checked="checked"'; if ($group['auto'] && $group['auto'] != 'HiddenCMS') echo ' disabled="disabled"' ?> />
-					<?php echo $this->groups->display($group_id, TRUE, FALSE) ?>
-				</label>
+			<li>
+				<div class="ui checkbox user-group-choice">
+					<input type="checkbox" id="group-<?php echo $form_id ?>-<?php echo $group_id ?>" name="<?php echo $form_id ?>[groups][]" value="<?php echo $group_id ?>"<?php if (in_array($user_id, $group['users'])) echo ' checked="checked"'; if ($group['auto'] && $group['auto'] != 'HiddenCMS') echo ' disabled="disabled"' ?> />
+					<label for="group-<?php echo $form_id ?>-<?php echo $group_id ?>">
+						<?php echo $this->groups->display($group_id, TRUE, FALSE) ?>
+					</label>
+				</div>
 			</li>
 		<?php endforeach ?>
 		</ul>
-		<div class="text-center">
-			<button style="margin-top: 15px;" class="btn btn-outline btn-primary"><?php echo icon('fas fa-check').' '.$this->lang('Valider') ?></button>
+		<div class="ui right aligned basic segment">
+			<?php echo $this->button_submit($this->lang('Valider')) ?>
 		</div>
 	</form>
 <?php endif ?>

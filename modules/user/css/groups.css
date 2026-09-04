@@ -6,3 +6,59 @@ ul.groups {
 ul.groups li {
 	vertical-align: top;
 }
+
+.user-group-list {
+	display: grid;
+	gap: .5rem;
+	margin: 0;
+}
+
+.user-group-list .user-group-choice.ui.checkbox {
+	display: block;
+	width: 100%;
+}
+
+.user-group-list .user-group-choice.ui.checkbox > label {
+	display: flex;
+	align-items: center;
+	min-height: 3.25rem;
+	padding: .75rem 1rem .75rem 2.8rem;
+	border-radius: 4px;
+	background: #f7f9fa;
+	cursor: pointer;
+	transition: background-color .15s ease;
+}
+
+.user-group-list .user-group-choice.ui.checkbox > label::before,
+.user-group-list .user-group-choice.ui.checkbox > label::after {
+	top: 50%;
+	left: 1rem;
+	margin-top: -.5rem;
+}
+
+.user-group-list .user-group-choice.ui.checkbox > input {
+	top: 50%;
+	left: 1rem;
+	margin-top: -.5rem;
+}
+
+.user-group-list .user-group-choice.ui.checkbox > input:checked ~ label {
+	background: var(--admin-primary-soft);
+}
+
+.user-group-list .user-group-choice.ui.checkbox > input:not(:disabled) ~ label:hover {
+	background: var(--admin-primary-soft-hover);
+}
+
+.user-group-list .user-group-choice.ui.checkbox > input:focus-visible ~ label {
+	outline: 2px solid var(--admin-primary);
+	outline-offset: 2px;
+}
+
+.user-group-list .user-group-choice.ui.checkbox > input:disabled ~ label {
+	cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.user-group-list .user-group-choice.ui.checkbox > label { transition: none; }
+}
