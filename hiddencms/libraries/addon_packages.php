@@ -266,7 +266,7 @@ class Addon_Packages extends Library
 			0 => ['pipe', 'r'],
 			1 => ['pipe', 'w'],
 			2 => ['pipe', 'w']
-		], $pipes, HIDDENCMS_CMS);
+		], $pipes, HIDDENCMS_CMS, $this->composer_environment());
 
 		if (!is_resource($process))
 		{
@@ -286,6 +286,37 @@ class Addon_Packages extends Library
 		}
 
 		return trim($output.PHP_EOL.$error);
+	}
+
+	protected function composer_environment()
+	{
+		$environment = getenv();
+		$environment = is_array($environment) ? $environment : [];
+		$composer_home = getenv('COMPOSER_HOME');
+
+		if (!$composer_home)
+		{
+			$composer_home = HIDDENCMS_CMS.'/cache/composer';
+
+			if (!is_dir($composer_home) && !@mkdir($composer_home, 0775, TRUE) && !is_dir($composer_home))
+			{
+				throw new RuntimeException('Le dossier Composer ne peut pas être créé : '.$composer_home);
+			}
+
+			if (!is_writable($composer_home))
+			{
+				throw new RuntimeException('Le dossier Composer n\'est pas accessible en écriture : '.$composer_home);
+			}
+
+			$environment['COMPOSER_HOME'] = $composer_home;
+		}
+
+		if (!getenv('HOME'))
+		{
+			$environment['HOME'] = $composer_home;
+		}
+
+		return $environment;
 	}
 
 	protected function normalize_process_output($output)
