@@ -4,7 +4,7 @@ Ce document est la procédure de référence pour publier le Core, News, Horizon
 
 ## Versions conseillées pour la première publication
 
-- Core : `0.3.3`, release stable courante.
+- Core : `0.3.4`, release stable courante.
 - News : `0.1.0`.
 - Horizon : `0.1.0`.
 

@@ -118,7 +118,8 @@ CREATE TABLE `core_migrations` (
 
 INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VALUES
 ('0.3.0', '0.3.0', 1, NOW()),
-('0.3.1', '0.3.1', 1, NOW());
+('0.3.1', '0.3.1', 1, NOW()),
+('0.3.4', '0.3.1', 1, NOW());
 
 DROP TABLE IF EXISTS `user_field_value`;
 DROP TABLE IF EXISTS `user_field`;

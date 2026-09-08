@@ -1,6 +1,6 @@
 {
     "name": "hiddencms/core",
-    "version": "0.3.3",
+    "version": "0.3.4",
     "schema": "0.3.1",
     "channel": "stable",
     "php": ">=8.1",
@@ -9,6 +9,7 @@
             "backups",
             "cache",
             "config",
+            "install/installed.txt",
             "logs",
             "overrides",
             "upload",

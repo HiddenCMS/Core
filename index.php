@@ -22,7 +22,9 @@ ini_set('error_log',       'logs/php.log');
 ini_set('display_errors',  TRUE);
 ini_set('default_charset', 'UTF-8');
 
-if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
+$hiddencms_update_in_progress = glob(__DIR__.'/cache/updates/work-*', GLOB_ONLYDIR);
+
+if (file_exists('install/index.php') && !file_exists('install/installed.txt') && !$hiddencms_update_in_progress)
 {
 	if (file_exists('install/db.txt'))
 	{
@@ -33,6 +35,8 @@ if (file_exists('install/index.php') && !file_exists('install/installed.txt'))
 		require_once 'install/index.php';
 	}
 }
+
+unset($hiddencms_update_in_progress);
 
 mb_regex_encoding('UTF-8');
 mb_internal_encoding('UTF-8');

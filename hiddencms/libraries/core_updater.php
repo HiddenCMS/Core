@@ -476,6 +476,19 @@ class Core_Updater extends Library
 	protected function copy_release($source, array $manifest)
 	{
 		$protected = $this->protected_paths($manifest);
+		$installer = $source.'/install/index.php';
+		$installed = HIDDENCMS_CMS.'/install/installed.txt';
+
+		if (is_file($installer))
+		{
+			$this->ensure_directory(dirname($installed));
+
+			if (!is_file($installed) && !@touch($installed))
+			{
+				throw new RuntimeException('Impossible de sécuriser le répertoire d\'installation.');
+			}
+		}
+
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS));
 
 		foreach ($iterator as $file)
@@ -542,7 +555,7 @@ class Core_Updater extends Library
 	protected function protected_paths(array $manifest)
 	{
 		$paths = isset($manifest['update']['protected']) ? $manifest['update']['protected'] : [];
-		return array_values(array_unique(array_merge($paths, ['.git', 'backups', 'cache', 'logs', 'upload', 'uploads', 'vendor'])));
+		return array_values(array_unique(array_merge($paths, ['.git', 'backups', 'cache', 'install/installed.txt', 'logs', 'upload', 'uploads', 'vendor'])));
 	}
 
 	protected function is_protected($relative, array $paths)
