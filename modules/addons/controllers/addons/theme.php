@@ -28,7 +28,7 @@ class Theme extends Controller
 
 	public function enable($addon)
 	{
-		if (!$this->db->select('id')->from('dispositions')->where('theme', $addon->info()->name)->row())
+		if ($this->db->from('dispositions')->where('theme', $addon->info()->name)->empty())
 		{
 			$addon->install();
 		}
