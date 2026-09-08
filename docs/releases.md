@@ -4,7 +4,7 @@ Ce document est la procédure de référence pour publier le Core, News, Horizon
 
 ## Versions conseillées pour la première publication
 
-- Core : `0.3.1`, déjà déclaré dans `hiddencms.json` et `composer.json`.
+- Core : `0.3.2`, première release stable de la série actuelle.
 - News : `0.1.0`.
 - Horizon : `0.1.0`.
 

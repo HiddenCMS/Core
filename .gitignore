@@ -1,4 +1,5 @@
 composer.lock
+/vendor/
 /cache/composer/
 .gitignore
 install/db.txt
