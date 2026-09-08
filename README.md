@@ -39,6 +39,10 @@ Il demande notamment le nom de la base, l'utilisateur MySQL et son mot de passe.
 
 Quand le dossier `install/` est conserve, l'installation CLI ecrit `install/installed.txt` pour desactiver l'installateur web.
 
+## Publier une version
+
+La procédure de versionnement, de validation et de publication du Core et des addons est décrite dans [docs/releases.md](docs/releases.md).
+
 ## Installation web
 
 L'installateur web historique reste disponible en ouvrant le projet dans un navigateur tant que le dossier `install/` est present.

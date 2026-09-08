@@ -1,6 +1,6 @@
 {
     "name": "hiddencms/core",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "HiddenCMS core, forked from NeoFrag CMS",
     "type": "project",
     "license": "GPL-3.0-only",
