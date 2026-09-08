@@ -111,7 +111,7 @@ class Debug extends Core
 		$args = func_get_args();
 		$message = array_pop($args);
 
-		$this->_logs[] = [$args, $message, 'info', '', 0, $this->date(), $memory];
+		$this->_logs[] = [$args, $message, 'info', '', 0, date_create(), $memory];
 	}
 
 	static function debug_to_console($data) {
