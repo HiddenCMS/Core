@@ -1,6 +1,6 @@
 # Confidentialite : audit technique initial
 
-Date : 2026-09-03. Perimetre : core HiddenCMS, theme Horizon et addon News,
+Date : 2026-09-03, mise a jour le 2026-09-10. Perimetre : core HiddenCMS, theme Horizon et addon News,
 dans leurs copies locales de developpement. Analyse de code, pas un audit
 juridique ni un test exhaustif des flux reseau en production.
 
@@ -23,7 +23,7 @@ traiter.
 | Moyenne | La suppression des sessions inactives ne vise que `remember = FALSE`. Le cookie de session est cree pour un an ; HttpOnly et Secure conditionnel sont presents, SameSite n'est pas explicite. | Revoir ensemble duree du cookie, sessions persistantes, rotation, connexions tierces et SameSite sans casser les parcours de connexion. |
 | Haute | `modules/user/views/profile.tpl.php` affiche nom/prenom, sexe ou age, date de naissance dans une infobulle, localisation et liens, lorsque le profil est accessible. | Justifier la collecte et ajouter des controles de collecte et de publication, appliques cote serveur et dans chaque rendu. Ne pas seulement masquer les inputs. |
 | Moyenne | Les champs personnalises possedent type/options/obligation mais pas de finalite, regle de publication ou conservation (`modules/user/models/fields.php`). | Ajouter la gouvernance des champs ; proteger le champ servant d'identifiant de connexion contre une desactivation qui bloquerait les comptes. |
-| Haute | L'export du core est implemente, mais les addons doivent encore adopter son contrat. News conserve ses references d'auteur ; son affichage filtre les comptes supprimes, sans preuve d'effacement de la reference stockee. | Implementer et tester l'export puis l'effacement dans chaque addon qui conserve des donnees personnelles, y compris lorsqu'il est desactive. |
+| Haute | L'export du core est implemente et News adopte desormais ses contrats. Les autres addons doivent encore declarer explicitement leur traitement ; les addons desactives restent hors du parcours. | Implementer et tester l'export puis l'effacement dans chaque nouvel addon qui conserve des donnees personnelles, y compris lorsqu'il est desactive. |
 | Moyenne | `hiddencms/libraries/core_updater.php` cree des sauvegardes SQL/fichiers sous `backups/updates`. Pas de politique de retention trouvee sur ce chemin. | Definir retention, restrictions d'acces, suppression et procedure de restauration sans reactivation de donnees effacees. Verifier aussi les sauvegardes hebergeur. |
 | Moyenne | L'admin charge Fomantic depuis jsDelivr ; TinyMCE est egalement charge depuis un CDN. Horizon utilise des assets locaux mais herite du template principal et de ses integrations. | Inventorier destinataires et transferts ; privilegier les assets auto-heberges. Un appel CDN n'est pas automatiquement un traceur soumis a consentement. |
 
@@ -235,9 +235,10 @@ un iframe/script actif puis esperer qu'un observateur le bloque apres coup.
 
 Limites : l'archive est generee de facon synchrone et n'est pas chiffree. Elle
 doit donc etre testee avec des comptes volumineux et transmise uniquement en
-HTTPS. Les addons desactives ne sont pas charges par ce premier contrat ; leur
-stockage doit etre inventorie lors de l'effacement. Cet export ne constitue ni
-une purge ni une procedure d'anonymisation.
+HTTPS. News fournit les actualites redigees et toutes leurs traductions. Les
+addons desactives ne sont pas charges par ce premier contrat ; leur stockage
+doit etre inventorie lors de l'effacement. Cet export ne constitue ni une purge
+ni une procedure d'anonymisation.
 
 Verification : `php tools/test-user-fields.php --isolated-database` controle le
 contenu structure, l'exclusion des secrets et la creation d'une archive ZIP
@@ -275,10 +276,15 @@ maximal de demandes peut etre passe en second argument, entre 1 et 100. Les
 fichiers sont retires apres la transaction SQL ; un echec de suppression est
 consigne dans le rapport afin de permettre une reprise manuelle.
 
-Limites : les addons desactives et les sauvegardes ne sont pas effaces par cette
-commande. Avant production, chaque addon conservant des donnees doit adopter le
-contrat, et la politique de sauvegarde doit garantir que la restauration ne
-reactive pas silencieusement une identite effacee.
+News conserve les actualites comme contributions editoriales et les rattache au
+compte anonymise par le core. Elles restent visibles sous le nom `Utilisateur
+supprime`, sans lien vers un profil. L'export et ce comportement sont verifies
+par `php tests/privacy-contract.php /chemin/vers/hiddencms` dans le depot News.
+
+Limites : les autres addons desactives et les sauvegardes ne sont pas effaces
+par cette commande. Avant production, chaque addon conservant des donnees doit
+adopter le contrat, et la politique de sauvegarde doit garantir que la
+restauration ne reactive pas silencieusement une identite effacee.
 
 ## Lot 6 : politique de conservation (implemente)
 
