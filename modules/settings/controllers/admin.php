@@ -402,14 +402,27 @@ class Admin extends Controller_Module
 		$this	->form()
 				->add_rules([
 					'captcha_public_key' => [
-						'label' => 'Clé publique Google',
+						'label' => 'Clé du site reCAPTCHA v3',
 						'value' => $this->config->captcha_public_key,
 						'type'  => 'text'
 					],
 					'captcha_private_key' => [
-						'label' => 'Clé privée Google',
+						'label' => 'Clé secrète reCAPTCHA v3',
 						'value' => $this->config->captcha_private_key,
 						'type'  => 'text'
+					],
+					'captcha_score_threshold' => [
+						'label'       => 'Seuil minimal du score',
+						'value'       => isset($this->config->captcha_score_threshold) ? $this->config->captcha_score_threshold : '0.5',
+						'type'        => 'number',
+						'min'         => 0,
+						'max'         => 1,
+						'step'        => 0.1,
+						'description' => 'Valeur comprise entre 0 et 1. Le seuil conseillé pour commencer est 0,5.',
+						'check'       => function($value){
+							$value = str_replace(',', '.', $value);
+							return is_numeric($value) && (float)$value >= 0 && (float)$value <= 1 ? TRUE : 'Le seuil doit être compris entre 0 et 1';
+						}
 					]
 				])
 				->add_submit($this->lang('Valider'))
@@ -417,6 +430,8 @@ class Admin extends Controller_Module
 
 		if ($this->form()->is_valid($post))
 		{
+			$post['captcha_score_threshold'] = str_replace(',', '.', $post['captcha_score_threshold']);
+
 			foreach ($post as $var => $value)
 			{
 				$this->config(''.$var, $value);
@@ -430,7 +445,7 @@ class Admin extends Controller_Module
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
 								->heading('Google reCAPTCHA', 'fas fa-shield-alt')
-								->body('<div class="alert alert-info"><a href="https://www.google.com/recaptcha/intro/index.html" target="_blank">https://www.google.com/recaptcha/intro/index.html</a></div>'.$this->form()->display())
+								->body('<div class="ui info message"><div class="header">reCAPTCHA v3</div><p>Utilisez une paire de clés reCAPTCHA v3. La vérification est invisible et attribue un score de confiance à chaque envoi protégé.</p><p><a href="https://www.google.com/recaptcha/admin/create" target="_blank" rel="noopener noreferrer">Configurer Google reCAPTCHA</a></p></div>'.$this->form()->display())
 			);
 		});
 	}
@@ -453,7 +468,31 @@ class Admin extends Controller_Module
 			->add_submit($this->lang('Valider'))
 			->save();
 
-		$position = explode(' ', $this->config->maintenance_background_position);
+		$position = preg_split('/\s+/', trim((string)$this->config->maintenance_background_position), -1, PREG_SPLIT_NO_EMPTY);
+		$positionX = 'center';
+		$positionY = 'top';
+
+		if (count($position) > 1)
+		{
+			if (in_array($position[0], ['left', 'center', 'right'], TRUE)) $positionX = $position[0];
+			if (in_array($position[1], ['top', 'center', 'bottom'], TRUE)) $positionY = $position[1];
+		}
+		else if (isset($position[0]))
+		{
+			if (in_array($position[0], ['left', 'right'], TRUE))
+			{
+				$positionX = $position[0];
+				$positionY = 'center';
+			}
+			else if (in_array($position[0], ['top', 'bottom'], TRUE))
+			{
+				$positionY = $position[0];
+			}
+			else if ($position[0] == 'center')
+			{
+				$positionY = 'center';
+			}
+		}
 
 		$form_maintenance = $this->form()
 			->add_rules([
@@ -502,26 +541,27 @@ class Admin extends Controller_Module
 						'repeat-y'  => $this->lang('Verticalement'),
 						'repeat'    => $this->lang('Les deux')
 					],
-					'type'   => 'radio'
+					'type'   => 'select'
 				],
 				'positionX' => [
-					'label'  => $this->lang('Position'),
-					'value'  => isset($position[0]) ? $position[0] : 'center',
+					'label'  => $this->lang('Position horizontale'),
+					'value'  => $positionX,
 					'values' => [
 						'left'   => $this->lang('Gauche'),
 						'center' => $this->lang('Centré'),
 						'right'  => $this->lang('Droite')
 					],
-					'type'   => 'radio'
+					'type'   => 'select'
 				],
 				'positionY' => [
-					'value'  => isset($position[1]) ? $position[1] : 'top',
+					'label'  => $this->lang('Position verticale'),
+					'value'  => $positionY,
 					'values' => [
 						'top'    => $this->lang('Haut'),
 						'center' => $this->lang('Milieu'),
 						'bottom' => $this->lang('Bas')
 					],
-					'type'   => 'radio'
+					'type'   => 'select'
 				],
 				'background_color' => [
 					'label' => $this->lang('Couleur de fond'),
@@ -555,7 +595,7 @@ class Admin extends Controller_Module
 					->config('maintenance_background_color',    trim($post['background_color']))
 					->config('maintenance_text_color',          trim($post['text_color']));
 
-			$this->module('tools')->api()->scss();
+			$this->module('tools')->api()->scss('reload', ['./modules/settings/css/sass/maintenance.scss']);
 
 			refresh();
 		}
@@ -600,7 +640,8 @@ class Admin extends Controller_Module
 		$this->subtitle('Confidentialité')->icon('fas fa-user-shield');
 		$pages = ['0' => 'Aucune page sélectionnée'];
 		foreach (privacy_pages() as $id => $page) $pages[$id] = $page['title'];
-		return $this->_layout(function($col) use ($pages){
+		$retention = $this->model('retention');
+		return $this->_layout(function($col) use ($pages, $retention){
 			$form = $this->form2()
 				->info($this->html()->attr('class', 'ui warning message')->content('La politique doit correspondre aux traitements réels du site. Le gestionnaire bloque Google Analytics et les vidéos YouTube intégrées avant accord. Les autres services doivent être intégrés explicitement. reCAPTCHA nécessite encore un examen séparé : ces réglages ne valent pas validation de conformité.'))
 				->rule($this->form_text('privacy_controller')->title('Responsable du traitement')->value($this->config->privacy_controller ?? ''))
@@ -608,6 +649,12 @@ class Admin extends Controller_Module
 				->rule($this->form_select('privacy_page')->title('Politique de confidentialité')->data($pages)->search(0)->value((string)(($this->config->privacy_page ?? '') ?: '0'))
 					->check(function($post) use ($pages){
 						if (!is_scalar($post['privacy_page'] ?? NULL) || !array_key_exists($post['privacy_page'], $pages)) return 'Veuillez sélectionner une page publiée accessible aux visiteurs.';
+					}))
+				->rule($this->form_select('privacy_erasure_delay')->title('Délai avant anonymisation')->data([
+					'7' => '7 jours', '14' => '14 jours', '30' => '30 jours'
+				])->value((string)$this->module('user')->model('privacy')->erasure_delay())
+					->check(function($post){
+						if (!in_array((int)($post['privacy_erasure_delay'] ?? 0), \HB\Modules\User\Models\Privacy::ERASURE_DELAYS, TRUE)) return 'Délai invalide';
 					}));
 			$form->legend('Champs du profil');
 			foreach (privacy_profile_fields() as $field => $label)
@@ -620,8 +667,30 @@ class Admin extends Controller_Module
 						if (!in_array($post[$key] ?? NULL, ['disabled', 'private', 'public'], TRUE)) return 'Choix invalide';
 					}));
 			}
+			$form->legend('Durées de conservation');
+			$form->info('<div class="ui info message"><p>Une valeur désactivée ne déclenche aucune suppression automatique. Les comptes inactifs sont uniquement signalés pour examen et ne sont jamais supprimés par cette purge.</p></div>');
+			$retention_titles = [
+				'privacy_retention_connection_history' => 'Historique des connexions',
+				'privacy_retention_sessions'           => 'Sessions persistantes',
+				'privacy_retention_db_logs'            => 'Journal des modifications',
+				'privacy_retention_erasure_reports'    => 'Rapports d’effacement terminés',
+				'privacy_retention_backups'            => 'Sauvegardes de mise à jour',
+				'privacy_retention_log_files'          => 'Fichiers de logs anciens',
+				'privacy_retention_inactive_accounts'  => 'Audit des comptes inactifs'
+			];
+			$retention_values = $retention->values();
+			foreach (\HB\Modules\Settings\Models\Retention::POLICIES as $name => $allowed)
+			{
+				$options = ['0' => 'Désactivée'];
+				foreach (array_filter($allowed) as $days) $options[(string)$days] = $days.' jours';
+				$form->rule($this->form_select($name)->title($retention_titles[$name])->size('col-6')->data($options)->value((string)$retention_values[$name])
+					->check(function($post) use ($name, $allowed){
+						if (!in_array((int)($post[$name] ?? -1), $allowed, TRUE)) return 'Durée invalide';
+					}));
+			}
 			$col->append($form->success(function($data){
-					foreach (['privacy_controller', 'privacy_contact', 'privacy_page'] as $name) $this->config($name, $data[$name]);
+					foreach (['privacy_controller', 'privacy_contact', 'privacy_page', 'privacy_erasure_delay'] as $name) $this->config($name, $data[$name], $name === 'privacy_erasure_delay' ? 'int' : NULL);
+					foreach (array_keys(\HB\Modules\Settings\Models\Retention::POLICIES) as $name) $this->config($name, (int)$data[$name], 'int');
 					foreach (array_keys(privacy_profile_fields()) as $field)
 					{
 						$key = 'privacy_profile_'.$field;
@@ -631,6 +700,13 @@ class Admin extends Controller_Module
 					refresh();
 				})
 				->submit('Enregistrer')->panel()->title('Confidentialité', 'fas fa-user-shield'));
+
+			$last = $retention->last_run();
+			$body = $last
+				? '<div class="ui message"><div class="header">Dernière opération : '.($last['mode'] === 'purge' ? 'purge' : 'simulation').'</div><p>'.date('d/m/Y à H:i', strtotime($last['completed_at'])).' · '.($last['status'] === 'completed' ? 'Terminée' : 'Échec').'</p></div>'.$retention->summary($last['report'])
+				: '<div class="ui message">Aucune simulation ni purge exécutée pour le moment.</div>';
+			$body .= '<div class="retention-actions"><a href="#" class="ui button" data-modal-ajax="'.url('admin/ajax/settings/retention-preview').'">'.icon('fas fa-search').' Simuler</a><a href="#" class="ui negative button" data-modal-ajax="'.url('admin/ajax/settings/retention-purge').'">'.icon('fas fa-trash-alt').' Exécuter la purge</a></div>';
+			$col->append($this->panel()->title('Contrôle de la conservation', 'fas fa-hourglass-half')->body($body));
 		});
 	}
 

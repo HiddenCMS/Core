@@ -74,7 +74,7 @@ class Ajax extends Controller_Module
 		return $this->form2(!empty($this->config->registration_charte) ? 'username password_required email custom_fields charte' : 'username password_required email custom_fields', $this->model2('user'))
 					->info(privacy_notice())
 					->compact()
-					->captcha()
+					->captcha(FALSE, 'register')
 					->success(function($user, $form){
 						if ($this->config->registration_validation)
 						{

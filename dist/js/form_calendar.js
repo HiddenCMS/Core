@@ -28,7 +28,12 @@ form.find('input[data-calendar-type]', function(){
 		type: input.attr('data-calendar-type'),
 		firstDayOfWeek: locale.firstDayOfWeek(),
 		context: modal.length ? modal : $('body'),
-		popupOptions: {position: 'bottom left'},
+		popupOptions: {
+			position: 'bottom left',
+			lastResort: 'top left',
+			prefer: 'opposite',
+			hideOnScroll: false
+		},
 		text: {
 			days: names('weekdaysMin', 7, 'day'),
 			dayNamesShort: names('weekdaysShort', 7, 'day'),
@@ -40,7 +45,11 @@ form.find('input[data-calendar-type]', function(){
 			date: function(date){ return date ? moment(date).locale(localeName).format('L') : ''; },
 			time: function(date){ return date ? moment(date).locale(localeName).format('LT') : ''; },
 			datetime: printDate,
-			cellTime: function(date){ return moment(date).locale(localeName).format('LT'); }
+			cellTime: function(date){ return moment(date).locale(localeName).format('LT'); },
+			dayHeader: function(date){ return moment(date).locale(localeName).format('MMMM YYYY'); },
+			hourHeader: function(date){ return moment(date).locale(localeName).format('LL'); },
+			minuteHeader: function(date){ return moment(date).locale(localeName).format('LL'); },
+			month: function(date){ return moment(date).locale(localeName).format('MMMM YYYY'); }
 		},
 		parser: {
 			date: function(text){

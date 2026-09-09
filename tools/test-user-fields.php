@@ -198,6 +198,93 @@ try
 		$assert($xpath->query('//select[contains(@class,"dropdown")]/option[@value="fab fa-github" and @selected]')->length === 1, 'Existing custom icon is selected in Fomantic form');
 	}
 	finally { $theme_property->setValue(HB()->output, $previous_theme); }
+	$privacy_export = $module->model('privacy')->export($one);
+	$assert($privacy_export['data']['account']['username'] === 'first' && $privacy_export['data']['account']['email'] === 'first@example.test', 'Personal data export contains account data');
+	$assert(!array_key_exists('password', $privacy_export['data']['account']), 'Personal data export excludes the password hash');
+	$assert(is_array($privacy_export['data']['account']['data']), 'Personal data export decodes account metadata');
+	$assert($privacy_export['data']['custom_fields'][0]['value'] === 'Alpha', 'Personal data export decodes custom field values');
+	$assert(!array_key_exists('id', $privacy_export['data']['active_sessions'][0] ?? []), 'Personal data export excludes session identifiers');
+	$archive = $module->model('privacy')->archive($one);
+	$zip = new ZipArchive();
+	$assert(is_file($archive) && $zip->open($archive) === TRUE, 'Personal data export creates a readable ZIP archive');
+	$manifest = json_decode($zip->getFromName('personal-data.json'), TRUE);
+	$zip->close();
+	@unlink($archive);
+	$assert($manifest['export']['format'] === 'hiddencms-personal-data' && $manifest['account']['username'] === 'first', 'ZIP archive contains the structured personal data manifest');
+	HB()->user->set('id', $one->id)->set('username', $one->username)->set('password', $one->password)->set('email', $one->email)->set('admin', FALSE)->set('deleted', FALSE);
+	$_POST = [];
+	$account_html = (string)$module->controller('index')->account([]);
+	$assert(strpos($account_html, 'Mes données personnelles') !== FALSE && strpos($account_html, 'Supprimer mon compte') !== FALSE, 'Account page exposes export and erasure panels');
+	$assert(strpos($account_html, 'name="confirm_erasure[]"') !== FALSE, 'Erasure request requires explicit confirmation');
+	$privacy = $module->model('privacy');
+	$erase_user = $new('erase-me', 'Gamma');
+	$erase_user->profile()->set('first_name', 'Personal')->set('last_name', 'Data')->commit();
+	$previous_delay = HB()->config->privacy_erasure_delay ?? NULL;
+	HB()->config->privacy_erasure_delay = 7;
+	$request = $privacy->request_erasure($erase_user);
+	$assert(strtotime($request['execute_after']) >= strtotime('+6 days'), 'Erasure request applies the configured withdrawal delay');
+	$assert($privacy->cancel_erasure($erase_user) && $privacy->erasure_request($erase_user) === NULL, 'Pending erasure request can be cancelled');
+	$request = $privacy->request_erasure($erase_user);
+	$erase_file = 'cache/privacy-erasure-'.bin2hex(random_bytes(5)).'.txt';
+	file_put_contents($erase_file, 'personal test data');
+	$db->insert_checked('file', ['user_id' => $erase_user->id, 'name' => 'personal.txt', 'path' => $erase_file, 'date' => date('Y-m-d H:i:s')]);
+	$db->insert_checked('session_history', ['user_id' => $erase_user->id, 'ip_address' => '127.0.0.1', 'host_name' => 'localhost', 'referer' => '', 'user_agent' => 'Test', 'auth' => NULL, 'date' => date('Y-m-d H:i:s')]);
+	$comment = $db->insert_checked('comments', ['parent_id' => NULL, 'user_id' => $erase_user->id, 'module_id' => 1, 'module' => 'test', 'content' => 'Shared contribution', 'date' => date('Y-m-d H:i:s')]);
+	$db->where('user_id', $erase_user->id)->update('user_erasure_request', ['execute_after' => date('Y-m-d H:i:s', strtotime('-1 minute'))]);
+	$processed = $privacy->process_due();
+	$report = $processed[$erase_user->id];
+	$assert(isset($processed[$erase_user->id]), 'Scheduled privacy purge processes a due request');
+	$erased = $db->from('user')->where('id', $erase_user->id)->row(FALSE);
+	$assert($erased['deleted'] && $erased['username'] === 'Utilisateur supprimé' && $erased['email'] === NULL, 'Erasure anonymizes account identifiers');
+	$assert($db->from('user_profile')->where('id', $erase_user->id)->empty() && $db->from('user_field_value')->where('user_id', $erase_user->id)->empty(), 'Erasure removes profile and custom fields');
+	$assert($db->from('session_history')->where('user_id', $erase_user->id)->empty(), 'Erasure removes connection history');
+	$assert($db->from('file')->where('user_id', $erase_user->id)->empty() && !is_file($erase_file), 'Erasure removes owned files and storage');
+	$assert(!$db->from('comments')->where('id', $comment)->empty(), 'Erasure preserves shared contributions under the anonymous account');
+	$completed = $privacy->erasure_request($erase_user);
+	$assert(!empty($completed['completed_at']) && $completed['result']['core'] === 'included' && $report['core'] === 'included', 'Erasure keeps a minimal completion report');
+	$assert(!$fields->login_user('Gamma')(), 'Anonymized account cannot use its custom login identifier');
+	$last_admin = $new('last-admin', 'AdminRef')->set('admin', TRUE)->update();
+	$protected = FALSE;
+	try { $privacy->request_erasure($last_admin); }
+	catch (RuntimeException $e) { $protected = TRUE; }
+	$assert($protected, 'Erasure protects the last active administrator');
+	HB()->config->privacy_erasure_delay = $previous_delay;
+
+	$retention = HB()->module('settings')->model('retention');
+	$retention_previous = [];
+	foreach (\HB\Modules\Settings\Models\Retention::POLICIES as $name => $allowed)
+	{
+		$retention_previous[$name] = HB()->config->$name ?? NULL;
+		HB()->config->$name = in_array(30, $allowed, TRUE) ? 30 : 0;
+	}
+	HB()->config->privacy_retention_backups = 0;
+	HB()->config->privacy_retention_log_files = 0;
+	HB()->config->privacy_retention_inactive_accounts = 365;
+	$old = date('Y-m-d H:i:s', strtotime('-40 days'));
+	$recent = date('Y-m-d H:i:s', strtotime('-2 days'));
+	$old_history = $db->insert_checked('session_history', ['user_id' => $two->id, 'ip_address' => '127.0.0.1', 'host_name' => 'old', 'referer' => '', 'user_agent' => 'Old', 'auth' => NULL, 'date' => $old]);
+	$recent_history = $db->insert_checked('session_history', ['user_id' => $two->id, 'ip_address' => '127.0.0.1', 'host_name' => 'recent', 'referer' => '', 'user_agent' => 'Recent', 'auth' => NULL, 'date' => $recent]);
+	$db->insert_checked('session', ['id' => 'retention-old', 'user_id' => $two->id, 'remember' => TRUE, 'last_activity' => $old, 'data' => '{}']);
+	$db->insert_checked('session', ['id' => 'retention-recent', 'user_id' => $two->id, 'remember' => TRUE, 'last_activity' => $recent, 'data' => '{}']);
+	$old_log = $db->insert_checked('log_db', ['date' => $old, 'action' => '0', 'model' => 'test', 'primaries' => 'old', 'data' => '{}']);
+	$recent_log = $db->insert_checked('log_db', ['date' => $recent, 'action' => '0', 'model' => 'test', 'primaries' => 'recent', 'data' => '{}']);
+	$db->where('user_id', $erase_user->id)->update('user_erasure_request', ['completed_at' => $old]);
+	$db->where('id', $two->id)->update('user', ['last_activity_date' => date('Y-m-d H:i:s', strtotime('-400 days'))]);
+	$simulation = $retention->run(FALSE);
+	$assert($simulation['candidates']['connection_history'] >= 1 && $simulation['candidates']['sessions'] >= 1 && $simulation['candidates']['db_logs'] >= 1 && $simulation['candidates']['erasure_reports'] >= 1, 'Retention simulation counts expired records');
+	$assert(!$db->from('session_history')->where('id', $old_history)->empty() && !$db->from('session')->where('id', 'retention-old')->empty(), 'Retention simulation never deletes data');
+	$assert($simulation['candidates']['inactive_accounts'] >= 1 && !$db->from('user')->where('id', $two->id)->empty(), 'Inactive accounts are reported without deletion');
+	$purge = $retention->run(TRUE);
+	$assert($db->from('session_history')->where('id', $old_history)->empty() && !$db->from('session_history')->where('id', $recent_history)->empty(), 'Retention purge removes only expired connection history');
+	$assert($db->from('session')->where('id', 'retention-old')->empty() && !$db->from('session')->where('id', 'retention-recent')->empty(), 'Retention purge removes only expired sessions');
+	$assert($db->from('log_db')->where('id', $old_log)->empty() && !$db->from('log_db')->where('id', $recent_log)->empty(), 'Retention purge removes only expired database logs');
+	$assert($privacy->erasure_request($erase_user) === NULL, 'Retention purge removes expired erasure reports');
+	$assert(!$db->from('user')->where('id', $two->id)->empty(), 'Retention purge never deletes inactive accounts automatically');
+	$last_retention = $retention->last_run();
+	$assert($last_retention['mode'] === 'purge' && $last_retention['status'] === 'completed' && !empty($last_retention['report']['deleted']), 'Retention stores its latest execution report');
+	HB()->config->privacy_retention_sessions = 999;
+	$assert($retention->values()['privacy_retention_sessions'] === 0, 'Unknown retention value fails closed');
+	foreach ($retention_previous as $name => $value) HB()->config->$name = $value;
 	$one->delete();
 	$assert(!$fields->login_user('Alpha')(), 'Deleted account cannot log in');
 	$two->set('custom_'.$text, 'Alpha');
@@ -330,6 +417,14 @@ try
 			HB()->user->set('admin', TRUE);
 			$html = (string)HB()->module('settings')->controller('admin')->privacy();
 			$assert(strpos($html, 'name="privacy_page"') !== FALSE && strpos($html, 'name="privacy_contact"') !== FALSE, 'Privacy settings form renders page and contact controls');
+			$assert(strpos($html, 'name="privacy_erasure_delay"') !== FALSE, 'Privacy settings expose the erasure withdrawal delay');
+			$assert(strpos(file_get_contents('install/DATABASE.sql'), "('privacy_erasure_delay', '', '', '30', 'int')") !== FALSE, 'New installations default to a 30-day erasure delay');
+			foreach (array_keys(\HB\Modules\Settings\Models\Retention::POLICIES) as $name)
+			{
+				$assert(strpos($html, 'name="'.$name.'"') !== FALSE, 'Privacy settings expose retention policy: '.$name);
+				$assert(strpos(file_get_contents('install/DATABASE.sql'), "('".$name."', '', '', '0', 'int')") !== FALSE, 'New installations disable retention policy: '.$name);
+			}
+			$assert(strpos($html, 'retention-preview') !== FALSE && strpos($html, 'retention-purge') !== FALSE, 'Privacy settings expose simulation and purge actions');
 			foreach (privacy_profile_fields() as $field => $label)
 			{
 				$assert(strpos($html, 'name="privacy_profile_'.$field.'"') !== FALSE, 'Privacy settings expose mode for '.$field);

@@ -11,23 +11,29 @@ class Captcha extends Labelable
 	protected $_color;
 	protected $_compact;
 	protected $_session;
+	protected $_always;
+	protected $_action;
 
-	public function __invoke($name = '')
+	public function __invoke($name = '', $always = FALSE, $action = 'submit')
 	{
 		if (!$this->config->captcha_public_key || !$this->config->captcha_private_key)
 		{
 			return;
 		}
 
+		$this->_always = (bool)$always;
+		$this->_action = preg_replace('/[^a-zA-Z0-9_\/]/', '_', (string)$action) ?: 'submit';
 		$this->__id();
 
 		$this->_check[] = function($post){
-			if (!$this->user() && !($this->_session = $this->session('captcha', $this->__id())))
+			$validated = !$this->_always && ($this->_session = $this->session('captcha', $this->__id()));
+
+			if (($this->_always || !$this->user()) && !$validated)
 			{
 				if (!empty($post[$this->_name]))
 				{
 					$result = $this	->network('https://www.google.com/recaptcha/api/siteverify')
-									->get([
+									->post([
 										'secret'   => $this->config->captcha_private_key,
 										'response' => $post[$this->_name],
 										'remoteip' => $_SERVER['REMOTE_ADDR']
@@ -37,34 +43,60 @@ class Captcha extends Labelable
 					{
 						$this->_errors[] = 'Erreur serveur';
 					}
-					else if (!empty($result->success))
+					else if (!empty($result->success) &&
+						isset($result->action, $result->score) &&
+						$result->action === $this->_action &&
+						(float)$result->score >= $this->score_threshold())
 					{
-						$this->_session = $this->session->set('captcha', $this->__id(), TRUE);
+						if (!$this->_always)
+						{
+							$this->_session = $this->session->set('captcha', $this->__id(), TRUE);
+						}
+
 						return FALSE;
 					}
 				}
 
-				$this->_errors[] = 'Veuiller valider ce CAPTCHA';
+				$this->_errors[] = 'La vérification anti-robots a échoué';
 			}
 
 			return FALSE;
 		};
 
 		$this->_template[] = function(&$input){
-			if (!$this->user() && !$this->_session)
+			if (($this->_always || !$this->user()) && ($this->_always || !$this->_session))
 			{
 				$this->js('captcha');
 
-				$input = parent	::html()
-								->attr('class', 'g-recaptcha')
-								->attr_if($this->_color,   'data-theme', $this->_color)
-								->attr_if($this->_compact, 'data-size', 'compact');
+				$input = parent	::html('input', TRUE)
+								->attr('type', 'hidden')
+								->attr('class', 'recaptcha-v3-token')
+								->attr('name', 'g-recaptcha-response')
+								->attr('data-recaptcha-action', $this->_action);
 			}
 
 			return FALSE;
 		};
 
 		return parent::__invoke('g-recaptcha-response');
+	}
+
+	public function __toString()
+	{
+		$form = $this->_form;
+		$this->_form = NULL;
+		$html = parent::__toString();
+		$this->_form = $form;
+
+		return $html;
+	}
+
+	private function score_threshold()
+	{
+		$threshold = isset($this->config->captcha_score_threshold) && is_numeric($this->config->captcha_score_threshold)
+			? (float)$this->config->captcha_score_threshold
+			: 0.5;
+		return max(0, min(1, $threshold));
 	}
 
 	public function dark()

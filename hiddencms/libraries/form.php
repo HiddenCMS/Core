@@ -491,7 +491,7 @@ class Form extends Library
 
 		if ($this->_display_captcha)
 		{
-			HB()->js('https://www.google.com/recaptcha/api.js?hl='.$this->config->lang->info()->name.'&_=');
+			HB()->js('captcha');
 			$fields[] = $this->_render('captcha', [
 				'content'   => $this->captcha->display(),
 				'fast_mode' => $this->_fast_mode
@@ -628,19 +628,41 @@ class Form extends Library
 		return $this->template->render('legacy_form/'.$component, $data);
 	}
 
+	private function admin_grid()
+	{
+		return $this->url->admin || (($theme = HB()->output->theme()) && $theme->info()->name == 'admin');
+	}
+
 	private function _display_text($var, $options, $post, $type = 'text')
 	{
 		$classes = [];
+		$calendar = NULL;
 
 		if (in_array($type, ['date', 'datetime', 'time']))
 		{
 			$types = ['date' => 'L', 'datetime' => 'L LT', 'time' => 'LT'];
 
-			HB()	->css('bootstrap-datetimepicker.min')
-								->js('bootstrap-datetimepicker/moment.min')
-								->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
-								->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
-								->js_load('$(".'.$type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$types[$type].'"});');
+			if ($this->admin_grid())
+			{
+				$calendar = [
+					'type'   => $type,
+					'format' => $types[$type],
+					'locale' => $this->config->lang->info()->name
+				];
+
+				HB()	->js('bootstrap-datetimepicker/moment.min')
+						->js('bootstrap-datetimepicker/locales/'.$calendar['locale'])
+						->js('form')
+						->js('form_calendar');
+			}
+			else
+			{
+				HB()	->css('bootstrap-datetimepicker.min')
+						->js('bootstrap-datetimepicker/moment.min')
+						->js('bootstrap-datetimepicker/bootstrap-datetimepicker.min')
+						->js('bootstrap-datetimepicker/locales/'.$this->config->lang->info()->name)
+						->js_load('$(".'.$type.'").datetimepicker({allowInputToggle: true, locale: "'.$this->config->lang->info()->name.'", format: "'.$types[$type].'"});');
+			}
 
 			$classes[] = $type;
 
@@ -686,9 +708,16 @@ class Form extends Library
 
 			$options['icon'] = FALSE;
 
-			HB()	->css('bootstrap-colorpicker.min')
+			if ($this->admin_grid())
+			{
+				HB()->js('colorpicker');
+			}
+			else
+			{
+				HB()	->css('bootstrap-colorpicker.min')
 						->js('bootstrap-colorpicker.min')
 						->js('colorpicker');
+			}
 		}
 
 		$attrs = [
@@ -696,6 +725,22 @@ class Form extends Library
 			'name' => $this->token().'['.$var.']',
 			'type' => $type
 		];
+
+		foreach (['min', 'max', 'step'] as $attribute)
+		{
+			if (isset($options[$attribute]))
+			{
+				$attrs[$attribute] = $options[$attribute];
+			}
+		}
+
+		if ($calendar)
+		{
+			$attrs['data-calendar-type']   = $calendar['type'];
+			$attrs['data-calendar-format'] = $calendar['format'];
+			$attrs['data-calendar-locale'] = $calendar['locale'];
+			$attrs['autocomplete']         = 'off';
+		}
 
 		if ($type != 'file')
 		{

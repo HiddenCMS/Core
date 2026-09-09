@@ -20,6 +20,7 @@ class Contact extends Module
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'front'       => TRUE,
+			'reserved_route' => 'contact',
 			'version'     => '1.0',
 			'depends'     => [
 				'HiddenCMS' => 'Alpha 0.2'

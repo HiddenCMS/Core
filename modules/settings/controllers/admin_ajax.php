@@ -110,12 +110,43 @@ class Admin_Ajax extends Controller_Module
 					});
 	}
 
+	public function retention_preview()
+	{
+		$retention = $this->model('retention');
+		$report = $retention->run(FALSE);
+		return $this->modal('Simulation de la conservation', 'fas fa-search')
+			->body('<div class="ui info message"><p>Aucune donnée n’a été modifiée. Voici les éléments qui seraient concernés avec les réglages actuels.</p></div>'.$retention->summary($report))
+			->close();
+	}
+
+	public function retention_purge()
+	{
+		$retention = $this->model('retention');
+		$report = $retention->preview();
+		return $this->modal('Exécuter la purge de conservation', 'fas fa-trash-alt')
+			->body('<div class="ui negative message"><div class="header">Cette opération supprimera définitivement les données arrivées à échéance</div><p>Les comptes inactifs ne seront pas supprimés. Les trois sauvegardes les plus récentes seront conservées.</p></div>'.$retention->summary($report))
+			->submit('Exécuter la purge', 'danger')
+			->cancel()
+			->callback(function() use ($retention){
+				try
+				{
+					$report = $retention->run(TRUE);
+					notify(array_sum($report['deleted']).' élément(s) supprimé(s).', 'success');
+				}
+				catch (\Throwable $e)
+				{
+					notify($e->getMessage(), 'danger');
+				}
+				refresh('admin/settings/privacy');
+			});
+	}
+
 	public function maintenance()
 	{
-		$this->config('maintenance', (bool)post('closed'), 'bool');
+		$this->config('maintenance', (string)post('closed') === '1', 'bool');
 
 		return $this->json([
-			'status' => $this->config->maintenance
+			'status' => (bool)$this->config->maintenance
 		]);
 	}
 }

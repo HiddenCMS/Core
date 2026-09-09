@@ -41,6 +41,65 @@ class Index extends Controller_Module
 
 	public function account($sessions)
 	{
+		$export = $this->form2('current_password', $this->user)
+			->info('Téléchargez une copie structurée des données associées à votre compte. Les fichiers dont vous êtes propriétaire sont inclus dans l\'archive. Les mots de passe, jetons et identifiants de session ne sont jamais exportés.')
+			->success(function(){
+				$file = $this->model('privacy')->archive($this->user);
+				$name = 'hiddencms-personal-data-'.date('Y-m-d').'.zip';
+				while (ob_get_level()) ob_end_clean();
+				header('Content-Type: application/zip');
+				header('Content-Disposition: attachment; filename="'.$name.'"');
+				header('Content-Length: '.filesize($file));
+				header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+				header('Pragma: no-cache');
+				header('X-Content-Type-Options: nosniff');
+				readfile($file);
+				@unlink($file);
+				exit;
+			})
+			->submit('Télécharger mes données', 'primary')
+			->panel()
+			->title('Mes données personnelles', 'fas fa-file-archive');
+
+		$privacy = $this->model('privacy');
+		$request = $privacy->erasure_request($this->user);
+		if ($request && empty($request['completed_at']))
+		{
+			$erasure = $this->form2('current_password', $this->user)
+				->info('<div class="ui warning message"><div class="header">Demande enregistrée</div><p>Votre compte sera anonymisé à partir du <strong>'.date('d/m/Y à H:i', strtotime($request['execute_after'])).'</strong>. Vous pouvez annuler la demande jusque-là.</p></div>')
+				->success(function($user) use ($privacy){
+					$privacy->cancel_erasure($user);
+					notify('La demande de suppression a été annulée.', 'success');
+					refresh('user/account');
+				})
+				->submit('Annuler la demande', 'primary')
+				->panel()
+				->title('Supprimer mon compte', 'fas fa-user-times');
+		}
+		else
+		{
+			$erasure = $this->form2('current_password', $this->user)
+				->info('<div class="ui negative message"><div class="header">Suppression différée</div><p>Après le délai de rétractation, vos informations de compte, votre profil, vos connexions et vos fichiers personnels seront supprimés. Les contributions et messages nécessaires aux échanges resteront visibles sous le nom « Utilisateur supprimé ».</p></div>')
+				->rule($this->form_checkbox('confirm_erasure')->data([
+					'1' => 'Je comprends que cette opération deviendra irréversible à la fin du délai.'
+				])->required()->inline(FALSE))
+				->success(function($user) use ($privacy){
+					try
+					{
+						$request = $privacy->request_erasure($user);
+						notify('Demande enregistrée. Vous pouvez l’annuler jusqu’au '.date('d/m/Y à H:i', strtotime($request['execute_after'])).'.', 'success');
+					}
+					catch (\Throwable $e)
+					{
+						notify($e->getMessage(), 'danger');
+					}
+					refresh('user/account');
+				})
+				->submit('Demander la suppression', 'danger')
+				->panel()
+				->title('Supprimer mon compte', 'fas fa-user-times');
+		}
+
 		return $this->row([
 						$this->col(
 							$this	->panel()
@@ -76,7 +135,9 @@ class Index extends Controller_Module
 								})
 								->submit('Modifier')
 								->panel()
-								->title('Info de connexion')
+								->title('Info de connexion'),
+							$export,
+							$erasure
 						)->size('col-8')
 					]);
 
@@ -296,7 +357,7 @@ class Index extends Controller_Module
 		redirect();
 	}
 
-	public function _messages($messages, $allow_delete = FALSE, $page_title, $page_icon, $box = 'inbox')
+	public function _messages($messages, $allow_delete, $page_title, $page_icon, $box = 'inbox')
 	{
 		$this	->breadcrumb()
 				->css('jquery.mCustomScrollbar.min')

@@ -119,7 +119,7 @@ class Output extends Core
 					}
 				}
 
-				if (!$this->url->admin && !$this->url->ajax && !$this->url->cli)
+				if (!$this->url->admin && !$this->url->ajax && !$this->url->cli && !$this->url->maintenance)
 				{
 					if (!($module = @parent::module('pages')) || !$module->is_enabled())
 					{

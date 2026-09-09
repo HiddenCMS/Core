@@ -42,6 +42,16 @@ class Admin_Ajax_Checker extends Module_Checker
 			return [$id];
 		}
 	}
+
+	public function retention_preview()
+	{
+		return [];
+	}
+
+	public function retention_purge()
+	{
+		return [];
+	}
 }
 
 

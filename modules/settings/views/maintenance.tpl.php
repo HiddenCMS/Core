@@ -1,15 +1,14 @@
-<div class="cover-container text-center d-flex w-100 h-100 p-3 mx-auto flex-column">
-	<header class="masthead mb-auto">
-		<div class="inner">
-			<h3 class="masthead-brand">
-				<?php if ($this->config->maintenance_logo): ?>
-					<img src="<?php echo HB()->model2('file', $this->config->maintenance_logo)->path() ?>" class="logo" alt="" />
-				<?php else: ?>
-					<?php echo $this->config->name ?>
-				<?php endif ?>
-			</h3>
-			<nav class="nav nav-masthead justify-content-center">
-				<?php
+<div class="maintenance-page">
+	<header class="maintenance-header">
+		<h2 class="maintenance-brand">
+			<?php if ($this->config->maintenance_logo): ?>
+				<img src="<?php echo HB()->model2('file', $this->config->maintenance_logo)->path() ?>" class="maintenance-logo" alt="<?php echo utf8_htmlentities($this->config->name) ?>" />
+			<?php else: ?>
+				<?php echo utf8_htmlentities($this->config->name) ?>
+			<?php endif ?>
+		</h2>
+		<nav class="maintenance-nav" aria-label="<?php echo $this->lang('Navigation secondaire') ?>">
+			<?php
 				foreach ([
 					'behance'    => 'Behance',
 					'deviantart' => 'DeviantArt',
@@ -27,34 +26,32 @@
 				{
 					if ($url = $this->config->{'nf_social_'.$name})
 					{
-						echo '<a class="nav-link" href="'.$url.'" data-toggle="tooltip" title="'.$title.'">'.icon('fab fa-'.$name).'</a>';
+						echo '<a class="maintenance-link" href="'.utf8_htmlentities($url).'" data-toggle="tooltip" title="'.$title.'">'.icon('fab fa-'.$name).'</a>';
 					}
 				}
-				?>
-				<?php if ($this->user()): ?>
-				<div class="nav-item">
-					<?php echo $this->user->username ?>
-				</div>
-				<?php endif ?>
-				<?php echo $this->user() ? '<a href="'.url('user/logout').'" class="nav-link">'.icon('fas fa-times').' Déconnexion'.'</a>' : '<a href="#" class="nav-link ml-5" data-modal-ajax="'.url('ajax/user/login').'">'.icon('fas fa-sign-in-alt').' Se connecter'.'</a>' ?>
-			</nav>
-		</div>
+			?>
+			<?php if ($this->user()): ?>
+				<span class="maintenance-user"><?php echo utf8_htmlentities($this->user->username) ?></span>
+			<?php endif ?>
+			<?php echo $this->user()
+				? '<a href="'.url('user/logout').'" class="maintenance-link">'.icon('fas fa-times').' '.$this->lang('Déconnexion').'</a>'
+				: '<a href="#" class="maintenance-link" data-modal-ajax="'.url('ajax/user/login').'">'.icon('fas fa-sign-in-alt').' '.$this->lang('Se connecter').'</a>' ?>
+		</nav>
 	</header>
-	<main role="main" class="inner cover">
-		<?php if ($page_title = $this->config->maintenance_title): ?>
-		<h1 class="cover-heading"><?php echo $page_title ?></h1>
-		<?php endif ?>
+
+	<main class="maintenance-content" role="main">
+		<h1><?php echo utf8_htmlentities($this->config->maintenance_title ?: $this->lang('Site en maintenance')) ?></h1>
 		<?php if ($content = $this->config->maintenance_content): ?>
-		<p class="lead"><?php echo bbcode($content) ?></p>
+			<div class="maintenance-message"><?php echo bbcode($content) ?></div>
+		<?php else: ?>
+			<p class="maintenance-message"><?php echo $this->lang('Nous effectuons actuellement une opération de maintenance. Le site sera de nouveau disponible prochainement.') ?></p>
 		<?php endif ?>
 		<?php if ($this->config->maintenance_opening): ?>
 			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $this->date($this->config->maintenance_opening)->timestamp() ?>"></div>
 		<?php endif ?>
 	</main>
-	<footer class="mastfoot mt-auto">
-		<div class="inner text-left">
-			<?php echo $this->widget('copyright')->output()->style('card-transparent') ?>
-		</div>
+
+	<footer class="maintenance-footer">
+		<?php echo $this->widget('copyright')->output()->style('card-transparent') ?>
 	</footer>
 </div>
-

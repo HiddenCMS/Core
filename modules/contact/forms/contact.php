@@ -13,7 +13,7 @@ $this->rule($this->form_text('subject')
 	->rule($this->form_textarea('message')
 				->title('Votre message')
 				->required())
-	->captcha()
+	->captcha(TRUE, 'contact')
 	->submit('Envoyer')
 	->success(function($data, $form){
 		$sent = $this	->anti_flood()

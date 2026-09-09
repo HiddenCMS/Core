@@ -45,6 +45,21 @@ try
 	{
 		echo HB()->core_updater->create_backup('cli').PHP_EOL;
 	}
+	else if ($command === 'privacy-purge')
+	{
+		$reports = HB()->module('user')->model('privacy')->process_due(isset($argv[2]) ? (int)$argv[2] : 25);
+		$errors = array_filter($reports, function($report){ return ($report['core'] ?? '') === 'error'; });
+		echo (count($reports) - count($errors)).' compte(s) anonymisé(s), '.count($errors).' échec(s).'.PHP_EOL;
+		foreach ($errors as $user_id => $report) fwrite(STDERR, 'Compte #'.$user_id.' : '.$report['error'].PHP_EOL);
+		if ($errors) exit(1);
+	}
+	else if ($command === 'privacy-retention')
+	{
+		$execute = in_array('--execute', $argv, TRUE);
+		$report = HB()->module('settings')->model('retention')->run($execute);
+		echo ($execute ? 'Purge' : 'Simulation').' terminée.'.PHP_EOL;
+		foreach ($report['candidates'] as $key => $count) echo ' - '.$key.' : '.$count.PHP_EOL;
+	}
 	else if ($command === 'rollback')
 	{
 		if (empty($argv[2]))

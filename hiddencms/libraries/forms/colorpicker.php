@@ -20,9 +20,16 @@ class Colorpicker extends Text
 		};
 
 		array_splice($this->_template, 1, 0, function(&$input){
-			$this	->css('bootstrap-colorpicker.min')
-					->js('bootstrap-colorpicker.min')
-					->js('colorpicker');
+			if ($this->admin_grid())
+			{
+				$this->js('colorpicker');
+			}
+			else
+			{
+				$this	->css('bootstrap-colorpicker.min')
+						->js('bootstrap-colorpicker.min')
+						->js('colorpicker');
+			}
 
 			$input->append_attr('class', 'color');
 		});

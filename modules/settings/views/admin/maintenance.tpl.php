@@ -1,8 +1,12 @@
-<div class="ui grid">
-	<div class="sixteen wide center aligned column">
-		<div class="btn-group switch">
-			<a href="#" class="btn <?php echo ($opened = !$this->config->maintenance) ? 'btn-success' : 'btn-light' ?>"><?php echo icon($opened ? 'fas fa-toggle-on' : 'fas fa-toggle-off').' '.$this->lang('Ouvert') ?></a>
-			<a href="#" class="btn <?php echo !$opened ? 'btn-danger' : 'btn-light' ?>"><?php echo icon(!$opened ? 'fas fa-toggle-on' : 'fas fa-toggle-off').' '.$this->lang('Ferm?') ?></a>
-		</div>
+<?php $closed = (bool)$this->config->maintenance; ?>
+<div class="maintenance-status<?php echo $closed ? ' is-closed' : ' is-open' ?>">
+	<div class="ui toggle checkbox maintenance-toggle">
+		<input type="checkbox"<?php echo $closed ? ' checked="checked"' : '' ?> autocomplete="off">
+		<label>
+			<span class="maintenance-status-label"><?php echo $this->lang($closed ? 'Maintenance activée' : 'Site ouvert') ?></span>
+		</label>
 	</div>
+	<p class="maintenance-status-description">
+		<?php echo $this->lang($closed ? 'La page de maintenance est visible par les visiteurs.' : 'Le site est accessible aux visiteurs.') ?>
+	</p>
 </div>

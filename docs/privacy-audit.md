@@ -6,9 +6,11 @@ juridique ni un test exhaustif des flux reseau en production.
 
 ## Conclusion
 
-La conformite ne peut pas encore etre annoncee. Les reglages ajoutes dans ce
-lot facilitent l'information des personnes ; ils ne gerent ni le consentement
-aux traceurs, ni l'effacement, ni les durees de conservation.
+La conformite ne peut pas encore etre annoncee. L'information, la minimisation
+de certains champs, le consentement aux services couverts, l'export personnel et
+l'anonymisation du core sont implementes. L'adoption par les addons, les durees
+de conservation et la validation des traitements reels en production restent a
+traiter.
 
 ## Constats prioritaires
 
@@ -16,12 +18,12 @@ aux traceurs, ni l'effacement, ni les durees de conservation.
 | --- | --- | --- |
 | Haute | `hiddencms/views/theme/main.tpl.php` charge `theme/analytics` des qu'un identifiant Analytics existe. Aucun controle central du consentement dans ce chemin. | Laisser Analytics non configure tant que le blocage prealable, le refus et le retrait ne sont pas implementes et testes. |
 | Haute | `hiddencms/libraries/bbcode.php` transforme les videos en iframes YouTube directes ; les deux implementations de captcha utilisent Google reCAPTCHA. | Inventorier les appels effectifs ; remplacer ou conditionner les services selon leur fonctionnement et leur base legale. Une autorisation globale des conditions d'inscription n'est pas un consentement aux traceurs. |
-| Haute | `modules/user/models/user.php::delete()` marque le compte supprime, detache ses sessions et libere son identifiant custom, mais conserve email, profil et valeurs personnalisees. L'interface d'effacement autonome dans `controllers/index.php::account()` est commentee. | Construire une procedure d'effacement/anonymisation verifiee, incluant fichiers, contributions, messages, champs custom et addons. Ne pas assimiler suppression logique et effacement RGPD. |
+| Haute | `modules/user/models/user.php::delete()` reste une suppression logique utilisee par l'administration. Le parcours autonome RGPD utilise desormais une procedure distincte d'anonymisation, mais les addons desactives et sauvegardes restent hors de son perimetre. | Ne pas presenter la suppression administrative comme un effacement RGPD. Faire adopter les contrats par les addons et definir le traitement des sauvegardes. |
 | Haute | `hiddencms/core/session.php::login()` ajoute IP, hostname, referent, user agent et donnees d'authentification a `session_history`. Pas de purge de cet historique identifiee dans le code examine. | Definir finalite et duree par categorie, puis implementer une purge planifiee avec mode simulation. |
 | Moyenne | La suppression des sessions inactives ne vise que `remember = FALSE`. Le cookie de session est cree pour un an ; HttpOnly et Secure conditionnel sont presents, SameSite n'est pas explicite. | Revoir ensemble duree du cookie, sessions persistantes, rotation, connexions tierces et SameSite sans casser les parcours de connexion. |
 | Haute | `modules/user/views/profile.tpl.php` affiche nom/prenom, sexe ou age, date de naissance dans une infobulle, localisation et liens, lorsque le profil est accessible. | Justifier la collecte et ajouter des controles de collecte et de publication, appliques cote serveur et dans chaque rendu. Ne pas seulement masquer les inputs. |
 | Moyenne | Les champs personnalises possedent type/options/obligation mais pas de finalite, regle de publication ou conservation (`modules/user/models/fields.php`). | Ajouter la gouvernance des champs ; proteger le champ servant d'identifiant de connexion contre une desactivation qui bloquerait les comptes. |
-| Haute | Pas de parcours d'export complet des donnees personnelles identifie. News conserve ses references d'auteur ; son affichage filtre les comptes supprimes, sans preuve d'effacement de la reference stockee. | Definir un contrat d'export/effacement pour les addons et tester le cas d'un addon desactive. |
+| Haute | L'export du core est implemente, mais les addons doivent encore adopter son contrat. News conserve ses references d'auteur ; son affichage filtre les comptes supprimes, sans preuve d'effacement de la reference stockee. | Implementer et tester l'export puis l'effacement dans chaque addon qui conserve des donnees personnelles, y compris lorsqu'il est desactive. |
 | Moyenne | `hiddencms/libraries/core_updater.php` cree des sauvegardes SQL/fichiers sous `backups/updates`. Pas de politique de retention trouvee sur ce chemin. | Definir retention, restrictions d'acces, suppression et procedure de restauration sans reactivation de donnees effacees. Verifier aussi les sauvegardes hebergeur. |
 | Moyenne | L'admin charge Fomantic depuis jsDelivr ; TinyMCE est egalement charge depuis un CDN. Horizon utilise des assets locaux mais herite du template principal et de ses integrations. | Inventorier destinataires et transferts ; privilegier les assets auto-heberges. Un appel CDN n'est pas automatiquement un traceur soumis a consentement. |
 
@@ -67,8 +69,8 @@ aux traceurs, ni l'effacement, ni les durees de conservation.
 1. Completer la minimisation : champs personnalises, photos, liens et limitation des journaux.
 2. Completer les services tiers : alternative a reCAPTCHA, autres integrations
    et audit reseau de l'installation de production.
-3. Droits : demande, verification d'identite proportionnee, export et effacement,
-   contrat addon, traces de traitement minimales et traitement des sauvegardes.
+3. Droits : adoption du contrat d'effacement par les addons, validation des
+   contenus conserves et traitement des sauvegardes.
 4. Retention : decisions de l'exploitant, simulation puis taches programmees.
 5. Validation de production : hebergeur/sous-traitants, registre, acces admin,
    HTTPS, restauration, gestion des incidents et revue juridique adaptee.
@@ -106,8 +108,9 @@ constituent pas une barriere aux requetes SQL directes d'une extension.
 
 Les champs personnalises, le pseudo, l'email, les liens sociaux, citations,
 signatures, photos et donnees de connexion ne sont pas couverts par ces six
-reglages. Le contrat global d'export/effacement reste a traiter ; le lot 3 couvre
-une premiere partie des services tiers.
+reglages. Leur export est couvert par le lot 4 et leur effacement par le lot 5 ;
+leur minimisation reste a traiter. Le lot 3 couvre une premiere partie des
+services tiers.
 
 Verification : `php tools/test-user-fields.php --isolated-database` teste les
 trois modes, les rendus public/compact, la non-divulgation via l'avatar et le
@@ -212,6 +215,117 @@ un iframe/script actif puis esperer qu'un observateur le bloque apres coup.
 - `php tools/test-user-fields.php --isolated-database` : non-regression profil
   et inscription, dans une base temporaire, sans modifier les comptes du site.
 - Verification visuelle sur Horizon : panneau, fermeture et acces footer.
+
+## Lot 4 : export des donnees personnelles (implemente)
+
+- La personne connectee peut demander une archive depuis son compte, section
+  `Mes donnees personnelles`. Le mot de passe actuel et le jeton CSRF sont
+  verifies avant toute generation.
+- L'archive ZIP contient un manifeste JSON structure : compte, profil, champs
+  personnalises, groupes, comptes externes, historique de connexion, droits,
+  contributions du core, messagerie, fichiers et suivi. Les fichiers dont la
+  personne est proprietaire sont joints lorsqu'ils sont encore lisibles.
+- Les mots de passe, identifiants de session, donnees brutes de session et
+  chemins de stockage serveur sont exclus. Le telechargement est servi avec des
+  en-tetes interdisant sa mise en cache et le fichier temporaire est supprime.
+- Chaque module dispose de `personal_data_export($user)`. `NULL` signale un
+  contrat non implemente ; un tableau vide declare explicitement l'absence de
+  donnees. Le manifeste indique `included`, `not_implemented` ou `error` pour
+  rendre les lacunes visibles sans bloquer l'export du core.
+
+Limites : l'archive est generee de facon synchrone et n'est pas chiffree. Elle
+doit donc etre testee avec des comptes volumineux et transmise uniquement en
+HTTPS. Les addons desactives ne sont pas charges par ce premier contrat ; leur
+stockage doit etre inventorie lors de l'effacement. Cet export ne constitue ni
+une purge ni une procedure d'anonymisation.
+
+Verification : `php tools/test-user-fields.php --isolated-database` controle le
+contenu structure, l'exclusion des secrets et la creation d'une archive ZIP
+lisible sans modifier les comptes du site.
+
+## Lot 5 : effacement et anonymisation (implemente)
+
+- La personne peut demander la suppression depuis son compte apres verification
+  du mot de passe et confirmation explicite du caractere irreversible.
+- Le delai de retractation est configurable dans Parametres > Confidentialite
+  a 7, 14 ou 30 jours. Une demande en attente est visible et annulable depuis
+  le meme ecran, avec une nouvelle verification du mot de passe.
+- A echeance, l'identite du compte est anonymisee et son mot de passe remplace
+  par une valeur aleatoire inconnue. Profil, champs personnalises, comptes
+  externes, groupes, permissions individuelles, jetons, sessions, historique
+  de connexion, suivi, boite de reception et fichiers personnels sont supprimes.
+- Les commentaires et messages deja partages sont conserves pour ne pas retirer
+  le contenu appartenant aussi aux autres participants ; ils sont attribues au
+  compte `Utilisateur supprime`. Cette conservation doit correspondre a une
+  finalite et une base legale documentees par l'exploitant.
+- Le dernier administrateur actif est protege. Chaque execution conserve sur le
+  compte anonymise un rapport technique minimal, sans l'ancienne identite.
+- Les modules disposent de `personal_data_erase($user)`. Un retour `NULL` rend
+  l'absence d'implementation visible dans le rapport ; un tableau confirme que
+  le module a traite la demande. Une exception annule la transaction SQL.
+
+La commande suivante traite jusqu'a 25 demandes arrivees a echeance :
+
+```sh
+php tools/core.php privacy-purge
+```
+
+Elle doit etre executee regulierement par le cron de l'hebergement. Un nombre
+maximal de demandes peut etre passe en second argument, entre 1 et 100. Les
+fichiers sont retires apres la transaction SQL ; un echec de suppression est
+consigne dans le rapport afin de permettre une reprise manuelle.
+
+Limites : les addons desactives et les sauvegardes ne sont pas effaces par cette
+commande. Avant production, chaque addon conservant des donnees doit adopter le
+contrat, et la politique de sauvegarde doit garantir que la restauration ne
+reactive pas silencieusement une identite effacee.
+
+## Lot 6 : politique de conservation (implemente)
+
+- Parametres > Confidentialite permet de definir une duree pour l'historique
+  de connexion, les sessions, les journaux en base, les rapports d'effacement,
+  les sauvegardes de mise a jour et les fichiers de journalisation. Toutes les
+  regles sont desactivees par defaut (`0`) : l'exploitant doit choisir des
+  durees adaptees a ses finalites et a ses obligations avant toute purge.
+- Une simulation inventorie les elements arrives a echeance sans les supprimer.
+  La purge reelle exige une action distincte et une confirmation dans
+  l'administration. Le dernier resultat, son mode et sa date sont conserves
+  dans un rapport technique afin de faciliter le controle d'exploitation.
+- Les suppressions SQL sont transactionnelles. Les repertoires de sauvegarde et
+  les fichiers de log ne sont retires qu'apres validation de la transaction.
+  Les trois sauvegardes de mise a jour les plus recentes sont toujours
+  preservees, meme lorsqu'elles depassent la duree configuree.
+- La regle relative aux comptes inactifs est volontairement un audit : elle
+  compte les comptes concernes, mais ne les supprime ni ne les anonymise. Une
+  suppression automatique demanderait au prealable une procedure d'information,
+  de contestation et de conservation des contributions clairement definie.
+- Le format actuel des journaux ne permet pas de retirer proprement des lignes
+  anciennes dans un fichier actif. La regle ne supprime donc que des fichiers
+  entiers dont la date de modification est anterieure a l'echeance.
+
+Simulation sans suppression :
+
+```sh
+php tools/core.php privacy-retention
+```
+
+Purge effective, a planifier par cron uniquement apres validation des durees :
+
+```sh
+php tools/core.php privacy-retention --execute
+```
+
+Verification : `php tools/test-user-fields.php --isolated-database` cree des
+donnees recentes et expirees dans une base temporaire, controle que la
+simulation ne modifie rien, puis que la purge ne retire que les donnees arrivees
+a echeance. Le test verifie aussi la conservation des comptes inactifs, le
+rapport d'execution et le comportement ferme des valeurs non autorisees.
+
+Limites : les durees doivent encore etre validees traitement par traitement par
+l'exploitant et inscrites dans son registre. Les donnees propres aux addons,
+les sauvegardes externes a HiddenCMS et les journaux geres par l'hebergeur ne
+sont pas couverts automatiquement. Les rapports de conservation eux-memes ne
+font pas encore l'objet d'une duree configurable.
 
 ## References
 

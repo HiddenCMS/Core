@@ -279,9 +279,9 @@ class Form2 extends Library
 		return $this;
 	}
 
-	public function captcha()
+	public function captcha($always = FALSE, $action = 'submit')
 	{
-		$this->_rules[] = $this->form_captcha();
+		$this->_rules[] = $this->form_captcha('', $always, $action);
 		return $this;
 	}
 

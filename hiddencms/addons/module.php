@@ -173,6 +173,29 @@ abstract class Module extends Addon
 		return FALSE;
 	}
 
+	/**
+	 * Return personal data owned by this module for a user export.
+	 *
+	 * NULL means that the module has not implemented the export contract yet.
+	 * An empty array explicitly declares that the module stores no personal data.
+	 */
+	public function personal_data_export($user)
+	{
+		return NULL;
+	}
+
+	/**
+	 * Erase or anonymize personal data owned by this module.
+	 *
+	 * NULL means that the module has not implemented the erasure contract yet.
+	 * An array, including an empty one, confirms that the request was handled.
+	 * It must contain only technical counts/statuses, never the erased data itself.
+	 */
+	public function personal_data_erase($user)
+	{
+		return NULL;
+	}
+
 	public function is_authorized()
 	{
 		static $allowed = [];

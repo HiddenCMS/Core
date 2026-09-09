@@ -18,6 +18,37 @@ body {
 	color: var(--admin-text);
 }
 
+.ui.input.color > .admin-color-picker {
+	position: absolute !important;
+	top: 50%;
+	left: .65rem;
+	z-index: 2;
+	width: 1.5rem !important;
+	height: 1.5rem !important;
+	min-width: 0 !important;
+	padding: 0 !important;
+	border: 1px solid rgba(34, 36, 38, .18) !important;
+	border-radius: 4px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	cursor: pointer;
+	transform: translateY(-50%);
+}
+
+.ui.input.color > .admin-color-picker::-webkit-color-swatch-wrapper {
+	padding: 2px;
+}
+
+.ui.input.color > .admin-color-picker::-webkit-color-swatch {
+	border: 0;
+	border-radius: 2px;
+}
+
+.ui.input.color > .admin-color-picker::-moz-color-swatch {
+	border: 0;
+	border-radius: 2px;
+}
+
 /* Shared labels still emit Bootstrap badge classes. */
 .badge {
 	--badge-text: #4f5f6d;

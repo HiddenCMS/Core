@@ -1,17 +1,56 @@
-.switch .btn:first-child {
-	-webkit-border-top-left-radius: 30px;
-	-webkit-border-bottom-left-radius: 30px;
-	-moz-border-radius-topleft: 30px;
-	-moz-border-radius-bottomleft: 30px;
-	border-top-left-radius: 30px;
-	border-bottom-left-radius: 30px;
+.maintenance-status {
+	padding: .75rem .25rem .5rem;
 }
 
-.switch .btn:last-child {
-	-webkit-border-top-right-radius: 30px;
-	-webkit-border-bottom-right-radius: 30px;
-	-moz-border-radius-topright: 30px;
-	-moz-border-radius-bottomright: 30px;
-	border-top-right-radius: 30px;
-	border-bottom-right-radius: 30px;
+.maintenance-toggle.ui.toggle.checkbox {
+	min-height: 2rem;
+}
+
+.maintenance-toggle.ui.toggle.checkbox label {
+	min-height: 2rem;
+	padding-left: 4.75rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 2rem;
+}
+
+.maintenance-toggle.ui.toggle.checkbox label::before {
+	width: 3.75rem;
+	height: 2rem;
+}
+
+.maintenance-toggle.ui.toggle.checkbox label::after {
+	top: .25rem;
+	left: .25rem;
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.maintenance-toggle.ui.toggle.checkbox input:checked ~ label::after {
+	left: 2rem;
+}
+
+.maintenance-status.is-open .maintenance-toggle.ui.toggle.checkbox label::before {
+	background: #dce5e8;
+}
+
+.maintenance-status.is-closed .maintenance-toggle.ui.toggle.checkbox input:checked ~ label::before {
+	background: #e85c6b !important;
+}
+
+.maintenance-status-description {
+	margin: .75rem 0 0;
+	color: #697386;
+	font-size: .9rem;
+	line-height: 1.45;
+}
+
+.maintenance-toggle.loading {
+	opacity: .6;
+	pointer-events: none;
+}
+
+.maintenance-confirm .content p {
+	margin: 0;
+	line-height: 1.55;
 }

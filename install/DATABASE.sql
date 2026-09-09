@@ -401,6 +401,14 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('azuro_secondary_color', '', '', '#00c7e4', 'string'),
 ('azuro_text_color', '', '', '#212529', 'string'),
 ('analytics', '', '', '', 'string'),
+('privacy_erasure_delay', '', '', '30', 'int'),
+('privacy_retention_backups', '', '', '0', 'int'),
+('privacy_retention_connection_history', '', '', '0', 'int'),
+('privacy_retention_db_logs', '', '', '0', 'int'),
+('privacy_retention_erasure_reports', '', '', '0', 'int'),
+('privacy_retention_inactive_accounts', '', '', '0', 'int'),
+('privacy_retention_log_files', '', '', '0', 'int'),
+('privacy_retention_sessions', '', '', '0', 'int'),
 ('privacy_profile_first_name', '', '', 'disabled', 'string'),
 ('privacy_profile_last_name', '', '', 'disabled', 'string'),
 ('privacy_profile_date_of_birth', '', '', 'disabled', 'string'),
@@ -409,6 +417,7 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('privacy_profile_location', '', '', 'disabled', 'string'),
 ('captcha_private_key', '', '', '', 'string'),
 ('captcha_public_key', '', '', '', 'string'),
+('captcha_score_threshold', '', '', '0.5', 'string'),
 ('contact', '', '', 'noreply@hiddencms.local', 'string'),
 ('cookie_expire', '', '', '1 hour', 'string'),
 ('cookie_name', '', '', 'session', 'string'),
@@ -468,6 +477,18 @@ CREATE TABLE `statistics` (
 
 INSERT INTO `statistics` (`name`, `value`) VALUES
 ('sessions_max_simultaneous', '0');
+
+DROP TABLE IF EXISTS `privacy_retention_run`;
+CREATE TABLE `privacy_retention_run` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `mode` enum('simulation','purge') NOT NULL,
+  `status` enum('completed','failed') NOT NULL,
+  `started_at` datetime NOT NULL,
+  `completed_at` datetime NOT NULL,
+  `report` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `completed_at` (`completed_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `tracking`;
 CREATE TABLE `tracking` (
@@ -549,6 +570,18 @@ CREATE TABLE `user` (
   KEY `deleted` (`deleted`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`language`) REFERENCES `addon` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `user_erasure_request`;
+CREATE TABLE `user_erasure_request` (
+  `user_id` int(11) unsigned NOT NULL,
+  `requested_at` datetime NOT NULL,
+  `execute_after` datetime NOT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `result` text DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `execute_after` (`execute_after`,`completed_at`),
+  CONSTRAINT `user_erasure_request_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user_auth`;
 CREATE TABLE `user_auth` (

@@ -56,6 +56,17 @@
 	color: #00a9bf;
 }
 
+.retention-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .65rem;
+	margin-top: 1rem;
+}
+
+.retention-actions .ui.button {
+	margin: 0;
+}
+
 @media (max-width: 767px) {
 	.module-settings > .ui.grid > .column + .column {
 		border-left: 0;

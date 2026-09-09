@@ -44,6 +44,8 @@ assert.equal(settings.parser.date(''), null);
 assert.equal(settings.formatter.date(null), '');
 mount('datetime', 'L LT');
 assert.equal(settings.formatter.datetime(settings.parser.date('15/06/1990 14:30')), '15/06/1990 14:30');
+assert.equal(settings.formatter.hourHeader(settings.parser.date('15/06/1990 14:30')), '15 juin 1990');
+assert.equal(settings.formatter.minuteHeader(settings.parser.date('15/06/1990 14:30')), '15 juin 1990');
 mount('time', 'LT');
 assert.equal(settings.formatter.time(settings.parser.date('14:30')), '14:30');
 assert.equal(settings.parser.date('25:30'), null);

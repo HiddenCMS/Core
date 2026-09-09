@@ -10,7 +10,7 @@ use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Api extends Controller_Module
 {
-	public function scss($action = 'reload')
+	public function scss($action = 'reload', $only = [])
 	{
 		$list_scss_files = function(){
 			$files = [];
@@ -25,15 +25,13 @@ class Api extends Controller_Module
 			return $files;
 		};
 
-		spl_autoload_register(function($name){
-			if (preg_match('_^Leafo\\\ScssPhp_', $name))
-			{
-				require_once 'lib/'.str_replace('\\', '/', preg_replace('_^Leafo\\\ScssPhp_', 'scssphp', $name)).'.php';
-			}
-		});
-
 		$compile = function($files){
 			$results = [];
+			$preprocess = function($file){
+				ob_start();
+				include $file;
+				return ob_get_clean();
+			};
 
 			foreach ($files as $file)
 			{
@@ -42,32 +40,70 @@ class Api extends Controller_Module
 					$path = preg_replace('#/sass/[^/]*?\.scss#', '', $file);
 					$css  = $path.'/'.$match[1].'.css';
 
-					$scss = new \Leafo\ScssPhp\Compiler();
-					$scss->setFormatter('Leafo\ScssPhp\Formatter\Crunched');
-					$scss->setSourceMap(\Leafo\ScssPhp\Compiler::SOURCE_MAP_FILE);
-					$scss->preprocessingFunction(function($file){
-						ob_start();
-						include $file;
-						return ob_get_clean();
-					});
-					$scss->setImportPaths($path.'/sass');
+					$scss = new \ScssPhp\ScssPhp\Compiler();
+					$scss->setOutputStyle(\ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
+					$scss->setSourceMap(\ScssPhp\ScssPhp\Compiler::SOURCE_MAP_FILE);
 					$scss->setSourceMapOptions([
-						'sourceMapWriteTo' => $css.'.map',
+						'sourceMapFilename' => basename($css),
 						'sourceMapURL'     => $match[1].'.css.map',
 						'sourceRoot'       => '/'
 					]);
 
+					$filesystem = new \ScssPhp\ScssPhp\Importer\FilesystemImporter(realpath($path.'/sass'));
+					$importer = new class($filesystem, $preprocess) extends \ScssPhp\ScssPhp\Importer\Importer {
+						private $filesystem;
+						private $preprocess;
+
+						public function __construct($filesystem, $preprocess)
+						{
+							$this->filesystem = $filesystem;
+							$this->preprocess = $preprocess;
+						}
+
+						public function canonicalize(\League\Uri\Contracts\UriInterface $url): ?\League\Uri\Contracts\UriInterface
+						{
+							return $this->filesystem->canonicalize($url);
+						}
+
+						public function load(\League\Uri\Contracts\UriInterface $url): ?\ScssPhp\ScssPhp\Importer\ImporterResult
+						{
+							$file = \ScssPhp\ScssPhp\Util\Path::fromUri($url);
+							return new \ScssPhp\ScssPhp\Importer\ImporterResult(
+								call_user_func($this->preprocess, $file),
+								\ScssPhp\ScssPhp\Syntax::forPath($file),
+								$url
+							);
+						}
+
+						public function couldCanonicalize(\League\Uri\Contracts\UriInterface $url, \League\Uri\Contracts\UriInterface $canonicalUrl): bool
+						{
+							return $this->filesystem->couldCanonicalize($url, $canonicalUrl);
+						}
+
+						public function __toString(): string
+						{
+							return 'HiddenCMS SCSS importer';
+						}
+					};
+
 					try
 					{
-						$md5 = md5_file($css);
-						file_put_contents($css, @$scss->compile_file($file));
+						$md5 = is_file($css) ? md5_file($css) : NULL;
+						$source = $preprocess($file);
+						$compiled = $scss->compileString($source, realpath($file), $importer);
+						file_put_contents($css, $compiled->getCss());
+
+						if ($compiled->getSourceMap() !== NULL)
+						{
+							file_put_contents($css.'.map', $compiled->getSourceMap());
+						}
 
 						if ($md5 != md5_file($css))
 						{
 							$results[] = $css;
 						}
 					}
-					catch (\Exception $e)
+					catch (\Throwable $e)
 					{
 						echo "Error $file\n\t--> ".$e->getMessage()."\n";
 					}
@@ -77,9 +113,16 @@ class Api extends Controller_Module
 			return $results;
 		};
 
+		$files = $list_scss_files();
+
+		if ($only)
+		{
+			$files = array_values(array_intersect($files, (array)$only));
+		}
+
 		if ($action == 'reload')
 		{
-			foreach ($compile($list_scss_files()) as $file)
+			foreach ($compile($files) as $file)
 			{
 				echo $file."\n";
 			}
@@ -99,7 +142,14 @@ class Api extends Controller_Module
 			{
 				$need_update = [];
 
-				foreach ($scan = $list_scss_files() as $file)
+				$scan = $list_scss_files();
+
+				if ($only)
+				{
+					$scan = array_values(array_intersect($scan, (array)$only));
+				}
+
+				foreach ($scan as $file)
 				{
 					if (!array_key_exists($file, $files))
 					{
