@@ -109,11 +109,26 @@
 
 .updates-backup-row {
 	padding: .8rem 0;
-	border-bottom: 1px solid var(--admin-border);
 }
 
 .updates-backup-row > div {
 	flex: 1 1 auto;
+}
+
+.updates-backup-entry {
+	border-bottom: 1px solid var(--admin-border);
+}
+
+.updates-backup-error {
+	margin: -.15rem 0 .8rem;
+	padding: .7rem .8rem;
+	background: #fff4f4;
+	color: #9f3a38;
+	overflow-wrap: anywhere;
+}
+
+.updates-failure {
+	margin-top: 1rem !important;
 }
 
 @media (max-width: 767px) {

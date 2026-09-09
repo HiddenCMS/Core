@@ -163,9 +163,29 @@ class Core_Updater extends Library
 
 	public function update_core(array $release = NULL)
 	{
-		$release = $release ?: $this->latest_release();
+		if (!$release)
+		{
+			try
+			{
+				$release = $this->latest_release();
+			}
+			catch (Throwable $e)
+			{
+				$failure = [
+					'at'      => date('c'),
+					'stage'   => 'recherche de la release',
+					'class'   => get_class($e),
+					'message' => $this->failure_message($e)
+				];
+				$this->record_update_failure(NULL, NULL, $failure);
+				$this->log_update_failure(NULL, NULL, $failure);
+				throw new RuntimeException('La recherche de la mise à jour a échoué : '.$failure['message'], 0, $e);
+			}
+		}
+
 		$url = isset($release['zipball_url']) ? $release['zipball_url'] : NULL;
 		$version = ltrim(isset($release['tag_name']) ? $release['tag_name'] : '', 'vV');
+		$stage = 'validation';
 
 		if (!$url || !$version || !version_compare($version, HIDDENCMS_VERSION, '>'))
 		{
@@ -178,43 +198,83 @@ class Core_Updater extends Library
 		$this->ensure_directory($extract);
 		$backup = NULL;
 		$maintenance = (bool)$this->config->maintenance;
+		$addon_requirements = $this->addon_requirements();
 
 		try
 		{
+			$stage = 'téléchargement';
 			$this->download($url, $archive);
+			$stage = 'extraction';
 			$this->extract_archive($archive, $extract);
 			$source = $this->find_release_root($extract);
 			$manifest = $this->manifest($source);
 			$this->validate_release($manifest, $version);
+			$stage = 'sauvegarde';
 			$backup = $this->create_backup('core-'.$version);
+			$this->mark_backup($backup, 'updating', $version);
 			$this->config('maintenance', TRUE, 'bool');
+			$stage = 'copie des fichiers';
 			$this->copy_release($source, $manifest);
-			$this->addon_packages->install_dependencies();
+			$this->restore_addon_requirements($addon_requirements);
+			$stage = 'dépendances Composer';
+			$this->addon_packages->update_dependencies(array_keys($addon_requirements));
+			$stage = 'migrations SQL';
 			$this->migrate();
+			$stage = 'synchronisation des addons';
 			$this->addon_packages->sync(TRUE);
 			$this->mark_backup($backup, 'completed', $version);
 			$this->config('maintenance', $maintenance, 'bool');
 			$this->remove_directory($work);
+			$this->clear_update_failure();
+			$this->clear_status_cache();
 
 			return $backup;
 		}
 		catch (Throwable $e)
 		{
+			$failure = [
+				'at'      => date('c'),
+				'stage'   => $stage,
+				'class'   => get_class($e),
+				'message' => $this->failure_message($e)
+			];
+			$rollback_error = NULL;
+
 			if ($backup)
 			{
 				try
 				{
 					$this->rollback($backup, TRUE);
+					try
+					{
+						$this->mark_backup($backup, 'automatic-rollback', $version, ['failure' => $failure]);
+					}
+					catch (Throwable $metadata_error) {}
 				}
 				catch (Throwable $rollback)
 				{
-					throw new RuntimeException($e->getMessage().' Le retour arrière automatique a aussi échoué : '.$rollback->getMessage(), 0, $e);
+					$rollback_error = $this->failure_message($rollback);
+					try
+					{
+						$this->mark_backup($backup, 'rollback-failed', $version, [
+							'failure'       => $failure,
+							'rollback_error'=> $rollback_error
+						]);
+					}
+					catch (Throwable $metadata_error) {}
 				}
 			}
 
 			$this->config('maintenance', $maintenance, 'bool');
 			$this->remove_directory($work);
-			throw $e;
+			$this->record_update_failure($version, $backup, $failure, $rollback_error);
+			$this->log_update_failure($version, $backup, $failure, $rollback_error);
+
+			$message = 'La mise à jour vers '.$version.' a échoué à l’étape « '.$stage.' » : '.$failure['message'];
+			$message .= $rollback_error
+				? ' Le retour arrière automatique a également échoué : '.$rollback_error
+				: ($backup ? ' Le site a été restauré automatiquement.' : ' Aucun fichier du site n’a été remplacé.');
+			throw new RuntimeException($message, 0, $e);
 		}
 	}
 
@@ -288,6 +348,14 @@ class Core_Updater extends Library
 
 		krsort($result);
 		return $result;
+	}
+
+	public function last_failure()
+	{
+		$file = HIDDENCMS_CMS.'/cache/updates/last-error.json';
+		$content = is_file($file) ? @file_get_contents($file) : FALSE;
+		$data = is_string($content) ? json_decode($content, TRUE) : NULL;
+		return is_array($data) && !empty($data['failure']) ? $data : NULL;
 	}
 
 	public function rollback($id, $automatic = FALSE)
@@ -674,7 +742,7 @@ class Core_Updater extends Library
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
 	}
 
-	protected function mark_backup($id, $status, $target = NULL)
+	protected function mark_backup($id, $status, $target = NULL, array $extra = [])
 	{
 		$file = HIDDENCMS_CMS.'/backups/updates/'.$id.'/metadata.json';
 		$metadata = is_file($file) ? json_decode(file_get_contents($file), TRUE) : [];
@@ -686,7 +754,85 @@ class Core_Updater extends Library
 			$metadata['target_version'] = $target;
 		}
 
+		foreach ($extra as $key => $value)
+		{
+			$metadata[$key] = $value;
+		}
+
 		$this->write_json($file, $metadata);
+	}
+
+	protected function failure_message(Throwable $error)
+	{
+		$message = preg_replace('/\s+/u', ' ', $error->getMessage());
+		$message = trim($message === NULL ? $error->getMessage() : $message);
+		return function_exists('mb_substr') ? mb_substr($message, 0, 8000) : substr($message, 0, 8000);
+	}
+
+	protected function addon_requirements()
+	{
+		$file = HIDDENCMS_CMS.'/composer.json';
+		$composer = is_file($file) ? json_decode(file_get_contents($file), TRUE) : NULL;
+		$requirements = [];
+
+		foreach (is_array($composer) && isset($composer['require']) && is_array($composer['require']) ? $composer['require'] : [] as $package => $constraint)
+		{
+			if (strpos(strtolower($package), 'hiddencms/') === 0 && strtolower($package) !== 'hiddencms/core')
+			{
+				$requirements[$package] = $constraint;
+			}
+		}
+
+		ksort($requirements);
+		return $requirements;
+	}
+
+	protected function restore_addon_requirements(array $requirements)
+	{
+		if (!$requirements) return;
+
+		$file = HIDDENCMS_CMS.'/composer.json';
+		$composer = is_file($file) ? json_decode(file_get_contents($file), TRUE) : NULL;
+
+		if (!is_array($composer))
+		{
+			throw new RuntimeException('Le manifeste Composer du core mis à jour est invalide.');
+		}
+
+		$composer['require'] = array_merge(isset($composer['require']) && is_array($composer['require']) ? $composer['require'] : [], $requirements);
+		ksort($composer['require']);
+		$this->write_json($file, $composer);
+	}
+
+	protected function log_update_failure($version, $backup, array $failure, $rollback_error = NULL)
+	{
+		$directory = HIDDENCMS_CMS.'/logs';
+		if (!is_dir($directory) && !@mkdir($directory, 0775, TRUE) && !is_dir($directory)) return;
+		$entry = '['.date('c').'] Core update to '.($version ?: 'unknown version').' failed during '.$failure['stage'].PHP_EOL
+			.'Exception: '.$failure['class'].': '.$failure['message'].PHP_EOL
+			.'Backup: '.($backup ?: 'none').PHP_EOL
+			.'Rollback: '.($rollback_error ? 'failed: '.$rollback_error : ($backup ? 'completed' : 'not required')).PHP_EOL
+			.str_repeat('-', 72).PHP_EOL;
+		@file_put_contents($directory.'/core-updater.log', $entry, FILE_APPEND | LOCK_EX);
+	}
+
+	protected function record_update_failure($version, $backup, array $failure, $rollback_error = NULL)
+	{
+		$directory = HIDDENCMS_CMS.'/cache/updates';
+		if (!is_dir($directory) && !@mkdir($directory, 0775, TRUE) && !is_dir($directory)) return;
+		$data = [
+			'target_version' => $version,
+			'backup'         => $backup,
+			'failure'        => $failure,
+			'rollback_error' => $rollback_error
+		];
+		@file_put_contents($directory.'/last-error.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+	}
+
+	protected function clear_update_failure()
+	{
+		$file = HIDDENCMS_CMS.'/cache/updates/last-error.json';
+		if (is_file($file)) @unlink($file);
 	}
 
 	protected function write_json($file, array $data)

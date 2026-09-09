@@ -173,6 +173,24 @@ class Addon_Packages extends Library
 		return $this->run_composer(['install', '--prefer-dist', '--optimize-autoloader']);
 	}
 
+	public function update_dependencies(array $packages)
+	{
+		$packages = array_values(array_unique(array_filter($packages, function($package){
+			return is_string($package) && preg_match('#^hiddencms/[a-z0-9_.-]+$#i', $package) && strtolower($package) !== 'hiddencms/core';
+		})));
+
+		if (!$packages)
+		{
+			return $this->install_dependencies();
+		}
+
+		return $this->run_composer(array_merge(
+			['update'],
+			$packages,
+			['--with-all-dependencies', '--prefer-dist', '--optimize-autoloader']
+		));
+	}
+
 	public function outdated()
 	{
 		$output = $this->run_composer(['outdated', '--direct', '--format=json'], FALSE);

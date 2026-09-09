@@ -27,7 +27,7 @@ class Admin_Ajax extends Controller_Module
 						}
 						catch (\Throwable $e)
 						{
-							notify($e->getMessage(), 'danger');
+							notify('Échec de la mise à jour : '.htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8').' Le détail reste disponible sur la page Mises à jour.', 'danger');
 						}
 
 						refresh('admin/settings/updates');

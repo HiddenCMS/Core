@@ -629,8 +629,9 @@ class Admin extends Controller_Module
 		$this->add_action($this->button('Rechercher', 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
 
 		return $this->view('admin/updates', [
-			'status'  => $status,
-			'backups' => $this->core_updater->backups()
+			'status'       => $status,
+			'backups'      => $this->core_updater->backups(),
+			'last_failure' => $this->core_updater->last_failure()
 		]);
 	}
 

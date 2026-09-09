@@ -37,6 +37,23 @@ $escape = function($value){
 	</div>
 <?php endif ?>
 
+<?php if ($last_failure): ?>
+	<div class="ui negative message updates-failure">
+		<div class="header"><?php echo icon('fas fa-exclamation-triangle').' '.$this->lang('La dernière mise à jour a échoué') ?></div>
+		<p>
+			<?php if (!empty($last_failure['target_version'])): ?><?php echo $this->lang('Version ciblée') ?> : <strong><?php echo $escape($last_failure['target_version']) ?></strong><br /><?php endif ?>
+			<?php echo $this->lang('Étape') ?> : <strong><?php echo $escape($last_failure['failure']['stage'] ?? 'inconnue') ?></strong><br />
+			<?php echo $escape($last_failure['failure']['message'] ?? 'Erreur non renseignée.') ?>
+		</p>
+		<?php if (!empty($last_failure['backup']) && empty($last_failure['rollback_error'])): ?>
+			<p><?php echo $this->lang('Le site a été restauré automatiquement dans son état précédent.') ?></p>
+		<?php elseif (!empty($last_failure['rollback_error'])): ?>
+			<p><strong><?php echo $this->lang('Échec du retour arrière') ?> :</strong> <?php echo $escape($last_failure['rollback_error']) ?></p>
+		<?php endif ?>
+		<p><code>logs/core-updater.log</code></p>
+	</div>
+<?php endif ?>
+
 <section class="updates-section">
 	<header class="updates-section-header">
 		<div>
@@ -89,10 +106,15 @@ $escape = function($value){
 	<?php if ($backups): ?>
 		<div class="updates-backups">
 			<?php foreach ($backups as $backup): ?>
-				<div class="updates-backup-row">
-					<div><strong><?php echo $escape($backup['id']) ?></strong><span><?php echo $escape($backup['core_version'].' · '.date('d/m/Y H:i', strtotime($backup['created_at']))) ?></span></div>
-					<span class="ui tiny label"><?php echo $escape(['ready' => 'Disponible', 'completed' => 'Mise à jour terminée', 'restored' => 'Restaurée', 'automatic-rollback' => 'Retour automatique'][$backup['status']] ?? $backup['status']) ?></span>
-					<a href="#" class="ui mini button" data-modal-ajax="<?php echo url('admin/ajax/settings/rollback/'.$backup['id']) ?>"><?php echo icon('fas fa-history').' '.$this->lang('Restaurer') ?></a>
+				<div class="updates-backup-entry">
+					<div class="updates-backup-row">
+						<div><strong><?php echo $escape($backup['id']) ?></strong><span><?php echo $escape($backup['core_version'].' · '.date('d/m/Y H:i', strtotime($backup['created_at']))) ?></span></div>
+						<span class="ui tiny label"><?php echo $escape(['ready' => 'Disponible', 'updating' => 'Mise à jour en cours', 'completed' => 'Mise à jour terminée', 'restored' => 'Restaurée', 'automatic-rollback' => 'Retour automatique', 'rollback-failed' => 'Retour arrière en échec'][$backup['status']] ?? $backup['status']) ?></span>
+						<a href="#" class="ui mini button" data-modal-ajax="<?php echo url('admin/ajax/settings/rollback/'.$backup['id']) ?>"><?php echo icon('fas fa-history').' '.$this->lang('Restaurer') ?></a>
+					</div>
+					<?php if (!empty($backup['failure'])): ?>
+						<div class="updates-backup-error"><?php echo icon('fas fa-exclamation-circle') ?> <strong><?php echo $escape($backup['failure']['stage'] ?? 'Erreur') ?> :</strong> <?php echo $escape($backup['failure']['message'] ?? '') ?></div>
+					<?php endif ?>
 				</div>
 			<?php endforeach ?>
 		</div>
