@@ -20,9 +20,18 @@ class Number extends Text
 		});
 
 		$this->_check[] = function($post, &$data){
-			if (isset($post[$this->_name]) && $post[$this->_name] !== '' && $post[$this->_name] != (float)$post[$this->_name])
+			if (isset($post[$this->_name]) && $post[$this->_name] !== '')
 			{
-				$this->_errors[] = 'Nombre invalide';
+				$value = str_replace(',', '.', trim((string)$post[$this->_name]));
+
+				if (!is_numeric($value))
+				{
+					$this->_errors[] = 'Nombre invalide';
+				}
+				else
+				{
+					$this->_value = $data[$this->_name] = $value;
+				}
 			}
 		};
 

@@ -12,12 +12,14 @@ class Search extends Controller_Module
 {
 	public function index($result, $keywords)
 	{
+		$result['path'] = $this->model()->get_page_path($result['page_id']);
 		$result['content'] = highlight($result['content'], $keywords);
 		return $this->view('search/index', $result);
 	}
 
 	public function detail($result, $keywords)
 	{
+		$result['path'] = $this->model()->get_page_path($result['page_id']);
 		$result['content'] = highlight($result['content'], $keywords, 1024);
 		return $this->view('search/index', $result);
 	}

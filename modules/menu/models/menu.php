@@ -524,15 +524,14 @@ class Menu extends Model2
 
 		if ($pages_enabled)
 		{
-			foreach ($this->db	->select('p.name', 'pl.title')
-								->from('pages p')
-								->join('pages_lang pl', 'p.page_id = pl.page_id')
-								->where('pl.lang', $lang)
-								->where('p.published', TRUE)
-								->order_by('pl.title ASC')
-								->get(FALSE) as $page)
+			foreach (HiddenCMS()->module('pages')->model()->get_pages() as $page)
 			{
-				$path = trim((string)$page['name'], '/');
+				if (!$page['published'])
+				{
+					continue;
+				}
+
+				$path = $page['path'];
 				$path = $path === '' ? '/' : $path;
 				$title = trim((string)$page['title']);
 				$label = '[Pages] '.$title;

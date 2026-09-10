@@ -48,8 +48,8 @@ function privacy_policy_url()
 	$id = (string)(HB()->config->privacy_page ?? '');
 	if (!$id || !ctype_digit($id)) return '';
 	$pages = privacy_pages();
-	if (!isset($pages[$id]) || !preg_match('~^[a-z0-9]+(?:[-/][a-z0-9]+)*$~i', $pages[$id]['name'])) return '';
-	return url($pages[$id]['name']);
+	if (!isset($pages[$id]) || !preg_match('~^[a-z0-9]+(?:[-/][a-z0-9]+)*$~i', $pages[$id]['path'])) return '';
+	return url($pages[$id]['path']);
 }
 
 function privacy_notice()

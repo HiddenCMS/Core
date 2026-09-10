@@ -154,10 +154,19 @@ class Output extends Core
 					}
 
 					$this->data->set('page', 'id',       $resolved['page']['page_id']);
-					$this->data->set('page', 'name',     $resolved['page']['name']);
+					$this->data->set('page', 'name',     isset($resolved['page']['path']) ? $resolved['page']['path'] : $resolved['page']['name']);
 					$this->data->set('page', 'outline',  $resolved['page']['outline_id']);
 					$this->data->set('page', 'title',    $resolved['page']['title']);
 					$this->data->set('page', 'subtitle', $resolved['page']['subtitle']);
+
+					foreach ($module->model()->get_breadcrumbs($resolved['page']['page_id']) as $breadcrumb)
+					{
+						$this->data->append('breadcrumb', [
+							$breadcrumb['title'],
+							$breadcrumb['path'],
+							'far fa-file'
+						]);
+					}
 
 					if (!empty($resolved['segments']))
 					{

@@ -379,9 +379,14 @@ class Form extends Library
 
 	private function _check_number(&$post, $var, $options)
 	{
-		if ($post[$var] !== '' && $post[$var] != (int)$post[$var])
+		if ($post[$var] !== '')
 		{
-			return 'Nombre invalide';
+			$post[$var] = str_replace(',', '.', trim((string)$post[$var]));
+
+			if (!is_numeric($post[$var]))
+			{
+				return 'Nombre invalide';
+			}
 		}
 
 		return $this->_check_text($post, $var, $options);

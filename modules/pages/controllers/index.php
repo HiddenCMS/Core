@@ -32,8 +32,7 @@ class Index extends Controller_Module
 			}
 		}
 
-		$this	->title($title)
-				->breadcrumb($title);
+		$this->title($title);
 
 		$output = $this->array();
 

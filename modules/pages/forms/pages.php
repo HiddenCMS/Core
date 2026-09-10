@@ -16,8 +16,20 @@ $rules = [
 		'value'         => $this->form()->value('subtitle'),
 		'type'          => 'text'
 	],
+	'parent_id' => [
+		'label'         => $this->lang('Page parente'),
+		'value'         => $this->form()->value('parent_id'),
+		'values'        => $this->form()->value('parents'),
+		'type'          => 'select',
+		'check'         => function($value){
+			if (!HiddenCMS()->module('pages')->model()->valid_parent((int)$this->form()->value('page_id'), (int)$value))
+			{
+				return $this->lang('La page parente sélectionnée n’est pas valide');
+			}
+		}
+	],
 	'name' => [
-		'label'         => $this->lang('Chemin d\'accès'),
+		'label'         => $this->lang('Slug'),
 		'value'         => $this->form()->value('name'),
 		'type'          => 'text',
 		'check'         => function($value, $post){
@@ -28,16 +40,11 @@ $rules = [
 
 			$value = url_title($value);
 			$page_id = (int)$this->form()->value('page_id');
-			$query = HiddenCMS()->db->from('pages')->where('name', $value);
+			$parent_id = (int)(isset($post['parent_id']) ? $post['parent_id'] : 0);
 
-			if ($page_id)
+			if (HiddenCMS()->module('pages')->model()->name_exists($value, $parent_id, $page_id))
 			{
-				$query->where('page_id <>', $page_id);
-			}
-
-			if (!$query->empty())
-			{
-				return $this->lang('Chemin d\'accès déjà utilisé');
+				return $this->lang('Ce slug est déjà utilisé sous cette page parente');
 			}
 		}
 	],
@@ -601,7 +608,7 @@ $this->js_load('
 		var $content = $("<div />").attr("class", "sixteen wide mobile eleven wide computer column pages-form-content")
 			.append(heading(icons.content, labels.content));
 
-		$.each(["title", "subtitle", "name", "outline_id", "published"], function(i, name){
+		$.each(["title", "subtitle", "parent_id", "name", "outline_id", "published"], function(i, name){
 			var $field = field(name);
 
 			if ($field.length){

@@ -26,7 +26,7 @@ class Admin extends Controller_Module
 					[
 						'title'   => $this->lang('Titre de la page'),
 						'content' => function($data){
-							return $data['published'] ? '<a href="'.url($data['name']).'">'.$data['title'].'</a><small class="ml-2">'.$data['subtitle'].'</small>' : $data['title'];
+							return $data['published'] ? '<a href="'.url($data['path']).'">'.$data['title'].'</a><small class="ml-2">'.$data['subtitle'].'</small>' : $data['title'];
 						},
 						'sort'    => function($data){
 							return $data['title'];
@@ -38,19 +38,19 @@ class Admin extends Controller_Module
 					[
 						'title'   => $this->lang('Chemin d\'accès'),
 						'content' => function($data){
-							return '<code>/'.$data['name'].'</code>';
+							return '<code>/'.$data['path'].'</code>';
 						},
 						'sort'    => function($data){
-							return $data['name'];
+							return $data['path'];
 						},
 						'search'  => function($data){
-							return $data['name'];
+							return $data['path'];
 						}
 					],
 					[
 						'content' => [
 							function($data){
-								return $data['published'] ? $this->button()->tooltip($this->lang('Voir la page'))->icon('far fa-eye')->url($data['name'])->color('secondary')->compact()->outline() : '';
+								return $data['published'] ? $this->button()->tooltip($this->lang('Voir la page'))->icon('far fa-eye')->url($data['path'])->color('secondary')->compact()->outline() : '';
 							},
 							function($data){
 								return $this->user->admin ? $this->button_access($data['page_id'], 'page') : NULL;
@@ -84,6 +84,8 @@ class Admin extends Controller_Module
 				->form()
 				->add_rules('pages', [
 					'page_id'         => 0,
+					'parent_id'       => 0,
+					'parents'         => $this->model()->get_parent_choices(),
 					'modules'         => $this->model()->get_page_modules(),
 					'outline_id'      => key($outlines),
 					'outlines'        => $outlines,
@@ -96,7 +98,9 @@ class Admin extends Controller_Module
 		{
 			$page_name = $this->model()->normalize_page_name($post['name'], $post['title']);
 
-			if ($this->model()->is_reserved_page_name($page_name))
+			$parent_id = (int)$post['parent_id'];
+
+			if (!$parent_id && $this->model()->is_reserved_page_name($page_name))
 			{
 				notify($this->lang('Le premier segment du chemin d\'accès est réservé par un module'), 'danger');
 			}
@@ -110,7 +114,8 @@ class Admin extends Controller_Module
 										!empty($post['outline_id']) ? $post['outline_id'] : NULL,
 										$post['subtitle'],
 										'',
-										$blocks);
+										$blocks,
+										$parent_id);
 
 			notify($this->lang('Page ajoutée avec succès'));
 
@@ -123,7 +128,7 @@ class Admin extends Controller_Module
 					->body($this->form()->display());
 	}
 
-	public function _edit($page_id, $name, $published, $outline_id, $title, $subtitle, $content, $tab)
+	public function _edit($page_id, $name, $published, $outline_id, $parent_id, $title, $subtitle, $content, $tab)
 	{
 		$this->css('pages');
 
@@ -131,6 +136,8 @@ class Admin extends Controller_Module
 				->form()
 				->add_rules('pages', [
 					'page_id'        => $page_id,
+					'parent_id'      => $parent_id,
+					'parents'        => $this->model()->get_parent_choices($page_id),
 					'title'          => $title,
 					'subtitle'       => $subtitle,
 					'name'           => $name,
@@ -145,17 +152,27 @@ class Admin extends Controller_Module
 
 		if ($this->form()->is_valid($post))
 		{
+			$page_name = $this->model()->normalize_page_name($post['name'], $post['title']);
+			$parent_id = (int)$post['parent_id'];
+
+			if (!$parent_id && $this->model()->is_reserved_page_name($page_name))
+			{
+				notify($this->lang('Le slug d’une page racine est réservé par un module'), 'danger');
+				return $this->panel()->heading($this->lang('Édition de la page'), 'fas fa-align-left')->body($this->form()->display());
+			}
+
 			$blocks = $this->model()->build_blocks($post);
 
 			$this->model()->edit_page(	$page_id,
-										$post['name'],
+										$page_name,
 										$post['title'],
 										in_array('on', $post['published']),
 										!empty($post['outline_id']) ? $post['outline_id'] : NULL,
 										$post['subtitle'],
 										'',
 										$this->config->lang->info()->name,
-										$blocks);
+										$blocks,
+										$parent_id);
 
 			notify($this->lang('Page éditée avec succès'));
 
@@ -169,6 +186,11 @@ class Admin extends Controller_Module
 
 	public function delete($page_id, $title)
 	{
+		if ($this->model()->has_children($page_id))
+		{
+			return '<div class="ui warning message"><div class="header">'.$this->lang('Cette page contient des pages enfants').'</div><p>'.$this->lang('Déplacez ou supprimez d’abord ses pages enfants avant de la supprimer.').'</p></div>';
+		}
+
 		$this	->title($this->lang('Suppression d\'une page'))
 				->subtitle($title)
 				->form()

@@ -1,7 +1,7 @@
 {
     "name": "hiddencms/core",
-    "version": "0.4.1",
-    "schema": "0.3.6",
+    "version": "0.5.0",
+    "schema": "0.3.7",
     "channel": "stable",
     "php": ">=8.1",
     "update": {

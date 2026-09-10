@@ -1,4 +1,4 @@
-<big><b><a href="<?php echo url(url_title($name)) ?>"><?php echo $title ?></a></b></big>
+<big><b><a href="<?php echo url($path) ?>"><?php echo $title ?></a></b></big>
 <br />
 <br />
 <p><?php echo $content ?></p>

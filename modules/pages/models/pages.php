@@ -67,14 +67,17 @@ class Pages extends Model
 			$segments = explode('/', $this->config->default_page);
 		}
 
-		for ($i = count($segments); $i > 0; $i--)
-		{
-			$name = implode('/', array_slice($segments, 0, $i));
+		$parent_id = 0;
+		$page = FALSE;
+		$matched = 0;
 
+		foreach ($segments as $segment)
+		{
 			$this->db	->select('p.*', 'pl.title', 'pl.subtitle', 'pl.content')
 						->from('pages p')
 						->join('pages_lang pl', 'p.page_id = pl.page_id')
-						->where('p.name', $name)
+						->where('p.name', $segment)
+						->where('p.parent_id', $parent_id)
 						->where('pl.lang', $lang);
 
 			if (!$all)
@@ -82,14 +85,25 @@ class Pages extends Model
 				$this->db->where('p.published', TRUE);
 			}
 
-			if ($page = $this->db->row())
+			if (!($candidate = $this->db->row()))
 			{
-				return [
-					'page'     => $page,
-					'blocks'   => $this->get_blocks($page['page_id']),
-					'segments' => array_slice($segments, $i)
-				];
+				break;
 			}
+
+			$page = $candidate;
+			$parent_id = (int)$page['page_id'];
+			$matched++;
+		}
+
+		if ($page)
+		{
+			$page['path'] = implode('/', array_slice($segments, 0, $matched));
+
+			return [
+				'page'     => $page,
+				'blocks'   => $this->get_blocks($page['page_id']),
+				'segments' => array_slice($segments, $matched)
+			];
 		}
 
 		return FALSE;
@@ -283,12 +297,136 @@ class Pages extends Model
 
 	public function get_pages()
 	{
-		return $this->db->select('p.page_id', 'p.name', 'p.published', 'pl.title', 'pl.subtitle')
+		$pages = $this->db->select('p.page_id', 'p.parent_id', 'p.name', 'p.published', 'pl.title', 'pl.subtitle')
 						->from('pages p')
 						->join('pages_lang pl', 'p.page_id = pl.page_id')
 						->where('pl.lang', $this->config->lang->info()->name)
-						->order_by('pl.title ASC')
-						->get();
+						->get(FALSE);
+
+		$pages = $this->add_paths($pages);
+
+		usort($pages, function($a, $b){
+			return strnatcasecmp($a['path'], $b['path']);
+		});
+
+		return $pages;
+	}
+
+	public function get_parent_choices($exclude_page_id = 0)
+	{
+		$choices = [0 => $this->lang('Aucune (page racine)')];
+		$pages = $this->add_paths($this->db
+									->select('p.page_id', 'p.parent_id', 'p.name', 'pl.title')
+									->from('pages p')
+									->join('pages_lang pl', 'p.page_id = pl.page_id')
+									->where('pl.lang', $this->config->lang->info()->name)
+									->get(FALSE));
+
+		usort($pages, function($a, $b){
+			return strnatcasecmp($a['path'], $b['path']);
+		});
+
+		foreach ($pages as $page)
+		{
+			if ($exclude_page_id && ($page['page_id'] == $exclude_page_id || $this->is_descendant($page['page_id'], $exclude_page_id, $pages)))
+			{
+				continue;
+			}
+
+			$choices[$page['page_id']] = str_repeat('— ', $page['depth']).$page['title'].'  /'.$page['path'];
+		}
+
+		return $choices;
+	}
+
+	public function get_page_path($page_id, $lang = 'default')
+	{
+		if ($lang == 'default')
+		{
+			$lang = $this->config->lang->info()->name;
+		}
+
+		foreach ($this->add_paths($this->db
+									->select('p.page_id', 'p.parent_id', 'p.name')
+									->from('pages p')
+									->get(FALSE)) as $page)
+		{
+			if ((int)$page['page_id'] === (int)$page_id)
+			{
+				return $page['path'];
+			}
+		}
+
+		return '';
+	}
+
+	public function get_breadcrumbs($page_id)
+	{
+		$pages = [];
+
+		foreach ($this->get_pages() as $page)
+		{
+			$pages[(int)$page['page_id']] = $page;
+		}
+
+		$breadcrumbs = [];
+		$current_id = (int)$page_id;
+		$visited = [];
+
+		while (isset($pages[$current_id]) && !isset($visited[$current_id]))
+		{
+			$visited[$current_id] = TRUE;
+			$page = $pages[$current_id];
+			array_unshift($breadcrumbs, [
+				'title' => $page['title'],
+				'path'  => $page['path']
+			]);
+			$current_id = (int)$page['parent_id'];
+		}
+
+		return $breadcrumbs;
+	}
+
+	public function name_exists($name, $parent_id = 0, $exclude_page_id = 0)
+	{
+		$query = $this->db->from('pages')
+						  ->where('name', $name)
+						  ->where('parent_id', (int)$parent_id);
+
+		if ($exclude_page_id)
+		{
+			$query->where('page_id <>', (int)$exclude_page_id);
+		}
+
+		return !$query->empty();
+	}
+
+	public function valid_parent($page_id, $parent_id)
+	{
+		$page_id = (int)$page_id;
+		$parent_id = (int)$parent_id;
+
+		if (!$parent_id)
+		{
+			return TRUE;
+		}
+
+		$pages = $this->db->select('page_id', 'parent_id')->from('pages')->get(FALSE);
+
+		if ($page_id && ($parent_id === $page_id || $this->is_descendant($parent_id, $page_id, $pages)))
+		{
+			return FALSE;
+		}
+
+		foreach ($pages as $page)
+		{
+			if ((int)$page['page_id'] === $parent_id)
+			{
+				return TRUE;
+			}
+		}
+
+		return FALSE;
 	}
 
 	public function check_page($page_id, $title, $lang = 'default', $all = FALSE)
@@ -321,12 +459,18 @@ class Pages extends Model
 		}
 	}
 
-	public function add_page($name, $title, $published, $outline_id, $subtitle, $content, $blocks = [])
+	public function add_page($name, $title, $published, $outline_id, $subtitle, $content, $blocks = [], $parent_id = 0)
 	{
+		if (!$this->valid_parent(0, $parent_id))
+		{
+			throw new \InvalidArgumentException('Page parente invalide.');
+		}
+
 		$page_id = $this->db->insert('pages', [
 			'name'           => $name ?: url_title($title),
 			'published'      => $published,
-			'outline_id'     => $outline_id ?: NULL
+			'outline_id'     => $outline_id ?: NULL,
+			'parent_id'      => (int)$parent_id
 		]);
 
 		$this->db->insert('pages_lang', [
@@ -342,8 +486,13 @@ class Pages extends Model
 		$this->save_blocks($page_id, $blocks);
 	}
 
-	public function edit_page($page_id, $name, $title, $published, $outline_id, $subtitle, $content, $lang, $blocks = [])
+	public function edit_page($page_id, $name, $title, $published, $outline_id, $subtitle, $content, $lang, $blocks = [], $parent_id = 0)
 	{
+		if (!$this->valid_parent($page_id, $parent_id))
+		{
+			throw new \InvalidArgumentException('Page parente invalide.');
+		}
+
 		if (!$this->db	->from('pages p')
 						->join('pages_lang l', 'p.page_id = l.page_id')
 						->where('p.page_id', $page_id)
@@ -362,7 +511,8 @@ class Pages extends Model
 						->update('pages', [
 							'name'           => $name ?: url_title($title),
 							'published'      => $published,
-							'outline_id'     => $outline_id ?: NULL
+							'outline_id'     => $outline_id ?: NULL,
+							'parent_id'      => (int)$parent_id
 						]);
 		}
 		else
@@ -379,7 +529,8 @@ class Pages extends Model
 						->update('pages', [
 							'name'           => $name ?: url_title($title),
 							'published'      => $published,
-							'outline_id'     => $outline_id ?: NULL
+							'outline_id'     => $outline_id ?: NULL,
+							'parent_id'      => (int)$parent_id
 						]);
 		}
 
@@ -392,6 +543,11 @@ class Pages extends Model
 					->delete('pages');
 
 		$this->access->delete('pages', $page_id);
+	}
+
+	public function has_children($page_id)
+	{
+		return !$this->db->from('pages')->where('parent_id', (int)$page_id)->empty();
 	}
 
 	public function save_blocks($page_id, $blocks = [])
@@ -455,6 +611,70 @@ class Pages extends Model
 			'block'    => !empty($block['settings']['block']) ? $block['settings']['block'] : 'index',
 			'settings' => !empty($block['settings']) && is_array($block['settings']) ? $block['settings'] : []
 		];
+	}
+
+	private function add_paths($pages)
+	{
+		$by_id = [];
+
+		foreach ($pages as $page)
+		{
+			$by_id[(int)$page['page_id']] = $page;
+		}
+
+		$build = function($page_id, $visited = []) use (&$build, $by_id){
+			if (!isset($by_id[$page_id]) || isset($visited[$page_id]))
+			{
+				return ['', 0];
+			}
+
+			$page = $by_id[$page_id];
+			$parent_id = (int)$page['parent_id'];
+
+			if (!$parent_id || !isset($by_id[$parent_id]))
+			{
+				return [$page['name'], 0];
+			}
+
+			$visited[$page_id] = TRUE;
+			list($parent_path, $depth) = $build($parent_id, $visited);
+
+			return [trim($parent_path.'/'.$page['name'], '/'), $depth + 1];
+		};
+
+		foreach ($pages as &$page)
+		{
+			list($page['path'], $page['depth']) = $build((int)$page['page_id']);
+		}
+		unset($page);
+
+		return $pages;
+	}
+
+	private function is_descendant($page_id, $ancestor_id, $pages)
+	{
+		$parents = [];
+
+		foreach ($pages as $page)
+		{
+			$parents[(int)$page['page_id']] = (int)$page['parent_id'];
+		}
+
+		$visited = [];
+		$current = (int)$page_id;
+
+		while (isset($parents[$current]) && $parents[$current] && !isset($visited[$current]))
+		{
+			$visited[$current] = TRUE;
+			$current = $parents[$current];
+
+			if ($current === (int)$ancestor_id)
+			{
+				return TRUE;
+			}
+		}
+
+		return FALSE;
 	}
 }
 

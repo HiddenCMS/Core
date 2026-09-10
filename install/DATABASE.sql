@@ -119,7 +119,8 @@ CREATE TABLE `core_migrations` (
 INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VALUES
 ('0.3.0', '0.3.0', 1, NOW()),
 ('0.3.1', '0.3.1', 1, NOW()),
-('0.3.4', '0.3.1', 1, NOW());
+('0.3.4', '0.3.1', 1, NOW()),
+('0.3.7', '0.3.7', 1, NOW());
 
 DROP TABLE IF EXISTS `user_field_value`;
 DROP TABLE IF EXISTS `user_field`;
@@ -308,8 +309,9 @@ CREATE TABLE `pages` (
   `name` varchar(100) NOT NULL,
   `published` enum('0','1') NOT NULL DEFAULT '0',
   `outline_id` int(11) unsigned DEFAULT '1',
+  `parent_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_id`),
-  UNIQUE KEY `page` (`name`),
+  UNIQUE KEY `page` (`parent_id`,`name`),
   KEY `outline_id` (`outline_id`),
   CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`outline_id`) REFERENCES `outlines` (`outline_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
