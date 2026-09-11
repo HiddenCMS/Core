@@ -52,7 +52,23 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 					}
 
 					$file = implode('/', $file);
+					$addon_file = $dir.'/'.$caller->info()->name.'/'.$file;
 					$namespace = preg_replace('/\\\\[^\\\\]+$/', '', preg_replace('/^HB\\\\/', '', get_class($caller)));
+
+					if (!HIDDENCMS_SAFE_MODE)
+					{
+						yield 'overrides/'.$addon_file;
+
+						if ($caller->output && ($theme = $caller->output->theme()))
+						{
+							if ($theme_path = $theme->package_path())
+							{
+								yield $theme_path.'/overrides/'.$addon_file;
+							}
+
+							yield 'themes/'.$theme->info()->name.'/overrides/'.$addon_file;
+						}
+					}
 
 					if ($namespace)
 					{
@@ -64,19 +80,7 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 						yield $package_path.'/'.$file;
 					}
 
-					$file = $dir.'/'.$caller->info()->name.'/'.$file;
-
-					if (!HIDDENCMS_SAFE_MODE)
-					{
-						yield 'overrides/'.$file;
-
-						if ($caller->output && ($theme = $caller->output->theme()))
-						{
-							yield 'themes/'.$theme->info()->name.'/overrides/'.$file;
-						}
-					}
-
-					yield $file;
+					yield $addon_file;
 				});
 			}
 		}

@@ -108,7 +108,7 @@ class Url extends Core
 					$this	->config('maintenance', FALSE, 'bool')
 							->config('maintenance_opening', '');
 				}
-				else if (!$this->user->admin && !preg_match('#(ajax/user/(lost-password|login)|user/lost-password/[a-z0-9]+|user/logout)#', $this->url->request))
+				else if (!$this->user->admin && !preg_match('#(ajax/user/(lost-password|login)|user/(login|register|lost-password(?:/[a-z0-9]+)?|logout))#', $this->url->request))
 				{
 					header('HTTP/1.0 503 Service Unavailable');
 

@@ -1,0 +1,1 @@
+.hc-image{margin:0}.hc-image img{display:block;width:100%;height:auto}.hc-image--landscape img{aspect-ratio:16/9;object-fit:cover}.hc-image--square img{aspect-ratio:1;object-fit:cover}.hc-image--portrait img{aspect-ratio:4/5;object-fit:cover}.hc-image figcaption{padding:.65rem 0 0;color:inherit;font-size:.9em;opacity:.72}

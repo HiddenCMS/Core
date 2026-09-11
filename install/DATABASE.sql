@@ -38,7 +38,7 @@ CREATE TABLE `addon` (
   UNIQUE KEY `name` (`name`,`type_id`),
   KEY `type_id` (`type_id`),
   CONSTRAINT `addon_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `addon_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
@@ -83,7 +83,11 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (42, 3, 'socials', '{"enabled":true}'),
 (43, 1, 'outlines', '{"enabled":true}'),
 (44, 1, 'menu', '{"enabled":true}'),
-(45, 1, 'files', '{"enabled":true}');
+(45, 1, 'files', '{"enabled":true}'),
+(46, 3, 'image', '{"enabled":true}'),
+(47, 3, 'hero', '{"enabled":true}'),
+(48, 3, 'media_text', '{"enabled":true}'),
+(49, 2, 'altitude', '{"enabled":true,"composer":{"package":"hiddencms/altitude","version":"0.1.0","class":"HB\\\\Themes\\\\Altitude\\\\Altitude","path":"themes/altitude"}}');
 
 DROP TABLE IF EXISTS `addon_type`;
 CREATE TABLE `addon_type` (
@@ -120,7 +124,8 @@ INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VA
 ('0.3.0', '0.3.0', 1, NOW()),
 ('0.3.1', '0.3.1', 1, NOW()),
 ('0.3.4', '0.3.1', 1, NOW()),
-('0.3.7', '0.3.7', 1, NOW());
+('0.3.7', '0.3.7', 1, NOW()),
+('0.3.8', '0.3.8', 1, NOW());
 
 DROP TABLE IF EXISTS `user_field_value`;
 DROP TABLE IF EXISTS `user_field`;
@@ -175,7 +180,7 @@ CREATE TABLE `dispositions` (
   `disposition` text NOT NULL,
   PRIMARY KEY (`disposition_id`),
   UNIQUE KEY `theme` (`theme`,`page`,`zone`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposition`) VALUES
 (1, 'azuro', '*', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":"col-7"}]},{"size":null,"widgets":[{"id":2,"style":null,"size":"col-3"}]}]}]'),
@@ -194,7 +199,23 @@ INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposit
 (22, 'azuro', 'outline:1', 4, '[]'),
 (23, 'azuro', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":6,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":null,"size":null}]}]}]'),
 (24, 'azuro', 'outline:1', 6, '[]'),
-(25, 'azuro', 'outline:1', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":10,"style":"card-transparent","size":null}]}]}]');
+(25, 'azuro', 'outline:1', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":10,"style":"card-transparent","size":null}]}]}]'),
+(26, 'altitude', '*', 0, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":26,"style":null,"size":null}]}]}]'),
+(27, 'altitude', '*', 1, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":27,"style":null,"size":null}]}]}]'),
+(28, 'altitude', '*', 2, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":28,"style":null,"size":null}]}]}]'),
+(29, 'altitude', '*', 3, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":29,"style":null,"size":null}]}]}]'),
+(30, 'altitude', '*', 4, '[]'),
+(31, 'altitude', '*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":30,"style":null,"size":null}]}]}]'),
+(32, 'altitude', '*', 6, '[]'),
+(33, 'altitude', '*', 7, '[]'),
+(34, 'altitude', 'outline:1', 0, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":26,"style":null,"size":null}]}]}]'),
+(35, 'altitude', 'outline:1', 1, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":27,"style":null,"size":null}]}]}]'),
+(36, 'altitude', 'outline:1', 2, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":28,"style":null,"size":null}]}]}]'),
+(37, 'altitude', 'outline:1', 3, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":29,"style":null,"size":null}]}]}]'),
+(38, 'altitude', 'outline:1', 4, '[]'),
+(39, 'altitude', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":30,"style":null,"size":null}]}]}]'),
+(40, 'altitude', 'outline:1', 6, '[]'),
+(41, 'altitude', 'outline:1', 7, '[]');
 
 DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
@@ -301,7 +322,7 @@ CREATE TABLE `outlines` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `enabled`) VALUES
-(1, 'base', 'Base', 'azuro', '1', '1');
+(1, 'base', 'Base', 'altitude', '1', '1');
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (
@@ -402,6 +423,13 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('azuro_primary_color', '', '', '#00d7b3', 'string'),
 ('azuro_secondary_color', '', '', '#00c7e4', 'string'),
 ('azuro_text_color', '', '', '#212529', 'string'),
+('altitude_accent_color', '', '', '#ff9900', 'string'),
+('altitude_background_color', '', '', '#f4f5f1', 'string'),
+('altitude_content_width', '', '', '1200', 'string'),
+('altitude_forest_color', '', '', '#244c3c', 'string'),
+('altitude_hero_height', '', '', '420', 'string'),
+('altitude_hero_position', '', '', 'center', 'string'),
+('altitude_text_color', '', '', '#26312d', 'string'),
 ('analytics', '', '', '', 'string'),
 ('privacy_erasure_delay', '', '', '30', 'int'),
 ('privacy_retention_backups', '', '', '0', 'int'),
@@ -425,7 +453,7 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('cookie_name', '', '', 'session', 'string'),
 ('copyright', '', '', 'Copyright {copyright} {year} {name}, tous droits r&eacute;serv&eacute;s &lt;div class=&quot;float-right&quot;&gt;Propuls&eacute; par {hiddencms}&lt;/div&gt;', 'string'),
 ('default_page', '', '', 'accueil', 'string'),
-('default_theme', '', '', 'azuro', 'string'),
+('default_theme', '', '', 'altitude', 'string'),
 ('description', '', '', 'HiddenCMS', 'string'),
 ('favicon', '', '', '0', 'int'),
 ('http_authentication', '', '', '0', 'bool'),
@@ -693,7 +721,7 @@ CREATE TABLE `widgets` (
   `settings` text,
   PRIMARY KEY (`widget_id`),
   KEY `widget_name` (`widget`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUES
 (1, 'navigation', 'index', NULL, '{"menu_id":1,"panel":0}'),
@@ -709,6 +737,11 @@ INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUE
 (13, 'module', 'index', NULL, NULL),
 (14, 'module', 'index', NULL, NULL),
 (15, 'module', 'index', NULL, NULL),
-(16, 'module', 'index', NULL, NULL);
+(16, 'module', 'index', NULL, NULL),
+(26, 'user', 'index_mini', NULL, NULL),
+(27, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"","color_description":""}'),
+(28, 'navigation', 'index', NULL, '{"links":[{"title":"Accueil","url":""}]}'),
+(29, 'header', 'index', NULL, '{"display":"title","align":"text-left","title":"","description":"","color_title":"#ffffff","color_description":"#ffffff"}'),
+(30, 'module', 'index', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

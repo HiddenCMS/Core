@@ -39,7 +39,7 @@ $this	->compact()
 				else
 				{
 					$this->session->login($user, in_array('on', $data['remember']));
-					refresh();
+					redirect();
 				}
 			}
 			else

@@ -18,35 +18,39 @@ body {
 	color: var(--admin-text);
 }
 
-.ui.input.color > .admin-color-picker {
-	position: absolute !important;
-	top: 50%;
-	left: .65rem;
-	z-index: 2;
-	width: 1.5rem !important;
-	height: 1.5rem !important;
+.ui.input.admin-color-field > .admin-color-picker {
+	position: relative;
+	z-index: 1;
+	flex: 0 0 3.25rem;
+	width: 3.25rem !important;
+	height: auto !important;
 	min-width: 0 !important;
-	padding: 0 !important;
-	border: 1px solid rgba(34, 36, 38, .18) !important;
-	border-radius: 4px !important;
-	background: transparent !important;
+	min-height: 38px;
+	padding: .35rem !important;
+	border: 1px solid rgba(34, 36, 38, .15) !important;
+	border-right: 0 !important;
+	border-radius: .28571429rem 0 0 .28571429rem !important;
+	background-color: #f5f7f8;
 	box-shadow: none !important;
 	cursor: pointer;
-	transform: translateY(-50%);
 }
 
-.ui.input.color > .admin-color-picker::-webkit-color-swatch-wrapper {
-	padding: 2px;
+.ui.input.admin-color-field > input.color {
+	border-radius: 0 .28571429rem .28571429rem 0 !important;
 }
 
-.ui.input.color > .admin-color-picker::-webkit-color-swatch {
+.ui.input.admin-color-field > .admin-color-picker::-webkit-color-swatch-wrapper {
+	padding: 1px;
+}
+
+.ui.input.admin-color-field > .admin-color-picker::-webkit-color-swatch {
 	border: 0;
-	border-radius: 2px;
+	border-radius: 3px;
 }
 
-.ui.input.color > .admin-color-picker::-moz-color-swatch {
+.ui.input.admin-color-field > .admin-color-picker::-moz-color-swatch {
 	border: 0;
-	border-radius: 2px;
+	border-radius: 3px;
 }
 
 /* Shared labels still emit Bootstrap badge classes. */

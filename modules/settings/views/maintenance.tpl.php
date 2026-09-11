@@ -35,7 +35,7 @@
 			<?php endif ?>
 			<?php echo $this->user()
 				? '<a href="'.url('user/logout').'" class="maintenance-link">'.icon('fas fa-times').' '.$this->lang('Déconnexion').'</a>'
-				: '<a href="#" class="maintenance-link" data-modal-ajax="'.url('ajax/user/login').'">'.icon('fas fa-sign-in-alt').' '.$this->lang('Se connecter').'</a>' ?>
+				: '<a href="'.url('user/login').'" class="maintenance-link">'.icon('fas fa-sign-in-alt').' '.$this->lang('Se connecter').'</a>' ?>
 		</nav>
 	</header>
 

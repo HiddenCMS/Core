@@ -24,6 +24,10 @@ class User extends Module
 			'front'       => TRUE,
 			'routes'      => [
 				//Index
+				'login'                                      => 'login',
+				'register'                                   => 'register',
+				'lost-password'                              => 'lost_password_request',
+				'lost-password/{url_title}'                  => 'lost_password',
 				'sessions{pages}'                            => 'sessions',
 				'auth{pages}'                                => '_auth',
 				'sessions/delete/{key_id}'                   => '_session_delete',
@@ -35,8 +39,6 @@ class User extends Module
 				'messages/delete/{id}/{url_title}'           => '_messages_delete',
 				'{id}/{url_title}'                           => '_member',
 				'ajax/{id}/{url_title}'                      => '_member',
-				'ajax/lost-password/{url_title}'             => '_lost_password',
-
 				//Admin
 				'admin{pages}'                                   => 'index',
 				'admin/create'                                   => 'create',

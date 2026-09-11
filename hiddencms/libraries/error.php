@@ -42,8 +42,7 @@ class Error extends Library
 		{
 			throw HB()->___load('', 'exception', [function(){
 				header('HTTP/1.0 401 Unauthorized');
-				$this->session->append('modals', 'ajax/user/login');
-				redirect();
+				redirect('user/login');
 			}]);
 		}
 	}

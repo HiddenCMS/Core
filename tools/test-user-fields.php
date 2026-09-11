@@ -406,10 +406,7 @@ try
 		$assert(privacy_policy_url() === '', 'Unsafe page path is not linked');
 		$db->where('page_id', $page)->update('pages', ['name' => 'confidentialite-test']);
 		HB()->config->privacy_contact = 'privacy@example.test';
-		$registration = $module->controller('ajax')->register();
-		$modal_body = new ReflectionProperty($registration, '_body');
-		$modal_body->setAccessible(TRUE);
-		$html = (string)$modal_body->getValue($registration);
+		$html = (string)$module->controller('index')->register();
 		$assert(strpos($html, 'confidentialite-test') !== FALSE && strpos($html, 'mailto:privacy@example.test') !== FALSE, 'Registration includes privacy policy and contact without requiring consent');
 		$previous_admin = HB()->user->admin;
 		try

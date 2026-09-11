@@ -13,14 +13,14 @@ class Checker extends Controller
 	public function index($settings = [])
 	{
 		return [
-			'content' => $settings['content']
+			'content' => isset($settings['content']) ? trim($settings['content']) : ''
 		];
 	}
 
 	public function html($settings = [])
 	{
 		return [
-			'content' => $settings['content']
+			'content' => isset($settings['content']) ? $settings['content'] : ''
 		];
 	}
 }

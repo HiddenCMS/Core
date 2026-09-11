@@ -10,6 +10,30 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Checker extends Module_Checker
 {
+	public function login()
+	{
+		if ($this->user())
+		{
+			redirect();
+		}
+
+		return [];
+	}
+
+	public function register()
+	{
+		$this->error_if($this->user() || !$this->config->registration_status);
+
+		return [];
+	}
+
+	public function lost_password_request()
+	{
+		$this->error_if($this->user());
+
+		return [];
+	}
+
 	public function index()
 	{
 		$this->error->unconnected();

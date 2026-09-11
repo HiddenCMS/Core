@@ -15,6 +15,9 @@ abstract class Widget extends Addon
 	static public $core = [
 		'breadcrumb' => TRUE,
 		'html'       => TRUE,
+		'hero'       => TRUE,
+		'image'      => TRUE,
+		'media_text' => TRUE,
 		'members'    => TRUE,
 		'module'     => FALSE,
 		'navigation' => TRUE,

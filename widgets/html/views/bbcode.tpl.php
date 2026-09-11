@@ -1,15 +1,25 @@
-<textarea class="form-control editor" name="settings[content]" rows="6"><?php if (isset($content)) echo $content ?></textarea>
-<script type="text/javascript" src="<?php echo js('jquery.wysibb.min.js') ?>"></script>
-<script type="text/javascript" src="<?php echo js('jquery.wysibb.fr.js') ?>"></script>
+<div class="field">
+	<label for="widget-html-content"><?php echo $this->lang('Contenu') ?></label>
+	<textarea class="wysiwyg" id="widget-html-content" name="settings[content]" rows="12"><?php if (isset($content)) echo $content ?></textarea>
+</div>
+<script type="text/javascript" src="<?php echo js('form_tinymce.js') ?>"></script>
 <script type="text/javascript">
-	$(function(){
-		$('<link rel="stylesheet" href="<?php echo css('wbbtheme.css') ?>" type="text/css" media="screen" />').appendTo('head');
-		$('#live-editor-settings-form textarea.editor').wysibb({lang: "fr"});
+	(function(){
+		var initialize = function(){
+			window.HiddenCMS.initTinyMce($('#live-editor-settings-form'));
+		};
+
+		if (window.tinymce){
+			initialize();
+		}
+		else {
+			$.getScript('https://cdn.jsdelivr.net/npm/tinymce@6.8.5/tinymce.min.js', initialize);
+		}
 
 		$('#live-editor-settings-form').on('nf.live-editor-settings.submit', function(){
-			if ($('#live-editor-settings-form textarea.editor').length){
-				$('#live-editor-settings-form textarea.editor').sync();
+			if (window.tinymce){
+				tinymce.triggerSave();
 			}
 		});
-	});
+	})();
 </script>

@@ -10,8 +10,179 @@ use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Index extends Controller_Module
 {
+	public function login()
+	{
+		$authenticators = HB()->model2('addon')
+								->get('authenticator')
+								->filter(function($authenticator){
+									return $authenticator->is_setup();
+								})
+								->sort(function($a, $b){
+									return $a->settings()->order - $b->settings()->order;
+								});
+
+		$this	->title('Connexion')
+				->icon('fas fa-sign-in-alt')
+				->css('auth-page');
+
+		return $this->view('login', [
+			'form'           => $this->form2('login')->panel()->style('user-auth-form-panel'),
+			'authenticators' => $authenticators
+		]);
+	}
+
+	public function register()
+	{
+		$form = $this->form2(!empty($this->config->registration_charte) ? 'username password_required email custom_fields charte' : 'username password_required email custom_fields', $this->model2('user'))
+			->info(privacy_notice())
+			->compact()
+			->captcha(FALSE, 'register')
+			->success(function($user, $form){
+				if ($this->config->registration_validation)
+				{
+					$sent = $this->anti_flood()
+						->email
+						->to($user->email)
+						->subject('Validation de votre compte')
+						->message(function() use ($user){
+							return [
+								'content' => 'Bonjour '.$user->username.',<br /><br />Afin de valider votre inscription sur notre site web, merci de cliquer sur le bouton ci-dessous.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/validation/'.$user->token()).'">Valider mon compte</a></div>'
+							];
+						})
+						->send();
+
+					if (!$sent)
+					{
+						$form->error('Une erreur s\'est produite lors de l\'envoi du message');
+						return;
+					}
+
+					notify('Message envoyé');
+				}
+
+				try
+				{
+					$this->model('fields')->save_user($user, TRUE);
+				}
+				catch (\InvalidArgumentException $e)
+				{
+					$form->error($e->getMessage());
+					return;
+				}
+
+				if ($this->config->welcome && $this->config->welcome_user_id && !empty($this->config->welcome_title) && !empty($this->config->welcome_content))
+				{
+					$this->model('messages')->insert_message($user->username, $this->config->welcome_title, str_replace('[pseudo]', '@'.$user->username, $this->config->welcome_content), TRUE);
+				}
+
+				notify('Votre compte a bien été créé, bienvenue !');
+				$this->session->login($user);
+				redirect();
+			})
+			->panel()
+			->style('user-auth-form-panel');
+
+		return $this->_auth_page(
+			'Créer un compte',
+			'fas fa-user-plus',
+			'Rejoignez le site en quelques instants.',
+			$form,
+			[['url' => url('user/login'), 'title' => 'Déjà inscrit ? Se connecter']]
+		);
+	}
+
+	public function lost_password_request()
+	{
+		$form = $this->form2()
+			->compact()
+			->rule($this->form_email('email')->title('Adresse email')->required())
+			->success(function($data, $form){
+				$user = $this->db
+					->collection('user')
+					->where('deleted', FALSE)
+					->where('email', $data['email'])
+					->row();
+
+				if (!$user())
+				{
+					$form->error($this->lang('Adresse email introuvable'));
+					return;
+				}
+
+				$sent = $this->anti_flood()
+					->email
+					->to($data['email'])
+					->subject('Réinitialisation de mot de passe')
+					->message(function() use ($user){
+						return [
+							'content' => 'Bonjour '.$user->username.',<br /><br />Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/lost-password/'.$user->token()).'">'.$this->lang('Réinitialiser mon mot de passe').'</a></div>'
+						];
+					})
+					->send();
+
+				if (!$sent)
+				{
+					$form->error('Une erreur s\'est produite lors de l\'envoi du message');
+					return;
+				}
+
+				notify('Un lien de réinitialisation vous a été envoyé.');
+				redirect('user/login');
+			})
+			->panel()
+			->style('user-auth-form-panel');
+
+		return $this->_auth_page(
+			'Mot de passe oublié',
+			'fas fa-unlock-alt',
+			'Indiquez votre adresse email pour recevoir un lien de réinitialisation.',
+			$form,
+			[['url' => url('user/login'), 'title' => 'Retour à la connexion']]
+		);
+	}
+
+	public function lost_password($token)
+	{
+		$form = $this->form2('password_required')
+			->compact()
+			->success(function($data) use ($token){
+				$token->delete()
+					->user
+					->set_password($data['password'])
+					->update();
+
+				notify('Nouveau mot de passe enregistré');
+				$this->session->login($token->user);
+				redirect();
+			})
+			->panel()
+			->style('user-auth-form-panel');
+
+		return $this->_auth_page(
+			'Choisir un nouveau mot de passe',
+			'fas fa-key',
+			'Saisissez puis confirmez votre nouveau mot de passe.',
+			$form
+		);
+	}
+
+	private function _auth_page($title, $icon, $description, $form, array $links = [])
+	{
+		$this->title($title)->icon($icon)->css('auth-page');
+
+		return $this->view('auth', [
+			'title'       => $title,
+			'icon'        => $icon,
+			'description' => $description,
+			'form'        => $form,
+			'links'       => $links
+		]);
+	}
+
 	public function index()
 	{
+		$this->css('front');
+
 		return $this->title('Mon activité')
 					->icon('far fa-star')
 					->row([
@@ -41,6 +212,8 @@ class Index extends Controller_Module
 
 	public function account($sessions)
 	{
+		$this->css('front');
+
 		$export = $this->form2('current_password', $this->user)
 			->info('Téléchargez une copie structurée des données associées à votre compte. Les fichiers dont vous êtes propriétaire sont inclus dans l\'archive. Les mots de passe, jetons et identifiants de session ne sont jamais exportés.')
 			->success(function(){
@@ -214,6 +387,8 @@ class Index extends Controller_Module
 
 	public function profile()
 	{
+		$this->css('front');
+
 		$this	->title('Profil')
 				->icon('fas fa-pencil-alt')
 				->breadcrumb();
@@ -246,6 +421,8 @@ class Index extends Controller_Module
 
 	public function sessions($sessions)
 	{
+		$this->css('front');
+
 		return $this->row([
 						$this->col(
 							$this	->panel()
@@ -343,12 +520,6 @@ class Index extends Controller_Module
 	public function _auth($auths)
 	{
 		return 'auth';
-	}
-
-	public function lost_password($token)
-	{
-		$this->session->append('modals', 'ajax/user/lost-password/'.$token->id);
-		redirect();
 	}
 
 	public function logout()
@@ -520,6 +691,8 @@ class Index extends Controller_Module
 
 	public function _member($user)
 	{
+		$this->css('front');
+
 		return $this->title($user->username)
 					->breadcrumb('Profil')
 					->breadcrumb($user->username)

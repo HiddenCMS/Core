@@ -6,15 +6,124 @@
 
 function user_agent($user_agent)
 {
-	if (!is_empty($user_agent))
+	$info = user_agent_info($user_agent);
+
+	return '<span class="user-agent-summary" title="'.utf8_htmlentities($user_agent ?: $info['device']).'">'
+		.'<span class="user-agent-browser">'.icon($info['browser_icon']).'<strong>'.$info['browser'].'</strong></span>'
+		.'<small>'.icon($info['os_icon']).$info['os'].' · '.icon($info['device_icon']).$info['device'].'</small>'
+		.'</span>';
+}
+
+function user_agent_info($user_agent)
+{
+	$user_agent = (string) $user_agent;
+	$browser = 'Navigateur inconnu';
+	$browser_icon = 'fas fa-question-circle';
+	$version = '';
+
+	$browsers = [
+		['#EdgA?/([\d\.]+)#i', 'Microsoft Edge', 'fab fa-edge'],
+		['#EdgiOS/([\d\.]+)#i', 'Microsoft Edge', 'fab fa-edge'],
+		['#OPR/([\d\.]+)#i', 'Opera', 'fab fa-opera'],
+		['#DuckDuckGo/([\d\.]+)#i', 'DuckDuckGo', 'fas fa-shield-alt'],
+		['#SamsungBrowser/([\d\.]+)#i', 'Samsung Internet', 'fab fa-android'],
+		['#HuaweiBrowser/([\d\.]+)#i', 'Huawei Browser', 'fas fa-globe'],
+		['#MiuiBrowser/([\d\.]+)#i', 'Mi Browser', 'fas fa-globe'],
+		['#UCBrowser/([\d\.]+)#i', 'UC Browser', 'fas fa-globe'],
+		['#YaBrowser/([\d\.]+)#i', 'Yandex Browser', 'fas fa-globe'],
+		['#Vivaldi/([\d\.]+)#i', 'Vivaldi', 'fas fa-globe'],
+		['#FxiOS/([\d\.]+)#i', 'Firefox', 'fab fa-firefox'],
+		['#Firefox/([\d\.]+)#i', 'Firefox', 'fab fa-firefox'],
+		['#CriOS/([\d\.]+)#i', 'Chrome', 'fab fa-chrome'],
+		['#Chrome/([\d\.]+)#i', 'Chrome', 'fab fa-chrome'],
+		['#Version/([\d\.]+).*Safari/#i', 'Safari', 'fab fa-safari'],
+		['#MSIE\s([\d\.]+)|Trident/.*rv:([\d\.]+)#i', 'Internet Explorer', 'fab fa-internet-explorer']
+	];
+
+	foreach ($browsers as [$pattern, $name, $icon_name])
 	{
-		HiddenCMS()->js('user-agent');
-		return '<img src="'.image('ajax-loader.gif').'" data-user-agent="'.$user_agent.'" alt="" />';
+		if (preg_match($pattern, $user_agent, $matches))
+		{
+			$browser = $name;
+			$browser_icon = $icon_name;
+			$version = $matches[1] ?? ($matches[2] ?? '');
+			break;
+		}
 	}
-	else
+
+	if ($version)
 	{
-		return '<img src="'.image('icons/user-silhouette-question.png').'" alt="" />';
+		$browser .= ' '.explode('.', $version)[0];
 	}
+
+	$os = 'Système inconnu';
+	$os_icon = 'fas fa-question-circle';
+	if (preg_match('#Windows NT ([\d\.]+)#i', $user_agent, $matches))
+	{
+		$versions = [
+			'10.0' => 'Windows 10/11',
+			'6.3'  => 'Windows 8.1',
+			'6.2'  => 'Windows 8',
+			'6.1'  => 'Windows 7'
+		];
+		$os = $versions[$matches[1]] ?? 'Windows';
+		$os_icon = 'fab fa-windows';
+	}
+	else if (preg_match('#CrOS\s[^\s]+\s([\d\.]+)#i', $user_agent))
+	{
+		$os = 'ChromeOS';
+		$os_icon = 'fab fa-chrome';
+	}
+	else if (stripos($user_agent, 'HarmonyOS') !== FALSE)
+	{
+		$os = 'HarmonyOS';
+		$os_icon = 'fas fa-mobile-alt';
+	}
+	else if (preg_match('#Android\s?([\d\.]*)#i', $user_agent, $matches))
+	{
+		$os = 'Android'.(!empty($matches[1]) ? ' '.explode('.', $matches[1])[0] : '');
+		$os_icon = 'fab fa-android';
+	}
+	else if (preg_match('#(?:iPhone )?OS ([\d_]+)#i', $user_agent, $matches))
+	{
+		$os = 'iOS '.explode('_', $matches[1])[0];
+		$os_icon = 'fab fa-apple';
+	}
+	else if (preg_match('#Mac OS X ([\d_]+)#i', $user_agent, $matches))
+	{
+		$os = 'macOS '.str_replace('_', '.', $matches[1]);
+		$os_icon = 'fab fa-apple';
+	}
+	else if (stripos($user_agent, 'Ubuntu') !== FALSE)
+	{
+		$os = 'Ubuntu';
+		$os_icon = 'fab fa-ubuntu';
+	}
+	else if (stripos($user_agent, 'Linux') !== FALSE)
+	{
+		$os = 'Linux';
+		$os_icon = 'fab fa-linux';
+	}
+
+	$device = 'Ordinateur';
+	$device_icon = 'fas fa-desktop';
+	if (preg_match('#iPad|Tablet|Nexus 7|Nexus 9|SM-T#i', $user_agent) || (stripos($user_agent, 'Android') !== FALSE && stripos($user_agent, 'Mobile') === FALSE))
+	{
+		$device = 'Tablette';
+		$device_icon = 'fas fa-tablet-alt';
+	}
+	else if (preg_match('#Mobile|iPhone|iPod|Android.*Mobile#i', $user_agent))
+	{
+		$device = 'Mobile';
+		$device_icon = 'fas fa-mobile-alt';
+	}
+	else if ($user_agent === '')
+	{
+		$device = 'Appareil inconnu';
+		$device_icon = 'fas fa-question-circle';
+	}
+
+	return compact('browser', 'browser_icon', 'os', 'os_icon', 'device', 'device_icon');
 }
 
 function is_crawler()

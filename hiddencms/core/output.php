@@ -86,6 +86,11 @@ class Output extends Core
 
 		$error = FALSE;
 
+		if (!$this->url->admin && !$this->url->ajax && !$this->url->cli)
+		{
+			$this->_theme = parent::theme($this->config->default_theme);
+		}
+
 		try
 		{
 			$exec = function(){

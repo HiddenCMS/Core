@@ -45,8 +45,9 @@ $rules = [
 					->size('col-6'),
 		$this->form_text('quote')
 					->title('Citation'),
-		$this->form_bbcode('signature')
+		$this->form_editor('signature')
 					->title('Signature')
+					->value(bbcode($this->model()->signature))
 					->rows(5)
 ];
 

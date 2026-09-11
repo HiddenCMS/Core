@@ -400,6 +400,24 @@ var modal_delete = function(message, callback){
 $(function(){
 	var $widgets = $('[data-mode="<?php echo \HB\HiddenCMS\Core\Output::WIDGETS ?>"]');
 	var $screen_picker = $('.live-editor-screen-picker');
+	var set_index = function($element, name, index){
+		$element.attr('data-'+name+'-id', index).data(name+'-id', index);
+	};
+	var reindex_rows = function($zone){
+		$zone.children('.live-editor-row').each(function(index){
+			set_index($(this).children('[data-row-id]').first(), 'row', index);
+		});
+	};
+	var reindex_cols = function($row){
+		$row.children('[data-col-id]').each(function(index){
+			set_index($(this), 'col', index);
+		});
+	};
+	var reindex_widgets = function($col){
+		$col.find('.live-editor-col:first').children('[data-widget-id]').each(function(index){
+			set_index($(this), 'widget', index);
+		});
+	};
 
 	if ($.fn.dropdown){
 		$('.live-editor-navbar .ui.dropdown').dropdown({
@@ -565,12 +583,15 @@ $(function(){
 				ui.placeholder.css('height', ui.item.height());
 			},
 			update: function(event, ui){
+				var $zone = $(this);
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/row-move') ?>', {
-					disposition_id: $(this).data('disposition-id'),
+					disposition_id: $zone.data('disposition-id'),
 					row_id: ui.item.find('.row:first').data('row-id'),
-					position: $(this).find('.live-editor-row').index(ui.item)
+					position: $zone.find('.live-editor-row').index(ui.item)
+				}).done(function(){
+					reindex_rows($zone);
 				}).always(function(){
 					$('.live-editor-save').hide();
 				});
@@ -601,14 +622,16 @@ $(function(){
 
 			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>ligne</b> ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> contenus seront également supprimés.') ?>', function(){
 				var $row = $this.parents('.live-editor-row-header:first').next('.row');
+				var $zone = $row.parents('[data-disposition-id]:first');
 
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/row-delete') ?>', {
-					disposition_id: $this.parents('[data-disposition-id]:first').data('disposition-id'),
+					disposition_id: $zone.data('disposition-id'),
 					row_id: $row.data('row-id')
 				}, function(){
 					$row.parents('.live-editor-row:first').remove();
+					reindex_rows($zone);
 				}).always(function(){
 					$('.live-editor-save').hide();
 				});
@@ -655,13 +678,16 @@ $(function(){
 				}
 			},
 			update: function(event, ui){
+				var $row = $(this);
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/col-move') ?>', {
-					disposition_id: $(this).parents('[data-disposition-id]:first').data('disposition-id'),
-					row_id: $(this).data('row-id'),
+					disposition_id: $row.parents('[data-disposition-id]:first').data('disposition-id'),
+					row_id: $row.data('row-id'),
 					col_id: ui.item.data('col-id'),
-					position: $(this).find('[data-col-id]').index(ui.item)
+					position: $row.find('[data-col-id]').index(ui.item)
+				}).done(function(){
+					reindex_cols($row);
 				}).always(function(){
 					$('.live-editor-save').hide();
 				});
@@ -700,6 +726,7 @@ $(function(){
 		$iframe.on('click', '.live-editor-col > .btn-group > .live-editor-delete', function(){
 			var $this = $(this);
 			var $col  = $(this).parents('[data-col-id]:first');
+			var $row  = $col.parent();
 
 			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>colonne</b> ?<br />Tous les <b>widgets</b> contenus seront également supprimés.') ?>', function(){
 				$('.live-editor-save').show();
@@ -710,6 +737,7 @@ $(function(){
 					col_id: $col.data('col-id')
 				}, function(){
 					$col.remove();
+					reindex_cols($row);
 				}).always(function(){
 					$('.live-editor-save').hide();
 				});
@@ -763,14 +791,17 @@ $(function(){
 				ui.placeholder.css('height', ui.item.height());
 			},
 			update: function(event, ui){
+				var $col = $(this);
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/widget-move') ?>', {
-					disposition_id: $(this).parents('[data-disposition-id]:first').data('disposition-id'),
-					row_id: $(this).parents('[data-row-id]:first').data('row-id'),
-					col_id: $(this).data('col-id'),
+					disposition_id: $col.parents('[data-disposition-id]:first').data('disposition-id'),
+					row_id: $col.parents('[data-row-id]:first').data('row-id'),
+					col_id: $col.data('col-id'),
 					widget_id: ui.item.data('widget-id'),
-					position: $(this).find('[data-widget-id]').index(ui.item)
+					position: $col.find('[data-widget-id]').index(ui.item)
+				}).done(function(){
+					reindex_widgets($col);
 				}).always(function(){
 					$('.live-editor-save').hide();
 				});
@@ -834,6 +865,7 @@ $(function(){
 		$iframe.on('click', '.live-editor-widget .live-editor-delete', function(){
 			var $this = $(this);
 			var $widget = $this.parents('[data-widget-id]:first');
+			var $col = $widget.parents('[data-col-id]:first');
 
 			//data doit être construit avant l'appel à la modal
 			var data  = {
@@ -848,6 +880,7 @@ $(function(){
 
 				$.post('<?php echo url('admin/ajax/live-editor/widget-delete') ?>', data, function(){
 					$widget.remove();
+					reindex_widgets($col);
 					$('.live-editor-save').hide();
 				});
 			});

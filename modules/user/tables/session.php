@@ -4,7 +4,7 @@
  * @author: Michaël BILCOT <michael.bilcot@neofr.ag>
  */
 
-$this	->col(function($session){
+$this	->col('Appareil', function($session){
 			return user_agent($session->data->session->user_agent);
 		})
 		->col('Adresse IP', function($session){

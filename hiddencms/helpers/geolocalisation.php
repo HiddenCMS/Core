@@ -8,11 +8,10 @@ function geolocalisation($address_ip)
 {
 	if (!is_empty($address_ip))
 	{
-		HiddenCMS()->js('geolocalisation');
-		return '<img src="'.image('ajax-loader.gif').'" style="margin-right: 10px;" data-geolocalisation="'.$address_ip.'" alt="" />';
+		return '<span class="session-network-icon" title="Adresse réseau">'.icon('fas fa-network-wired').'</span>';
 	}
 	else
 	{
-		return '<img src="'.image('icons/user-silhouette-question.png').'" alt="" />';
+		return '<span class="session-network-icon" title="Adresse inconnue">'.icon('fas fa-question-circle').'</span>';
 	}
 }

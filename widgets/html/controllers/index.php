@@ -12,7 +12,14 @@ class Index extends Controller_Widget
 {
 	public function index($settings = [])
 	{
-		return $this->panel()->body(bbcode($settings['content']));
+		$content = isset($settings['content']) ? $settings['content'] : '';
+
+		if (preg_match('/\[(b|i|u|s|url|img|list|quote|code)(=|\])/i', $content))
+		{
+			$content = bbcode($content);
+		}
+
+		return $this->panel()->body($content);
 	}
 
 	public function html($settings = [])
