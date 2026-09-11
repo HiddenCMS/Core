@@ -1,13 +1,5 @@
 <?php $settings = array_merge(['image_id' => 0, 'eyebrow' => '', 'heading' => '', 'content' => '', 'button' => '', 'link' => '', 'align' => 'left', 'height' => 'medium', 'overlay' => 'medium'], $settings); ?>
-<div class="field">
-	<label for="widget-hero-image"><?php echo $this->lang('Image de fond') ?></label>
-	<select class="ui fluid search selection dropdown" id="widget-hero-image" name="settings[image_id]">
-		<option value=""><?php echo $this->lang('Sans image') ?></option>
-		<?php foreach ($images as $id => $name): ?>
-		<option value="<?php echo $id ?>"<?php if ($settings['image_id'] == $id) echo ' selected="selected"' ?>><?php echo utf8_htmlentities($name) ?></option>
-		<?php endforeach ?>
-	</select>
-</div>
+<?php echo $image_field ?>
 <div class="field">
 	<label for="widget-hero-eyebrow"><?php echo $this->lang('Sur-titre') ?></label>
 	<input type="text" id="widget-hero-eyebrow" name="settings[eyebrow]" value="<?php echo $settings['eyebrow'] ?>" />

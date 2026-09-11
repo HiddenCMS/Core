@@ -1,6 +1,6 @@
 {
     "name": "hiddencms/core",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "description": "HiddenCMS core, forked from NeoFrag CMS",
     "type": "project",
     "license": "GPL-3.0-only",
@@ -25,7 +25,7 @@
         "scssphp/scssphp": "^2.0.1",
         "socialconnect/auth": "^3.0",
         "jdorn/sql-formatter": "dev-master",
-        "hiddencms/altitude": "^0.1"
+        "hiddencms/altitude": "^0.2"
     },
     "config": {
         "allow-plugins": {

@@ -1,6 +1,6 @@
 {
     "name": "hiddencms/core",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "schema": "0.3.8",
     "channel": "stable",
     "php": ">=8.1",

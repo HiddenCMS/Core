@@ -27,10 +27,35 @@ class Files extends Module
 				'HiddenCMS' => 'Alpha 0.2'
 			],
 			'routes'      => [
+				'admin/ajax/picker/upload' => 'picker_upload',
+				'admin/ajax/picker' => 'picker',
 				'{url_title}' => '_file',
 				'admin' => 'index'
 			]
 		];
+	}
+
+	public function picker_field($name, $file_id = 0, $label = 'Fichier', $accept = 'file', $empty_label = 'Aucun fichier sélectionné')
+	{
+		$file = [];
+
+		if ($file_id)
+		{
+			$file = $this->db->select('id', 'name', 'path')->from('file')->where('id', (int)$file_id)->row(FALSE);
+		}
+
+		$is_image = $file && in_array(strtolower(extension($file['path'])), ['avif', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp'], TRUE);
+		$url = $file ? url($file['path']) : '';
+
+		return $this->view('picker_field', [
+			'name'        => $name,
+			'label'       => $label,
+			'accept'      => $accept,
+			'empty_label' => $empty_label,
+			'file'        => $file,
+			'is_image'    => $is_image,
+			'url'         => $url
+		]);
 	}
 
 	public function permissions()

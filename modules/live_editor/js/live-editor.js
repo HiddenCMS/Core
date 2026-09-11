@@ -3,34 +3,101 @@ var modal_style = function(title, $element, styles, callback){
 		return;
 	}
 
-	var $modal = $('\
-		<div class="ui large modal live-editor-modal" role="dialog">\
-			<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
-			<div class="content">'+$(styles).html()+'</div>\
-			<div class="actions">\
-				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
-				<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>\
-			</div>\
-		</div>').appendTo('body').data('element', $element);
+	var $modal = $([
+		'<div class="ui large modal live-editor-modal" role="dialog">',
+			'<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="content">'+$(styles).html()+'</div>',
+			'<div class="actions">',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
+				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>',
+			'</div>',
+		'</div>'
+	].join('')).appendTo('body').data('element', $element);
 
 	var $widget = $element.parents('.live-editor-widget:first');
 	var original_style = $widget.length ? ($widget.data('widget-style') || '') : ($element.data('original-style') || '');
+	var original_classes = $.grep(String(original_style).split(/\s+/), function(value){
+		return value != '';
+	});
+	var modifier_styles = {};
 	var accepted = false;
 
 	$element.data('previous-style', original_style);
+	$modal.find('[data-style-modifier]').each(function(){
+		var $modifier = $(this);
+		var enabled = $.inArray($modifier.data('style-modifier'), original_classes) != -1;
+
+		if ($modifier.attr('data-style-modifier-inverted') == 'true'){
+			enabled = !enabled;
+		}
+
+		$modifier.prop('checked', enabled);
+		modifier_styles[$modifier.data('style-modifier')] = $.inArray($modifier.data('style-modifier'), original_classes) != -1;
+		original_classes = $.grep(original_classes, function(value){
+			return value != $modifier.data('style-modifier');
+		});
+	});
+
+	var original_base_style = original_classes.join(' ');
+	var selected_style = original_base_style;
+	var apply_style = function(previous_style, style){
+		$element.stop(true, true).removeClass(previous_style).addClass(style);
+	};
+	var current_style = function(){
+		var classes = $.grep(String(selected_style || '').split(/\s+/), function(value){
+			return value != '';
+		});
+
+		$.each(modifier_styles, function(modifier, enabled){
+			if (enabled){
+				classes.push(modifier);
+			}
+		});
+
+		return classes.join(' ');
+	};
 
 	$modal.find('[data-style]').each(function(){
-		if ($(this).data('style') == original_style){
+		if ($(this).data('style') == original_base_style){
 			$(this).addClass('active');
 			return false;
 		}
+	});
+
+	$modal.on('click', '.live-editor-overview:not(.active)', function(event){
+		event.preventDefault();
+		event.stopPropagation();
+
+		var previous_style = $element.data('previous-style');
+		selected_style = $(this).data('style') || '';
+		var style = current_style();
+
+		apply_style(previous_style, style);
+		$element.data('previous-style', style);
+		$modal.find('.live-editor-overview').removeClass('active');
+		$(this).addClass('active');
+	});
+	$modal.on('change', '[data-style-modifier]', function(){
+		var $modifier = $(this);
+		var previous_style = $element.data('previous-style');
+		var enabled = this.checked;
+
+		if ($modifier.attr('data-style-modifier-inverted') == 'true'){
+			enabled = !enabled;
+		}
+
+		modifier_styles[$modifier.data('style-modifier')] = enabled;
+		var style = current_style();
+
+		apply_style(previous_style, style);
+		$element.data('previous-style', style);
 	});
 
 	$modal.modal({
 		autofocus: false,
 		onHidden: function(){
 			if (!accepted && $element.data('previous-style') != original_style){
-				$element.switchClass($element.data('previous-style'), original_style, 200);
+				apply_style($element.data('previous-style'), original_style);
 			}
 			$modal.remove();
 		}
@@ -103,17 +170,18 @@ var modal_settings = function(title, settings, callback){
 		});
 	};
 
-	var $modal = $('\
-		<div class="ui large modal live-editor-modal" role="dialog">\
-			<div class="header"><?php echo icon('fas fa-cogs') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
-			<div class="content">'+settings+'</div>\
-			<div class="actions">\
-				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
-				<button type="button" class="ui button live-editor-previous"><?php echo icon('fas fa-chevron-left').' '.$this->lang('Précédent') ?></button>\
-				<button type="button" class="ui primary button live-editor-next"><?php echo $this->lang('Suivant').' '.icon('fas fa-chevron-right') ?></button>\
-				<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>\
-			</div>\
-		</div>').appendTo('body');
+	var $modal = $([
+		'<div class="ui large modal live-editor-modal" role="dialog">',
+			'<div class="header"><?php echo icon('fas fa-cogs') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="content">'+settings+'</div>',
+			'<div class="actions">',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
+				'<button type="button" class="ui button live-editor-previous"><?php echo icon('fas fa-chevron-left').' '.$this->lang('Précédent') ?></button>',
+				'<button type="button" class="ui primary button live-editor-next"><?php echo $this->lang('Suivant').' '.icon('fas fa-chevron-right') ?></button>',
+				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>',
+			'</div>',
+		'</div>'
+	].join('')).appendTo('body');
 
 	var step_order = ['widget', 'type', 'title', 'settings'];
 	var current_step = 'widget';
@@ -346,15 +414,16 @@ var modal_fork = function(callback){
 		return;
 	}
 
-	var $modal = $('\
-		<div class="ui small modal live-editor-modal" role="dialog">\
-			<div class="header"><?php echo $this->lang('Revenir à la disposition commune') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
-			<div class="content"><?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?></div>\
-			<div class="actions">\
-				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
-				<button type="button" class="ui negative button live-editor-confirm"><?php echo $this->lang('Continuer') ?></button>\
-			</div>\
-		</div>').appendTo('body');
+	var $modal = $([
+		'<div class="ui small modal live-editor-modal" role="dialog">',
+			'<div class="header"><?php echo $this->lang('Revenir à la disposition commune') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="content"><?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?></div>',
+			'<div class="actions">',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
+				'<button type="button" class="ui negative button live-editor-confirm"><?php echo $this->lang('Continuer') ?></button>',
+			'</div>',
+		'</div>'
+	].join('')).appendTo('body');
 
 	$modal.modal({
 		autofocus: false,
@@ -374,15 +443,16 @@ var modal_delete = function(message, callback){
 		return;
 	}
 
-	var $modal = $('\
-		<div class="ui small modal live-editor-modal" role="dialog">\
-			<div class="header"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>\
-			<div class="content">'+message+'</div>\
-			<div class="actions">\
-				<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>\
-				<button type="button" class="ui negative button live-editor-confirm"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Supprimer') ?></button>\
-			</div>\
-		</div>').appendTo('body');
+	var $modal = $([
+		'<div class="ui small modal live-editor-modal" role="dialog">',
+			'<div class="header"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="content">'+message+'</div>',
+			'<div class="actions">',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
+				'<button type="button" class="ui negative button live-editor-confirm"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Supprimer') ?></button>',
+			'</div>',
+		'</div>'
+	].join('')).appendTo('body');
 
 	$modal.modal({
 		autofocus: false,
@@ -464,15 +534,6 @@ $(function(){
 
 		$('input[type="hidden"][name="live_editor"]').val(mode);
 		$('form[target="live-editor-iframe"]').submit();
-	});
-
-	/* Styles Overview */
-	$('body').on('click', '.live-editor-overview:not(.active)', function(){
-		var $element = $(this).parents('.modal:first').data('element');
-		$element.switchClass($element.data('previous-style'), $(this).data('style'), 200);
-		$element.data('previous-style', $(this).data('style'));
-		$('.live-editor-overview').removeClass('active');
-		$(this).addClass('active');
 	});
 
 	$('.live-editor-iframe iframe').on('load', function(){

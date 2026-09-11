@@ -8,24 +8,11 @@ class Admin extends Controller
 {
 	public function index($settings = [])
 	{
+		$settings = array_merge(['image_id' => 0], $settings);
+
 		return $this->view('admin', [
-			'images'   => $this->images(),
+			'image_field' => $this->module('files')->picker_field('settings[image_id]', $settings['image_id'], 'Image', 'image', 'Aucune image sélectionnée'),
 			'settings' => $settings
 		]);
-	}
-
-	private function images()
-	{
-		$images = [];
-
-		foreach ($this->db->select('id', 'name', 'path')->from('file')->order_by('name')->get(FALSE) as $file)
-		{
-			if (in_array(strtolower(extension($file['path'])), ['avif', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp'], TRUE))
-			{
-				$images[$file['id']] = $file['name'];
-			}
-		}
-
-		return $images;
 	}
 }

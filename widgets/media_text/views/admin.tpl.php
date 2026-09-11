@@ -1,18 +1,8 @@
 <?php $settings = array_merge(['image_id' => 0, 'alt' => '', 'eyebrow' => '', 'heading' => '', 'content' => '', 'button' => '', 'link' => '', 'position' => 'left', 'align' => 'center'], $settings); ?>
-<div class="two fields">
-	<div class="field">
-		<label for="widget-media-text-image"><?php echo $this->lang('Image') ?></label>
-		<select class="ui fluid search selection dropdown" id="widget-media-text-image" name="settings[image_id]">
-			<option value=""><?php echo $this->lang('Choisir une image') ?></option>
-			<?php foreach ($images as $id => $name): ?>
-			<option value="<?php echo $id ?>"<?php if ($settings['image_id'] == $id) echo ' selected="selected"' ?>><?php echo utf8_htmlentities($name) ?></option>
-			<?php endforeach ?>
-		</select>
-	</div>
-	<div class="field">
-		<label for="widget-media-text-alt"><?php echo $this->lang('Texte alternatif') ?></label>
-		<input type="text" id="widget-media-text-alt" name="settings[alt]" value="<?php echo $settings['alt'] ?>" />
-	</div>
+<?php echo $image_field ?>
+<div class="field">
+	<label for="widget-media-text-alt"><?php echo $this->lang('Texte alternatif') ?></label>
+	<input type="text" id="widget-media-text-alt" name="settings[alt]" value="<?php echo $settings['alt'] ?>" />
 </div>
 <div class="two fields">
 	<div class="field">
@@ -55,6 +45,7 @@
 		</select>
 	</div>
 </div>
+<script type="text/javascript" src="<?php echo js('file_picker.js') ?>"></script>
 <script type="text/javascript" src="<?php echo js('form_tinymce.js') ?>"></script>
 <script type="text/javascript">
 	(function(){
