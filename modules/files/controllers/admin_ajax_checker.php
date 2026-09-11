@@ -15,4 +15,9 @@ class Admin_Ajax_Checker extends Module_Checker
 	{
 		return [];
 	}
+
+	public function picker_mkdir()
+	{
+		return [];
+	}
 }

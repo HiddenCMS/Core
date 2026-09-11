@@ -35,6 +35,7 @@ class Admin_Checker extends Module_Checker
 				$outline['title'],
 				$outline['theme'],
 				$outline['base'],
+				$outline['breadcrumb'],
 				$outline['enabled']
 			];
 		}

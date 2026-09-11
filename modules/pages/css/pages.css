@@ -1,3 +1,142 @@
+.pages-tree {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.pages-tree-root {
+	background: #f8f9fa;
+	padding: 10px;
+}
+
+.pages-tree-children {
+	border-left: 2px solid #dee2e6;
+	margin-left: 24px;
+	margin-top: 8px;
+	padding-left: 12px;
+}
+
+.pages-tree-item {
+	margin: 0 0 8px;
+}
+
+.pages-tree-item:last-child {
+	margin-bottom: 0;
+}
+
+.pages-tree-row {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dee2e6;
+	border-radius: .25rem;
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+	min-height: 48px;
+	padding: 8px 10px;
+}
+
+.pages-tree-main,
+.pages-tree-heading,
+.pages-tree-actions {
+	align-items: center;
+	display: flex;
+}
+
+.pages-tree-main {
+	gap: 10px;
+	min-width: 0;
+}
+
+.pages-tree-copy {
+	display: grid;
+	gap: 3px;
+	min-width: 0;
+}
+
+.pages-tree-heading {
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.pages-tree-title {
+	color: #212529;
+	font-weight: 600;
+}
+
+a.pages-tree-title:hover {
+	color: #17a2b8;
+}
+
+.pages-tree-path {
+	max-width: 420px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.pages-tree-subtitle {
+	color: #6c757d;
+	line-height: 1.25;
+}
+
+.pages-tree-status {
+	display: inline-flex;
+	font-size: 14px;
+	justify-content: center;
+	min-width: 16px;
+}
+
+.pages-tree-status.is-published {
+	color: #28a745;
+}
+
+.pages-tree-status.is-draft {
+	color: #6c757d;
+}
+
+.pages-tree-actions {
+	gap: 6px;
+	white-space: nowrap;
+}
+
+.pages-tree-actions .button,
+.pages-tree-actions .btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 26px;
+	min-width: 26px;
+	padding: 0;
+	width: 26px;
+}
+
+.pages-tree-actions .button .icon,
+.pages-tree-actions .button i,
+.pages-tree-actions .btn .icon,
+.pages-tree-actions .btn i {
+	font-size: 12px;
+	line-height: 1;
+	margin: 0 !important;
+}
+
+@media (max-width: 767px) {
+	.pages-tree-children {
+		margin-left: 12px;
+		padding-left: 8px;
+	}
+
+	.pages-tree-row {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.pages-tree-actions {
+		justify-content: flex-end;
+		width: 100%;
+	}
+}
+
 .pages-form-grid.ui.grid {
 	margin: 0 !important;
 }

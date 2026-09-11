@@ -125,7 +125,8 @@ INSERT INTO `core_migrations` (`migration`, `version`, `batch`, `applied_at`) VA
 ('0.3.1', '0.3.1', 1, NOW()),
 ('0.3.4', '0.3.1', 1, NOW()),
 ('0.3.7', '0.3.7', 1, NOW()),
-('0.3.8', '0.3.8', 1, NOW());
+('0.3.8', '0.3.8', 1, NOW()),
+('0.7.1', '0.7.1', 1, NOW());
 
 DROP TABLE IF EXISTS `user_field_value`;
 DROP TABLE IF EXISTS `user_field`;
@@ -313,6 +314,7 @@ CREATE TABLE `outlines` (
   `title` varchar(100) NOT NULL,
   `theme` varchar(100) NOT NULL,
   `base` enum('0','1') NOT NULL DEFAULT '0',
+  `breadcrumb` enum('0','1') NOT NULL DEFAULT '1',
   `enabled` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`outline_id`),
   UNIQUE KEY `name` (`name`),
@@ -321,8 +323,8 @@ CREATE TABLE `outlines` (
   KEY `enabled` (`enabled`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-INSERT INTO `outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `enabled`) VALUES
-(1, 'base', 'Base', 'altitude', '1', '1');
+INSERT INTO `outlines` (`outline_id`, `name`, `title`, `theme`, `base`, `breadcrumb`, `enabled`) VALUES
+(1, 'base', 'Base', 'altitude', '1', '1', '1');
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (

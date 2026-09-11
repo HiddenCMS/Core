@@ -14,7 +14,8 @@ var modal_style = function(title, $element, styles, callback){
 		'</div>'
 	].join('')).appendTo('body').data('element', $element);
 
-	var $widget = $element.parents('.live-editor-widget:first');
+	var $widget = $element.closest('.live-editor-widget');
+	var widget_helpers = ['no-padding', 'no-margin', 'parent-height', 'parent-width'];
 	var original_style = $widget.length ? ($widget.data('widget-style') || '') : ($element.data('original-style') || '');
 	var original_classes = $.grep(String(original_style).split(/\s+/), function(value){
 		return value != '';
@@ -42,6 +43,15 @@ var modal_style = function(title, $element, styles, callback){
 	var selected_style = original_base_style;
 	var apply_style = function(previous_style, style){
 		$element.stop(true, true).removeClass(previous_style).addClass(style);
+
+		if ($widget.length && !$element.is($widget)){
+			$widget.removeClass(widget_helpers.join(' '));
+			$.each(String(style || '').split(/\s+/), function(i, value){
+				if ($.inArray(value, widget_helpers) != -1){
+					$widget.addClass(value);
+				}
+			});
+		}
 	};
 	var current_style = function(){
 		var classes = $.grep(String(selected_style || '').split(/\s+/), function(value){
@@ -879,7 +889,13 @@ $(function(){
 				widget_id: $widget.data('widget-id')
 			};
 
-			modal_style('<?php echo $this->lang('Apparence du Widget') ?>', $widget.children('.card'), '.live-editor-styles-widget', function(style){
+			var $style_target = $widget.children('.card');
+
+			if (!$style_target.length){
+				$style_target = $widget;
+			}
+
+			modal_style('<?php echo $this->lang('Apparence du Widget') ?>', $style_target, '.live-editor-styles-widget', function(style){
 				$.extend(data, {
 					style: style
 				});

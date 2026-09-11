@@ -142,7 +142,7 @@ class Output extends Core
 					{
 						if (($reserved_module = $this->reserved_module($segments[0])) && $reserved_module->is_enabled())
 						{
-							if ($outline_id = (int)$reserved_module->settings()->get('outline_id'))
+							if ($outline_id = $this->reserved_outline_id($reserved_module, array_slice($segments, 1)))
 							{
 								$this->data->set('page', 'outline', $outline_id);
 							}
@@ -672,6 +672,54 @@ class Output extends Core
 		}
 
 		return NULL;
+	}
+
+	private function reserved_outline_id($module, array $segments)
+	{
+		$route = trim(implode('/', $segments), '/');
+		$route_outlines = $module->settings()->get('outline_routes');
+		$route_outlines = is_array($route_outlines) ? $route_outlines : [];
+		$matches = [];
+
+		foreach ($route_outlines as $pattern => $outline_id)
+		{
+			$pattern = trim((string)$pattern, '/');
+			$wildcard = substr($pattern, -2) === '/*';
+			$prefix = $wildcard ? substr($pattern, 0, -2) : $pattern;
+
+			if ((!$wildcard && $route === $prefix) || ($wildcard && $prefix !== '' && strpos($route, $prefix.'/') === 0))
+			{
+				$matches[strlen($prefix)] = (int)$outline_id;
+			}
+		}
+
+		if ($matches)
+		{
+			krsort($matches, SORT_NUMERIC);
+			return reset($matches);
+		}
+
+		return (int)$module->settings()->get('outline_id');
+	}
+
+	public function breadcrumb_enabled()
+	{
+		if (($module = @parent::module('outlines')) && $module->is_enabled())
+		{
+			$outline_id = (int)$this->data->get('page', 'outline');
+
+			if ($this->user->admin && $this->live_editor() && isset($_GET['outline_id']))
+			{
+				$outline_id = (int)$_GET['outline_id'];
+			}
+
+			if ($outline = $module->model2('outline')->get_outline($outline_id))
+			{
+				return !array_key_exists('breadcrumb', $outline) || (bool)$outline['breadcrumb'];
+			}
+		}
+
+		return TRUE;
 	}
 
 	public function json($data = NULL)

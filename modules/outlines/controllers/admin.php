@@ -96,6 +96,7 @@ class Admin extends Controller_Module
 						'themes'     => $this->outline_model()->get_themes(),
 						'reserved_routes' => $this->outline_model()->get_reserved_route_choices(),
 						'selected_reserved_routes' => [],
+						'breadcrumb' => TRUE,
 						'enabled'    => TRUE
 					])
 					->success(function($data, $form){
@@ -104,6 +105,7 @@ class Admin extends Controller_Module
 							trim((string)($data['title'] ?? '')),
 							trim((string)($data['theme'] ?? '')),
 							$this->checkbox_enabled($data['base'] ?? []),
+							$this->checkbox_enabled($data['breadcrumb'] ?? []),
 							$this->checkbox_enabled($data['enabled'] ?? [])
 						)))
 						{
@@ -122,7 +124,7 @@ class Admin extends Controller_Module
 					->heading($this->lang('Ajouter un outline'), 'fas fa-layer-group');
 	}
 
-	public function _edit($outline_id, $name, $title, $theme, $base, $enabled)
+	public function _edit($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled)
 	{
 		$this->subtitle($title);
 
@@ -135,6 +137,7 @@ class Admin extends Controller_Module
 						'reserved_routes' => $this->outline_model()->get_reserved_route_choices(),
 						'selected_reserved_routes' => $this->outline_model()->get_reserved_routes($outline_id),
 						'base'       => (bool)$base,
+						'breadcrumb' => (bool)$breadcrumb,
 						'enabled'    => (bool)$enabled
 					])
 					->success(function($data, $form) use ($outline_id){
@@ -144,6 +147,7 @@ class Admin extends Controller_Module
 							trim((string)($data['title'] ?? '')),
 							trim((string)($data['theme'] ?? '')),
 							$this->checkbox_enabled($data['base'] ?? []),
+							$this->checkbox_enabled($data['breadcrumb'] ?? []),
 							$this->checkbox_enabled($data['enabled'] ?? [])
 						);
 

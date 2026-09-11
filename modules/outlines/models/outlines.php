@@ -98,7 +98,7 @@ class Outlines extends Model
 		return $outline && url_title($outline['title']) == $title ? $outline : FALSE;
 	}
 
-	public function add_outline($name, $title, $theme, $base, $enabled)
+	public function add_outline($name, $title, $theme, $base, $breadcrumb, $enabled)
 	{
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
@@ -108,6 +108,7 @@ class Outlines extends Model
 			'title'   => $title,
 			'theme'   => $theme,
 			'base'    => $base,
+			'breadcrumb' => $breadcrumb,
 			'enabled' => $enabled
 		]);
 
@@ -127,7 +128,7 @@ class Outlines extends Model
 		return $outline_id;
 	}
 
-	public function edit_outline($outline_id, $name, $title, $theme, $base, $enabled)
+	public function edit_outline($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled)
 	{
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
@@ -138,6 +139,7 @@ class Outlines extends Model
 									'title'   => $title,
 									'theme'   => $theme,
 									'base'    => $base,
+									'breadcrumb' => $breadcrumb,
 									'enabled' => $enabled
 								]);
 
@@ -169,6 +171,7 @@ class Outlines extends Model
 			'title'   => $title,
 			'theme'   => $outline['theme'],
 			'base'    => FALSE,
+			'breadcrumb' => isset($outline['breadcrumb']) ? $outline['breadcrumb'] : TRUE,
 			'enabled' => TRUE
 		]);
 

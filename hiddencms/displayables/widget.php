@@ -117,7 +117,18 @@ class Widget extends Displayable
 				$name = $widget_data['widget'];
 			}
 
-			return '<div class="'.$type.' '.$type.'-'.$name.($this->_id !== NULL ? ' live-editor-widget" data-widget-id="'.$this->_id.'" data-widget-style="'.$this->_style.'" data-title="'.$$type->info()->title.'"' : '"').'>'.$output.'</div>';
+			$classes = [$type, $type.'-'.$name];
+			$helpers = ['no-padding', 'no-margin', 'parent-height', 'parent-width'];
+
+			foreach (preg_split('/\s+/', trim((string)$this->_style)) as $class)
+			{
+				if (in_array($class, $helpers, TRUE))
+				{
+					$classes[] = $class;
+				}
+			}
+
+			return '<div class="'.implode(' ', $classes).($this->_id !== NULL ? ' live-editor-widget" data-widget-id="'.$this->_id.'" data-widget-style="'.$this->_style.'" data-title="'.$$type->info()->title.'"' : '"').'>'.$output.'</div>';
 		}
 
 		return '';

@@ -49,6 +49,7 @@ class Index extends Controller_Widget
 				$link = array_merge([
 					'title'     => '',
 					'url'       => '',
+					'parent_url'=> '',
 					'icon'      => '',
 					'access'    => TRUE,
 					'target'    => '',
@@ -99,6 +100,11 @@ class Index extends Controller_Widget
 			{
 				if (is_array($item['url']))
 				{
+					if ($item['parent_url'] !== '' && $is_active($item['parent_url']))
+					{
+						$actives[] = $item['parent_url'];
+					}
+
 					$collect_actives($item['url']);
 				}
 				else if ($is_active($item['url']))
@@ -129,6 +135,11 @@ class Index extends Controller_Widget
 							else
 							{
 								$a->attr('href', is_array($item['url']) ? '#' : $link_href($item['url']));
+
+								if (is_array($item['url']) && $item['parent_url'] !== '')
+								{
+									$a->attr('data-parent-url', $link_href($item['parent_url']));
+								}
 
 								if (!empty($item['target']))
 								{
@@ -167,7 +178,7 @@ class Index extends Controller_Widget
 				if (is_array($item['url']))
 				{
 					list($children_html, $children_active) = $render_items($item['url'], $depth + 1);
-					$current_active = $children_active;
+					$current_active = $children_active || ($item['parent_url'] !== '' && $actives && $actives[0] == $item['parent_url']);
 				}
 				else if ($actives && $actives[0] == $item['url'])
 				{

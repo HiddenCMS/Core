@@ -22,6 +22,12 @@ class User extends Module
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'admin'       => FALSE,
 			'front'       => TRUE,
+			'outline_routes' => [
+				'login'           => 'Connexion',
+				'register'        => 'Inscription',
+				'lost-password'   => 'Mot de passe oublié',
+				'lost-password/*' => 'Réinitialisation du mot de passe'
+			],
 			'routes'      => [
 				//Index
 				'login'                                      => 'login',

@@ -654,6 +654,7 @@ class Menu extends Model2
 
 				if ($children_links)
 				{
+					$link['parent_url'] = $item['url'];
 					$link['url'] = $children_links;
 				}
 

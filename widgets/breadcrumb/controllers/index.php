@@ -12,6 +12,11 @@ class Index extends Controller_Widget
 {
 	public function index($config = [])
 	{
+		if (!$this->output->breadcrumb_enabled())
+		{
+			return '';
+		}
+
 		$links = $this->output->data->get('breadcrumb') ?: [];
 
 		if (empty($links) && $this->url->segments[0] == 'index')

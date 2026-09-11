@@ -20,6 +20,7 @@ class Outline extends Model2
 			'title'      => self::field()->text(100),
 			'theme'      => self::field()->text(100),
 			'base'       => self::field()->bool(),
+			'breadcrumb' => self::field()->bool(),
 			'enabled'    => self::field()->bool()
 		];
 	}
@@ -77,7 +78,16 @@ class Outline extends Model2
 		foreach ($this->reserved_modules() as $module)
 		{
 			$route = trim((string)$module->info()->reserved_route, '/');
-			$routes[$module->info()->name] = $module->info()->title.' (/'.$route.')';
+			$name = (string)$module->info()->name;
+			$title = (string)$module->info()->title;
+
+			$routes[$name] = $title.' - Toutes les pages (/'.$route.')';
+
+			foreach ($this->reserved_outline_routes($module) as $relative_route => $route_title)
+			{
+				$display_route = rtrim($route.'/'.$relative_route, '/');
+				$routes[$name.'/'.$relative_route] = $title.' - '.$route_title.' (/'.$display_route.')';
+			}
 		}
 
 		return $routes;
@@ -89,9 +99,22 @@ class Outline extends Model2
 
 		foreach ($this->reserved_modules() as $module)
 		{
+			$name = (string)$module->info()->name;
+
 			if ((int)$module->settings()->get('outline_id') === (int)$outline_id)
 			{
-				$routes[] = $module->info()->name;
+				$routes[] = $name;
+			}
+
+			$route_outlines = $module->settings()->get('outline_routes');
+			$route_outlines = is_array($route_outlines) ? $route_outlines : [];
+
+			foreach ($this->reserved_outline_routes($module) as $relative_route => $route_title)
+			{
+				if (isset($route_outlines[$relative_route]) && (int)$route_outlines[$relative_route] === (int)$outline_id)
+				{
+					$routes[] = $name.'/'.$relative_route;
+				}
 			}
 		}
 
@@ -106,21 +129,57 @@ class Outline extends Model2
 		{
 			$name = (string)$module->info()->name;
 			$current_outline_id = (int)$module->settings()->get('outline_id');
+			$route_outlines = $module->settings()->get('outline_routes');
+			$route_outlines = is_array($route_outlines) ? $route_outlines : [];
+			$changed = FALSE;
 
 			if (in_array($name, $routes, TRUE))
 			{
-				$module->__addon->data->set('outline_id', (int)$outline_id);
+				if ($current_outline_id !== (int)$outline_id)
+				{
+					$module->__addon->data->set('outline_id', (int)$outline_id);
+					$changed = TRUE;
+				}
 			}
 			else if ($current_outline_id === (int)$outline_id)
 			{
 				$module->__addon->data->destroy('outline_id');
-			}
-			else
-			{
-				continue;
+				$changed = TRUE;
 			}
 
-			$module->__addon->set('data', $module->__addon->data)->update();
+			foreach ($this->reserved_outline_routes($module) as $relative_route => $route_title)
+			{
+				$key = $name.'/'.$relative_route;
+				$current_route_outline_id = isset($route_outlines[$relative_route]) ? (int)$route_outlines[$relative_route] : 0;
+
+				if (in_array($key, $routes, TRUE))
+				{
+					if ($current_route_outline_id !== (int)$outline_id)
+					{
+						$route_outlines[$relative_route] = (int)$outline_id;
+						$changed = TRUE;
+					}
+				}
+				else if ($current_route_outline_id === (int)$outline_id)
+				{
+					unset($route_outlines[$relative_route]);
+					$changed = TRUE;
+				}
+			}
+
+			if ($changed)
+			{
+				if ($route_outlines)
+				{
+					$module->__addon->data->set('outline_routes', $route_outlines);
+				}
+				else
+				{
+					$module->__addon->data->destroy('outline_routes');
+				}
+
+				$module->__addon->set('data', $module->__addon->data)->update();
+			}
 		}
 
 		return $this;
@@ -181,7 +240,7 @@ class Outline extends Model2
 		return !$query->empty();
 	}
 
-	public function add_outline($name, $title, $theme, $base, $enabled)
+	public function add_outline($name, $title, $theme, $base, $breadcrumb, $enabled)
 	{
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
@@ -191,6 +250,7 @@ class Outline extends Model2
 			'title'   => $title,
 			'theme'   => $theme,
 			'base'    => $base,
+			'breadcrumb' => $breadcrumb,
 			'enabled' => $enabled
 		]);
 
@@ -210,7 +270,7 @@ class Outline extends Model2
 		return $outline_id;
 	}
 
-	public function edit_outline($outline_id, $name, $title, $theme, $base, $enabled)
+	public function edit_outline($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled)
 	{
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
@@ -221,6 +281,7 @@ class Outline extends Model2
 									'title'   => $title,
 									'theme'   => $theme,
 									'base'    => $base,
+									'breadcrumb' => $breadcrumb,
 									'enabled' => $enabled
 								]);
 
@@ -252,6 +313,7 @@ class Outline extends Model2
 			'title'   => $title,
 			'theme'   => $outline['theme'],
 			'base'    => FALSE,
+			'breadcrumb' => $outline['breadcrumb'],
 			'enabled' => TRUE
 		]);
 
@@ -433,6 +495,26 @@ class Outline extends Model2
 		}
 
 		return $modules;
+	}
+
+	private function reserved_outline_routes($module)
+	{
+		$routes = isset($module->info()->outline_routes) && is_array($module->info()->outline_routes)
+			? $module->info()->outline_routes
+			: [];
+		$result = [];
+
+		foreach ($routes as $route => $title)
+		{
+			$route = trim((string)$route, '/');
+
+			if ($route !== '' && is_string($title) && trim($title) !== '')
+			{
+				$result[$route] = trim($title);
+			}
+		}
+
+		return $result;
 	}
 
 	private function default_disposition($zone_title)

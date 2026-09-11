@@ -19,7 +19,7 @@
 				<?php echo $zone ?>
 			</div>
 		</div>
-		<?php if (!empty($this->url->request) && ($breadcrumb = $this->widget('breadcrumb'))): ?>
+		<?php if (!empty($this->url->request) && $this->output->breadcrumb_enabled() && ($breadcrumb = $this->widget('breadcrumb'))): ?>
 		<div class="header-breadcrumb azuro-bg-gradient text-white">
 			<div class="container">
 				<div class="row">

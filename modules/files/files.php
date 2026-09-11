@@ -27,6 +27,7 @@ class Files extends Module
 				'HiddenCMS' => 'Alpha 0.2'
 			],
 			'routes'      => [
+				'admin/ajax/picker/mkdir' => 'picker_mkdir',
 				'admin/ajax/picker/upload' => 'picker_upload',
 				'admin/ajax/picker' => 'picker',
 				'{url_title}' => '_file',

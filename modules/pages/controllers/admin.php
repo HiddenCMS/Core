@@ -12,66 +12,95 @@ class Admin extends Controller_Module
 {
 	public function index($pages)
 	{
-		$this	->table()
-				->add_columns([
-					[
-						'content' => function($data){
-							return $data['published'] ? '<i class="fas fa-circle" data-toggle="tooltip" title="'.$this->lang('Publiée').'" style="color: #7bbb17;"></i>' : '<i class="far fa-circle" data-toggle="tooltip" title="'.$this->lang('En attente de publication').'" style="color: #535353;"></i>';
-						},
-						'sort'    => function($data){
-							return $data['published'];
-						},
-						'size'    => TRUE
-					],
-					[
-						'title'   => $this->lang('Titre de la page'),
-						'content' => function($data){
-							return $data['published'] ? '<a href="'.url($data['path']).'">'.$data['title'].'</a><small class="ml-2">'.$data['subtitle'].'</small>' : $data['title'];
-						},
-						'sort'    => function($data){
-							return $data['title'];
-						},
-						'search'  => function($data){
-							return $data['title'];
-						}
-					],
-					[
-						'title'   => $this->lang('Chemin d\'accès'),
-						'content' => function($data){
-							return '<code>/'.$data['path'].'</code>';
-						},
-						'sort'    => function($data){
-							return $data['path'];
-						},
-						'search'  => function($data){
-							return $data['path'];
-						}
-					],
-					[
-						'content' => [
-							function($data){
-								return $data['published'] ? $this->button()->tooltip($this->lang('Voir la page'))->icon('far fa-eye')->url($data['path'])->color('secondary')->compact()->outline() : '';
-							},
-							function($data){
-								return $this->user->admin ? $this->button_access($data['page_id'], 'page') : NULL;
-							},
-							function($data){
-								return $this->is_authorized('modify_pages') ? $this->button_update('admin/pages/'.$data['page_id'].'/'.url_title($data['title'])) : NULL;
-							},
-							function($data){
-								return $this->is_authorized('delete_pages') ? $this->button_delete('admin/pages/delete/'.$data['page_id'].'/'.url_title($data['title'])) : NULL;
-							}
-						],
-						'size'    => TRUE
-					]
-				])
-				->data($pages)
-				->no_data($this->lang('Il n\'y a pas encore de page'));
+		$this->css('pages');
 
 		return $this->panel()
 					->heading($this->lang('Liste des pages'), 'fas fa-bars')
-					->body($this->table()->display())
+					->body($this->render_pages_tree($pages), FALSE)
 					->footer_if($this->is_authorized('add_pages'), $this->button_create('admin/pages/add', $this->lang('Créer une page')));
+	}
+
+	private function render_pages_tree($pages)
+	{
+		if (empty($pages))
+		{
+			return '<div class="table-empty">'.$this->lang('Il n\'y a pas encore de page').'</div>';
+		}
+
+		$children = [];
+
+		foreach ($pages as $page)
+		{
+			$parent_id = !empty($page['parent_id']) ? (int)$page['parent_id'] : 0;
+			$children[$parent_id][] = $page;
+		}
+
+		$render = function($parent_id = 0, $level = 0) use (&$render, $children){
+			if (empty($children[$parent_id]))
+			{
+				return '';
+			}
+
+			$html = '<ul class="pages-tree '.(!$level ? 'pages-tree-root' : 'pages-tree-children').'">';
+
+			foreach ($children[$parent_id] as $page)
+			{
+				$title = utf8_htmlentities(utf8_html_entity_decode($page['title'], ENT_QUOTES), ENT_QUOTES);
+				$subtitle = trim(utf8_html_entity_decode((string)$page['subtitle'], ENT_QUOTES));
+				$actions = [];
+
+				if ($page['published'])
+				{
+					$actions[] = $this->button()
+									->tooltip($this->lang('Voir la page'))
+									->icon('far fa-eye')
+									->url($page['path'])
+									->color('secondary')
+									->compact()
+									->outline();
+				}
+
+				if ($this->user->admin)
+				{
+					$actions[] = $this->button_access($page['page_id'], 'page');
+				}
+
+				if ($this->is_authorized('modify_pages'))
+				{
+					$actions[] = $this->button_update('admin/pages/'.$page['page_id'].'/'.url_title($page['title']));
+				}
+
+				if ($this->is_authorized('delete_pages'))
+				{
+					$actions[] = $this->button_delete('admin/pages/delete/'.$page['page_id'].'/'.url_title($page['title']));
+				}
+
+				$status_title = $page['published'] ? $this->lang('Publiée') : $this->lang('En attente de publication');
+				$status = '<i class="pages-tree-status '.($page['published'] ? 'fas fa-circle is-published' : 'far fa-circle is-draft').'" data-toggle="tooltip" title="'.$status_title.'" aria-label="'.$status_title.'"></i>';
+				$edit_url = 'admin/pages/'.$page['page_id'].'/'.url_title($page['title']);
+				$title_output = $this->is_authorized('modify_pages')
+					? '<a class="pages-tree-title" href="'.url($edit_url).'">'.$title.'</a>'
+					: '<span class="pages-tree-title">'.$title.'</span>';
+
+				$html .= '<li class="pages-tree-item">'
+						.'<div class="pages-tree-row">'
+							.'<div class="pages-tree-main">'
+								.$status
+								.'<div class="pages-tree-copy">'
+									.'<div class="pages-tree-heading">'.$title_output.'<code class="ui tiny label pages-tree-path">/'.utf8_htmlentities($page['path']).'</code></div>'
+									.($subtitle !== '' ? '<small class="pages-tree-subtitle">'.utf8_htmlentities($subtitle).'</small>' : '')
+								.'</div>'
+							.'</div>'
+							.'<div class="pages-tree-actions">'.implode('', array_filter($actions)).'</div>'
+						.'</div>'
+						.$render((int)$page['page_id'], $level + 1)
+					.'</li>';
+			}
+
+			return $html.'</ul>';
+		};
+
+		return $render();
 	}
 
 	public function add()

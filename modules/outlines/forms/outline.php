@@ -9,6 +9,7 @@ $themes = isset($model['themes']) && is_array($model['themes']) ? $model['themes
 $reserved_routes = isset($model['reserved_routes']) && is_array($model['reserved_routes']) ? $model['reserved_routes'] : [];
 $selected_reserved_routes = isset($model['selected_reserved_routes']) && is_array($model['selected_reserved_routes']) ? $model['selected_reserved_routes'] : [];
 $enabled_default = array_key_exists('enabled', $model) ? (bool)$model['enabled'] : TRUE;
+$breadcrumb_default = array_key_exists('breadcrumb', $model) ? (bool)$model['breadcrumb'] : TRUE;
 $base_default = !empty($model['base']);
 
 $this	->rule($this->form_text('title')
@@ -38,7 +39,7 @@ $this	->rule($this->form_text('title')
 		)
 		->rule($this->form_select('reserved_routes')
 					->title($this->lang('Routes réservées'))
-					->info($this->lang('Les routes sélectionnées utiliseront cet outline. Sans affectation, elles utilisent l\'outline de base.'))
+					->info($this->lang('Vous pouvez cibler un module entier ou l\'une de ses pages. Une page ciblée est prioritaire sur le module entier.'))
 					->data($reserved_routes)
 					->value($selected_reserved_routes)
 					->multiple()
@@ -49,6 +50,12 @@ $this	->rule($this->form_text('title')
 						'on' => $this->lang('Outline de base')
 					])
 					->value($base_default ? ['on'] : [])
+		)
+		->rule($this->form_checkbox('breadcrumb')
+					->data([
+						'on' => $this->lang('Afficher le fil d\'Ariane')
+					])
+					->value($breadcrumb_default ? ['on'] : [])
 		)
 		->rule($this->form_checkbox('enabled')
 					->data([
