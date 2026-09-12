@@ -13,6 +13,7 @@ if ($outline_id !== NULL)
 	$iframe_url .= (strpos($iframe_url, '?') === FALSE ? '?' : '&').'outline_id='.$outline_id;
 }
 ?>
+<input type="hidden" id="zone-classes-token" value="<?php echo utf8_htmlentities($this->form()->token('zone-classes')) ?>">
 <form target="live-editor-iframe" action="<?php echo $iframe_url ?>" method="post">
 	<input type="hidden" name="live_editor" value="<?php echo $live_editor ?>" />
 	<nav class="ui borderless menu live-editor-navbar">

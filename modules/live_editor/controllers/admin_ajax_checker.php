@@ -10,6 +10,11 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Ajax_Checker extends Module_Checker
 {
+	public function zone_classes()
+	{
+		if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !is_string(post('token')) || !hash_equals($this->form()->token('zone-classes'), post('token'))) { $this->error->unauthorized(); }
+		return $this->_check_disposition('disposition_id', 'classes');
+	}
 	public function zone_fork()
 	{
 		return $this->_check_disposition('disposition_id', 'url');

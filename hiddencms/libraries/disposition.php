@@ -15,14 +15,25 @@ class Disposition extends Library
 {
 	public function encode($disposition)
 	{
-		return json_encode($this->to_array($disposition), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+		$rows = $this->to_array($disposition);
+		if ($disposition instanceof Disposition_Rows && $classes = $this->normalize_classes($disposition->zone_classes))
+		{
+			$rows = ['zone_classes' => $classes, 'rows' => $rows];
+		}
+		return json_encode($rows, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+	}
+
+	public function normalize_classes($value)
+	{
+		$classes = preg_split('/\s+/', is_string($value) ? trim($value) : '');
+		return implode(' ', array_unique(array_filter($classes, function($class){ return strlen($class) <= 100 && preg_match('/^[a-zA-Z_][a-zA-Z0-9_-]*$/D', $class); })));
 	}
 
 	public function decode($disposition)
 	{
 		if (!$disposition)
 		{
-			return $this->array();
+			return new Disposition_Rows(HB());
 		}
 
 		$disposition = trim($disposition);
@@ -31,10 +42,13 @@ class Disposition extends Library
 
 		if (!is_array($rows))
 		{
-			return $this->array();
+			return new Disposition_Rows(HB());
 		}
 
-		return $this->from_array($rows);
+		$classes = isset($rows['rows']) ? $this->normalize_classes($rows['zone_classes'] ?? '') : '';
+		$result = $this->from_array(isset($rows['rows']) && is_array($rows['rows']) ? $rows['rows'] : $rows);
+		$result->zone_classes = $classes;
+		return $result;
 	}
 
 	public function to_array($disposition)
@@ -93,7 +107,7 @@ class Disposition extends Library
 
 	public function from_array($rows)
 	{
-		$disposition = $this->array();
+		$disposition = new Disposition_Rows(HB());
 
 		foreach ($rows as $row_data)
 		{
@@ -141,4 +155,10 @@ class Disposition extends Library
 
 		return $disposition;
 	}
+}
+
+// Zone metadata stays outside the iterable rows, so existing layout operations remain unchanged.
+class Disposition_Rows extends Array_
+{
+	public $zone_classes = '';
 }
