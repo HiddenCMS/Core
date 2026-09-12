@@ -165,7 +165,17 @@ class Addon_Packages extends Library
 	{
 		$package = $this->validate_package($package);
 
-		return $this->run_composer(['update', $package, '--with-dependencies']);
+		if (strpos($package, 'hiddencms/') === 0 && $this->development_constraint($this->package_constraint($package)))
+		{
+			$release = $this->stable_release($package);
+			if (!$release)
+			{
+				throw new RuntimeException('Aucune version stable compatible disponible pour '.$package.'.');
+			}
+			return $this->run_composer(['require', $package.':^'.ltrim($release, 'v'), '--with-all-dependencies', '--prefer-stable']);
+		}
+
+		return $this->run_composer(['update', $package, '--with-dependencies', '--prefer-stable']);
 	}
 
 	public function install_dependencies()
@@ -193,7 +203,7 @@ class Addon_Packages extends Library
 
 	public function outdated()
 	{
-		$output = $this->run_composer(['outdated', '--direct', '--format=json'], FALSE);
+		$output = $this->run_composer(['outdated', '--all', '--direct', '--format=json'], FALSE);
 		$start = strpos($output, '{');
 		$end = strrpos($output, '}');
 
@@ -206,19 +216,68 @@ class Addon_Packages extends Library
 
 		foreach (isset($data['installed']) && is_array($data['installed']) ? $data['installed'] : [] as $package)
 		{
-			if (!empty($package['name']))
+			if (!empty($package['name']) && strpos($package['name'], 'hiddencms/') === 0 && $package['name'] !== 'hiddencms/core')
 			{
+				$constraint = $this->package_constraint($package['name']);
+				$latest = $this->stable_release($package['name'], $this->development_constraint($constraint) ? NULL : $constraint);
+				$current = isset($package['version']) ? $package['version'] : '';
+				if (!$latest || (!$this->development_constraint($current) && version_compare(ltrim($latest, 'v'), ltrim($current, 'v'), '<=')))
+				{
+					continue;
+				}
 				$result[$package['name']] = [
 					'package' => $package['name'],
 					'current' => isset($package['version']) ? $package['version'] : NULL,
-					'latest'  => isset($package['latest']) ? $package['latest'] : NULL,
-					'status'  => isset($package['latest-status']) ? $package['latest-status'] : NULL,
+					'latest'  => $latest,
+					'status'  => 'update-possible',
 					'description' => isset($package['description']) ? $package['description'] : ''
 				];
 			}
 		}
 
 		return $result;
+	}
+
+	protected function package_constraint($package)
+	{
+		$manifest = json_decode(file_get_contents(HIDDENCMS_CMS.'/composer.json'), TRUE);
+		return isset($manifest['require'][$package]) ? $manifest['require'][$package] : NULL;
+	}
+
+	protected function development_constraint($constraint)
+	{
+		return is_string($constraint) && preg_match('/(?:^|[\s|])dev-|(?:^|[\s|])[^\s|]+-dev(?:$|[\s|])/', $constraint);
+	}
+
+	protected function stable_release($package, $constraint = NULL)
+	{
+		$data = $this->composer_json(['show', $package, '--all', '--format=json']);
+		$versions = array_filter(isset($data['versions']) ? $data['versions'] : [], function($version) use ($constraint){
+			return preg_match('/^v?\d+\.\d+\.\d+$/', $version) && (!$constraint || Semver::satisfies($version, $constraint));
+		});
+		usort($versions, function($a, $b){ return version_compare(ltrim($b, 'v'), ltrim($a, 'v')); });
+		foreach ($versions as $version)
+		{
+			$release = $this->composer_json(['show', $package, $version, '--all', '--format=json']);
+			if ($this->is_core_compatible(isset($release['requires']['hiddencms/core']) ? $release['requires']['hiddencms/core'] : NULL))
+			{
+				return $version;
+			}
+		}
+		return NULL;
+	}
+
+	protected function composer_json(array $arguments)
+	{
+		$output = $this->run_composer($arguments, FALSE);
+		$start = strpos($output, '{');
+		$end = strrpos($output, '}');
+		$data = $start !== FALSE && $end !== FALSE ? json_decode(substr($output, $start, $end - $start + 1), TRUE) : NULL;
+		if (!is_array($data))
+		{
+			throw new RuntimeException('Diagnostic Composer invalide.');
+		}
+		return $data;
 	}
 
 	public function compatibility()

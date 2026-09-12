@@ -12,8 +12,11 @@ class Index extends Controller_Module
 {
 	public function index()
 	{
-		return $this->form2('contact')
-					->panel();
+		$this->css('front');
+
+		return $this->view('index', [
+			'form' => $this->form2('contact')->panel()
+		]);
 	}
 }
 

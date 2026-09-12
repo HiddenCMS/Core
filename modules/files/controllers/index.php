@@ -30,8 +30,13 @@ class Index extends Controller_Module
 			$this->error();
 		}
 
-		$extension = extension($file->name);
+		$extension = strtolower(extension($file->name));
 		$mime = in_array($extension, ['bmp', 'css', 'eot', 'gif', 'jpeg', 'jpg', 'js', 'json', 'html', 'otf', 'png', 'svg', 'swf', 'ttf', 'woff', 'woff2', 'zip'], TRUE) ? get_mime_by_extension($extension) : 'application/octet-stream';
+
+		if ($extension === 'pdf' && (new \finfo(FILEINFO_MIME_TYPE))->file($full) === 'application/pdf')
+		{
+			$mime = 'application/pdf';
+		}
 
 		header('Content-Type: '.$mime);
 		header('Content-Length: '.filesize($full));
