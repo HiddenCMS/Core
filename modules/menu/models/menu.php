@@ -514,6 +514,11 @@ class Menu extends Model2
 				$urls[$base] = '['.$title.'] '.$title;
 			}
 
+			foreach (HiddenCMS()->module($name)->menu_links() as $path => $label)
+			{
+				$urls[$path] = (string)$label;
+			}
+
 			$modules[$name] = [
 				'title' => $title,
 				'base'  => $base

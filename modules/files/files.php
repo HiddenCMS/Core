@@ -59,6 +59,24 @@ class Files extends Module
 		]);
 	}
 
+	public function picker_directory_field($name, $path = '', $label = 'Dossier', $accept = 'gallery-image', $empty_label = 'Aucun dossier sélectionné')
+	{
+		$path = trim(str_replace('\\', '/', (string)$path), '/');
+		$selected = $path !== '';
+
+		return '<link rel="stylesheet" href="'.css('file_picker.css').'" />'
+			.'<script type="text/javascript" src="'.js('file_picker.js').'"></script>'
+			.'<div class="field files-picker-field" data-file-picker data-picker-mode="directory" data-accept="'.utf8_htmlentities($accept).'">'
+			.'<label>'.$this->lang($label).'</label>'
+			.'<input type="hidden" name="'.utf8_htmlentities($name).'" value="'.utf8_htmlentities($path).'" />'
+			.'<div class="files-picker-selection'.($selected ? ' has-file' : '').'">'
+			.'<div class="files-picker-selection-preview">'.icon('far fa-folder-open').'</div>'
+			.'<div class="files-picker-selection-details"><strong data-file-picker-name>'.($selected ? utf8_htmlentities($path) : $this->lang($empty_label)).'</strong><small>'.$this->lang('Les images JPEG et PNG de ce dossier alimenteront automatiquement la galerie.').'</small></div>'
+			.'<div class="files-picker-selection-actions"><button type="button" class="ui primary button" data-file-picker-open>'.icon('far fa-folder-open').' '.$this->lang('Parcourir').'</button>'
+			.'<button type="button" class="ui icon button" data-file-picker-clear title="'.$this->lang('Retirer').'" aria-label="'.$this->lang('Retirer').'"'.(!$selected ? ' style="display:none"' : '').'>'.icon('fas fa-times').'</button></div>'
+			.'</div></div>';
+	}
+
 	public function permissions()
 	{
 		return [

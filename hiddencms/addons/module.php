@@ -173,6 +173,11 @@ abstract class Module extends Addon
 		return FALSE;
 	}
 
+	public function menu_links()
+	{
+		return [];
+	}
+
 	/**
 	 * Return personal data owned by this module for a user export.
 	 *

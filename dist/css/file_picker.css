@@ -181,6 +181,17 @@
 	box-shadow: 0 0 0 2px rgba(0, 167, 189, .15);
 }
 
+.files-picker-card:disabled{
+	cursor: default;
+	opacity: .78;
+}
+
+.files-picker-card:disabled:hover{
+	border-color: #dfe5ea;
+	box-shadow: none;
+	transform: none;
+}
+
 .files-picker-card-preview{
 	display: flex;
 	align-items: center;

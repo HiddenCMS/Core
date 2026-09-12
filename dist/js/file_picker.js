@@ -30,13 +30,14 @@
 	};
 
 	var createModal = function(options){
-		var title = options.accept === 'image' ? 'Choisir une image' : 'Choisir un fichier';
+		var directoryMode = options.mode === 'directory';
+		var title = directoryMode ? 'Choisir un dossier' : (options.accept === 'image' || options.accept === 'gallery-image' ? 'Choisir une image' : 'Choisir un fichier');
 		var $modal = $('<div class="ui large modal files-picker-modal" role="dialog" aria-modal="true">'
 			+'<div class="header"><i class="far fa-folder-open icon"></i> '+title+'<i class="close icon" aria-label="Fermer"></i></div>'
 			+'<div class="content">'
 				+'<div class="files-picker-tools">'
 					+'<div class="ui icon fluid input files-picker-search"><input type="search" placeholder="Rechercher un fichier"><i class="search icon"></i></div>'
-					+'<input class="files-picker-upload-input" type="file"'+(options.accept === 'image' ? ' accept="image/*"' : '')+'>'
+					+'<input class="files-picker-upload-input" type="file" multiple'+(options.accept === 'gallery-image' ? ' accept=".jpg,.jpeg,.png,image/jpeg,image/png"' : (options.accept === 'image' ? ' accept="image/*"' : ''))+'>'
 					+'<button type="button" class="ui icon button files-picker-mkdir" title="Créer un dossier" aria-label="Créer un dossier"><i class="folder plus icon"></i></button>'
 					+'<button type="button" class="ui primary button files-picker-upload"><i class="upload icon"></i> Téléverser</button>'
 				+'</div>'
@@ -53,7 +54,7 @@
 			+'</div>'
 			+'<div class="actions">'
 				+'<button type="button" class="ui button cancel">Annuler</button>'
-				+'<button type="button" class="ui primary disabled button files-picker-confirm"><i class="check icon"></i> Choisir</button>'
+				+'<button type="button" class="ui primary disabled button files-picker-confirm"><i class="check icon"></i> '+(directoryMode ? 'Choisir ce dossier' : 'Choisir')+'</button>'
 			+'</div>'
 		+'</div>').appendTo('body');
 
@@ -93,9 +94,16 @@
 		};
 
 		var clearSelection = function(){
-			selected = null;
+			selected = directoryMode && currentDir ? {path: currentDir, name: currentDir} : null;
 			$current.empty();
-			$confirm.addClass('disabled');
+
+			if (directoryMode && selected){
+				$current.html('<span class="files-picker-current-preview"><i class="far fa-folder-open fa-fw icon"></i></span>'
+					+'<span><small>Dossier sélectionné</small><strong>'+escapeHtml(selected.name)+'</strong></span>');
+				$confirm.removeClass('disabled');
+			}else{
+				$confirm.addClass('disabled');
+			}
 		};
 
 		var renderBreadcrumbs = function(){
@@ -143,14 +151,20 @@
 			});
 
 			visibleFiles.forEach(function(file){
-				$('<button type="button" class="files-picker-card" aria-pressed="false"/>')
+				var $card = $('<button type="button" class="files-picker-card" aria-pressed="false"/>')
 					.attr('data-file-id', file.id)
 					.append('<span class="files-picker-card-preview">'+iconFor(file)+'</span>')
 					.append('<span class="files-picker-card-name">'+escapeHtml(file.name)+'</span>')
-					.append('<span class="files-picker-card-meta">'+escapeHtml([file.extension, file.size].filter(Boolean).join(' · '))+'</span>')
-					.on('click', function(){ select(file); })
-					.on('dblclick', function(){ select(file); choose(); })
-					.appendTo($grid);
+					.append('<span class="files-picker-card-meta">'+escapeHtml([file.extension, file.size].filter(Boolean).join(' · '))+'</span>');
+
+				if (!directoryMode){
+					$card.on('click', function(){ select(file); })
+						.on('dblclick', function(){ select(file); choose(); });
+				}else{
+					$card.prop('disabled', true).attr('aria-label', file.name+' (aperçu)');
+				}
+
+				$card.appendTo($grid);
 			});
 
 			$library.empty().append($grid);
@@ -178,8 +192,8 @@
 				url: endpoint(),
 				data: {
 					accept: options.accept,
-					dir: initial ? undefined : (dir || ''),
-					selected_id: initial ? options.selectedId : 0
+					dir: initial && !directoryMode ? undefined : (dir || ''),
+					selected_id: initial && !directoryMode ? options.selectedId : 0
 				},
 				dataType: 'json',
 				cache: false
@@ -263,14 +277,30 @@
 				return;
 			}
 
-			var data = new FormData();
-			data.append('file', this.files[0]);
-			data.append('accept', options.accept);
-			data.append('dir', currentDir);
+			var queue = Array.prototype.slice.call(this.files);
+			var uploadDir = currentDir;
+			var uploaded = 0;
+			var errors = [];
 			$upload.addClass('loading disabled');
-			setStatus('Téléversement en cours…');
+			$mkdir.addClass('disabled');
+			$confirm.addClass('disabled');
 
-			$.ajax({
+			var uploadNext = function(index){
+				if (index === queue.length){
+					$upload.removeClass('loading disabled');
+					$mkdir.removeClass('disabled');
+					$uploadInput.val('');
+					if (directoryMode){ clearSelection(); }
+					else if (selected){ $confirm.removeClass('disabled'); }
+					setStatus(uploaded+' fichier(s) ajouté(s).'+(errors.length ? ' '+errors.join(' ; ') : ''), errors.length ? 'error' : 'success');
+					return;
+				}
+				var data = new FormData();
+				data.append('file', queue[index]);
+				data.append('accept', options.accept);
+				data.append('dir', uploadDir);
+				setStatus('Téléversement '+(index + 1)+' / '+queue.length+'…');
+				$.ajax({
 				url: endpoint('upload'),
 				type: 'POST',
 				data: data,
@@ -279,22 +309,24 @@
 				dataType: 'json'
 			}).done(function(response){
 				if (response.error){
-					setStatus(response.error, 'error');
+					errors.push(queue[index].name+' : '+response.error);
 					return;
 				}
 
+				uploaded++;
+				if (currentDir !== uploadDir){ return; }
 				files.unshift(response.file);
 				$search.val('');
 				render();
-				select(response.file);
-				setStatus('Le fichier a été ajouté à la médiathèque.', 'success');
+				if (!directoryMode){ select(response.file); }
 			}).fail(function(xhr){
 				var response = xhr.responseJSON || {};
-				setStatus(response.error || 'Le téléversement a échoué.', 'error');
+				errors.push(queue[index].name+' : '+(response.error || 'Le téléversement a échoué.'));
 			}).always(function(){
-				$upload.removeClass('loading disabled');
-				$uploadInput.val('');
+				uploadNext(index + 1);
 			});
+			};
+			uploadNext(0);
 		});
 
 		$modal.modal({
@@ -305,11 +337,11 @@
 			onHidden: function(){ $modal.remove(); }
 		}).modal('show');
 
-		loadDirectory('', true);
+		loadDirectory(directoryMode ? options.selectedPath : '', true);
 	};
 
 	window.HiddenCMS.openFilePicker = function(options){
-		options = $.extend({accept: 'file', selectedId: 0, onSelect: $.noop}, options || {});
+		options = $.extend({accept: 'file', mode: 'file', selectedId: 0, selectedPath: '', onSelect: $.noop}, options || {});
 		createModal(options);
 	};
 
@@ -333,13 +365,16 @@
 			var emptyName = $name.text();
 
 			$field.on('click', '[data-file-picker-open]', function(){
+				var mode = $field.data('picker-mode') || 'file';
 				window.HiddenCMS.openFilePicker({
 					accept: $field.data('accept') || 'file',
+					mode: mode,
 					selectedId: $input.val(),
-					onSelect: function(file){
-						$input.val(file.id).trigger('change');
-						$name.text(file.name);
-						$preview.html(iconFor(file));
+					selectedPath: mode === 'directory' ? $input.val() : '',
+					onSelect: function(item){
+						$input.val(mode === 'directory' ? item.path : item.id).trigger('change');
+						$name.text(item.name);
+						$preview.html(mode === 'directory' ? '<i class="far fa-folder-open fa-fw icon"></i>' : iconFor(item));
 						$selection.addClass('has-file');
 						$clear.show();
 					}
@@ -349,7 +384,7 @@
 			$clear.on('click', function(){
 				$input.val('').trigger('change');
 				$name.text(emptyName);
-				$preview.html('<i class="far fa-image fa-fw icon"></i>');
+				$preview.html($field.data('picker-mode') === 'directory' ? '<i class="far fa-folder-open fa-fw icon"></i>' : '<i class="far fa-image fa-fw icon"></i>');
 				$selection.removeClass('has-file');
 				$clear.hide();
 			});

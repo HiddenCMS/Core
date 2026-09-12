@@ -10,7 +10,7 @@ class Admin_Ajax extends Controller_Module
 
 	public function picker()
 	{
-		$accept = isset($_GET['accept']) && $_GET['accept'] === 'image' ? 'image' : 'file';
+		$accept = isset($_GET['accept']) && in_array($_GET['accept'], ['image', 'gallery-image'], TRUE) ? $_GET['accept'] : 'file';
 		$selected_id = isset($_GET['selected_id']) ? (int)$_GET['selected_id'] : 0;
 		$dir = $this->normalize(isset($_GET['dir']) ? $_GET['dir'] : '');
 
@@ -57,7 +57,7 @@ class Admin_Ajax extends Controller_Module
 
 			$is_image = in_array(strtolower(extension($path)), $this->image_extensions, TRUE);
 
-			if ($accept === 'image' && !$is_image)
+			if (($accept === 'image' && !$is_image) || ($accept === 'gallery-image' && !in_array(strtolower(extension($path)), ['jpeg', 'jpg', 'png'], TRUE)))
 			{
 				continue;
 			}
@@ -95,12 +95,17 @@ class Admin_Ajax extends Controller_Module
 			return $this->json(['error' => 'Le dossier de destination est invalide.']);
 		}
 
-		$accept = post('accept') === 'image' ? 'image' : 'file';
+		$accept = in_array(post('accept'), ['image', 'gallery-image'], TRUE) ? post('accept') : 'file';
 		$extension = strtolower(extension($_FILES['file']['name']));
 
 		if ($accept === 'image' && !in_array($extension, $this->image_extensions, TRUE))
 		{
 			return $this->json(['error' => 'Veuillez choisir un fichier image.']);
+		}
+
+		if ($accept === 'gallery-image' && !in_array($extension, ['jpeg', 'jpg', 'png'], TRUE))
+		{
+			return $this->json(['error' => 'Veuillez choisir une image JPEG ou PNG.']);
 		}
 
 		if (!($file = HB()->model2('file')->static_uploaded_file($_FILES['file'], $this->upload_dir($dir))) || !$file->id)
