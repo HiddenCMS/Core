@@ -16,6 +16,7 @@ class Checker extends Controller
 		}
 
 		return [
+			'content_only' => !empty($settings['content_only']),
 			'image_id' => $image_id,
 			'alt'      => utf8_htmlentities(trim(isset($settings['alt']) ? $settings['alt'] : '')),
 			'caption'  => utf8_htmlentities(trim(isset($settings['caption']) ? $settings['caption'] : '')),

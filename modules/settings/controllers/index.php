@@ -19,6 +19,7 @@ class Index extends Controller_Module
 
 		return $this->title($this->config->maintenance_title ?: $this->lang('Site en maintenance'))
 					->css('maintenance')
+					->css('maintenance-layout')
 					->exec_if($this->config->maintenance_opening, function(){
 						$this	->css('jquery.countdown')
 								->js('jquery.countdown')

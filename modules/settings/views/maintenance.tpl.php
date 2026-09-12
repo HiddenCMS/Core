@@ -40,14 +40,16 @@
 	</header>
 
 	<main class="maintenance-content" role="main">
+		<div class="maintenance-status"><?php echo icon('fas fa-tools').' '.$this->lang('Maintenance en cours') ?></div>
 		<h1><?php echo utf8_htmlentities($this->config->maintenance_title ?: $this->lang('Site en maintenance')) ?></h1>
 		<?php if ($content = $this->config->maintenance_content): ?>
 			<div class="maintenance-message"><?php echo bbcode($content) ?></div>
 		<?php else: ?>
 			<p class="maintenance-message"><?php echo $this->lang('Nous effectuons actuellement une opération de maintenance. Le site sera de nouveau disponible prochainement.') ?></p>
 		<?php endif ?>
-		<?php if ($this->config->maintenance_opening): ?>
-			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $this->date($this->config->maintenance_opening)->timestamp() ?>"></div>
+		<?php if ($this->config->maintenance_opening && ($opening = $this->date($this->config->maintenance_opening))): ?>
+			<p class="maintenance-opening"><?php echo $this->lang('Retour pr&eacute;vu') ?> : <?php echo utf8_htmlentities($opening->format('d/m/Y H:i')) ?></p>
+			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $opening->timestamp() ?>"></div>
 		<?php endif ?>
 	</main>
 

@@ -169,6 +169,6 @@
 	document.addEventListener('visibilitychange', function () { if (!document.hidden) { state = read(); apply(); } });
 	new MutationObserver(function () { embeds(); banner.hidden = !!valid(state) || !required(); }).observe(document.body, { childList: true, subtree: true });
 	var fallback = document.getElementById('privacy-fallback');
-	fallback.hidden = !!document.querySelector('footer [data-privacy-open]');
+	fallback.hidden = !!document.querySelector('footer [data-privacy-open], [data-privacy-launcher]');
 	apply();
 }());

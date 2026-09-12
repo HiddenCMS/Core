@@ -32,5 +32,5 @@ $config = ['services' => $services, 'version' => hash('sha256', 'privacy-v1:'.js
 		<button type="button" class="privacy-button" data-privacy-choice="save">Enregistrer mes choix</button>
 	</footer>
 </dialog>
-<div class="privacy-fallback" id="privacy-fallback"><?php echo privacy_preferences_link() ?></div>
-<script src="<?php echo js('privacy.js') ?>" defer></script>
+<div class="privacy-fallback" id="privacy-fallback"><button type="button" class="privacy-preferences-link" data-privacy-open aria-label="G&eacute;rer mes cookies" title="G&eacute;rer mes cookies"><?php echo icon('fas fa-cookie-bite') ?></button></div>
+<script src="<?php echo js('privacy.js').'?v='.filemtime(__DIR__.'/../../../dist/js/privacy.js') ?>" defer></script>

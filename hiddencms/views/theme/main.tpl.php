@@ -7,7 +7,7 @@
 <?php if ($this->config->theme_color): ?>
 <meta name="theme-color" content="<?php echo $this->config->theme_color ?>">
 <?php endif ?>
-<link rel="stylesheet" href="<?php echo css('privacy.css') ?>">
+<link rel="stylesheet" href="<?php echo css('privacy.css').'?v='.filemtime(__DIR__.'/../../../dist/css/privacy.css') ?>">
 <?php if ($this->config->humans_txt): ?>
 <link rel="author" href="<?php echo url('humans.txt') ?>" type="text/plain">
 <?php endif ?>

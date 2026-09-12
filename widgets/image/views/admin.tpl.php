@@ -1,5 +1,12 @@
 <?php $settings = array_merge(['image_id' => 0, 'alt' => '', 'caption' => '', 'link' => '', 'ratio' => 'auto'], $settings); ?>
 <?php echo $image_field ?>
+<div class="field">
+	<div class="ui toggle checkbox">
+		<input type="hidden" name="settings[content_only]" value="0" />
+		<input type="checkbox" id="widget-image-content-only" name="settings[content_only]" value="1"<?php if (!empty($settings['content_only'])) echo ' checked="checked"' ?> />
+		<label for="widget-image-content-only"><?php echo $this->lang('Contenu seul (sans carte ni en-tête)') ?></label>
+	</div>
+</div>
 <div class="two fields">
 	<div class="field">
 		<label for="widget-image-alt"><?php echo $this->lang('Texte alternatif') ?></label>

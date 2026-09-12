@@ -1,1 +1,5 @@
 .hc-image{margin:0}.hc-image img{display:block;width:100%;height:auto}.hc-image--landscape img{aspect-ratio:16/9;object-fit:cover}.hc-image--square img{aspect-ratio:1;object-fit:cover}.hc-image--portrait img{aspect-ratio:4/5;object-fit:cover}.hc-image figcaption{padding:.65rem 0 0;color:inherit;font-size:.9em;opacity:.72}
+.widget-image.parent-height .hc-image{display:flex;flex-direction:column;height:100%;min-height:0}
+.widget-image.parent-height .hc-image > a{display:flex;flex:1;min-height:0}
+.widget-image.parent-height .hc-image img{flex:1;min-height:0;height:100%;aspect-ratio:auto;object-fit:contain}
+.widget-image.parent-width .hc-image{width:100%}

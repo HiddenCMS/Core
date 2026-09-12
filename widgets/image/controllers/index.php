@@ -17,10 +17,12 @@ class Index extends Controller_Widget
 
 		$this->css('image');
 
-		return $this->panel()->body($this->view('index', [
+		$content = $this->view('index', [
 			'image'    => $image,
 			'settings' => $settings
-		]));
+		]);
+
+		return !empty($settings['content_only']) ? $content : $this->panel()->body($content);
 	}
 
 	private function image($id)

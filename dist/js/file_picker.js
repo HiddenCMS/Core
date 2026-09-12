@@ -31,7 +31,7 @@
 
 	var createModal = function(options){
 		var directoryMode = options.mode === 'directory';
-		var title = directoryMode ? 'Choisir un dossier' : (options.accept === 'image' || options.accept === 'gallery-image' ? 'Choisir une image' : 'Choisir un fichier');
+		var title = directoryMode ? 'Choisir un dossier' : (options.accept === 'pdf' ? 'Choisir un PDF' : (options.accept === 'image' || options.accept === 'gallery-image' ? 'Choisir une image' : 'Choisir un fichier'));
 		var $modal = $('<div class="ui large modal files-picker-modal" role="dialog" aria-modal="true">'
 			+'<div class="header"><i class="far fa-folder-open icon"></i> '+title+'<i class="close icon" aria-label="Fermer"></i></div>'
 			+'<div class="content">'
@@ -67,6 +67,7 @@
 		var $search = $modal.find('.files-picker-search input');
 		var $upload = $modal.find('.files-picker-upload');
 		var $uploadInput = $modal.find('.files-picker-upload-input');
+		if (options.accept === 'pdf'){ $uploadInput.attr('accept', '.pdf,application/pdf'); }
 		var $mkdir = $modal.find('.files-picker-mkdir');
 		var $mkdirForm = $modal.find('.files-picker-mkdir-form');
 		var $mkdirInput = $mkdirForm.find('input[name="folder_name"]');
