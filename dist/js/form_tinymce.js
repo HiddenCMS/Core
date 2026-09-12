@@ -39,19 +39,11 @@ window.HiddenCMS.initTinyMce = function(context){
 			toolbar_mode: 'wrap',
 			image_caption: true,
 			image_advtab: true,
+			image_uploadtab: false,
 			browser_spellcheck: true,
 			autosave_ask_before_unload: true,
 			extended_valid_elements: 'iframe[src|title|width|height|style|loading|data-hb-pdf]',
 			convert_urls: false,
-			file_picker_types: 'file image media',
-			file_picker_callback: function(callback, value, meta){
-				window.HiddenCMS.openFilePicker({
-					accept: meta.filetype === 'image' ? 'image' : 'file',
-					onSelect: function(file){
-						callback(file.url, file.is_image ? {alt: file.name, title: file.name} : {text: file.name, title: file.name});
-					}
-				});
-			},
 			setup: function(editor){
 				var insertPdf = function(file){
 					editor.insertContent('<iframe data-hb-pdf="'+Number(file.id)+'" src="'+editor.dom.encode(file.url)+'" title="Lecteur PDF" width="100%" height="640" style="border:0" loading="lazy"></iframe><p><a href="'+editor.dom.encode(file.url)+'" target="_blank" rel="noopener noreferrer">Ouvrir le PDF</a></p>');
