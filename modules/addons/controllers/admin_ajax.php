@@ -36,7 +36,6 @@ class Admin_Ajax extends Controller_Module
 							$this->addon_packages->sync();
 
 							notify('Le paquet '.$package.' a été installé. Vous pouvez maintenant activer son addon.', 'success');
-							$this->modal->dispose();
 							refresh();
 						}
 						catch (Throwable $e)

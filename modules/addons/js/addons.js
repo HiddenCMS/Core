@@ -1,5 +1,19 @@
 $(function(){
 	var filters = {type: 'all', status: 'all'};
+	var storageKey = 'hiddencms:addons:filters';
+
+	try {
+		var saved = JSON.parse(sessionStorage.getItem(storageKey) || '{}');
+		$('.addons-filter').each(function(){
+			var group = $(this).data('filter-group');
+			$(this).find('[data-filter]').each(function(){
+				if (saved && $(this).data('filter') === saved[group]){
+					filters[group] = saved[group];
+					$(this).addClass('active').siblings().removeClass('active');
+				}
+			});
+		});
+	} catch (e){}
 
 	function applyFilters(){
 		$('.addon-card-wrapper').each(function(){
@@ -16,7 +30,12 @@ $(function(){
 		filters[group] = $button.data('filter');
 		$button.addClass('active').siblings().removeClass('active');
 		applyFilters();
+		try {
+			sessionStorage.setItem(storageKey, JSON.stringify(filters));
+		} catch (e){}
 	});
+
+	applyFilters();
 
 	if ($.fn.dropdown){
 		$('.addon-actions.ui.dropdown').dropdown({action: 'hide'});
