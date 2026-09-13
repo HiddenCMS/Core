@@ -99,6 +99,12 @@ function privacy_services($id = NULL, $definition = NULL)
 		'description' => 'Google Analytics mesure la fréquentation et les interactions sur ce site. Sans accord, aucune mesure Google Analytics n’est chargée.',
 		'hosts' => ['www.googletagmanager.com'], 'measurementId' => $analytics
 	];
+	$statistics = @HB()->module('statistics');
+	if (!HB()->url->admin && !HB()->user->admin && $statistics && $statistics->is_enabled() && (HB()->config->statistics_enabled ?? '1') === '1') $services['site_statistics'] = [
+		'title' => 'Statistiques du site',
+		'description' => 'Compteur local de visites et de pages vues. Aucune adresse IP, identité, URL privée ou donnée transmise à un tiers dans ces statistiques. Un identifiant de session haché change chaque jour et est supprimé après deux jours ; les compteurs agrégés sont conservés treize mois.',
+		'hosts' => [HB()->url->domain]
+	];
 	return array_merge($services, $addons);
 }
 
@@ -137,7 +143,7 @@ function privacy_media_html($html)
 			$host = strtolower((string)parse_url($src, PHP_URL_HOST));
 			foreach (privacy_services() as $service => $definition)
 			{
-				if ($service === 'analytics' || !in_array($host, $definition['hosts'], TRUE)) continue;
+				if (in_array($service, ['analytics', 'site_statistics'], TRUE) || !in_array($host, $definition['hosts'], TRUE)) continue;
 				if (strpos($src, 'http:') === 0) $src = 'https:'.substr($src, 5);
 				$placeholder = privacy_embed($service, $src, $frame->getAttribute('title'));
 				$fragment = new DOMDocument('1.0', 'UTF-8');

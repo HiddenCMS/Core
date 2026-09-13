@@ -10,12 +10,6 @@ use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
-	public function zone_classes($disposition_id, $disposition, $classes)
-	{
-		$disposition->zone_classes = $this->disposition->normalize_classes($classes);
-		$this->model()->set_disposition($disposition_id, $disposition);
-		$this->output->json(['classes' => $disposition->zone_classes]);
-	}
 	public function zone_fork($disposition_id, $disposition, $url, $theme, $page, $zone)
 	{
 		$url = ltrim(preg_replace('_^'.$this->url().'_', '', $url), '/');
@@ -221,5 +215,3 @@ class Admin_Ajax extends Controller_Module
 		$this->model()->set_disposition($disposition_id, $disposition);
 	}
 }
-
-

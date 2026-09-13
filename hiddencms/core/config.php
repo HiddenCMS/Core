@@ -150,7 +150,9 @@ class Config extends Core
 		});
 
 		$this->debug->bar('settings', function(){
-			return $this->_const;
+			$values = $this->_const;
+			if (isset($values['smtp_password'])) $values['smtp_password'] = '[redacted]';
+			return $values;
 		});
 	}
 

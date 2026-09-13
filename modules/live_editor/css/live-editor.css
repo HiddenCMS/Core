@@ -7,7 +7,6 @@ body {
 	margin: 0;
 }
 
-.live-editor-modal .zone-helper-option{display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer}
 .live-editor-modal.ui.modal > .header {
 	align-items: center;
 	border-bottom: 1px solid #e3e9ed;

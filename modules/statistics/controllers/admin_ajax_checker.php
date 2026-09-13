@@ -12,8 +12,10 @@ class Admin_Ajax_Checker extends Module_Checker
 {
 	public function index()
 	{
+		if (!$this->user->admin) return;
 		if ($check = post_check(['modules', 'start', 'end', 'period'], $this->form()->token('sq6fswkfb81n0lu4cb7eyb3tuixcovla')))
 		{
+			if (!is_string($check['start']) || !is_string($check['end']) || !is_string($check['period']) || !is_array($check['modules'])) return;
 			$this->extension('json');
 
 			$periods = [
@@ -26,6 +28,7 @@ class Admin_Ajax_Checker extends Module_Checker
 
 			$start = date_create_from_format('d/m/Y', $check['start']);
 			$end = date_create_from_format('d/m/Y', $check['end']);
+			if (!$start || !$end || !isset($periods[$check['period']]) || !is_array($check['modules']) || $end < $start || $end->getTimestamp() - $start->getTimestamp() > 366 * 86400) return;
 
 			$this->session	->set('statistics', 'period', $check['period'])
 							->set('statistics', 'start', $start->getTimestamp())

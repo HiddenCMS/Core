@@ -124,6 +124,54 @@ class Admin extends Controller_Module
 		});
 	}
 
+	public function smtp()
+	{
+		if (!$this->user->admin) return $this->error->unauthorized();
+		$this->subtitle('Envoi des emails')->icon('fas fa-envelope');
+		$model = $this->model('smtp');
+		$values = $model->values();
+		return $this->_layout(function($col) use ($model, $values){
+			$form = $this->form2();
+			$form->rule($this->form_select('smtp_enabled')->title('Mode d’envoi')->data(['0' => 'Mail PHP', '1' => 'SMTP'])->value((string)$values['enabled'])->check(function($post){
+				if (!in_array($post['smtp_enabled'] ?? '', ['0', '1'], TRUE)) return 'Mode invalide';
+			}));
+			$form->rule($this->form_text('smtp_host')->title('Serveur SMTP')->value($values['host'])->size('col-8')->check(function($post){
+				$host = $post['smtp_host'] ?? '';
+				if (($post['smtp_enabled'] ?? '') === '1' && $host === '') return 'Indiquez le serveur SMTP.';
+				if ($host !== '' && !filter_var($host, FILTER_VALIDATE_IP) && !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) return 'Serveur invalide : utilisez un nom de domaine ou une adresse IP.';
+			}));
+			$form->rule($this->form_number('smtp_port')->title('Port')->value($values['port'])->size('col-4')->check(function($post){
+				if (filter_var($post['smtp_port'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]) === FALSE) return 'Port entre 1 et 65535.';
+			}));
+			$form->rule($this->form_select('smtp_secure')->title('Chiffrement')->data(['tls' => 'STARTTLS (généralement 587)', 'ssl' => 'TLS implicite (généralement 465)', '' => 'Aucun'])->value($values['secure'])->check(function($post){
+				if (!in_array($post['smtp_secure'] ?? NULL, ['', 'tls', 'ssl'], TRUE)) return 'Chiffrement invalide';
+			}));
+			$form->rule($this->form_text('smtp_username')->title('Identifiant')->value($values['username'])->size('col-6'));
+			$password = $this->form_password('smtp_password')->title('Nouveau mot de passe')->placeholder('Laisser vide pour conserver le mot de passe')->size('col-6');
+			$password->check(function($post) use ($password){
+				$password->value('', TRUE);
+				if (!is_string($post['smtp_password'] ?? '')) return 'Mot de passe invalide';
+			});
+			$form->rule($password);
+			$form->rule($this->form_select('smtp_clear_password')->title('Mot de passe enregistré')->data(['0' => 'Conserver', '1' => 'Supprimer'])->value('0'));
+			$form->legend('Expéditeur');
+			$form->rule($this->form_email('smtp_from')->title('Adresse email')->value($values['from'])->placeholder($this->config->contact)->size('col-6'));
+			$form->rule($this->form_text('smtp_name')->title('Nom')->value($values['name'])->placeholder($this->config->name)->size('col-6'));
+			$col->append($form->success(function($data, $form) use ($model){
+				try { $model->save($data); notify('Configuration email enregistrée'); refresh(); }
+				catch (\Throwable $error) { $form->error('Impossible d’enregistrer la configuration SMTP.'); error_log('[SMTP] Configuration could not be saved.'); }
+			})->submit('Enregistrer')->panel()->title('Configuration email', 'fas fa-envelope'));
+			$test = $this->form2()->rule($this->form_email('smtp_test_recipient')->title('Destinataire')->required()->value($this->user->email));
+			$col->append($test->success(function($data, $form){
+				try {
+					$sent = $this->email->to(utf8_html_entity_decode($data['smtp_test_recipient']))->subject('Test email HiddenCMS')->message('default', ['content' => 'Ce message confirme le fonctionnement de l’envoi des emails de votre site.'])->send();
+					if ($sent) notify('Message accepté par le serveur d’envoi. Vérifiez la boîte de réception et les indésirables.');
+					else $form->error('Échec de l’envoi. Vérifiez le serveur, le port, le chiffrement et les identifiants.');
+				} catch (\Throwable $error) { $form->error('Échec de l’envoi. Vérifiez la configuration SMTP.'); error_log('[SMTP] Test email failed.'); }
+			})->submit('Envoyer un email de test')->panel()->title('Tester la configuration enregistrée', 'fas fa-paper-plane'));
+		});
+	}
+
 	public function registration()
 	{
 		$this	->subtitle('Inscriptions')
@@ -657,6 +705,9 @@ class Admin extends Controller_Module
 					->check(function($post){
 						if (!in_array((int)($post['privacy_erasure_delay'] ?? 0), \HB\Modules\User\Models\Privacy::ERASURE_DELAYS, TRUE)) return 'Délai invalide';
 					}));
+			$form->rule($this->form_select('statistics_enabled')->title('Statistiques locales du site')->data(['1' => 'Activées après accord du visiteur', '0' => 'Désactivées'])->value($this->config->statistics_enabled ?? '1')->check(function($post){
+				if (!in_array($post['statistics_enabled'] ?? NULL, ['0', '1'], TRUE)) return 'Choix invalide';
+			}));
 			$form->legend('Champs du profil');
 			foreach (privacy_profile_fields() as $field => $label)
 			{
@@ -690,7 +741,7 @@ class Admin extends Controller_Module
 					}));
 			}
 			$col->append($form->success(function($data){
-					foreach (['privacy_controller', 'privacy_contact', 'privacy_page', 'privacy_erasure_delay'] as $name) $this->config($name, $data[$name], $name === 'privacy_erasure_delay' ? 'int' : NULL);
+					foreach (['privacy_controller', 'privacy_contact', 'privacy_page', 'privacy_erasure_delay', 'statistics_enabled'] as $name) $this->config($name, $data[$name], $name === 'privacy_erasure_delay' ? 'int' : NULL);
 					foreach (array_keys(\HB\Modules\Settings\Models\Retention::POLICIES) as $name) $this->config($name, (int)$data[$name], 'int');
 					foreach (array_keys(privacy_profile_fields()) as $field)
 					{
@@ -759,6 +810,11 @@ class Admin extends Controller_Module
 					'title' => 'Identité du site',
 					'icon'  => 'fas fa-id-card',
 					'url'   => 'admin/settings/team'
+				],
+				[
+					'title' => 'Envoi des emails',
+					'icon'  => 'fas fa-envelope',
+					'url'   => 'admin/settings/smtp'
 				],
 				[
 					'title' => 'Inscriptions',

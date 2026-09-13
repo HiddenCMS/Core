@@ -98,6 +98,17 @@ class Core_Updater extends Library
 		return $this;
 	}
 
+	public function cached_status()
+	{
+		$cache = HIDDENCMS_CMS.'/cache/updates/status.json';
+		$data = is_file($cache) ? json_decode(file_get_contents($cache), TRUE) : NULL;
+		if (!is_array($data)) return NULL;
+		$data = $this->official_status($data);
+		$data['core']['current'] = HIDDENCMS_VERSION;
+		$data['core']['available'] = !empty($data['core']['latest']) && version_compare($data['core']['latest'], HIDDENCMS_VERSION, '>');
+		return $data;
+	}
+
 	protected function official_status(array $status)
 	{
 		$status['addons'] = array_filter(isset($status['addons']) && is_array($status['addons']) ? $status['addons'] : [], function($package){

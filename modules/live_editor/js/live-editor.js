@@ -586,32 +586,6 @@ $(function(){
 			return false;
 		});
 
-		$iframe.on('click', '.live-editor-zone-classes', function(){
-			if ($('.live-editor-modal').length) return;
-			var $zone = $(this).closest('[data-disposition-id]'), helpers = ['no-padding','no-margin','parent-height','parent-width'];
-			var classes = String($zone.attr('data-zone-classes') || '').split(/\s+/);
-			var $modal = $('<div class="ui small modal live-editor-modal"><div class="header">Classes CSS de la zone<i class="close icon"></i></div><div class="content"><div class="ui form"><div class="field zone-helpers"></div><div class="field"><label>Classes personnalisees</label><input type="text" name="zone_custom_classes"></div><div class="ui negative message" hidden></div></div></div><div class="actions"><button class="ui button cancel">Annuler</button><button class="ui primary button confirm">Enregistrer</button></div></div>').appendTo('body');
-			helpers.forEach(function(helper){
-				var $label = $('<label class="zone-helper-option"><input type="checkbox"> <span></span></label>');
-				$label.find('input').val(helper).prop('checked', $.inArray(helper,classes) !== -1);
-				$label.find('span').text(helper); $modal.find('.zone-helpers').append($label);
-			});
-			$modal.find('[name="zone_custom_classes"]').val(classes.filter(function(value){ return value && $.inArray(value,helpers) === -1; }).join(' '));
-			$modal.modal({autofocus:false,onHidden:function(){ $modal.remove(); }}).modal('show');
-			$modal.find('.confirm').on('click',function(){
-				var values = $modal.find('input:checked').map(function(){ return this.value; }).get();
-				values.push($modal.find('[name="zone_custom_classes"]').val());
-				var $button = $(this).prop('disabled',true).addClass('loading');
-				$.ajax({url:'<?php echo url('admin/ajax/live-editor/zone-classes') ?>',type:'POST',dataType:'json',data:{disposition_id:$zone.data('disposition-id'),classes:values.join(' '),token:$('#zone-classes-token').val()}})
-					.done(function(result){
-						if (!result || typeof result.classes !== 'string') { $modal.find('.negative.message').text('Enregistrement impossible.').prop('hidden',false); return; }
-						$modal.modal('hide'); $('form[target="live-editor-iframe"]').submit();
-					})
-					.fail(function(){ $modal.find('.negative.message').text('Enregistrement impossible. Reessayez.').prop('hidden',false); })
-					.always(function(){ $button.prop('disabled',false).removeClass('loading'); });
-			});
-		});
-
 		/* Zone Fork */
 		$iframe.on('click', '.live-editor-zone .live-editor-fork', function(){
 			var $this = $(this);
@@ -1004,5 +978,3 @@ $('[data-typer]').attr('data-typer', function(i, txt){
 		setTimeout(typeIt, ~~(Math.random() * (pauseMax - pauseMin + 1) + pauseMin));
 	}());
 });
-
-

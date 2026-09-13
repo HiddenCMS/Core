@@ -1,11 +1,11 @@
 <?php
 $services = privacy_services();
-$config = ['services' => $services, 'version' => hash('sha256', 'privacy-v1:'.json_encode($services))];
+$config = ['services' => $services, 'prompt' => !HB()->url->admin, 'version' => hash('sha256', 'privacy-v1:'.json_encode($services))];
 ?>
 <script type="application/json" id="privacy-config"><?php echo json_encode($config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
 <aside class="privacy-banner" id="privacy-banner" aria-labelledby="privacy-banner-title" hidden>
 	<div><strong id="privacy-banner-title">Votre confidentialit&eacute;</strong>
-	<p>Avec votre accord, ce site peut charger <?php echo isset($services['analytics']) ? 'Google Analytics pour mesurer la fr&eacute;quentation et ' : '' ?>des contenus externes (<?php echo utf8_htmlentities(implode(', ', array_column(array_filter($services, function($key){ return $key !== 'analytics'; }, ARRAY_FILTER_USE_KEY), 'title'))) ?>). Vous pouvez refuser et changer d&rsquo;avis &agrave; tout moment dans &laquo; G&eacute;rer mes cookies &raquo;.</p></div>
+	<p>Avec votre accord, ce site peut activer ces services optionnels : <?php echo utf8_htmlentities(implode(', ', array_column($services, 'title'))) ?>. Vous pouvez refuser et changer d&rsquo;avis &agrave; tout moment dans &laquo; G&eacute;rer mes cookies &raquo;.</p></div>
 	<div class="privacy-actions">
 		<button type="button" class="privacy-button" data-privacy-choice="reject">Tout refuser</button>
 		<button type="button" class="privacy-button" data-privacy-choice="accept">Tout accepter</button>
@@ -34,3 +34,7 @@ $config = ['services' => $services, 'version' => hash('sha256', 'privacy-v1:'.js
 </dialog>
 <div class="privacy-fallback" id="privacy-fallback"><button type="button" class="privacy-preferences-link" data-privacy-open aria-label="G&eacute;rer mes cookies" title="G&eacute;rer mes cookies"><?php echo icon('fas fa-cookie-bite') ?></button></div>
 <script src="<?php echo js('privacy.js').'?v='.filemtime(__DIR__.'/../../../dist/js/privacy.js') ?>" defer></script>
+<?php if (isset($services['site_statistics'])): ?>
+<script type="application/json" id="statistics-tracking-config"><?php echo json_encode(['url' => url('ajax/statistics/view.json'), 'token' => HB()->form()->token('statistics-view')], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
+<script src="<?php echo js('site-statistics.js').'?v='.filemtime(__DIR__.'/../../../dist/js/site-statistics.js'); ?>" defer></script>
+<?php endif; ?>

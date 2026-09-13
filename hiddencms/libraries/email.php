@@ -27,11 +27,14 @@ class Email extends Library
 	{
 		parent::__construct($caller);
 
-		$this->_config = array_merge_recursive([
+		$this->_config = array_replace_recursive([
 			'smtp' => []
 		], $config);
 
 		unset($this->_config['footer']);
+		if (isset($this->config->smtp_enabled)) {
+			$this->_config['smtp'] = array_replace($this->_config['smtp'], $this->module('settings')->model('smtp')->transport());
+		}
 
 		if (isset($config['footer']) && is_a($config['footer'], 'closure'))
 		{
@@ -157,23 +160,23 @@ class Email extends Library
 
 		$PHPMailer = new \PHPMailer\PHPMailer\PHPMailer;
 
-		$PHPMailer->SMTPDebug   = 2;
+		$PHPMailer->SMTPDebug   = 0;
 		$PHPMailer->Debugoutput = function($message) use (&$debug){
 			$debug[] = $message;
 		};
 
 		if (!empty($this->_config['smtp']['host']))
 		{
-			require_once 'lib/phpmailer/SMTP.php';
-
 			$PHPMailer->isSMTP();
+			$PHPMailer->Timeout = 15;
 
 			$PHPMailer->Host = $this->_config['smtp']['host'];
+			$PHPMailer->SMTPAutoTLS = !empty($this->_config['smtp']['secure']);
 
-			if ($PHPMailer->SMTPAuth = $this->_config['smtp']['username'] && $this->_config['smtp']['password'])
+			if ($PHPMailer->SMTPAuth = !empty($this->_config['smtp']['username']))
 			{
 				$PHPMailer->Username = $this->_config['smtp']['username'];
-				$PHPMailer->Password = $this->_config['smtp']['password'];
+				$PHPMailer->Password = $this->_config['smtp']['password'] ?? '';
 			}
 
 			if ($this->_config['smtp']['secure'])
@@ -192,8 +195,8 @@ class Email extends Library
 			call_user_func_array([$PHPMailer, 'AddReplyTo'], $this->_reply_to);
 		}
 
-		$PHPMailer->setFrom(strtolower($this->_from && array_key_exists(0, $this->_from) ? $this->_from[0] : $this->config->contact),
-							utf8_html_entity_decode($this->_from && array_key_exists(1, $this->_from) ? $this->_from[1] : $this->config->name),
+		$PHPMailer->setFrom(strtolower($this->_from && array_key_exists(0, $this->_from) ? $this->_from[0] : (($this->config->smtp_from ?? '') ?: $this->config->contact)),
+							utf8_html_entity_decode($this->_from && array_key_exists(1, $this->_from) ? $this->_from[1] : (($this->config->smtp_name ?? '') ?: $this->config->name)),
 							!ini_get('sendmail_from')
 		);
 
@@ -216,7 +219,7 @@ class Email extends Library
 
 		foreach (array_unique($this->_cc) as $to)
 		{
-			$mail->AddCC($to);
+			$PHPMailer->AddCC($to);
 		}
 
 		foreach (array_unique($this->_bcc) as $to)
@@ -249,10 +252,7 @@ class Email extends Library
 
 		if (!$sent)
 		{
-			foreach ($debug as $message)
-			{
-				trigger_error(utf8_string($message, is_windows() ? 'CP1252' : ''), E_USER_WARNING);
-			}
+			error_log('[Email] Sending failed. Check the email transport configuration.');
 		}
 
 		return $sent;

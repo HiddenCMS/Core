@@ -28,7 +28,7 @@
 	}
 	function allowed(id) { return !!(valid(state) && state.choices[id] === true && services[id]); }
 	function required() {
-		return !!services.analytics || !!document.querySelector('[data-privacy-service]');
+		return config.prompt !== false;
 	}
 	function inputs() {
 		dialog.querySelectorAll('[data-privacy-toggle]').forEach(function (input) { input.checked = allowed(input.dataset.privacyToggle); });
