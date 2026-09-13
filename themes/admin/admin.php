@@ -33,6 +33,7 @@ class Admin extends Theme
 				->css('icons/fontawesome.min')
 				->css('access-modal')
 				->css('fomantic-admin')
+				->css('sidebar')
 				->js('jquery-3.2.1.min')
 				->js('https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.4/dist/semantic.min.js')
 				->js('modal')

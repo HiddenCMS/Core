@@ -1,15 +1,17 @@
 <div class="wrapper">
 	<nav id="sidebar" class="ui vertical menu">
 		<div class="sidebar-header">
+			<button type="button" class="ui icon button sidebar-close" aria-label="Fermer le menu"><?php echo icon('fas fa-times') ?></button>
 			<a class="logo" href="<?php echo url('admin') ?>" aria-label="HiddenCMS">
 				<img src="<?php echo image('logo/hiddencms.svg') ?>" alt="HiddenCMS">
 			</a>
 		</div>
 		<?php echo $this->widget('navigation')->output('vertical', $this->__caller->data->get('sidebar')) ?>
 	</nav>
+	<button type="button" class="sidebar-backdrop" aria-label="Fermer le menu" tabindex="-1" hidden></button>
 	<div class="admin-content">
 		<nav id="topbar" class="ui top attached menu">
-			<button type="button" id="sidebarCollapse" class="ui icon button">
+			<button type="button" id="sidebarCollapse" class="ui icon button" aria-label="Replier le menu" aria-controls="sidebar" aria-expanded="true">
 				<?php echo icon('fas fa-bars') ?>
 			</button>
 			<div class="right menu">
