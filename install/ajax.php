@@ -113,68 +113,6 @@ if ($step == 'check')
 			];
 		};
 
-		$checks[] = function(){
-			$output = [];
-
-			$get = function($ssl = TRUE) use (&$output){
-				$ch = curl_init();
-
-				curl_setopt($ch, CURLOPT_URL, HIDDENCMS_VERSION_CHECK_URL.'?v=last&install='.urlencode(HIDDENCMS_VERSION));
-				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($ch, CURLOPT_REFERER, $_SERVER['HTTP_REFERER']);
-
-				if (!$ssl)
-				{
-					curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-				}
-
-				$content = json_decode(curl_exec($ch));
-
-				if ($content)
-				{
-					$version = isset($content->hiddencms) ? $content->hiddencms : (isset($content->HiddenCMS) ? $content->HiddenCMS : NULL);
-
-					if ($version && isset($version->version) && $version->version != HIDDENCMS_VERSION)
-					{
-						$output[] =[
-							'title' => 'HiddenCMS',
-							'info'  => [
-								lang('Last version') => $version->version
-							],
-							'icon'  => 'danger'
-						];
-					}
-				}
-
-				curl_close($ch);
-
-				return (bool)$content;
-			};
-
-			if ($get())
-			{
-				$icon = 'success';
-				$info = [lang('OK')];
-			}
-			else if ($get(FALSE))
-			{
-				$icon = 'warning';
-				$info = [lang('Missing SSL certificates')];
-			}
-			else
-			{
-				$icon = 'danger';
-				$info = [lang('Missing')];
-			}
-
-			return array_merge([[
-				'title' => lang('Check for updates'),
-				'info'  => $info,
-				'icon'  => $icon
-			]], $output);
-		};
 	}
 
 	$checks[] = function(){
