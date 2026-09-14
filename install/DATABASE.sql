@@ -46,7 +46,7 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (2, 1, 'access', '{"enabled":true}'),
 (3, 1, 'addons', '{"enabled":true}'),
 (4, 1, 'admin', '{"enabled":true}'),
-(5, 1, 'comments', '{"enabled":true}'),
+(5, 1, 'comments', '{"enabled":false}'),
 (6, 1, 'contact', '{"enabled":true}'),
 (7, 1, 'live_editor', '{"enabled":true}'),
 (10, 1, 'pages', '{"enabled":true}'),

@@ -126,7 +126,7 @@ abstract class Addon extends HiddenCMS implements \HB\HiddenCMS\Loadable
 
 	public function is_enabled()
 	{
-		return !$this->is_removable() || !empty($this->settings()->enabled);
+		return !$this->is_deactivatable() || !empty($this->settings()->enabled);
 	}
 
 	public function composer_package()

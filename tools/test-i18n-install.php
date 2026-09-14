@@ -26,6 +26,9 @@ $db->execute_checked('CREATE DATABASE '.$quote($temporary).' CHARACTER SET utf8m
 try {
     $db->execute_script('USE '.$quote($temporary)); $reset();
     $db->execute_script($sql);
+    $comments = json_decode($db->select('data')->from('addon')->where('name','comments')->where('type_id',1)->row(), TRUE);
+    if ($comments['enabled'] !== FALSE) throw new RuntimeException('Comments enabled on fresh installation');
+    echo "PASS comments disabled by default\n";
     $english = json_decode($db->select('data')->from('addon')->where('name','en')->row(), TRUE);
     $french = json_decode($db->select('data')->from('addon')->where('name','fr')->row(), TRUE);
     if (!$english['enabled'] || !$french['enabled'] || $english['order'] >= $french['order']) throw new RuntimeException('English is not the fresh-install default');

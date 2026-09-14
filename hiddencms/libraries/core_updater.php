@@ -824,7 +824,8 @@ class Core_Updater extends Library
 			throw new RuntimeException((string)$this->lang('The updated core Composer manifest is invalid.'));
 		}
 
-		$composer['require'] = array_merge(isset($composer['require']) && is_array($composer['require']) ? $composer['require'] : [], $requirements);
+		// Core-owned dependencies must use the incoming release constraints.
+		$composer['require'] = array_merge($requirements, isset($composer['require']) && is_array($composer['require']) ? $composer['require'] : []);
 		ksort($composer['require']);
 		$this->write_json($file, $composer);
 	}
