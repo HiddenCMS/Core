@@ -8,7 +8,7 @@ namespace HB\HiddenCMS\Actions;
 
 class Delete extends \HB\HiddenCMS\Action
 {
-	protected $_title = 'Supprimer';
+	protected $_title = 'Delete';
 	protected $_icon  = 'far fa-trash-alt';
 	protected $_color = 'danger';
 
@@ -24,7 +24,7 @@ class Delete extends \HB\HiddenCMS\Action
 
 	protected function message($model)
 	{
-		return $this->lang('Êtes-vous sûr.e de vouloir supprimer <b>%s</b> ?', $model);
+		return $this->lang('Are you sure you want to delete <b>%s</b>?', $model);
 	}
 }
 

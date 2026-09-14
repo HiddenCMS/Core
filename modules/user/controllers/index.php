@@ -21,7 +21,7 @@ class Index extends Controller_Module
 									return $a->settings()->order - $b->settings()->order;
 								});
 
-		$this	->title('Connexion')
+		$this	->title('Sign in')
 				->icon('fas fa-sign-in-alt')
 				->css('auth-page');
 
@@ -43,21 +43,21 @@ class Index extends Controller_Module
 					$sent = $this->anti_flood()
 						->email
 						->to($user->email)
-						->subject('Validation de votre compte')
+						->subject((string)$this->lang('Validate your account'))
 						->message(function() use ($user){
 							return [
-								'content' => 'Bonjour '.$user->username.',<br /><br />Afin de valider votre inscription sur notre site web, merci de cliquer sur le bouton ci-dessous.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/validation/'.$user->token()).'">Valider mon compte</a></div>'
+								'content' => $this->lang('Hello %s,<br /><br />To confirm your registration on our website, please click the button below.', utf8_htmlentities($user->username)).'<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/validation/'.$user->token()).'">'.$this->lang('Validate my account').'</a></div>'
 							];
 						})
 						->send();
 
 					if (!$sent)
 					{
-						$form->error('Une erreur s\'est produite lors de l\'envoi du message');
+						$form->error((string)$this->lang('An error occurred while sending the message'));
 						return;
 					}
 
-					notify('Message envoyé');
+					notify((string)$this->lang('Message sent'));
 				}
 
 				try
@@ -75,7 +75,7 @@ class Index extends Controller_Module
 					$this->model('messages')->insert_message($user->username, $this->config->welcome_title, str_replace('[pseudo]', '@'.$user->username, $this->config->welcome_content), TRUE);
 				}
 
-				notify('Votre compte a bien été créé, bienvenue !');
+				notify((string)$this->lang('Your account has been created. Welcome!'));
 				$this->session->login($user);
 				redirect();
 			})
@@ -83,11 +83,11 @@ class Index extends Controller_Module
 			->style('user-auth-form-panel');
 
 		return $this->_auth_page(
-			'Créer un compte',
+			(string)$this->lang('Create an account'),
 			'fas fa-user-plus',
-			'Rejoignez le site en quelques instants.',
+			(string)$this->lang('Join the site in a few moments.'),
 			$form,
-			[['url' => url('user/login'), 'title' => 'Déjà inscrit ? Se connecter']]
+			[['url' => url('user/login'), 'title' => (string)$this->lang('Already registered? Sign in')]]
 		);
 	}
 
@@ -95,7 +95,7 @@ class Index extends Controller_Module
 	{
 		$form = $this->form2()
 			->compact()
-			->rule($this->form_email('email')->title('Adresse email')->required())
+			->rule($this->form_email('email')->title('Email address')->required())
 			->success(function($data, $form){
 				$user = $this->db
 					->collection('user')
@@ -105,39 +105,39 @@ class Index extends Controller_Module
 
 				if (!$user())
 				{
-					$form->error($this->lang('Adresse email introuvable'));
+					$form->error($this->lang('Email address not found'));
 					return;
 				}
 
 				$sent = $this->anti_flood()
 					->email
 					->to($data['email'])
-					->subject('Réinitialisation de mot de passe')
+					->subject((string)$this->lang('Password reset'))
 					->message(function() use ($user){
 						return [
-							'content' => 'Bonjour '.$user->username.',<br /><br />Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/lost-password/'.$user->token()).'">'.$this->lang('Réinitialiser mon mot de passe').'</a></div>'
+							'content' => $this->lang('Hello %s,', utf8_htmlentities($user->username)).'<br /><br />'.$this->lang('You requested a password reset. Click the button below to choose a new password.').'<br /><br /><div class="text-center"><a class="btn btn-primary" href="'.url('user/lost-password/'.$user->token()).'">'.$this->lang('Reset my password').'</a></div>'
 						];
 					})
 					->send();
 
 				if (!$sent)
 				{
-					$form->error('Une erreur s\'est produite lors de l\'envoi du message');
+					$form->error((string)$this->lang('An error occurred while sending the message'));
 					return;
 				}
 
-				notify('Un lien de réinitialisation vous a été envoyé.');
+				notify((string)$this->lang('A password reset link has been sent to you.'));
 				redirect('user/login');
 			})
 			->panel()
 			->style('user-auth-form-panel');
 
 		return $this->_auth_page(
-			'Mot de passe oublié',
+			(string)$this->lang('Forgot your password?'),
 			'fas fa-unlock-alt',
-			'Indiquez votre adresse email pour recevoir un lien de réinitialisation.',
+			(string)$this->lang('Enter your email address to receive a reset link.'),
 			$form,
-			[['url' => url('user/login'), 'title' => 'Retour à la connexion']]
+			[['url' => url('user/login'), 'title' => (string)$this->lang('Back to sign-in')]]
 		);
 	}
 
@@ -151,7 +151,7 @@ class Index extends Controller_Module
 					->set_password($data['password'])
 					->update();
 
-				notify('Nouveau mot de passe enregistré');
+				notify((string)$this->lang('New password saved'));
 				$this->session->login($token->user);
 				redirect();
 			})
@@ -159,9 +159,9 @@ class Index extends Controller_Module
 			->style('user-auth-form-panel');
 
 		return $this->_auth_page(
-			'Choisir un nouveau mot de passe',
+			(string)$this->lang('Choose a new password'),
 			'fas fa-key',
-			'Saisissez puis confirmez votre nouveau mot de passe.',
+			(string)$this->lang('Enter and confirm your new password.'),
 			$form
 		);
 	}
@@ -183,7 +183,7 @@ class Index extends Controller_Module
 	{
 		$this->css('front');
 
-		return $this->title('Mon activité')
+		return $this->title((string)$this->lang('My activity'))
 					->icon('far fa-star')
 					->row([
 						$this->col(
@@ -215,7 +215,7 @@ class Index extends Controller_Module
 		$this->css('front');
 
 		$export = $this->form2('current_password', $this->user)
-			->info('Téléchargez une copie structurée des données associées à votre compte. Les fichiers dont vous êtes propriétaire sont inclus dans l\'archive. Les mots de passe, jetons et identifiants de session ne sont jamais exportés.')
+			->info((string)$this->lang('Download a structured copy of the data associated with your account. Files you own are included in the archive. Passwords, tokens and session identifiers are never exported.'))
 			->success(function(){
 				$file = $this->model('privacy')->archive($this->user);
 				$name = 'hiddencms-personal-data-'.date('Y-m-d').'.zip';
@@ -230,37 +230,37 @@ class Index extends Controller_Module
 				@unlink($file);
 				exit;
 			})
-			->submit('Télécharger mes données', 'primary')
+			->submit((string)$this->lang('Download my data'), 'primary')
 			->panel()
-			->title('Mes données personnelles', 'fas fa-file-archive');
+			->title((string)$this->lang('My personal data'), 'fas fa-file-archive');
 
 		$privacy = $this->model('privacy');
 		$request = $privacy->erasure_request($this->user);
 		if ($request && empty($request['completed_at']))
 		{
 			$erasure = $this->form2('current_password', $this->user)
-				->info('<div class="ui warning message"><div class="header">Demande enregistrée</div><p>Votre compte sera anonymisé à partir du <strong>'.date('d/m/Y à H:i', strtotime($request['execute_after'])).'</strong>. Vous pouvez annuler la demande jusque-là.</p></div>')
+				->info('<div class="ui warning message"><div class="header">'.$this->lang('Request registered').'</div><p>'.$this->lang('Your account will be anonymized from <strong>%s</strong>. You can cancel the request until then.', date('Y-m-d H:i', strtotime($request['execute_after']))).'</p></div>')
 				->success(function($user) use ($privacy){
 					$privacy->cancel_erasure($user);
-					notify('La demande de suppression a été annulée.', 'success');
+					notify((string)$this->lang('Your account deletion request has been cancelled.'), 'success');
 					refresh('user/account');
 				})
-				->submit('Annuler la demande', 'primary')
+				->submit((string)$this->lang('Cancel the request'), 'primary')
 				->panel()
-				->title('Supprimer mon compte', 'fas fa-user-times');
+				->title((string)$this->lang('Delete my account'), 'fas fa-user-times');
 		}
 		else
 		{
 			$erasure = $this->form2('current_password', $this->user)
-				->info('<div class="ui negative message"><div class="header">Suppression différée</div><p>Après le délai de rétractation, vos informations de compte, votre profil, vos connexions et vos fichiers personnels seront supprimés. Les contributions et messages nécessaires aux échanges resteront visibles sous le nom « Utilisateur supprimé ».</p></div>')
+				->info('<div class="ui negative message"><div class="header">'.$this->lang('Delayed deletion').'</div><p>'.$this->lang('After the cancellation period, your account information, profile, sign-ins and personal files will be deleted. Contributions and messages needed for discussions will remain visible under an anonymized name.').'</p></div>')
 				->rule($this->form_checkbox('confirm_erasure')->data([
-					'1' => 'Je comprends que cette opération deviendra irréversible à la fin du délai.'
+					'1' => (string)$this->lang('I understand that this operation will become irreversible after the waiting period.')
 				])->required()->inline(FALSE))
 				->success(function($user) use ($privacy){
 					try
 					{
 						$request = $privacy->request_erasure($user);
-						notify('Demande enregistrée. Vous pouvez l’annuler jusqu’au '.date('d/m/Y à H:i', strtotime($request['execute_after'])).'.', 'success');
+						notify((string)$this->lang('Request registered. You can cancel it until %s.', date('Y-m-d H:i', strtotime($request['execute_after']))), 'success');
 					}
 					catch (\Throwable $e)
 					{
@@ -268,9 +268,9 @@ class Index extends Controller_Module
 					}
 					refresh('user/account');
 				})
-				->submit('Demander la suppression', 'danger')
+				->submit((string)$this->lang('Request deletion'), 'danger')
 				->panel()
-				->title('Supprimer mon compte', 'fas fa-user-times');
+				->title((string)$this->lang('Delete my account'), 'fas fa-user-times');
 		}
 
 		return $this->row([
@@ -281,7 +281,7 @@ class Index extends Controller_Module
 							$this->_panel_navigation()
 						)->size('col-4'),
 						$this->col(
-							$this->title('Connexion')
+							$this->title('Sign in')
 								->icon('fas fa-sign-in-alt')
 								->breadcrumb()
 								->form2('username current_password new_password email', $this->user)
@@ -302,11 +302,11 @@ class Index extends Controller_Module
 
 									$user->update();
 
-									notify($this->lang('Informations modifiées'));
+									notify($this->lang('Account information updated'));
 
 									refresh();
 								})
-								->submit('Modifier')
+								->submit((string)$this->lang('Edit'))
 								->panel()
 								->title('Info de connexion'),
 							$export,
@@ -389,7 +389,7 @@ class Index extends Controller_Module
 	{
 		$this->css('front');
 
-		$this	->title('Profil')
+		$this	->title('Profile')
 				->icon('fas fa-pencil-alt')
 				->breadcrumb();
 
@@ -401,7 +401,7 @@ class Index extends Controller_Module
 								)
 								->append($this	->form2('profile_socials', $this->user->profile())
 												->panel()
-												->title('Liens', 'fas fa-globe')
+												->title('Links', 'fas fa-globe')
 								)
 								->append($this->model('fields')->profile_panel($this->user))
 				)
@@ -413,7 +413,7 @@ class Index extends Controller_Module
 								)
 								->append($this	->form2('cover', $this->user->profile())
 												->panel()
-												->title('Photo de couverture', 'far fa-image')
+												->title('Cover photo', 'far fa-image')
 								)
 				);
 		});
@@ -434,7 +434,7 @@ class Index extends Controller_Module
 							$this	->title('Historique des sessions')
 									->icon('fas fa-history')
 									->breadcrumb()
-									->table2('session_history', $sessions, 'Aucun historique')
+									->table2('session_history', $sessions, (string)$this->lang('No history'))
 									->panel()
 						)->size('col-8')
 					]);
@@ -442,9 +442,9 @@ class Index extends Controller_Module
 
 	public function _session_delete($session_id)
 	{
-		$this	->title($this->lang('Confirmation de suppression'))
+		$this	->title($this->lang('Confirm deletion'))
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la session de l\'utilisateur <b>%s</b> ?'));
+				->confirm_deletion($this->lang('Confirm deletion'), $this->lang('Are you sure you want to delete the session of the user <b>%s</b>?'));
 
 		if ($this->form()->is_valid())
 		{
@@ -491,6 +491,8 @@ class Index extends Controller_Module
 							->update();
 
 					$this->session->login($auth->user);
+					$this->url->redirect(user_login_destination());
+					return;
 				}
 			}
 			else if ($this->user())
@@ -502,13 +504,13 @@ class Index extends Controller_Module
 						->set_if($data['avatar'],   'avatar',   $data['avatar'])
 						->create();
 
-				notify($this->lang('Connexion établie via %s', $authenticator->info()->title));
+				notify($this->lang('Signed in using %s', $authenticator->info()->title));
 			}
 			else
 			{
 				$this->session->append('auth', 'providers', $authenticator->__addon->id.'-'.$data['id'], [$authenticator->__addon->id, $data]);
 
-				notify($this->lang('Compte %s inconnu', $authenticator->info()->title), 'danger');
+				notify($this->lang('Unknown %s account', $authenticator->info()->title), 'danger');
 			}
 
 			redirect();
@@ -553,12 +555,12 @@ class Index extends Controller_Module
 
 	public function _messages_inbox($messages)
 	{
-		return $this->_messages($messages, TRUE, 'Boîte de réception', 'fas fa-inbox');
+		return $this->_messages($messages, TRUE, (string)$this->lang('Inbox'), 'fas fa-inbox');
 	}
 
 	public function _messages_sent($messages)
 	{
-		return $this->_messages($messages, FALSE, 'Messages envoyés', 'far fa-paper-plane', 'sent');
+		return $this->_messages($messages, FALSE, (string)$this->lang('Sent messages'), 'far fa-paper-plane', 'sent');
 	}
 
 	public function _messages_archives($messages)
@@ -574,13 +576,13 @@ class Index extends Controller_Module
 
 		if ($box == 'inbox')
 		{
-			$page_title   = $this->lang('Boîte de réception');
+			$page_title   = $this->lang('Inbox');
 			$page_icon    = 'fas fa-inbox';
 			$allow_delete = TRUE;
 		}
 		else if ($box == 'sent')
 		{
-			$page_title = $this->lang('Messages envoyés');
+			$page_title = $this->lang('Sent messages');
 			$page_icon  = 'far fa-paper-plane';
 		}
 		else if ($box == 'archives')
@@ -597,7 +599,7 @@ class Index extends Controller_Module
 								]
 							])
 							->fast_mode(TRUE)
-							->add_submit('Envoyer le message')
+							->add_submit((string)$this->lang('Send message'))
 							->save();
 
 		if ($form_reply->is_valid($post))
@@ -624,7 +626,7 @@ class Index extends Controller_Module
 
 	public function _messages_compose($username)
 	{
-		$this	->title('Nouveau message privé')
+		$this	->title((string)$this->lang('New private message'))
 				->icon('far fa-envelope')
 				->breadcrumb()
 				->form()
@@ -639,7 +641,7 @@ class Index extends Controller_Module
 						'value'       => $username,
 						'type'        => 'text',
 						'rules'       => 'required',
-						'description' => 'Séparez plusieurs destinataires par un <b>;</b> <small>(point virgule)</small>'
+						'description' => (string)$this->lang('Separate multiple recipients with a <b>;</b> <small>(semicolon)</small>')
 					],
 					'message' => [
 						'label' => 'Mon message',
@@ -647,7 +649,7 @@ class Index extends Controller_Module
 						'rules' => 'required'
 					]
 				])
-				->add_submit('Envoyer');
+				->add_submit((string)$this->lang('Send'));
 
 		if ($this->form()->is_valid($post))
 		{
@@ -669,10 +671,10 @@ class Index extends Controller_Module
 
 	public function _messages_delete($message_id, $title)
 	{
-		$this	->title($this->lang('Suppression du message'))
+		$this	->title($this->lang('Delete message'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), 'Êtes-vous sûr(e) de vouloir supprimer le message <b>'.$title.'</b> ?');
+				->confirm_deletion($this->lang('Confirm deletion'), $this->lang('Are you sure you want to delete message <b>%s</b>?', utf8_htmlentities($title)));
 
 		if ($this->form()->is_valid())
 		{
@@ -739,22 +741,22 @@ class Index extends Controller_Module
 					'url'   => 'user/account'
 				],
 				[
-					'title' => 'Éditer mon profil',
+					'title' => (string)$this->lang('Edit my profile'),
 					'icon'  => 'fas fa-pencil-alt',
 					'url'   => 'user/profile'
 				],
 				[
-					'title' => 'Messagerie privée',
+					'title' => (string)$this->lang('Private messaging'),
 					'icon'  => 'far fa-envelope',
 					'url'   => 'user/messages'
 				],
 				[
-					'title' => 'Gérer mes sessions',
+					'title' => (string)$this->lang('Manage my sessions'),
 					'icon'  => 'fas fa-globe',
 					'url'   => 'user/sessions'
 				],
 				[
-					'title' => 'Déconnexion',
+					'title' => (string)$this->lang('Sign out'),
 					'icon'  => 'fas fa-times',
 					'url'   => 'user/logout'
 				]
@@ -809,7 +811,7 @@ class Index extends Controller_Module
 		}
 
 		return $this->panel()
-					->heading('Activité récente')
+					->heading((string)$this->lang('Recent activity'))
 					->body($this->view('activity', [
 						'user_activity' => $user_activity
 					]));

@@ -437,7 +437,7 @@ class Db extends Core
 	{
 		if (!$this->_driver('begin_transaction'))
 		{
-			throw new \RuntimeException('Impossible de démarrer la transaction SQL.');
+			throw new \RuntimeException((string)$this->lang('Could not start the SQL transaction.'));
 		}
 
 		return $this;
@@ -447,7 +447,7 @@ class Db extends Core
 	{
 		if (!$this->_driver('commit'))
 		{
-			throw new \RuntimeException('Impossible de valider la transaction SQL.');
+			throw new \RuntimeException((string)$this->lang('Could not commit the SQL transaction.'));
 		}
 
 		return $this;
@@ -457,7 +457,7 @@ class Db extends Core
 	{
 		if (!$this->_driver('rollback'))
 		{
-			throw new \RuntimeException('Impossible d\'annuler la transaction SQL.');
+			throw new \RuntimeException((string)$this->lang('Could not roll back the SQL transaction.'));
 		}
 
 		return $this;

@@ -64,9 +64,9 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (23, 3, 'search', '{"enabled":true}'),
 (24, 3, 'user', '{"enabled":true}'),
 (25, 4, 'de', '{"order":3,"enabled":true}'),
-(26, 4, 'en', '{"order":2,"enabled":true}'),
+(26, 4, 'en', '{"order":1,"enabled":true}'),
 (27, 4, 'es', '{"order":4,"enabled":true}'),
-(28, 4, 'fr', '{"order":1,"enabled":true}'),
+(28, 4, 'fr', '{"order":2,"enabled":true}'),
 (29, 4, 'it', '{"order":5,"enabled":true}'),
 (30, 4, 'pt', '{"order":6,"enabled":true}'),
 (31, 5, '_battle_net', '{"order":3,"enabled":false,"dev":{"id":"","secret":""},"prod":{"id":"","secret":""}}'),
@@ -87,6 +87,7 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (46, 3, 'image', '{"enabled":true}'),
 (47, 3, 'hero', '{"enabled":true}'),
 (48, 3, 'media_text', '{"enabled":true}'),
+(50, 3, 'language', '{"enabled":true}'),
 (49, 2, 'altitude', '{"enabled":true,"composer":{"package":"hiddencms/altitude","version":"0.1.0","class":"HB\\\\Themes\\\\Altitude\\\\Altitude","path":"themes/altitude"}}');
 
 DROP TABLE IF EXISTS `addon_type`;
@@ -340,7 +341,7 @@ CREATE TABLE `pages` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `pages` (`page_id`, `name`, `outline_id`, `published`) VALUES
-(1, 'accueil', 1, '1');
+(1, 'home', 1, '1');
 
 DROP TABLE IF EXISTS `pages_lang`;
 CREATE TABLE `pages_lang` (
@@ -355,6 +356,7 @@ CREATE TABLE `pages_lang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `pages_lang` (`page_id`, `lang`, `title`, `subtitle`, `content`) VALUES
+(1, 'en', 'Home', '', ''),
 (1, 'fr', 'Accueil', '', '');
 
 DROP TABLE IF EXISTS `pages_instances`;
@@ -453,8 +455,8 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('contact', '', '', 'noreply@hiddencms.local', 'string'),
 ('cookie_expire', '', '', '1 hour', 'string'),
 ('cookie_name', '', '', 'session', 'string'),
-('copyright', '', '', 'Copyright {copyright} {year} {name}, tous droits r&eacute;serv&eacute;s &lt;div class=&quot;float-right&quot;&gt;Propuls&eacute; par {hiddencms}&lt;/div&gt;', 'string'),
-('default_page', '', '', 'accueil', 'string'),
+('copyright', '', '', 'Copyright {copyright} {year} {name}, all rights reserved', 'string'),
+('default_page', '', '', 'home', 'string'),
 ('default_theme', '', '', 'altitude', 'string'),
 ('description', '', '', 'HiddenCMS', 'string'),
 ('favicon', '', '', '0', 'int'),
@@ -579,17 +581,17 @@ INSERT INTO `menus_items` (`item_id`, `menu_id`, `parent_id`, `title`, `url`, `t
 (2, 1, NULL, 'Twitter', '#', '_parent', 2, '1'),
 (3, 1, NULL, 'Origin', '#', '_parent', 3, '1'),
 (4, 1, NULL, 'Steam', '#', '_parent', 4, '1'),
-(5, 2, NULL, 'Accueil', '', '_parent', 1, '1'),
+(5, 2, NULL, 'Home', '', '_parent', 1, '1'),
 (6, 2, NULL, 'Forum', 'forum', '_parent', 2, '1'),
-(7, 2, NULL, 'Equipes', 'teams', '_parent', 3, '1'),
-(8, 2, NULL, 'Matchs', 'events/matches', '_parent', 4, '1'),
-(9, 2, NULL, 'Partenaires', 'partners', '_parent', 5, '1'),
-(10, 2, NULL, 'Palmares', 'awards', '_parent', 6, '1'),
-(12, 3, NULL, 'Membres', 'members', '_parent', 2, '1'),
-(13, 3, NULL, 'Recrutement', 'recruits', '_parent', 3, '1'),
+(7, 2, NULL, 'Teams', 'teams', '_parent', 3, '1'),
+(8, 2, NULL, 'Matches', 'events/matches', '_parent', 4, '1'),
+(9, 2, NULL, 'Partners', 'partners', '_parent', 5, '1'),
+(10, 2, NULL, 'Awards', 'awards', '_parent', 6, '1'),
+(12, 3, NULL, 'Members', 'members', '_parent', 2, '1'),
+(13, 3, NULL, 'Recruitment', 'recruits', '_parent', 3, '1'),
 (14, 3, NULL, 'Photos', 'gallery', '_parent', 4, '1'),
-(15, 3, NULL, 'Evenements', 'events', '_parent', 5, '1'),
-(16, 3, NULL, 'Rechercher', 'search', '_parent', 6, '1'),
+(15, 3, NULL, 'Events', 'events', '_parent', 5, '1'),
+(16, 3, NULL, 'Search', 'search', '_parent', 6, '1'),
 (17, 3, NULL, 'Contact', 'contact', '_parent', 7, '1');
 
 DROP TABLE IF EXISTS `user`;
@@ -751,7 +753,7 @@ INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUE
 (16, 'module', 'index', NULL, NULL),
 (26, 'user', 'index_mini', NULL, NULL),
 (27, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"","color_description":""}'),
-(28, 'navigation', 'index', NULL, '{"links":[{"title":"Accueil","url":""}]}'),
+(28, 'navigation', 'index', NULL, '{"links":[{"title":"Home","url":""}]}'),
 (29, 'header', 'index', NULL, '{"display":"title","align":"text-left","title":"","description":"","color_title":"#ffffff","color_description":"#ffffff"}'),
 (30, 'module', 'index', NULL, NULL);
 

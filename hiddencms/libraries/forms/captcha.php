@@ -41,7 +41,7 @@ class Captcha extends Labelable
 
 					if ($result === FALSE)
 					{
-						$this->_errors[] = 'Erreur serveur';
+						$this->_errors[] = (string)$this->lang('Server error');
 					}
 					else if (!empty($result->success) &&
 						isset($result->action, $result->score) &&
@@ -57,7 +57,7 @@ class Captcha extends Labelable
 					}
 				}
 
-				$this->_errors[] = 'La vérification anti-robots a échoué';
+				$this->_errors[] = (string)$this->lang('Anti-bot verification failed');
 			}
 
 			return FALSE;

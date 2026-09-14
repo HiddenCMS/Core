@@ -13,22 +13,22 @@ $breadcrumb_default = array_key_exists('breadcrumb', $model) ? (bool)$model['bre
 $base_default = !empty($model['base']);
 
 $this	->rule($this->form_text('title')
-					->title($this->lang('Titre'))
+					->title($this->lang('Title'))
 					->required()
 		)
 		->rule($this->form_text('name')
-					->title($this->lang('Nom technique'))
+					->title($this->lang('Internal name'))
 					->check(function($post, $data) use ($outline_id){
 						$name = url_title(!empty($data['name']) ? $data['name'] : (!empty($data['title']) ? $data['title'] : ''));
 
 						if ($name === '')
 						{
-							return $this->lang('Veuillez renseigner un titre valide');
+							return $this->lang('Please enter a valid title');
 						}
 
 						if ($this->model2('outline')->name_exists($name, $outline_id))
 						{
-							return $this->lang('Nom technique deja utilise');
+							return $this->lang('Internal name already in use');
 						}
 					})
 		)
@@ -38,8 +38,8 @@ $this	->rule($this->form_text('title')
 					->required()
 		)
 		->rule($this->form_select('reserved_routes')
-					->title($this->lang('Routes réservées'))
-					->info($this->lang('Vous pouvez cibler un module entier ou l\'une de ses pages. Une page ciblée est prioritaire sur le module entier.'))
+					->title($this->lang('Reserved routes'))
+					->info($this->lang('You can target an entire module or one of its pages. A targeted page takes priority over the entire module.'))
 					->data($reserved_routes)
 					->value($selected_reserved_routes)
 					->multiple()
@@ -47,19 +47,19 @@ $this	->rule($this->form_text('title')
 		)
 		->rule($this->form_checkbox('base')
 					->data([
-						'on' => $this->lang('Outline de base')
+						'on' => $this->lang('Default outline')
 					])
 					->value($base_default ? ['on'] : [])
 		)
 		->rule($this->form_checkbox('breadcrumb')
 					->data([
-						'on' => $this->lang('Afficher le fil d\'Ariane')
+						'on' => $this->lang('Show breadcrumbs')
 					])
 					->value($breadcrumb_default ? ['on'] : [])
 		)
 		->rule($this->form_checkbox('enabled')
 					->data([
-						'on' => $this->lang('Activer cet outline')
+						'on' => $this->lang('Enable this outline')
 					])
 					->value($enabled_default ? ['on'] : [])
 		);

@@ -2,20 +2,20 @@
 	<div class="addons-filter-group">
 		<span class="addons-filter-label"><?php echo icon('fas fa-filter') ?> <?php echo $this->lang('Type') ?></span>
 		<div class="ui compact secondary menu addons-filter" data-filter-group="type">
-			<button type="button" class="active item" data-filter="all"><?php echo $this->lang('Tous') ?></button>
+			<button type="button" class="active item" data-filter="all"><?php echo $this->lang('All') ?></button>
 			<button type="button" class="item" data-filter=".addon-module"><?php echo $this->lang('Modules') ?></button>
-			<button type="button" class="item" data-filter=".addon-theme"><?php echo $this->lang('Thèmes') ?></button>
+			<button type="button" class="item" data-filter=".addon-theme"><?php echo $this->lang('Themes') ?></button>
 			<button type="button" class="item" data-filter=".addon-widget"><?php echo $this->lang('Widgets') ?></button>
-			<button type="button" class="item" data-filter=".addon-language"><?php echo $this->lang('Langues') ?></button>
-			<button type="button" class="item" data-filter=".addon-authenticator"><?php echo $this->lang('Authentificateurs') ?></button>
+			<button type="button" class="item" data-filter=".addon-language"><?php echo $this->lang('Languages') ?></button>
+			<button type="button" class="item" data-filter=".addon-authenticator"><?php echo $this->lang('Authenticators') ?></button>
 		</div>
 	</div>
 	<div class="addons-filter-group addons-filter-status">
-		<span class="addons-filter-label"><?php echo $this->lang('État') ?></span>
+		<span class="addons-filter-label"><?php echo $this->lang('Status') ?></span>
 		<div class="ui compact secondary menu addons-filter" data-filter-group="status">
-			<button type="button" class="active item" data-filter="all"><?php echo $this->lang('Tous') ?></button>
-			<button type="button" class="item" data-filter=".activated"><?php echo $this->lang('Actifs') ?></button>
-			<button type="button" class="item" data-filter=".deactivated"><?php echo $this->lang('Inactifs') ?></button>
+			<button type="button" class="active item" data-filter="all"><?php echo $this->lang('All') ?></button>
+			<button type="button" class="item" data-filter=".activated"><?php echo $this->lang('Active') ?></button>
+			<button type="button" class="item" data-filter=".deactivated"><?php echo $this->lang('Inactive') ?></button>
 		</div>
 	</div>
 </div>
@@ -27,7 +27,7 @@
 				<div class="content addon-card-content">
 					<div class="addon-card-topline">
 						<?php $label = $addon->controller()->__label ?>
-						<span class="ui tiny label addon-type-label"><?php echo $label[1] ?></span>
+						<span class="ui tiny label addon-type-label"><?php echo $this->lang($label[1]) ?></span>
 						<div class="ui dropdown addon-actions">
 							<button type="button" class="addon-actions-trigger" aria-label="<?php echo $this->lang('Actions') ?>"><?php echo icon('fas fa-cog') ?></button>
 							<div class="menu">
@@ -51,7 +51,7 @@
 					</div>
 					<div class="addon-card-copy">
 						<h3><?php echo $addon->addon()->info()->title ?></h3>
-						<span class="addon-state <?php echo $enabled ? 'enabled' : 'disabled' ?>"><?php echo $enabled ? $this->lang('Actif') : $this->lang('Inactif') ?></span>
+						<span class="addon-state <?php echo $enabled ? 'enabled' : 'disabled' ?>"><?php echo $enabled ? $this->lang('Active') : $this->lang('Inactive') ?></span>
 					</div>
 				</div>
 			</article>

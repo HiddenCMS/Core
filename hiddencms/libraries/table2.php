@@ -189,7 +189,7 @@ class Table2 extends Library
 											->compact()
 											->align('right')
 											->modal($this	->_filters
-															->info('<small>Le caractère % permet des recherches partielles</small>')
+															->info('<small>'.$this->lang('The % character allows partial searches').'</small>')
 															->submit('Filtrer')
 															->modal('Filtrer', 'fas fa-filter')
 															->close()
@@ -410,11 +410,11 @@ class Table2 extends Library
 							->exec(function($html){
 								if ($this->_filters && $this->session->get('table2', 'filters', $this->_filters->__id()))
 								{
-									$html->content(HB()->lang('Aucun résultat trouvé').$this->_filters_reset()->outline()->color('danger')->compact());
+									$html->content(HB()->lang('No results found').$this->_filters_reset()->outline()->color('danger')->compact());
 								}
 								else
 								{
-									$html->content(HB()->lang($this->_no_data ?: 'Il n\'y a rien ici pour le moment'));
+									$html->content(HB()->lang($this->_no_data ?: 'There is nothing here yet'));
 								}
 							});
 		}
@@ -443,7 +443,7 @@ class Table2 extends Library
 	protected function _filters_reset()
 	{
 		return $this->button()
-					->tooltip('Retirer tous les filtres')
+					->tooltip($this->lang('Clear all filters'))
 					->icon('fas fa-times')
 					->color('danger')
 					->compact()

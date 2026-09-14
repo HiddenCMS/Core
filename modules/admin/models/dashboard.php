@@ -10,13 +10,14 @@ class Dashboard extends Model
         $lang = $this->config->lang->info()->name;
         $definitions = [
             'pages' => ['Pages', 'fas fa-file-alt', 'pages', 'page_id', 'pages_lang', 'page_id'],
-            'news' => ['Actualités', 'fas fa-newspaper', 'news', 'news_id', 'news_lang', 'news_id'],
-            'gallery' => ['Galeries', 'fas fa-images', 'gallery', 'gallery_id', 'gallery_lang', 'gallery_id'],
-            'calendar' => ['Événements', 'fas fa-calendar-alt', 'calendar_events', 'event_id', NULL, NULL],
+            'news' => ['News', 'fas fa-newspaper', 'news', 'news_id', 'news_lang', 'news_id'],
+            'gallery' => ['Galleries', 'fas fa-images', 'gallery', 'gallery_id', 'gallery_lang', 'gallery_id'],
+            'calendar' => ['Events', 'fas fa-calendar-alt', 'calendar_events', 'event_id', NULL, NULL],
             'slider' => ['Sliders', 'fas fa-clone', 'slider_sets', 'slider_id', NULL, NULL]
         ];
         $contents = []; $tasks = [];
         foreach ($definitions as $module => [$label, $icon, $table, $id, $translation, $foreign]) {
+            $label = (string)$this->lang($label);
             $addon = @HB()->module($module);
             if (!$addon || !$addon->is_enabled() || !in_array($table, $tables, TRUE) || ($translation && !in_array($translation, $tables, TRUE))) continue;
             $query = $this->db->select('s.'.$id.' AS id', 's.published', $translation ? 'l.title' : 's.title')->from($table.' s');
@@ -29,13 +30,13 @@ class Dashboard extends Model
             unset($row);
             $contents[] = compact('module', 'label', 'icon', 'rows');
             $unpublished = (int)$this->db->from($table)->where('published', '0')->count();
-            if ($unpublished) $tasks[] = ['title' => $label.' non publiés / inactifs', 'count' => $unpublished, 'icon' => $icon, 'url' => 'admin/'.$module];
+            if ($unpublished) $tasks[] = ['title' => (string)$this->lang('%s unpublished / inactive', $label), 'count' => $unpublished, 'icon' => $icon, 'url' => 'admin/'.$module];
         }
         $requests = [];
         if (in_array('user_erasure_request', $tables, TRUE)) {
             $pending = (int)$this->db->from('user_erasure_request')->where('completed_at', NULL)->count();
             if ($pending) {
-                $tasks[] = ['title' => 'Demandes d’effacement en attente', 'count' => $pending, 'icon' => 'fas fa-user-shield', 'url' => 'admin/settings/privacy'];
+                $tasks[] = ['title' => (string)$this->lang('Pending erasure requests'), 'count' => $pending, 'icon' => 'fas fa-user-shield', 'url' => 'admin/settings/privacy'];
                 $requests = $this->db->select('r.user_id', 'r.execute_after', 'u.username')->from('user_erasure_request r')->join('user u', 'u.id = r.user_id')->where('r.completed_at', NULL)->order_by('r.execute_after')->limit(5)->get();
             }
         }

@@ -13,7 +13,7 @@
 		</div>
 
 		<?php if (!empty($links)): ?>
-		<nav class="user-auth-links" aria-label="<?php echo $this->lang('Navigation du compte') ?>">
+		<nav class="user-auth-links" aria-label="<?php echo $this->lang('Account navigation') ?>">
 			<?php foreach ($links as $link): ?>
 			<a href="<?php echo $link['url'] ?>"><?php echo $this->lang($link['title']) ?></a>
 			<?php endforeach ?>

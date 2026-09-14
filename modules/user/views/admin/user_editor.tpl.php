@@ -1,5 +1,5 @@
 <div class="user-editor">
-	<div class="ui secondary pointing menu user-editor-tabs" role="tablist" aria-label="<?php echo $this->lang('Utilisateur'); ?>">
+	<div class="ui secondary pointing menu user-editor-tabs" role="tablist" aria-label="<?php echo $this->lang('User'); ?>">
 		<?php foreach ($tabs as $name => $tab): ?>
 		<button type="button" class="item<?php if ($name === 'account') echo ' active'; ?>" role="tab" id="user-tab-<?php echo $name; ?>" data-tab="<?php echo $name; ?>" aria-controls="user-panel-<?php echo $name; ?>" aria-selected="<?php echo $name === 'account' ? 'true' : 'false'; ?>" tabindex="<?php echo $name === 'account' ? '0' : '-1'; ?>">
 			<?php echo icon($tab['icon']); ?><?php echo $this->lang($tab['title']); ?>

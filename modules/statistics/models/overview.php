@@ -5,7 +5,7 @@ use HB\HiddenCMS\Loadables\Model;
 
 class Overview extends Model
 {
-    const PERIODS = [7 => '7 derniers jours', 30 => '30 derniers jours', 90 => '90 derniers jours', 365 => '12 derniers mois'];
+    const PERIODS = [7 => 'Last 7 days', 30 => 'Last 30 days', 90 => 'Last 90 days', 365 => 'Last 12 months'];
 
     public function period($value)
     {
@@ -22,12 +22,13 @@ class Overview extends Model
         $metrics = [];
         $series = [];
         $definitions = [
-            'registrations' => ['label' => 'Nouveaux membres', 'icon' => 'fas fa-user-plus', 'color' => '#1696a5', 'table' => 'user', 'date' => 'registration_date'],
-            'connections' => ['label' => 'Membres connectés', 'icon' => 'fas fa-users', 'color' => '#4278c4', 'table' => 'session_history', 'date' => 'date'],
-            'comments' => ['label' => 'Commentaires', 'icon' => 'fas fa-comments', 'color' => '#b36d24', 'table' => 'comments', 'date' => 'date'],
-            'uploads' => ['label' => 'Médias ajoutés', 'icon' => 'fas fa-images', 'color' => '#4d9364', 'table' => 'file', 'date' => 'date']
+            'registrations' => ['label' => 'New members', 'icon' => 'fas fa-user-plus', 'color' => '#1696a5', 'table' => 'user', 'date' => 'registration_date'],
+            'connections' => ['label' => 'Members signed in', 'icon' => 'fas fa-users', 'color' => '#4278c4', 'table' => 'session_history', 'date' => 'date'],
+            'comments' => ['label' => 'Comments', 'icon' => 'fas fa-comments', 'color' => '#b36d24', 'table' => 'comments', 'date' => 'date'],
+            'uploads' => ['label' => 'Media added', 'icon' => 'fas fa-images', 'color' => '#4d9364', 'table' => 'file', 'date' => 'date']
         ];
         foreach ($definitions as $key => $definition) {
+            $definition['label'] = (string)$this->lang($definition['label']);
             if (!in_array($definition['table'], $tables, TRUE)) continue;
             $current = $this->activity($key, $definition, $start, $end);
             $before = $this->activity($key, $definition, $previous, $start);
@@ -40,14 +41,15 @@ class Overview extends Model
             $counts = array_column($rows, 'total', 'day');
             $points = [];
             for ($date = $start; $date < $end; $date = $date->modify('+1 day')) $points[] = [$date->format('Y-m-d'), (int)($counts[$date->format('Y-m-d')] ?? 0)];
-            $series[] = ['key' => $key, 'name' => $key === 'connections' ? 'Membres connectés par jour' : $definition['label'], 'color' => $definition['color'], 'data' => $points];
+            $series[] = ['key' => $key, 'name' => $key === 'connections' ? (string)$this->lang('Members signed in per day') : $definition['label'], 'color' => $definition['color'], 'data' => $points];
         }
         $inventory = [];
         foreach ([
-            ['pages', 'Pages', 'fas fa-file-alt', 'pages'], ['news', 'Actualités', 'fas fa-newspaper', 'news'],
-            ['gallery', 'Galeries', 'fas fa-images', 'gallery'], ['calendar_events', 'Événements', 'fas fa-calendar-alt', 'calendar'],
+            ['pages', 'Pages', 'fas fa-file-alt', 'pages'], ['news', 'News', 'fas fa-newspaper', 'news'],
+            ['gallery', 'Galleries', 'fas fa-images', 'gallery'], ['calendar_events', 'Events', 'fas fa-calendar-alt', 'calendar'],
             ['slider_sets', 'Sliders', 'fas fa-clone', 'slider']
         ] as [$table, $label, $icon, $module]) {
+            $label = (string)$this->lang($label);
             if (!in_array($table, $tables, TRUE)) continue;
             $addon = @HB()->module($module);
             if (!$addon || !$addon->is_enabled()) continue;

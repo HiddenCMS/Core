@@ -13,7 +13,7 @@ class Socials extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Réseaux sociaux'),
+			'title'       => $this->lang('Social networks'),
 			'icon'        => 'fas fa-share-alt',
 			'description' => '',
 			'link'        => 'https://neofr.ag',

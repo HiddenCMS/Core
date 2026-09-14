@@ -11,7 +11,7 @@ class Hero extends Widget
 		return [
 			'title'       => $this->lang('Hero'),
 			'icon'        => 'fas fa-panorama',
-			'description' => $this->lang('Créer une introduction visuelle avec appel à l’action.'),
+			'description' => $this->lang('Create a visual introduction with a call to action.'),
 			'author'      => 'HiddenCMS',
 			'license'     => 'GPLv3',
 			'version'     => '1.0'

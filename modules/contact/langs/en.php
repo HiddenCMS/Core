@@ -10,5 +10,6 @@ return [
 	'83dfdfa4' => 'Contact',
 	'870c633c' => 'Subject',
 	'b9c92b6c' => 'Contact us',
-	'c1d8f9a3' => 'Email address'
+	'c1d8f9a3' => 'Email address',
+    '92f5d16d' => 'Contact us',
 ];

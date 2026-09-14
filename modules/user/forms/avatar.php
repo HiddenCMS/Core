@@ -11,6 +11,6 @@ $this	->rule($this->form_image('avatar', 'user/avatar')
 		)
 		->success(function($profile){
 			$profile->commit();
-			notify($this->lang('Avatar modifié'));
+			notify($this->lang('Avatar updated'));
 			refresh();
 		});

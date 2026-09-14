@@ -17,7 +17,7 @@ class Admin extends Controller
 
 	public function html($settings = [])
 	{
-		return '<textarea class="form-control" name="settings[content]" placeholder="'.$this->lang('Code HTML').'" rows="6">'.(isset($settings['content']) ? $settings['content'] : '').'</textarea>';
+		return '<textarea class="form-control" name="settings[content]" placeholder="'.$this->lang('HTML code').'" rows="6">'.(isset($settings['content']) ? $settings['content'] : '').'</textarea>';
 	}
 }
 

@@ -1,0 +1,23 @@
+<?php
+return [
+    '95221e63' => 'Il n\'y a aucune permission à administrer',
+    'fe11d138' => 'Nom',
+    '915c9049' => 'Réinitialiser',
+    21077124 => 'Éditer',
+    '85e5cc2b' => 'Gestion des permissions',
+    '9352a7d8' => 'Accéder au module %s',
+    'f6b9294d' => 'Liste des permissions',
+    '519ee2d1' => 'Réinitialiser toutes les permissions',
+    'd5428aed' => 'Utilisateurs',
+    '7748ff4e' => 'Membre',
+    'f7c13c46' => 'Groupes',
+    '519e2bdc' => 'Remettre en automatique',
+    'e16490c3' => 'Membre exclu',
+    '5a283910' => 'Groupe exclu',
+    'd2c0aec0' => 'Fermer',
+    'e25abad4' => 'Membre autoris?',
+    '010e7309' => 'Groupe autoris?',
+    'c18f5ee6' => 'Confirmation de réinitialisation des permissions',
+    'ded12f65' => 'Êtes-vous sûr(e) de vouloir réinitialiser les permissions ?',
+    '51bac044' => 'Annuler',
+];

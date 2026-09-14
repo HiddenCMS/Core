@@ -13,7 +13,7 @@ class Breadcrumb extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Fil d\'Ariane'),
+			'title'       => $this->lang('Breadcrumb'),
 			'icon'        => 'fas fa-sitemap',
 			'description' => '',
 			'link'        => 'https://neofr.ag',

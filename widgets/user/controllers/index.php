@@ -17,11 +17,11 @@ class Index extends Controller_Widget
 			$this->css('user');
 
 			return $this->panel()
-						->heading($this->lang('Espace membre'))
+						->heading($this->lang('Member area'))
 						->body($this->view('logged', [
 							'username' => $this->user->username
 						]), FALSE)
-						->footer('<a href="'.url('user/logout').'">'.icon('fas fa-times').' '.$this->lang('Se déconnecter').'</a>');
+						->footer('<a href="'.url('user/logout').'">'.icon('fas fa-times').' '.$this->lang('Logout').'</a>');
 		}
 		else
 		{
@@ -34,17 +34,17 @@ class Index extends Controller_Widget
 			return $this->module('user')
 						->form2('login')
 						->button_prepend_if($this->config->registration_status, $this->button()
-																				->title('Créer un compte')
+																				->title('Create an account')
 																				->color('secondary')
 																				->url('user/register')
 						)
 						->button_prepend($this	->button()
-												->title('Mot de passe oublié ?')
+												->title((string)$this->lang('Forgot your password?'))
 												->color('link')
 												->url('user/lost-password')
 						)
 						->panel()
-						->title($this->lang('Espace membre').($authenticators ? '<div class="float-right">'.implode($authenticators).'</div>' : ''));
+						->title($this->lang('Member area').($authenticators ? '<div class="float-right">'.implode($authenticators).'</div>' : ''));
 		}
 	}
 
@@ -58,11 +58,11 @@ class Index extends Controller_Widget
 		if ($this->user())
 		{
 			return $this->panel()
-						->heading($this->lang('Messages privés'), 'fas fa-envelope')
+						->heading($this->lang('Private messages'), 'fas fa-envelope')
 						->body($this->view('messages_inbox', [
 							'messages' => array_slice($this->module('user')->model('messages')->get_messages_inbox(), 0, 5)
 						]), FALSE)
-						->footer('<a class="btn btn-secondary" href="'.url('user/messages').'">'.icon('fas fa-inbox').' '.$this->lang('Boîte de réception').'</a> <a class="btn btn-primary" href="'.url('user/messages/compose').'">'.icon('fas fa-edit').' '.$this->lang('Rédiger').'</a>');
+						->footer('<a class="btn btn-secondary" href="'.url('user/messages').'">'.icon('fas fa-inbox').' '.$this->lang('Inbox').'</a> <a class="btn btn-primary" href="'.url('user/messages/compose').'">'.icon('fas fa-edit').' '.$this->lang('Write').'</a>');
 		}
 	}
 }

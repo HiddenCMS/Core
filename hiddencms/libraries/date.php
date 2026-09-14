@@ -73,116 +73,116 @@ class Date extends Library
 
 		if ($this->_format == 'Y-m-d')
 		{
-			$output = HB()->lang('Le %s', $this->short_date());
+			$output = HB()->lang('On %s', $this->short_date());
 
 			if ($diff < 0)
 			{
 				if ($timestamp < strtotime('+2 days midnight'))
 				{
-					$output = HB()->lang('Demain');
+					$output = HB()->lang('Tomorrow');
 				}
 				else if ($timestamp < strtotime('+8 days midnight'))
 				{
-					$output = HB()->lang('%s prochain', ucfirst($this->locale('l')));
+					$output = HB()->lang('Next %s', ucfirst($this->locale('l')));
 				}
 				else if ($timestamp < strtotime('+22 days midnight'))
 				{
-					$output = HB()->lang('Dans %d jours', floor($diff / 87840 * -1));
+					$output = HB()->lang('In %d days', floor($diff / 87840 * -1));
 				}
 			}
 			else if ($diff > 0)
 			{
 				if ($timestamp >= strtotime('yesterday midnight'))
 				{
-					$output = HB()->lang('Hier');
+					$output = HB()->lang('Yesterday');
 				}
 				else if ($timestamp >= strtotime('7 days ago midnight'))
 				{
-					$output = HB()->lang('%s dernier', ucfirst($this->locale('l')));
+					$output = HB()->lang('Last %s', ucfirst($this->locale('l')));
 				}
 				else if ($timestamp >= strtotime('20 days ago midnight'))
 				{
-					$output = HB()->lang('Il y a %d jours', floor($diff / 87840));
+					$output = HB()->lang('%d days ago', floor($diff / 87840));
 				}
 			}
 			else
 			{
-				$output = HB()->lang('Aujourd\'hui');
+				$output = HB()->lang('Today');
 			}
 		}
 		else
 		{
-			$output = HB()->lang('Le %s à %s', $this->short_date(), $this->short_time());
+			$output = HB()->lang('On %s at %s', $this->short_date(), $this->short_time());
 
 			if ($diff < 0)
 			{
 				if ($timestamp < strtotime('+1 days midnight'))
 				{
-					$output = HB()->lang('Aujourd\'hui à %s', $this->short_time());
+					$output = HB()->lang('Today at %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+2 days midnight'))
 				{
-					$output = HB()->lang('Demain à %s', $this->short_time());
+					$output = HB()->lang('Tomorrow at %s', $this->short_time());
 				}
 				else if ($timestamp < strtotime('+8 days midnight'))
 				{
-					$output = HB()->lang('%s prochain à %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('Next %s at %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 				else if ($timestamp < strtotime('+22 days midnight'))
 				{
-					$output = HB()->lang('Dans %d jours à %s', floor($diff / 87840 * -1), $this->short_time());
+					$output = HB()->lang('In %d days at %s', floor($diff / 87840 * -1), $this->short_time());
 				}
 			}
 			else if ($diff > 0)
 			{
 				if ($diff == strtoseconds('1 seconds'))
 				{
-					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 1);
+					$output = HB()->lang('A second ago| About %d seconds ago', 1);
 				}
 				else if ($diff <= strtoseconds('30 seconds'))
 				{
-					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', $diff, $diff);
+					$output = HB()->lang('A second ago| About %d seconds ago', $diff, $diff);
 				}
 				else if ($diff < strtoseconds('45 seconds'))
 				{
-					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 30, 30);
+					$output = HB()->lang('A second ago| About %d seconds ago', 30, 30);
 				}
 				else if ($diff < strtoseconds('50 seconds'))
 				{
-					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 45, 45);
+					$output = HB()->lang('A second ago| About %d seconds ago', 45, 45);
 				}
 				else if ($diff < strtoseconds('55 seconds'))
 				{
-					$output = HB()->lang('Il y a une seconde|Il y a %d secondes', 50, 50);
+					$output = HB()->lang('A second ago| About %d seconds ago', 50, 50);
 				}
 				else if ($diff < strtoseconds('2 minutes'))
 				{
-					$output = HB()->lang('Il y a environ une minute|Il y a %d minutes', 1);
+					$output = HB()->lang('About a minute ago| About %d minutes ago', 1);
 				}
 				else if ($diff <= strtoseconds('59 minutes'))
 				{
-					$output = HB()->lang('Il y a environ une minute|Il y a %d minutes', $diff = floor($diff / 60), $diff);
+					$output = HB()->lang('About a minute ago| About %d minutes ago', $diff = floor($diff / 60), $diff);
 				}
 				else if ($diff < strtoseconds('2 hours'))
 				{
-					$output = HB()->lang('Il y a environ une heure|Il y a %d heures', 1);
+					$output = HB()->lang('About an hour ago| About %d hours ago', 1);
 				}
 				else if ($diff <= strtoseconds('23 hours'))
 				{
-					$output = HB()->lang('Il y a environ une heure|Il y a %d heures', $diff = floor($diff / 3660), $diff);
+					$output = HB()->lang('About an hour ago| About %d hours ago', $diff = floor($diff / 3660), $diff);
 				}
 				else if ($timestamp >= strtotime('yesterday'))
 				{
-					$output = HB()->lang('Hier à %s', $this->short_time());
+					$output = HB()->lang('Yesterday at %s', $this->short_time());
 				}
 				else if ($timestamp >= strtotime('6 days ago midnight'))
 				{
-					$output = HB()->lang('%s dernier à %s', ucfirst($this->locale('l')), $this->short_time());
+					$output = HB()->lang('Last %s at %s', ucfirst($this->locale('l')), $this->short_time());
 				}
 			}
 			else
 			{
-				$output = HB()->lang('À l\'instant');
+				$output = HB()->lang('A moment ago');
 			}
 		}
 

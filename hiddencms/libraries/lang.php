@@ -72,7 +72,7 @@ class Lang extends Library
 		{
 			$locale   = $this->_name;
 			$args     = $this->_args;
-			$language = isset($this->__caller) && is_a($this->__caller, 'HB\HiddenCMS\Loadables\Addon') && !empty($this->__caller->info()->language) ? $this->__caller->info()->language : 'fr';
+			$language = isset($this->__caller) && is_a($this->__caller, 'HB\HiddenCMS\Loadables\Addon') && !empty($this->__caller->info()->language) ? $this->__caller->info()->language : 'en';
 			$key      = hash('crc32b', $locale);
 
 			if ($result = static::_get($this->__caller, $language, $locale, $key))

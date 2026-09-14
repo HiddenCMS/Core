@@ -46,20 +46,20 @@ class File extends Labelable
 				if (!empty($_FILES[$this->_name]['error']))
 				{
 					$errors = [
-						1 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de upload_max_filesize, configurÃ©e dans le php.ini',
-						2 => 'La taille du fichier tÃ©lÃ©chargÃ© excÃ¨de la valeur de MAX_FILE_SIZE, qui a Ã©tÃ© spÃ©cifiÃ©e dans le formulaire HTML',
-						3 => 'Le fichier n\'a Ã©tÃ© que partiellement tÃ©lÃ©chargÃ©',
-						4 => 'Aucun fichier n\'a Ã©tÃ© tÃ©lÃ©chargÃ©',
-						6 => 'Un dossier temporaire est manquant',
-						7 => 'Ã‰chec de l\'Ã©criture du fichier sur le disque',
-						8 => 'Une extension PHP a arrÃªtÃ© l\'envoi de fichier'
+						1 => 'The uploaded file exceeds upload_max_filesize in php.ini',
+						2 => 'The uploaded file exceeds MAX_FILE_SIZE in the HTML form',
+						3 => 'The file was only partially uploaded',
+						4 => 'No file was uploaded',
+						6 => 'A temporary folder is missing',
+						7 => 'Failed to write the file to disk',
+						8 => 'A PHP extension stopped the file upload'
 					];
 
-					$this->_errors[] = $this->lang($errors[$_FILES[$this->_name]['error']]);
+					$this->_errors[] = $this->lang($errors[$_FILES[$this->_name]['error']] ?? 'Unknown upload error');
 				}
 				else if ($this->_mimes && !in_array($_FILES[$this->_name]['type'], $this->_mimes))
 				{
-					$this->_errors[] = HB()->lang('Type de fichier non autorisÃ©');
+					$this->_errors[] = HB()->lang('File type not allowed');
 				}
 				else if (!empty($_FILES[$this->_name]['tmp_name']))
 				{
@@ -80,7 +80,7 @@ class File extends Labelable
 						}
 						else
 						{
-							$this->_errors[] = HB()->lang('Erreur de transfert');
+							$this->_errors[] = HB()->lang('Transfer error');
 						}
 					}
 				}

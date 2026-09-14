@@ -66,7 +66,7 @@ class Admin extends Controller_Module
 
 		if (empty($menus))
 		{
-			$left_body = '<div class="table-empty">'.$this->lang('Il n\'y a pas encore de menu').'</div>';
+			$left_body = '<div class="table-empty">'.$this->lang('There are no menus yet').'</div>';
 		}
 		else
 		{
@@ -80,7 +80,7 @@ class Admin extends Controller_Module
 
 				if ($this->is_authorized('modify_menus'))
 				{
-					$item_actions[] = (string)$this->button_update('', $this->lang('Editer'))
+					$item_actions[] = (string)$this->button_update('', $this->lang('Edit'))
 														->modal_ajax('admin/ajax/menu/'.$menu['menu_id'].'/'.$menu['name']);
 				}
 
@@ -106,32 +106,32 @@ class Admin extends Controller_Module
 
 		$left_panel = $this	->panel()
 							->style('hb-menu-master-panel')
-							->heading($this->lang('Liste des menus'), 'fas fa-bars')
+							->heading($this->lang('Menu list'), 'fas fa-bars')
 							->heading_if(
 								$this->is_authorized('add_menus'),
 								$this->button_create()
 									->title('')
-									->tooltip($this->lang('Creer un menu'))
+									->tooltip($this->lang('Create a menu'))
 									->modal_ajax('admin/ajax/menu/add')
 									->compact()
 									->align('right')
 							)
 							->body($left_body, FALSE);
 
-		$right_body = '<div class="table-empty">'.$this->lang('Selectionnez un menu').'</div>';
-		$right_title = $this->lang('Apercu du menu');
+		$right_body = '<div class="table-empty">'.$this->lang('Select a menu').'</div>';
+		$right_title = $this->lang('Menu preview');
 		$right_header_action = NULL;
 
 		if ($selected_menu)
 		{
 			$selected_items = $this->menu_model()->get_menu_items($selected_menu['menu_id']);
 
-			$right_title = $this->lang('Liens du menu : %s', $selected_menu['title']);
+			$right_title = $this->lang('Menu links: %s', $selected_menu['title']);
 			if ($this->is_authorized('modify_menus'))
 			{
 				$right_header_action = $this->button_create()
 											->title('')
-											->tooltip($this->lang('Ajouter un lien'))
+											->tooltip($this->lang('Add a link'))
 											->modal_ajax('admin/ajax/menu/items/'.$selected_menu['menu_id'].'/'.$selected_menu['name'].'/add')
 											->compact()
 											->align('right');
@@ -164,18 +164,18 @@ class Admin extends Controller_Module
 
 						if ($this->menu_model()->name_exists($name))
 						{
-							$form->error($this->lang('Chemin d\'acces deja utilise'));
+							$form->error($this->lang('Path already in use'));
 							return;
 						}
 
 						$this->menu_model()->add_menu($name, $title);
 
-						notify($this->lang('Menu ajoute avec succes'));
+						notify($this->lang('Menu added successfully'));
 
 						redirect($this->menu_index_url());
 					})
-					->submit($this->lang('Ajouter'))
-					->modal($this->lang('Ajouter un menu'), 'fas fa-bars')
+					->submit($this->lang('Add'))
+					->modal($this->lang('Add a menu'), 'fas fa-bars')
 					->cancel();
 	}
 
@@ -192,31 +192,31 @@ class Admin extends Controller_Module
 
 						if ($this->menu_model()->name_exists($name, $menu_id))
 						{
-							$form->error($this->lang('Chemin d\'acces deja utilise'));
+							$form->error($this->lang('Path already in use'));
 							return;
 						}
 
 						$this->menu_model()->edit_menu($menu_id, $name, $title);
 
-						notify($this->lang('Menu edite avec succes'));
+						notify($this->lang('Menu updated successfully'));
 
 						redirect($this->menu_index_url($menu_id));
 					})
-					->submit($this->lang('Editer'))
-					->modal($this->lang('Editer le menu'), 'fas fa-bars')
+					->submit($this->lang('Edit'))
+					->modal($this->lang('Edit menu'), 'fas fa-bars')
 					->cancel();
 	}
 
 	public function delete($menu_id, $title)
 	{
-		return $this	->modal($this->lang('Suppression d\'un menu'), 'far fa-trash-alt text-danger')
-					->body($this->lang('Etes-vous sur(e) de vouloir supprimer le menu <b>%s</b> ?', $title))
+		return $this	->modal($this->lang('Delete a menu'), 'far fa-trash-alt text-danger')
+					->body($this->lang('Are you sure you want to delete the <b>%s</b> menu?', $title))
 					->callback(function() use ($menu_id){
 						$this->menu_model()->delete_menu($menu_id);
-						notify($this->lang('Menu supprime avec succes'));
+						notify($this->lang('Menu deleted successfully'));
 						refresh();
 					})
-					->submit($this->lang('Supprimer'), 'danger')
+					->submit($this->lang('Delete'), 'danger')
 					->cancel();
 	}
 
@@ -255,12 +255,12 @@ class Admin extends Controller_Module
 
 				if ($this->user->admin)
 				{
-					$actions[] = $this->button_access($item['item_id'], 'link', 'menu', $this->lang('Droits de visibilité'));
+					$actions[] = $this->button_access($item['item_id'], 'link', 'menu', $this->lang('Visibility permissions'));
 				}
 
 				if ($this->is_authorized('modify_menus'))
 				{
-					$actions[] = (string)$this->button_update('', $this->lang('Editer'))
+					$actions[] = (string)$this->button_update('', $this->lang('Edit'))
 													->modal_ajax('admin/ajax/menu/items/'.$menu['menu_id'].'/'.$menu['name'].'/edit/'.$item['item_id']);
 				}
 
@@ -279,7 +279,7 @@ class Admin extends Controller_Module
 										->data('tree', 1);
 				}
 
-				$status_title = $item['enabled'] ? $this->lang('Active') : $this->lang('Desactive');
+				$status_title = $item['enabled'] ? $this->lang('Active') : $this->lang('Disabled');
 				$status = '<i class="menu-nested-status-icon '.($item['enabled'] ? 'fas fa-circle is-active' : 'far fa-circle is-disabled').'" data-toggle="tooltip" title="'.$status_title.'" aria-label="'.$status_title.'"></i>';
 
 				$html .= '<li class="menu-nested-item" data-item-id="'.$item['item_id'].'">'
@@ -306,7 +306,7 @@ class Admin extends Controller_Module
 			return $html;
 		};
 
-		return !empty($items) ? $render() : '<div class="table-empty">'.$this->lang('Il n\'y a pas encore de lien').'</div>';
+		return !empty($items) ? $render() : '<div class="table-empty">'.$this->lang('There are no links yet').'</div>';
 	}
 
 	public function _items_add($menu)
@@ -333,7 +333,7 @@ class Admin extends Controller_Module
 
 						if ($url === '')
 						{
-							$form->error($this->lang('Veuillez saisir une URL'));
+							$form->error($this->lang('Please enter a URL'));
 							return;
 						}
 
@@ -341,7 +341,7 @@ class Admin extends Controller_Module
 
 						if (!$this->menu_model()->is_parent_depth_allowed($menu['menu_id'], $parent_id))
 						{
-							$form->error($this->lang('Profondeur maximale atteinte (3 sous-niveaux maximum)'));
+							$form->error($this->lang('Maximum depth reached (up to 3 nested levels)'));
 							return;
 						}
 
@@ -355,12 +355,12 @@ class Admin extends Controller_Module
 							!empty($data['enabled']) && in_array('1', $data['enabled'], TRUE)
 						);
 
-						notify($this->lang('Lien ajoute avec succes'));
+						notify($this->lang('Link added successfully'));
 
 						redirect($this->menu_index_url($menu['menu_id']));
 					})
-					->submit($this->lang('Ajouter'))
-					->modal($this->lang('Ajouter un lien : %s', $menu['title']), 'fas fa-list')
+					->submit($this->lang('Add'))
+					->modal($this->lang('Add a link: %s', $menu['title']), 'fas fa-list')
 					->cancel();
 	}
 
@@ -392,7 +392,7 @@ class Admin extends Controller_Module
 
 						if ($url === '')
 						{
-							$form->error($this->lang('Veuillez saisir une URL'));
+							$form->error($this->lang('Please enter a URL'));
 							return;
 						}
 
@@ -400,7 +400,7 @@ class Admin extends Controller_Module
 
 						if (!$this->menu_model()->is_parent_depth_allowed($menu['menu_id'], $parent_id))
 						{
-							$form->error($this->lang('Profondeur maximale atteinte (3 sous-niveaux maximum)'));
+							$form->error($this->lang('Maximum depth reached (up to 3 nested levels)'));
 							return;
 						}
 
@@ -414,25 +414,25 @@ class Admin extends Controller_Module
 							!empty($data['enabled']) && in_array('1', $data['enabled'], TRUE)
 						);
 
-						notify($this->lang('Lien edite avec succes'));
+						notify($this->lang('Link updated successfully'));
 
 						redirect($this->menu_index_url($menu['menu_id']));
 					})
-					->submit($this->lang('Editer'))
-					->modal($this->lang('Editer un lien : %s', $menu['title']), 'fas fa-list')
+					->submit($this->lang('Edit'))
+					->modal($this->lang('Edit a link: %s', $menu['title']), 'fas fa-list')
 					->cancel();
 	}
 
 	public function _items_delete($menu, $item_id, $title)
 	{
-		return $this	->modal($this->lang('Suppression d\'un lien'), 'far fa-trash-alt text-danger')
-					->body($this->lang('Etes-vous sur(e) de vouloir supprimer le lien <b>%s</b> ?', $title))
+		return $this	->modal($this->lang('Delete a link'), 'far fa-trash-alt text-danger')
+					->body($this->lang('Are you sure you want to delete the <b>%s</b> link?', $title))
 					->callback(function() use ($menu, $item_id){
 						$this->menu_model()->delete_item($item_id);
-						notify($this->lang('Lien supprime avec succes'));
+						notify($this->lang('Link deleted successfully'));
 						redirect($this->menu_index_url($menu['menu_id']));
 					})
-					->submit($this->lang('Supprimer'), 'danger')
+					->submit($this->lang('Delete'), 'danger')
 					->cancel();
 	}
 }

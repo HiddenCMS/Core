@@ -5,7 +5,7 @@
  */
 
 $this	->rule($this->form_url('website')
-					->title('Site web')
+					->title('Website')
 		)
 		->rule($this->form_text('linkedin')
 					->title('Linkedin')
@@ -29,6 +29,6 @@ $this	->rule($this->form_url('website')
 		)
 		->success(function($profile){
 			$profile->commit();
-			notify($this->lang('Liens modifiés'));
+			notify($this->lang('Links updated'));
 			refresh();
 		});

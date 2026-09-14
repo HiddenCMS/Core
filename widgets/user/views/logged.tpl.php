@@ -1,17 +1,17 @@
 <div class="card-body text-center">
-	<h6 class="mb-3"><?php echo $this->lang('Bienvenue <a href="'.url('user').'">'.$this->user->username.'</a>') ?></h6>
+	<h6 class="mb-3"><?php echo $this->lang('Welcome <a href="'.url('user').'">'.$this->user->username.'</a>') ?></h6>
 	<?php echo $this->user->avatar()->append_attr('class', 'm-auto') ?>
 </div>
 <ul class="list-group list-group-flush">
 	<li class="list-group-item">
 		<!--<span class="badge badge-success float-right"><?php echo 0; //TODO nombre de nouvelles notifications ?></span>-->
-		<?php echo icon('fas fa-user') ?> <a href="<?php echo url('user') ?>"><?php echo $this->lang('Mon espace') ?></a>
+		<?php echo icon('fas fa-user') ?> <a href="<?php echo url('user') ?>"><?php echo $this->lang('My account') ?></a>
 	</li>
 	<li class="list-group-item">
-		<?php echo icon('fas fa-cogs') ?> <a href="<?php echo url('user/account') ?>"><?php echo $this->lang('Gérer mon compte') ?></a>
+		<?php echo icon('fas fa-cogs') ?> <a href="<?php echo url('user/account') ?>"><?php echo $this->lang('Manage my account') ?></a>
 	</li>
 	<li class="list-group-item">
-		<?php echo icon('far fa-eye') ?> <a href="<?php echo url('user/'.$this->user->id.'/'.url_title($username)) ?>"><?php echo $this->lang('Voir mon profil') ?></a>
+		<?php echo icon('far fa-eye') ?> <a href="<?php echo url('user/'.$this->user->id.'/'.url_title($username)) ?>"><?php echo $this->lang('View my profile') ?></a>
 	</li>
 	<li class="list-group-item">
 		<?php if ($messages = $this->module('user')->model('messages')->get_messages_unreads()): ?><span class="badge badge-danger float-right"><?php echo $messages ?></span><?php endif ?>

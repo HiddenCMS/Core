@@ -10,7 +10,7 @@ $this	->rule($this->form_email('email')
 					->check(function($data){
 						if ($data['email'] && !$this->db()->from('user')->where('email', $data['email'])->where('deleted', FALSE)->where_if($this->_values, 'id <>', $this->_values->id)->empty())
 						{
-							return 'Adresse email déjà utilisée';
+							return (string)$this->lang('Email address already in use');
 						}
 					})
 		);

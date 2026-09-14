@@ -10,7 +10,7 @@ $this	->col('Appareil', function($session){
 		->col('Adresse IP', function($session){
 			return geolocalisation($ip_address = $session->data->session->ip_address).'<span data-toggle="tooltip" data-original-title="'.$session->data->session->host_name.'">'.$ip_address.'</span>';
 		})
-		->col('Site référent', function($session){
-			return ($referer = $session->data->session->referer) ? urltolink($referer) : $this->lang('Aucun');
+		->col((string)$this->lang('Referring site'), function($session){
+			return ($referer = $session->data->session->referer) ? urltolink($referer) : $this->lang('None');
 		})
 		->col('Date', 'last_activity');

@@ -65,7 +65,7 @@ class Ajax extends Controller_Module
 		else
 		{
 			return $this->js('languages')
-						->modal('Choisir ma langue', 'fas fa-globe')
+						->modal((string)$this->lang('Choose my language'), 'fas fa-globe')
 						->body($this->view('languages'))
 						->cancel();
 		}

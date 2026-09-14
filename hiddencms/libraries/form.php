@@ -115,7 +115,7 @@ class Form extends Library
 	public function add_back($url)
 	{
 		array_unshift($this->_buttons, [
-			'label'  => HB()->lang('Retour'),
+			'label'  => HB()->lang('Back'),
 			'action' => $this->url->back() ?: $url
 		]);
 
@@ -241,7 +241,7 @@ class Form extends Library
 						{
 							if (!($post[$var] = HB()->model2('file')->static_uploaded_file($files, isset($options['upload']) ? $options['upload'] : NULL, isset($options['value']) ? $options['value'] : NULL, $var)->id))
 							{
-								$this->_errors[$var] = HB()->lang('Erreur de transfert');
+								$this->_errors[$var] = HB()->lang('Transfer error');
 								return FALSE;
 							}
 							else if (isset($options['post_upload']) && is_callable($options['post_upload']))
@@ -288,7 +288,7 @@ class Form extends Library
 			array_diff(array_filter($post[$var]), array_map('utf8_htmlentities', array_keys($options['values'])))
 		)
 		{
-			return HB()->lang('La valeur sélectionnée n\'est pas valide|Les valeurs sélectionnées ne sont pas valides', count($post[$var]));
+			return HB()->lang('The selected value is not valid| The selected values are not valid', count($post[$var]));
 		}
 
 		$is_file = !empty($options['type']) && $options['type'] == 'file';
@@ -301,22 +301,22 @@ class Form extends Library
 				)
 			)
 		{
-			return HB()->lang('Veuillez remplir ce champ');
+			return HB()->lang('Please fill this field');
 		}
 
 		if ($is_file && !empty($_FILES[$this->token()]['error'][$var]) && $_FILES[$this->token()]['error'][$var] != 4)
 		{
 			$errors = [
-				1 => 'La taille du fichier téléchargé excède la valeur de upload_max_filesize, configurée dans le php.ini',
-				2 => 'La taille du fichier téléchargé excède la valeur de MAX_FILE_SIZE, qui a été spécifiée dans le formulaire HTML',
-				3 => 'Le fichier n\'a été que partiellement téléchargé',
-				4 => 'Aucun fichier n\'a été téléchargé',
-				6 => 'Un dossier temporaire est manquant',
-				7 => 'Échec de l\'écriture du fichier sur le disque',
-				8 => 'Une extension PHP a arrêté l\'envoi de fichier'
+				1 => 'The uploaded file exceeds upload_max_filesize in php.ini',
+				2 => 'The uploaded file exceeds MAX_FILE_SIZE in the HTML form',
+				3 => 'The file was only partially uploaded',
+				4 => 'No file was uploaded',
+				6 => 'A temporary folder is missing',
+				7 => 'Failed to write the file to disk',
+				8 => 'A PHP extension stopped the file upload'
 			];
 
-			return HB()->lang($errors[$_FILES[$this->token()]['error'][$var]]);
+			return HB()->lang($errors[$_FILES[$this->token()]['error'][$var]] ?? 'Unknown upload error');
 		}
 
 		if (isset($options['check']) && is_callable($options['check']))
@@ -361,7 +361,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !is_valid_email($post[$var]))
 		{
-			return HB()->lang('Veuillez entrer une adresse email valide');
+			return HB()->lang('Please enter a valid email address');
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -371,7 +371,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !is_valid_url($post[$var]))
 		{
-			return HB()->lang('Veuillez entrer une adresse url valide');
+			return HB()->lang('Please enter a valid URL');
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -385,7 +385,7 @@ class Form extends Library
 
 			if (!is_numeric($post[$var]))
 			{
-				return 'Nombre invalide';
+				return (string)$this->lang('Invalid number');
 			}
 		}
 
@@ -396,7 +396,7 @@ class Form extends Library
 	{
 		if ($post[$var] !== '' && !preg_match('/^0[1-9]([. ]?)\d{2}(?:\1\d{2}){3}$/', $post[$var], $match))
 		{
-			return 'Numéro de téléphone invalide';
+			return (string)$this->lang('Invalid phone number');
 		}
 
 		return $this->_check_text($post, $var, $options);
@@ -440,9 +440,9 @@ class Form extends Library
 				return $this->_render('confirm_delete', [
 					'title'        => $title,
 					'message'      => $message,
-					'close_label'  => HB()->lang('Fermer'),
-					'cancel_label' => HB()->lang('Annuler'),
-					'delete_label' => HB()->lang('Supprimer'),
+					'close_label'  => HB()->lang('Close'),
+					'cancel_label' => HB()->lang('Cancel'),
+					'delete_label' => HB()->lang('Delete'),
 					'request_url'  => url($this->url->request),
 					'token'        => $this->token()
 				]);
@@ -506,7 +506,7 @@ class Form extends Library
 		if ($this->_display_required)
 		{
 			$fields[] = $this->_render('required_note', [
-				'message' => HB()->lang('* Toutes les informations marquées d\'une étoile sont requises')
+				'message' => HB()->lang('* All fields marked with a star are required')
 			]);
 		}
 
@@ -793,9 +793,9 @@ class Form extends Library
 			$input = $this->_render('file', [
 				'input'        => $input,
 				'info'         => !empty($options['info']) ? $options['info'] : '',
-				'upload_label' => HB()->lang('Télécharger un fichier'),
-				'delete_label' => HB()->lang('Supprimer'),
-				'confirm_label' => HB()->lang('Supprimer le fichier ?'),
+				'upload_label' => HB()->lang('Upload file'),
+				'delete_label' => HB()->lang('Delete'),
+				'confirm_label' => HB()->lang('Delete the file?'),
 				'delete_name'  => $this->token().'['.$var.']',
 				'deleted'      => $deleted,
 				'thumbnail'    => $thumbnail
@@ -825,9 +825,9 @@ class Form extends Library
 									cols: 10,
 									rows: 5,
 									iconset: "fontawesome",
-									labelHeader: "'.HB()->lang('{0} sur {1} pages').'",
-									labelFooter: "'.HB()->lang('{2} icônes').'",
-									searchText: "'.HB()->lang('Rechercher...').'",
+									labelHeader: "'.HB()->lang('{0} on {1} pages').'",
+									labelFooter: "'.HB()->lang('{2} icons').'",
+									searchText: "'.HB()->lang('Search...').'",
 									selectedClass: "active",
 									unselectedClass: ""
 								});');

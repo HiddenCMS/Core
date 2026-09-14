@@ -5,12 +5,12 @@
  */
 
 $this	->rule($this->form_password('password')
-					->title('Mot de passe actuel')
+					->title('Current password')
 					->value('')
 					->check(function($data){
 						if ($data['password'] && !$this->_values->password($data['password']))
 						{
-							return 'Mot de passe incorrect';
+							return (string)$this->lang('Incorrect password');
 						}
 					})
 					->required()

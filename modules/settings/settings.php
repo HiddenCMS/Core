@@ -13,7 +13,7 @@ class Settings extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Paramètres'),
+			'title'       => $this->lang('Settings'),
 			'description' => '',
 			'icon'        => 'fas fa-cogs',
 			'link'        => 'https://neofr.ag',

@@ -38,7 +38,7 @@ class Outlines extends Model
 
 	public function get_regions($theme = NULL)
 	{
-		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->regions();
+		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->region_titles();
 	}
 
 	public function get_themes()

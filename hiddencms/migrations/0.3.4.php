@@ -11,7 +11,7 @@ return new class implements Migration
 
 		if (is_file($installer) && !is_file($installed) && !@touch($installed))
 		{
-			throw new RuntimeException('Impossible de sécuriser le répertoire d\'installation.');
+			throw new RuntimeException((string)HB()->lang('Unable to secure the installation directory.'));
 		}
 	}
 

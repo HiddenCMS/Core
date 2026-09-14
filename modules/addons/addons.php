@@ -13,7 +13,7 @@ class Addons extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => 'Thèmes & Addons',
+			'title'       => $this->lang('Themes & Addons'),
 			'description' => '',
 			'icon'        => 'fas fa-puzzle-piece',
 			'link'        => 'https://neofr.ag',

@@ -10,7 +10,7 @@
 		</div>
 		<div class="step" data-step="title">
 			<?php echo icon('fas fa-heading') ?>
-			<div class="content"><div class="title"><?php echo $this->lang('Titre') ?></div></div>
+			<div class="content"><div class="title"><?php echo $this->lang('Title') ?></div></div>
 		</div>
 		<div class="step" data-step="settings">
 			<?php echo icon('fas fa-sliders-h') ?>
@@ -23,7 +23,7 @@
 			<?php echo icon(isset($icons[$widget]) ? $icons[$widget] : 'fas fa-puzzle-piece') ?>
 		</div>
 		<div>
-			<div class="live-editor-settings-choice-label"><?php echo $this->lang('Widget sélectionné') ?></div>
+			<div class="live-editor-settings-choice-label"><?php echo $this->lang('Selected widget') ?></div>
 			<div class="live-editor-settings-choice-name"><?php echo $widgets[$widget] ?></div>
 		</div>
 	</div>
@@ -61,9 +61,9 @@
 
 	<div class="live-editor-settings-panel" data-step="title">
 		<div class="field">
-			<label for="live-editor-settings-title"><?php echo $this->lang('Titre') ?></label>
+			<label for="live-editor-settings-title"><?php echo $this->lang('Title') ?></label>
 			<input type="text" id="live-editor-settings-title" name="title" value="<?php echo $title ?>" />
-			<div class="ui tiny grey text"><?php echo icon('fas fa-info-circle').' '.$this->lang('Laissez ce champ vide pour ne pas afficher de titre.') ?></div>
+			<div class="ui tiny grey text"><?php echo icon('fas fa-info-circle').' '.$this->lang('Leave this field blank to hide the title.') ?></div>
 		</div>
 	</div>
 

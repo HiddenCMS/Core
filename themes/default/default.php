@@ -13,12 +13,13 @@ class Default_ extends Theme
 	protected function __info()
 	{
 		return [
-			'title'       => 'Thème par défaut',
-			'description' => 'Base de développement pour la création d\'un thème HiddenCMS',
+			'title'       => $this->lang('Default theme'),
+			'description' => $this->lang('A development foundation for creating a HiddenCMS theme'),
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'zones'       => ['Haut', 'Entête', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page'],
+			'zone_labels' => ['Top', 'Header', 'Before content', 'Content', 'After content', 'Footer'],
 			'regions'     => [
 				'top'            => 'Haut',
 				'header'         => 'Entête',
@@ -84,7 +85,7 @@ class Default_ extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Accueil')),
+												'title' => utf8_htmlentities($this->lang('Home')),
 												'url'   => ''
 											],
 											[
@@ -92,19 +93,19 @@ class Default_ extends Theme
 												'url'   => 'forum'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Équipes')),
+												'title' => utf8_htmlentities($this->lang('Teams')),
 												'url'   => 'teams'
 											],
 											[
-												'title' => utf8_htmlentities('Matchs'),
+												'title' => utf8_htmlentities($this->lang('Matches')),
 												'url'   => 'events/matches'
 											],
 											[
-												'title' => utf8_htmlentities('Partenaires'),
+												'title' => utf8_htmlentities($this->lang('Partners')),
 												'url'   => 'partners'
 											],
 											[
-												'title' => utf8_htmlentities('Palmarès'),
+												'title' => utf8_htmlentities($this->lang('Achievements')),
 												'url'   => 'awards'
 											]
 										]
@@ -162,19 +163,19 @@ class Default_ extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Membres')),
+												'title' => utf8_htmlentities($this->lang('Members')),
 												'url'   => 'members'
 											],
 											[
-												'title' => utf8_htmlentities('Recrutement'),
+												'title' => utf8_htmlentities($this->lang('Recruitment')),
 												'url'   => 'recruits'
 											],
 											[
-												'title' => utf8_htmlentities('Photos'),
+												'title' => utf8_htmlentities($this->lang('Photos')),
 												'url'   => 'gallery'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Rechercher')),
+												'title' => utf8_htmlentities($this->lang('Search')),
 												'url'   => 'search'
 											],
 											[

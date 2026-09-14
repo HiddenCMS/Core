@@ -1,5 +1,5 @@
 <div class="field">
-	<label for="widget-html-content"><?php echo $this->lang('Contenu') ?></label>
+	<label for="widget-html-content"><?php echo $this->lang('Content') ?></label>
 	<textarea class="wysiwyg" id="widget-html-content" name="settings[content]" rows="12"><?php if (isset($content)) echo $content ?></textarea>
 </div>
 <script type="text/javascript" src="<?php echo js('form_tinymce.js') ?>"></script>

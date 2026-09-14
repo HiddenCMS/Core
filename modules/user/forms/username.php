@@ -5,12 +5,12 @@
  */
 
 $this	->rule($this->form_text('username')
-					->title('Pseudo')
+					->title((string)$this->lang('Username'))
 					->required()
 					->check(function($data){
 						if ($data['username'] && !$this->db()->from('user')->where('username', $data['username'])->where('deleted', FALSE)->where_if($this->_values, 'id <>', $this->_values->id)->empty())
 						{
-							return 'Pseudo déjà utilisé';
+							return (string)$this->lang('Username already in use');
 						}
 					})
 		);

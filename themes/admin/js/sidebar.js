@@ -24,7 +24,7 @@ $(function(){
         backdrop.hidden = !(mobile.matches && open);
         document.body.classList.toggle('admin-menu-open', mobile.matches && !!open);
         toggle.setAttribute('aria-expanded', String(mobile.matches ? !!open : !compact));
-        toggle.setAttribute('aria-label', mobile.matches ? (open ? 'Fermer le menu' : 'Ouvrir le menu') : (compact ? 'Developper le menu' : 'Replier le menu'));
+        toggle.setAttribute('aria-label', mobile.matches ? (open ? toggle.dataset.labelClose : toggle.dataset.labelOpen) : (compact ? toggle.dataset.labelExpand : toggle.dataset.labelCollapse));
         toggle.title = toggle.getAttribute('aria-label');
         if ('inert' in sidebar) sidebar.inert = mobile.matches && !open;
     }

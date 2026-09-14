@@ -1,16 +1,16 @@
 <ul class="nav nav-pills" id="pills-tab" role="tablist">
-	<li class="nav-item"><a class="nav-link active" id="pills-options-tab" data-toggle="pill" href="#pills-options" role="tab" aria-controls="pills-options" aria-selected="true"><?php echo icon('fas fa-cogs').' Contenu' ?></a></li>
-	<li class="nav-item"><a class="nav-link" id="pills-display-tab" data-toggle="pill" href="#pills-display" role="tab" aria-controls="pills-display" aria-selected="false"><?php echo icon('fas fa-desktop').' Affichage' ?></a></li>
-	<li class="nav-item"><a class="nav-link" id="pills-style-tab" data-toggle="pill" href="#pills-style" role="tab" aria-controls="pills-style" aria-selected="false"><?php echo icon('fas fa-paint-brush').' Style' ?></a></li>
+	<li class="nav-item"><a class="nav-link active" id="pills-options-tab" data-toggle="pill" href="#pills-options" role="tab" aria-controls="pills-options" aria-selected="true"><?php echo icon('fas fa-cogs').' '.(string)$this->lang('Content') ?></a></li>
+	<li class="nav-item"><a class="nav-link" id="pills-display-tab" data-toggle="pill" href="#pills-display" role="tab" aria-controls="pills-display" aria-selected="false"><?php echo icon('fas fa-desktop').' '.(string)$this->lang('Display') ?></a></li>
+	<li class="nav-item"><a class="nav-link" id="pills-style-tab" data-toggle="pill" href="#pills-style" role="tab" aria-controls="pills-style" aria-selected="false"><?php echo icon('fas fa-paint-brush').' '.(string)$this->lang('Style') ?></a></li>
 </ul>
 <div class="tab-content border-light" id="pills-tabContent">
 	<div class="tab-pane fade show active" id="pills-options" role="tabpanel" aria-labelledby="pills-options-tab">
 		<div class="fields">
-			<label for="settings-display_teamname" class="four wide field">Nom de l'équipe</label>
+			<label for="settings-display_teamname" class="four wide field"><?php echo $this->lang('Organization name') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_teamname]" id="settings-display_teamname">
-					<option value="non"<?php if (!isset($display_teamname) || $display_teamname == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_teamname) && $display_teamname == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_teamname) || $display_teamname == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_teamname) && $display_teamname == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 			<div class="four wide field">
@@ -28,11 +28,11 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-display_logo" class="four wide field">Logo de l'équipe</label>
+			<label for="settings-display_logo" class="four wide field"><?php echo $this->lang('Organization logo') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_logo]" id="settings-display_logo">
-					<option value="non"<?php if (!isset($display_logo) || $display_logo == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_logo) && $display_logo == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_logo) || $display_logo == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_logo) && $display_logo == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 			<div class="four wide field">
@@ -63,29 +63,29 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-display_type" class="four wide field">Type de structure</label>
+			<label for="settings-display_type" class="four wide field"><?php echo $this->lang('Organization type') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_type]" id="settings-display_type">
-					<option value="non"<?php if (!isset($display_type) || $display_type == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_type) && $display_type == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_type) || $display_type == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_type) && $display_type == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-display_date" class="four wide field">Date de création</label>
+			<label for="settings-display_date" class="four wide field"><?php echo $this->lang('Founded on') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_date]" id="settings-display_date">
-					<option value="non"<?php if (!isset($display_date) || $display_date == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_date) && $display_date == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_date) || $display_date == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_date) && $display_date == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-display_biographie" class="four wide field">Biographie</label>
+			<label for="settings-display_biographie" class="four wide field"><?php echo $this->lang('Biography') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_biographie]" id="settings-display_biographie">
-					<option value="non"<?php if (!isset($display_biographie) || $display_biographie == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_biographie) && $display_biographie == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_biographie) || $display_biographie == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_biographie) && $display_biographie == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 			<div class="four wide field">
@@ -105,16 +105,16 @@
 	</div>
 	<div class="tab-pane fade" id="pills-display" role="tabpanel" aria-labelledby="pills-display-tab">
 		<div class="fields">
-			<label for="settings-display_panel" class="four wide field">Dans un panel</label>
+			<label for="settings-display_panel" class="four wide field"><?php echo $this->lang('Show in a panel') ?></label>
 			<div class="three wide field">
 				<select class="ui search selection dropdown" name="settings[display_panel]" id="settings-display_panel">
-					<option value="non"<?php if (!isset($display_panel) || $display_panel == 'non') echo ' selected="selected"' ?>>Non</option>
-					<option value="oui"<?php if (isset($display_panel) && $display_panel == 'oui') echo ' selected="selected"' ?>>Oui</option>
+					<option value="non"<?php if (!isset($display_panel) || $display_panel == 'non') echo ' selected="selected"' ?>><?php echo $this->lang('No') ?></option>
+					<option value="oui"<?php if (isset($display_panel) && $display_panel == 'oui') echo ' selected="selected"' ?>><?php echo $this->lang('Yes') ?></option>
 				</select>
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-margin_top" class="four wide field">Margin top</label>
+			<label for="settings-margin_top" class="four wide field"><?php echo $this->lang('Top margin') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -130,7 +130,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-margin_right" class="four wide field">Margin right</label>
+			<label for="settings-margin_right" class="four wide field"><?php echo $this->lang('Right margin') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -146,7 +146,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-margin_bottom" class="four wide field">Margin bottom</label>
+			<label for="settings-margin_bottom" class="four wide field"><?php echo $this->lang('Bottom margin') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -162,7 +162,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-margin_left" class="four wide field">Margin left</label>
+			<label for="settings-margin_left" class="four wide field"><?php echo $this->lang('Left margin') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -178,7 +178,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-padding_top" class="four wide field">Padding top</label>
+			<label for="settings-padding_top" class="four wide field"><?php echo $this->lang('Top padding') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -194,7 +194,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-padding_right" class="four wide field">Padding right</label>
+			<label for="settings-padding_right" class="four wide field"><?php echo $this->lang('Right padding') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -210,7 +210,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-padding_bottom" class="four wide field">Padding bottom</label>
+			<label for="settings-padding_bottom" class="four wide field"><?php echo $this->lang('Bottom padding') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -226,7 +226,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-padding_left" class="four wide field">Padding left</label>
+			<label for="settings-padding_left" class="four wide field"><?php echo $this->lang('Left padding') ?></label>
 			<div class="five wide field">
 				<div class="fields mb-0">
 					<div class="input-group">
@@ -244,7 +244,7 @@
 	</div>
 	<div class="tab-pane fade" id="pills-style" role="tabpanel" aria-labelledby="pills-style-tab">
 		<div class="fields">
-			<label for="settings-style_title" class="four wide field">Couleur des titres</label>
+			<label for="settings-style_title" class="four wide field"><?php echo $this->lang('Heading color') ?></label>
 			<div class="five wide field">
 				<div class="input-group">
 					<div class="input-group-prepend">
@@ -255,7 +255,7 @@
 			</div>
 		</div>
 		<div class="fields">
-			<label for="settings-style_text" class="four wide field">Couleur des textes</label>
+			<label for="settings-style_text" class="four wide field"><?php echo $this->lang('Text color') ?></label>
 			<div class="five wide field">
 				<div class="input-group">
 					<div class="input-group-prepend">

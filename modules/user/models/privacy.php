@@ -83,9 +83,9 @@ class Privacy extends Model
 	public function anonymize($user, $ignore_schedule = FALSE)
 	{
 		$request = $this->erasure_request($user);
-		if (!$request) throw new RuntimeException('Aucune demande d\'effacement n\'est enregistrée.');
+		if (!$request) throw new RuntimeException((string)$this->lang('No erasure request is registered.'));
 		if (!empty($request['completed_at'])) return $request['result'] ?: [];
-		if (!$ignore_schedule && strtotime($request['execute_after']) > time()) throw new RuntimeException('Le délai de rétractation n\'est pas terminé.');
+		if (!$ignore_schedule && strtotime($request['execute_after']) > time()) throw new RuntimeException((string)$this->lang('The cancellation period has not ended.'));
 		$this->assert_erasure_allowed($user);
 
 		$user_id = (int)$user->id;
@@ -113,7 +113,7 @@ class Privacy extends Model
 			$this->db->where('id', $user_id)->delete_checked('user_profile');
 			$this->db->where('user_id', $user_id)->delete_checked('file');
 			$this->db->where('id', $user_id)->update('user', [
-				'username'           => 'Utilisateur supprimé',
+				'username'           => (string)$this->lang('Deleted user'),
 				'password'           => password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT),
 				'email'              => NULL,
 				'registration_date'  => date('Y-m-d H:i:s'),
@@ -256,24 +256,24 @@ class Privacy extends Model
 
 	public function archive($user)
 	{
-		if (!class_exists(ZipArchive::class)) throw new RuntimeException('L\'extension PHP Zip est requise pour créer l\'export.');
+		if (!class_exists(ZipArchive::class)) throw new RuntimeException((string)$this->lang('The PHP Zip extension is required to create the export.'));
 
 		$export = $this->export($user);
 		$file = tempnam(sys_get_temp_dir(), 'hiddencms-export-');
-		if ($file === FALSE) throw new RuntimeException('Impossible de créer le fichier temporaire de l\'export.');
+		if ($file === FALSE) throw new RuntimeException((string)$this->lang('Unable to create the temporary export file.'));
 
 		$zip = new ZipArchive();
 		try
 		{
 			if ($zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE)
 			{
-				throw new RuntimeException('Impossible de créer l\'archive de l\'export.');
+				throw new RuntimeException((string)$this->lang('Unable to create the export archive.'));
 			}
 
 			$json = json_encode($export['data'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 			$zip->addFromString('personal-data.json', $json."\n");
 			foreach ($export['attachments'] as [$source, $name]) $zip->addFile($source, $name);
-			if (!$zip->close()) throw new RuntimeException('Impossible de finaliser l\'archive de l\'export.');
+			if (!$zip->close()) throw new RuntimeException((string)$this->lang('Unable to finalize the export archive.'));
 		}
 		catch (Throwable $e)
 		{
@@ -297,7 +297,7 @@ class Privacy extends Model
 		if (!$user || !$user()) throw new RuntimeException('Compte utilisateur introuvable.');
 		if ($user->admin && $this->db->from('user')->where('admin', TRUE)->where('deleted', FALSE)->count() <= 1)
 		{
-			throw new RuntimeException('Le dernier compte administrateur actif ne peut pas être supprimé.');
+			throw new RuntimeException((string)$this->lang('The last active administrator account cannot be deleted.'));
 		}
 	}
 }

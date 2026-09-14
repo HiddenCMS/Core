@@ -1,1 +1,1 @@
-<h1>404 Not Found</h1>
+<h1><?php echo HB()->lang('404 Not Found') ?></h1>

@@ -158,11 +158,11 @@ class Col extends Displayable
 		{
 			$output = '<div class="live-editor-col">
 							<div class="btn-group">
-								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="-1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Réduire').'">'.icon('fas fa-compress fa-rotate-45').'</button>
-								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Augmenter').'">'.icon('fas fa-expand fa-rotate-45').'</button>
-								<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
+								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="-1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Reduce').'">'.icon('fas fa-compress fa-rotate-45').'</button>
+								<button type="button" class="btn btn-sm btn-light live-editor-size" data-size="1" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Increase').'">'.icon('fas fa-expand fa-rotate-45').'</button>
+								<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Delete').'">'.icon('fas fa-times').'</button>
 							</div>
-							<h3>'.HB()->lang('Col').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-widget" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Nouveau Widget').'">'.icon('fas fa-plus').'</button></div></h3>
+							<h3>'.HB()->lang('Col').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-widget" data-toggle="tooltip" data-container="body" title="'.HB()->lang('New Widget').'">'.icon('fas fa-plus').'</button></div></h3>
 							'.$output.'
 						</div>';
 		}

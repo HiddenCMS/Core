@@ -26,11 +26,11 @@ class Image extends File
 			{
 				if ($this->_width == $this->_height)
 				{
-					$this->_errors[] = $this->lang('L\'image doit être un carré de %dpx de côté', $this->_width);
+					$this->_errors[] = $this->lang('The image must be a square with sides of %dpx', $this->_width);
 				}
 				else
 				{
-					$this->_errors[] = $this->lang('L\'image doit faire %dpx par %dpx', $this->_width, $this->_height);
+					$this->_errors[] = $this->lang('The image must be %dpx by %dpx', $this->_width, $this->_height);
 				}
 			}
 		};
@@ -39,7 +39,7 @@ class Image extends File
 			return $this->html()
 						->attr('class', 'text-center')
 						->append_if($path = ($this->_value ? $this->_value->path() : $this->_default), '<img class="img-thumbnail" src="'.$path.'" alt="" />')
-						->append_if($this->_width || $this->_height,                  '<p class="m-4">'.$this->lang('Dimensions %dpx par %dpx <i>(%s max.)</i>', $this->_width, $this->_height, human_size(file_upload_max_size())).'</p>');
+						->append_if($this->_width || $this->_height,                  '<p class="m-4">'.$this->lang('Dimensions: %dpx by %dpx <i>(%s max.)</i>', $this->_width, $this->_height, human_size(file_upload_max_size())).'</p>');
 		};
 
 		return parent::__invoke($name, $upload_dir);

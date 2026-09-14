@@ -1,7 +1,7 @@
 <ul class="nav <?php echo !empty($align) ? $align : 'justify-content-end' ?>">
 	<?php if ($this->user()): ?>
-		<li class="nav-item"><span class="nav-link"><?php echo $this->lang('Bienvenue <a href="'.url('user').'">'.$this->user->username.'</a>') ?></span></li>
-		<li class="nav-item" data-toggle="tooltip" title="Éditer mon profil"><a class="nav-link" href="<?php echo url('user/profile') ?>"><?php echo icon('fas fa-cog') ?></a></li>
+		<li class="nav-item"><span class="nav-link"><?php echo $this->lang('Welcome <a href="'.url('user').'">'.$this->user->username.'</a>') ?></span></li>
+		<li class="nav-item" data-toggle="tooltip" title="<?php echo $this->lang('Edit my profile') ?>"><a class="nav-link" href="<?php echo url('user/profile') ?>"><?php echo icon('fas fa-cog') ?></a></li>
 		<li class="nav-item" data-toggle="tooltip" title="Messagerie">
 			<a class="nav-link" href="<?php echo url('user/messages') ?>">
 				<?php echo icon('far fa-envelope') ?>
@@ -11,11 +11,11 @@
 		<?php if ($this->access->admin()): ?>
 			<li class="nav-item" data-toggle="tooltip" title="Administration"><a class="nav-link" href="<?php echo url('admin') ?>"><?php echo icon('fas fa-tachometer-alt') ?></a></li>
 		<?php endif ?>
-		<li data-toggle="tooltip" title="Déconnexion"><a class="nav-link" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times') ?></a></li>
+		<li data-toggle="tooltip" title="<?php echo $this->lang('Sign out') ?>"><a class="nav-link" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times') ?></a></li>
 	<?php else: ?>
 		<?php if ($this->config->registration_status): ?>
-		<li class="nav-item"><a class="nav-link" href="<?php echo url('user/register') ?>"><?php echo $this->lang('Créer un compte') ?></a></li>
+		<li class="nav-item"><a class="nav-link" href="<?php echo url('user/register') ?>"><?php echo $this->lang('Create an account') ?></a></li>
 		<?php endif ?>
-		<li class="nav-item"><a class="nav-link" href="<?php echo url('user/login') ?>"><?php echo icon('fas fa-sign-in-alt').' '.$this->lang('Connexion') ?></a></li>
+		<li class="nav-item"><a class="nav-link" href="<?php echo url('user/login') ?>"><?php echo icon('fas fa-sign-in-alt').' '.$this->lang('Sign in') ?></a></li>
 	<?php endif ?>
 </ul>

@@ -14,7 +14,7 @@ class Outlines extends Module
 	{
 		return [
 			'title'       => $this->lang('Outlines'),
-			'description' => $this->lang('Outlines et composition globale des pages'),
+			'description' => $this->lang('Outlines and global page layouts'),
 			'icon'        => 'fas fa-layer-group',
 			'link'        => 'https://hiddencms.dev',
 			'author'      => 'HiddenCMS',

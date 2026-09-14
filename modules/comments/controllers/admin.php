@@ -12,7 +12,7 @@ class Admin extends Controller_Module
 {
 	public function index($comments)
 	{
-		return $this->table2($comments, 'Aucun commentaire')
+		return $this->table2($comments, (string)$this->lang('No comments'))
 					->col('Module', function($comment){
 						$info = $this->module(preg_replace('/_.*$/', '', $comment->module))->info();
 						return HB()->label($info->title, $info->icon);

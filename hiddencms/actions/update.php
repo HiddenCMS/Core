@@ -8,7 +8,7 @@ namespace HB\HiddenCMS\Actions;
 
 class Update extends \HB\HiddenCMS\Action
 {
-	protected $_title = 'Éditer';
+	protected $_title = 'Edit';
 	protected $_icon  = 'fas fa-pencil-alt';
 	protected $_color = 'primary';
 
@@ -46,7 +46,7 @@ class Update extends \HB\HiddenCMS\Action
 
 	protected function title($model)
 	{
-		return $this->lang('Édition de %s', $model);
+		return $this->lang('Editing %s', $model);
 	}
 }
 

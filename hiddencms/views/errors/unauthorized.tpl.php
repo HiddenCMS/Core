@@ -1,1 +1,1 @@
-<h1>Accès non autorisé</h1>
+<h1><?php echo HB()->lang('Access denied') ?></h1>

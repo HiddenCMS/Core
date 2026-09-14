@@ -10,18 +10,18 @@ use HB\HiddenCMS\Loadables\Controller;
 
 class Authenticator extends Controller
 {
-	public $__label = ['Authentificateurs', 'Authentificateur', 'fas fa-lock', 'info'];
+	public $__label = ['Authenticators', 'Authenticator', 'fas fa-lock', 'info'];
 
 	public function __actions()
 	{
 		return $this->array
-					->set('enable', ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
+					->set('enable', [(string)$this->lang('Enable'), 'fas fa-check', 'success', TRUE, function($addon){
 						return !$addon->is_enabled();
 					}])
-					->set('disable', ['Désactiver', 'fas fa-times', 'muted', TRUE, function($addon){
+					->set('disable', [(string)$this->lang('Disable'), 'fas fa-times', 'muted', TRUE, function($addon){
 						return $addon->is_enabled();
 					}])
-					->set('order', ['Ordre', 'fas fa-sort', 'info', TRUE])
+					->set('order', [(string)$this->lang('Order'), 'fas fa-sort', 'info', TRUE])
 					->set('settings', ['Configuration', 'fas fa-wrench', 'warning', TRUE]);
 	}
 
@@ -29,7 +29,7 @@ class Authenticator extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', TRUE))->update();
 
-		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> enabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -38,7 +38,7 @@ class Authenticator extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', FALSE))->update();
 
-		notify($this->lang('<b>%s</b> désactivé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> disabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -72,7 +72,7 @@ class Authenticator extends Controller
 			return $this->output->json(['success' => 'refresh']);
 		}
 
-		return $this->modal('Authentificateurs', 'fas fa-sort')
+		return $this->modal((string)$this->lang('Authenticators'), 'fas fa-sort')
 					->body($this->table2($authenticators)
 								->compact(function($a){
 									return $this->button_sort($a->id, 'admin/addons/order/'.$a->url());
@@ -88,9 +88,9 @@ class Authenticator extends Controller
 	{
 		return $this->form2()
 					->info('<div class="alert alert-primary">
-								<h5 class="alert-heading">'.$this->label('Informations', 'fas fa-info-circle').'</h5>
+								<h5 class="alert-heading">'.$this->label((string)$this->lang('Information'), 'fas fa-info-circle').'</h5>
 								<dl>
-									<dt>Enregistrez votre site via</dt>
+									<dt>'.$this->lang('Register your website at').'</dt>
 										<dd><a href="'.$auth->info()->help.'" target="_blank">'.$auth->info()->help.'</a></dd>
 									'.$this	->array($auth->_params())
 											->each(function($a, $key){
@@ -99,7 +99,7 @@ class Authenticator extends Controller
 								</dl>
 							</div>')
 					->exec(function($form) use ($auth){
-						foreach (['dev' => 'Développement', 'prod' => 'Production'] as $type => $legend)
+						foreach (['dev' => (string)$this->lang('Development'), 'prod' => 'Production'] as $type => $legend)
 						{
 							$form	->legend($legend)
 									->exec(function($form) use ($type, $auth){
@@ -123,7 +123,7 @@ class Authenticator extends Controller
 
 						$auth->__addon->set('data', $auth->__addon->data)->update();
 
-						notify($this->lang('Configuration de <b>%s</b> modifiée', $auth->info()->title));
+						notify($this->lang('Configuration of <b>%s</b> updated', $auth->info()->title));
 
 						refresh();
 					})

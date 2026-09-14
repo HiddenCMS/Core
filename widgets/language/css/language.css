@@ -1,0 +1,17 @@
+.site-language-selector { position: relative; display: inline-block; vertical-align: middle; color: inherit; }
+.site-language-selector > .site-language-toggle { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 4px; color: inherit; background: transparent; list-style: none; cursor: pointer; transition: background .16s ease; }
+.site-language-toggle::-webkit-details-marker { display: none; }
+.site-language-toggle > .icon { margin: 0; font-size: 20px; }
+.site-language-selector > .site-language-toggle:hover, .site-language-selector[open] > .site-language-toggle { background: #8882; }
+.site-language-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.site-language-selector > .site-language-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 10000; width: 220px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow-y: auto; padding: 6px; border: 1px solid #dce4e1; border-radius: 6px; background: #fff; color: #26352f; box-shadow: 0 8px 28px #0002; }
+.site-language-selector:not([open]) > .site-language-menu { display: none; }
+.site-language-selector[open] > .site-language-menu { animation: language-menu-in .16s ease-out; }
+.site-language-menu > a { display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 8px 12px; border: 0; border-radius: 3px; color: #26352f; text-decoration: none; font-size: 14px; font-weight: 400; line-height: 1.4; }
+.site-language-menu > a:hover, .site-language-menu > a:focus-visible { background: #f0f4f2; color: #163c2e; }
+.site-language-menu > a[aria-current="true"] { background: #e8f4ef; color: #1b5944; font-weight: 600; }
+.site-language-menu > a > img { flex-shrink: 0; width: 24px; height: 16px; object-fit: fill; }
+.site-language-menu > a > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.site-language-menu > a > .fa-check { margin: 0; font-size: 12px; }
+@keyframes language-menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .site-language-selector[open] > .site-language-menu { animation: none; } .site-language-selector > .site-language-toggle { transition: none; } }

@@ -12,7 +12,7 @@
 		<?php endforeach ?>
 	<?php else: ?>
 		<li class="list-group-item">
-			<?php echo $this->lang('Aucun message') ?>
+			<?php echo $this->lang('No messages') ?>
 		</li>
 	<?php endif ?>
 </ul>

@@ -13,15 +13,15 @@ class Html extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Contenu libre / Code HTML'),
+			'title'       => $this->lang('Free content / HTML Code'),
 			'icon'        => 'fas fa-code',
 			'description' => '',
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Michaël BILCOT & Jérémy VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
 			'types'       => [
-				'index' => $this->lang('Contenu libre'),
-				'html'  => $this->lang('Code HTML')
+				'index' => $this->lang('Free content'),
+				'html'  => $this->lang('HTML code')
 			]
 		];
 	}

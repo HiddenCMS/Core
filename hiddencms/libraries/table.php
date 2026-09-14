@@ -239,7 +239,7 @@ class Table extends Library
 				$this->session->set('table', $this->id, 'search', $search);
 
 				$this->_data = $results;
-				$this->_no_data = HB()->lang('Aucun résultat ne correspond à la recherche');
+				$this->_no_data = HB()->lang('No results match the search');
 			}
 			else
 			{
@@ -279,7 +279,7 @@ class Table extends Library
 		{
 			$output = $this->render_table_content([
 				'no_data'             => TRUE,
-				'no_data_message'     => $this->_no_data ?: HB()->lang('Il n\'y a rien ici pour le moment'),
+				'no_data_message'     => $this->_no_data ?: HB()->lang('There is nothing here at the moment'),
 				'header_columns'      => [],
 				'rows'                => [],
 				'footer_columns'      => [],
@@ -360,7 +360,7 @@ class Table extends Library
 						'value'    => (string)$value,
 						'selected' => $current_items_per_page == $value,
 						'url'      => 'page/1/'.$value,
-						'label'    => HB()->lang('%d résultat|%d résultats', $value, $value)
+						'label'    => HB()->lang('%d result| %d results', $value, $value)
 					];
 				}
 
@@ -368,7 +368,7 @@ class Table extends Library
 					'value'    => 'all',
 					'selected' => $current_items_per_page == 0,
 					'url'      => 'all',
-					'label'    => HB()->lang('Tout afficher')
+					'label'    => HB()->lang('Show all')
 				];
 			}
 
@@ -401,7 +401,7 @@ class Table extends Library
 				'items_per_page'      => $items_per_page,
 				'pagination_top'      => $pagination_top,
 				'pagination_bottom'   => $pagination_bottom,
-				'results_label'       => HB()->lang('%d résultat|%d résultats', $count, $count).($count < $count_results ? HB()->lang(' sur %d au total', $count_results) : '')
+				'results_label'       => HB()->lang('%d result| %d results', $count, $count).($count < $count_results ? HB()->lang('%d total', $count_results) : '')
 			]);
 
 			if (!$this->_ajax)
@@ -595,7 +595,7 @@ class Table extends Library
 
 		if ($data['search_enabled'])
 		{
-			$search = '<div class="table-search"><input data-provide="typeahead" data-items="5" data-source="'.$data['search_source_json'].'" type="text"'.($data['search_value'] !== '' ? ' value="'.utf8_htmlentities($data['search_value']).'"' : '').' placeholder="'.HB()->lang('Rechercher').'" autocomplete="off" /></div>';
+			$search = '<div class="table-search"><input data-provide="typeahead" data-items="5" data-source="'.$data['search_source_json'].'" type="text"'.($data['search_value'] !== '' ? ' value="'.utf8_htmlentities($data['search_value']).'"' : '').' placeholder="'.HB()->lang('Search').'" autocomplete="off" /></div>';
 		}
 
 		return '<div class="table-area" data-table-id="'.$data['id'].'"'.($data['ajax_url'] ? ' data-ajax-url="'.$data['ajax_url'].'" data-ajax-post="'.$data['ajax_post'].'"' : '').'>'.$search.'<div class="table-content">'.$data['content'].'</div></div>';

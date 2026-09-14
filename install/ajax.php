@@ -3,6 +3,7 @@
 $step = array_key_exists('step', $_GET) ? $_GET['step'] : '';
 $output = [];
 
+try {
 if ($step == 'check')
 {
 	$checks = [];
@@ -18,12 +19,12 @@ if ($step == 'check')
 			else
 			{
 				$icon = 'danger';
-				$info = [lang('Requis')];
+				$info = [lang('Required')];
 				unlink('.htaccess');
 			}
 
 			return [
-				'title' => lang('Réécriture d\'URL'),
+				'title' => lang('URL rewrite'),
 				'info'  => $info,
 				'icon'  => $icon
 			];
@@ -33,8 +34,8 @@ if ($step == 'check')
 	{
 		$checks[] = function(){
 			return [
-				'title' => lang('Droits d\'écriture'),
-				'info'  => [lang('Requis')],
+				'title' => lang('Write permission'),
+				'info'  => [lang('Required')],
 				'icon'  => 'danger'
 			];
 		};
@@ -49,11 +50,11 @@ if ($step == 'check')
 		else
 		{
 			$icon = 'warning';
-			$info = [lang('À configurer')];
+			$info = [lang('To be configured')];
 		}
 
 		return [
-			'title' => lang('Envoi d\'email'),
+			'title' => lang('E-mail sending'),
 			'info'  => $info,
 			'icon'  => $icon
 		];
@@ -68,11 +69,11 @@ if ($step == 'check')
 		else
 		{
 			$icon = 'warning';
-			$info = [lang('À configurer')];
+			$info = [lang('To be configured')];
 		}
 
 		return [
-			'title' => lang('Connexion sécurisée HTTPS'),
+			'title' => lang('HTTPS secure connection'),
 			'info'  => $info,
 			'icon'  => $icon
 		];
@@ -102,11 +103,11 @@ if ($step == 'check')
 			else
 			{
 				$icon = 'warning';
-				$info = [lang('À configurer')];
+				$info = [lang('To be configured')];
 			}
 
 			return [
-				'title' => lang('Compression HTTP'),
+				'title' => lang('HTTP compression'),
 				'info'  => $info,
 				'icon'  => $icon
 			];
@@ -140,7 +141,7 @@ if ($step == 'check')
 						$output[] =[
 							'title' => 'HiddenCMS',
 							'info'  => [
-								lang('Dernière version') => $version->version
+								lang('Last version') => $version->version
 							],
 							'icon'  => 'danger'
 						];
@@ -160,16 +161,16 @@ if ($step == 'check')
 			else if ($get(FALSE))
 			{
 				$icon = 'warning';
-				$info = [lang('Certificats SSL manquants')];
+				$info = [lang('Missing SSL certificates')];
 			}
 			else
 			{
 				$icon = 'danger';
-				$info = [lang('Manquante')];
+				$info = [lang('Missing')];
 			}
 
 			return array_merge([[
-				'title' => lang('Vérification des mises à jour'),
+				'title' => lang('Check for updates'),
 				'info'  => $info,
 				'icon'  => $icon
 			]], $output);
@@ -189,22 +190,22 @@ if ($step == 'check')
 		{
 			$icon = 'danger';
 			$info = [
-				lang('Minimum requis')      => $minimal_required,
-				lang('Version recommandée') => $current
+				lang('Minimum required')      => $minimal_required,
+				lang('Recommended version') => $current
 			];
 		}
 		else if (version_compare(PHP_VERSION, $last_end_of_life, '<='))
 		{
 			$icon = 'warning';
 			$info = [
-				lang('Version recommandée') => $current
+				lang('Recommended version') => $current
 			];
 		}
 		else if (version_compare(PHP_VERSION, $current, '<'))
 		{
 			$icon = 'info';
 			$info = [
-				lang('Version recommandée') => $current
+				lang('Recommended version') => $current
 			];
 		}
 
@@ -235,17 +236,17 @@ if ($step == 'check')
 			if (!$required)
 			{
 				$icon = 'warning';
-				$info = [lang('Recommandée')];
+				$info = [lang('Recommended')];
 			}
 			else
 			{
 				$icon = 'danger';
-				$info = [lang('Requise')];
+				$info = [lang('Required')];
 			}
 
 			$checks[] = function() use ($title, $info, $icon){
 				return [
-					'title' => lang('Extension PHP').' <i>'.$title.'</i>',
+					'title' => lang('PHP extension').' <i>'.$title.'</i>',
 					'info'  => $info,
 					'icon'  => $icon
 				];
@@ -257,7 +258,7 @@ if ($step == 'check')
 	{
 		$checks[] = function(){
 			return [
-				'title' => lang('Extensions PHP'),
+				'title' => lang('PHP extensions'),
 				'info'  => [lang('OK')],
 				'icon'  => 'success'
 			];
@@ -282,6 +283,12 @@ if ($step == 'check')
 else if ($step == 'db')
 {
 	$ok = TRUE;
+	$language = $_POST['language'] ?? 'en';
+	if (!is_string($language) || !in_array($language, ['en', 'fr'], TRUE))
+	{
+		$output['errors']['language'] = lang('Choose a supported language');
+		$ok = FALSE;
+	}
 
 	foreach (['host', 'user', 'dbname'] as $var)
 	{
@@ -315,7 +322,7 @@ else if ($step == 'db')
 			else if ($mysqli->connect_errno == 1044)
 			{
 				$output['errors']['host']     = 'ok';
-				$output['errors']['user']     = lang('Autorisation manquante pour accéder à la base de donnée');
+				$output['errors']['user']     = lang('Missing authorization to access the database');
 				$output['errors']['password'] = '';
 				$output['errors']['dbname']   = 'ok';
 			}
@@ -358,7 +365,7 @@ else if ($step == 'db')
 				$output['errors']['host']     = 'ok';
 				$output['errors']['user']     = 'ok';
 				$output['errors']['password'] = 'ok';
-				$output['errors']['dbname']   = lang('Cette base de données contient déjà une installation HiddenCMS');
+				$output['errors']['dbname']   = lang('This database already contains a HiddenCMS installation');
 			}
 			else
 			{
@@ -390,6 +397,8 @@ else if ($step == 'db')
 						$mysqli->query($query);
 					}
 
+					require_once __DIR__.'/language.php';
+					install_language($mysqli, $language);
 					touch('install/db.txt');
 				}
 			}
@@ -439,13 +448,19 @@ else if ($step == 'user')
 
 		HiddenCMS()->session->login($user);
 
-		require_once 'HiddenCMS/helpers/dir.php';
+		require_once 'hiddencms/helpers/dir.php';
 		unlink('.htaccess');
 		rename('.htaccess_tmp', '.htaccess');
 		dir_remove('install');
 
 		$output = 'ok';
 	}
+}
+
+} catch (Throwable $error) {
+	error_log('HiddenCMS installation failed at step '.(is_string($step) ? $step : 'unknown').': '.$error->getMessage());
+	http_response_code(500);
+	$output = ['error' => lang('The request failed. Please try again. If the problem persists, check the server logs.')];
 }
 
 header('Content-Type: application/json; charset=UTF-8');

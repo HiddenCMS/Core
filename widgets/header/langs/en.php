@@ -12,5 +12,7 @@ return [
 	'b8e8afdd' => 'Default title',
 	'e17afcad' => 'Alignment',
 	'eb78cff1' => 'Description',
-	'f38ec1ed' => 'Default description'
+	'f38ec1ed' => 'Default description',
+    'ae3f9cff' => 'Alignment',
+    '9b843bae' => 'Site Title',
 ];

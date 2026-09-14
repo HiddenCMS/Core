@@ -12,9 +12,15 @@ class Checker extends Module_Checker
 {
 	public function login()
 	{
+		if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET')
+		{
+			$target = user_return_path($_GET['return'] ?? NULL, $this->url->base);
+			if ($target !== NULL) $this->session->set('auth_return', $target);
+			else $this->session->set('auth_return', NULL);
+		}
 		if ($this->user())
 		{
-			redirect();
+			$this->url->redirect(user_login_destination());
 		}
 
 		return [];

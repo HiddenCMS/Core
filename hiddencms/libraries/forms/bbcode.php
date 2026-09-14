@@ -74,7 +74,7 @@ class Bbcode extends Textarea
 														->data('type', 'bbcode'),
 												'&nbsp;',
 												parent	::button()
-														->title('Code HTML')
+														->title((string)$this->lang('HTML code'))
 														->icon('fas fa-code')
 														->color(!$this->_html[1] ? 'primary' : 'secondary')
 														->data('type', 'html')

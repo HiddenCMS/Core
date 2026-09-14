@@ -10,15 +10,15 @@ use HB\HiddenCMS\Loadables\Controller;
 
 class Language extends Controller
 {
-	public $__label = ['Langues', 'Langue', 'far fa-flag', 'danger'];
+	public $__label = ['Languages', 'Language', 'far fa-flag', 'danger'];
 
 	public function __actions()
 	{
 		return $this->array
-					->set('enable', ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
+					->set('enable', [(string)$this->lang('Enable'), 'fas fa-check', 'success', TRUE, function($addon){
 						return !$addon->is_enabled();
 					}])
-					->set('disable', ['Désactiver', 'fas fa-times', 'muted', TRUE, function($addon){
+					->set('disable', [(string)$this->lang('Disable'), 'fas fa-times', 'muted', TRUE, function($addon){
 						return count($this->config->langs) > 1 && $addon->is_enabled();
 					}])
 					->set('order', ['Ordre', 'fas fa-sort', 'info', TRUE]);
@@ -28,7 +28,7 @@ class Language extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', TRUE))->update();
 
-		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> enabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -37,7 +37,7 @@ class Language extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', FALSE))->update();
 
-		notify($this->lang('<b>%s</b> désactivé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> disabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -68,7 +68,7 @@ class Language extends Controller
 			return $this->output->json(['success' => 'refresh']);
 		}
 
-		return $this->modal('Préférence des langues', 'far fa-flag')
+		return $this->modal((string)$this->lang('Language preferences'), 'far fa-flag')
 					->body($this->table2($langs)
 								->compact(function($a){
 									return $this->button_sort($a->__addon->id, 'admin/addons/order/'.$a->__addon->url());

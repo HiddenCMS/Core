@@ -14,9 +14,9 @@
 			}
 		?>
 		<h6>
-			<?php echo $comment->user() ? $comment->user->link() : $this->lang('Visiteur') ?>
+			<?php echo $comment->user() ? $comment->user->link() : $this->lang('Visitor') ?>
 			<small><?php echo icon('far fa-clock').' '.$comment->date ?></small>
 		</h6>
-		<?php echo $comment->content ? strtolink(nl2br($comment->content), TRUE) : '<i>'.$this->lang('Message supprimé').'</i>' ?>
+		<?php echo $comment->content ? strtolink(nl2br($comment->content), TRUE) : '<i>'.$this->lang('Message deleted').'</i>' ?>
 	</div>
 </div>

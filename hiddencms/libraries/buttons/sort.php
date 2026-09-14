@@ -15,7 +15,7 @@ class Sort extends Library
 		return $this->js('jquery-ui.min')
 					->js('sortable')
 					->button()
-					->tooltip($this->lang('Ordonner'))
+					->tooltip($this->lang('Order'))
 					->icon('fas fa-arrows-alt-v')
 					->color('link')
 					->style('hb-sortable')

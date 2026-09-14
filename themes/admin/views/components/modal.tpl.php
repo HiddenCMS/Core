@@ -2,7 +2,7 @@
 <<?php echo $tag ?> id="<?php echo $id ?>" class="ui <?php echo $semantic_size ? $semantic_size.' ' : '' ?>modal" tabindex="-1" role="dialog" aria-hidden="true"<?php echo $has_form ? ' action="'.$form_action.'" method="'.$form_method.'"' : '' ?>>
 	<div class="header">
 		<?php echo $header ?>
-		<i class="close icon" data-dismiss="modal" aria-label="<?php echo $this->lang('Fermer') ?>"></i>
+		<i class="close icon" data-dismiss="modal" aria-label="<?php echo $this->lang('Close') ?>"></i>
 	</div>
 
 	<?php if ($body !== ''): ?>

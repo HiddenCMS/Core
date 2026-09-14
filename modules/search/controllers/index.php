@@ -114,7 +114,7 @@ class Index extends Controller_Module
 												->heading($result[0]->info()->title, $result[0]->info()->icon, 'search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 												->body(implode('<hr />', $content))
 												->footer_if(!$details && $result[3] > 3, $this	->button()
-																								->title($this->lang('Voir l\'ensemble des résultats'))
+																								->title($this->lang('See all results'))
 																								->url('search/'.$result[0]->info()->name.'?q='.rawurlencode($search))
 																								->color('light')
 																								->align('center')

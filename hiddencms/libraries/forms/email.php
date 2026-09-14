@@ -15,7 +15,7 @@ class Email extends Text
 		$this->_check[] = function($post, &$data){
 			if (isset($post[$this->_name]) && $post[$this->_name] !== '' && !is_valid_email($post[$this->_name]))
 			{
-				$this->_errors[] = $this->lang('Veuillez entrer une adresse email valide');
+				$this->_errors[] = $this->lang('Please enter a valid email address');
 			}
 		};
 

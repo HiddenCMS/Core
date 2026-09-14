@@ -120,7 +120,7 @@ class Menu extends Model2
 
 	public function get_parent_items($menu_id, $exclude_item_id = 0)
 	{
-		$items = ['' => 'Aucun (niveau racine)'];
+		$items = ['' => (string)$this->lang('None (root level)')];
 		$excluded = $exclude_item_id ? array_merge([$exclude_item_id], $this->descendant_ids($menu_id, $exclude_item_id)) : [];
 
 		foreach ($this->get_menu_items($menu_id) as $item)
@@ -557,7 +557,7 @@ class Menu extends Model2
 								->get(FALSE) as $category)
 			{
 				$path = trim($base.'/'.$category['name'], '/');
-				$label = '[Catégorie d\'actualités] '.trim((string)$category['title']);
+				$label = (string)$this->lang('[News category] %s', trim((string)$category['title']));
 
 				$urls[$path] = $label;
 			}
@@ -572,7 +572,7 @@ class Menu extends Model2
 								->get(FALSE) as $news)
 			{
 				$path = trim($base.'/'.$news['category_name'].'/'.$news['slug'], '/');
-				$label = '[Actualité] '.trim((string)$news['title']);
+				$label = (string)$this->lang('[News] %s', trim((string)$news['title']));
 
 				$urls[$path] = $label;
 			}

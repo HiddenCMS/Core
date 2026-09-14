@@ -36,6 +36,7 @@ function main($argv)
 		'admin_email'   => option($options, 'admin-email'),
 		'base'          => option($options, 'base', '/'),
 		'site_name'     => option($options, 'site-name'),
+		'language'      => option($options, 'language'),
 		'site_contact'  => option($options, 'site-contact'),
 		'force'         => isset($options['force']),
 		'yes'           => isset($options['yes']),
@@ -78,6 +79,8 @@ function main($argv)
 
 	write_db_config($config);
 	import_database($mysqli, HIDDENCMS_ROOT.'/install/DATABASE.sql');
+	require_once __DIR__.'/language.php';
+	install_language($mysqli, $config['language']);
 	configure_site($mysqli, $config);
 	configure_admin($mysqli, $config);
 	write_htaccess($config);
@@ -115,6 +118,7 @@ function parse_options($argv)
 		'admin-email',
 		'base',
 		'site-name',
+		'language',
 		'site-contact'
 	];
 	$flag_options = [
@@ -168,6 +172,10 @@ function option($options, $name, $default = NULL)
 
 function interactive_config(&$config)
 {
+	if ($config['language'] === NULL)
+	{
+		$config['language'] = $config['yes'] ? 'en' : prompt('Primary language (en/fr)', 'en');
+	}
 	if (!$config['db_name'])
 	{
 		$config['db_name'] = prompt('Database name', 'hiddencms');
@@ -204,6 +212,10 @@ function interactive_config(&$config)
 
 function validate_config($config)
 {
+	if (!in_array($config['language'], ['en', 'fr'], TRUE))
+	{
+		exit_with_error('Primary language must be en or fr.');
+	}
 	if ($config['db_host'] === '' || $config['db_name'] === '' || $config['db_user'] === '')
 	{
 		exit_with_error('Database host, name and user are required.');
@@ -717,6 +729,7 @@ function print_usage()
 	line('  --admin-email=mail        Admin email');
 	line('');
 	line('Site options:');
+	line('  --language=en             Primary language (en/fr, default: en)');
 	line('  --base=/hHiddenCMS/       Apache RewriteBase');
 	line('  --site-name=HiddenCMS     Site name');
 	line('  --site-contact=mail       Site contact email');

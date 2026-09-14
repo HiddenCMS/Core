@@ -110,7 +110,7 @@ class Addon_Packages extends Library
 			{
 				if (!isset($types[$definition['type']]))
 				{
-					throw new RuntimeException('Type d\'addon inconnu : '.$definition['type']);
+					throw new RuntimeException((string)$this->lang('Unknown addon type: %s', $definition['type']));
 				}
 
 				$addon = HB()->collection('addon')
@@ -170,7 +170,7 @@ class Addon_Packages extends Library
 			$release = $this->stable_release($package);
 			if (!$release)
 			{
-				throw new RuntimeException('Aucune version stable compatible disponible pour '.$package.'.');
+				throw new RuntimeException((string)$this->lang('No compatible stable version is available for %s.', $package));
 			}
 			return $this->run_composer(['require', $package.':^'.ltrim($release, 'v'), '--with-all-dependencies', '--prefer-stable']);
 		}
@@ -209,7 +209,7 @@ class Addon_Packages extends Library
 
 		if ($start === FALSE || $end === FALSE || !is_array($data = json_decode(substr($output, $start, $end - $start + 1), TRUE)))
 		{
-			throw new RuntimeException('Composer n\'a pas retourné un diagnostic de mises à jour valide.');
+			throw new RuntimeException((string)$this->lang('Composer did not return valid update diagnostics.'));
 		}
 
 		$result = [];
@@ -275,7 +275,7 @@ class Addon_Packages extends Library
 		$data = $start !== FALSE && $end !== FALSE ? json_decode(substr($output, $start, $end - $start + 1), TRUE) : NULL;
 		if (!is_array($data))
 		{
-			throw new RuntimeException('Diagnostic Composer invalide.');
+			throw new RuntimeException((string)$this->lang('Invalid Composer diagnostics.'));
 		}
 		return $data;
 	}
@@ -330,7 +330,7 @@ class Addon_Packages extends Library
 	{
 		if (!function_exists('proc_open'))
 		{
-			throw new RuntimeException('proc_open est requis pour lancer Composer depuis l\'administration.');
+			throw new RuntimeException((string)$this->lang('proc_open is required to run Composer from the administration.'));
 		}
 
 		$command = array_merge($this->composer_command(), $arguments, ['--no-interaction']);
@@ -347,7 +347,7 @@ class Addon_Packages extends Library
 
 		if (!is_resource($process))
 		{
-			throw new RuntimeException('Composer n\'a pas pu être démarré.');
+			throw new RuntimeException((string)$this->lang('Composer could not be started.'));
 		}
 
 		fclose($pipes[0]);
@@ -359,7 +359,7 @@ class Addon_Packages extends Library
 
 		if ($code !== 0)
 		{
-			throw new RuntimeException(trim($error ?: $output) ?: 'Échec de l\'installation Composer.');
+			throw new RuntimeException(trim($error ?: $output) ?: (string)$this->lang('Composer installation failed.'));
 		}
 
 		return trim($output.PHP_EOL.$error);
@@ -377,12 +377,12 @@ class Addon_Packages extends Library
 
 			if (!is_dir($composer_home) && !@mkdir($composer_home, 0775, TRUE) && !is_dir($composer_home))
 			{
-				throw new RuntimeException('Le dossier Composer ne peut pas être créé : '.$composer_home);
+				throw new RuntimeException((string)$this->lang('Could not create the Composer folder: %s', $composer_home));
 			}
 
 			if (!is_writable($composer_home))
 			{
-				throw new RuntimeException('Le dossier Composer n\'est pas accessible en écriture : '.$composer_home);
+				throw new RuntimeException((string)$this->lang('The Composer folder is not writable: %s', $composer_home));
 			}
 
 			$environment['COMPOSER_HOME'] = $composer_home;
@@ -432,7 +432,7 @@ class Addon_Packages extends Library
 			}
 		}
 
-		throw new RuntimeException('Le binaire PHP CLI est introuvable.');
+		throw new RuntimeException((string)$this->lang('The PHP CLI binary could not be found.'));
 	}
 
 	protected function composer_command()
@@ -482,7 +482,7 @@ class Addon_Packages extends Library
 		{
 			if (!class_exists($class) || !is_a($migration = new $class, Migration::class))
 			{
-				throw new RuntimeException('Migration invalide : '.$class);
+				throw new RuntimeException((string)$this->lang('Invalid migration: %s', $class));
 			}
 
 			$rollbacks[$class] = $migration;
@@ -507,7 +507,7 @@ class Addon_Packages extends Library
 
 			if (!isset($rollbacks[$class]))
 			{
-				throw new RuntimeException('Migration invalide : '.$class);
+				throw new RuntimeException((string)$this->lang('Invalid migration: %s', $class));
 			}
 
 			$migration = $rollbacks[$class];
@@ -569,7 +569,7 @@ class Addon_Packages extends Library
 	{
 		if (!class_exists($class) || !is_a($migration = new $class, Migration::class))
 		{
-			throw new RuntimeException('Migration invalide : '.$class);
+			throw new RuntimeException((string)$this->lang('Invalid migration: %s', $class));
 		}
 
 		$this->run_step($package, $class, function() use ($migration){
@@ -581,7 +581,7 @@ class Addon_Packages extends Library
 	{
 		if (!class_exists($class) || !is_a($seeder = new $class, Seeder::class))
 		{
-			throw new RuntimeException('Seeder invalide : '.$class);
+			throw new RuntimeException((string)$this->lang('Invalid seeder: %s', $class));
 		}
 
 		$this->run_step($package, $id, function() use ($seeder){
@@ -654,7 +654,7 @@ class Addon_Packages extends Library
 
 		if (!preg_match($pattern, $package))
 		{
-			throw new RuntimeException('Nom de paquet Composer invalide.');
+			throw new RuntimeException((string)$this->lang('Invalid Composer package name.'));
 		}
 
 		return $package;

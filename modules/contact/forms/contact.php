@@ -5,16 +5,16 @@
  */
 
 $this->rule($this->form_text('subject')
-				->title('Votre objet')
+				->title((string)$this->lang('Your subject'))
 				->required())
 	->rule_if(!$this->user->email, $this->form_email('email')
-										->title('Votre adresse email')
+										->title((string)$this->lang('Your email address'))
 										->required())
 	->rule($this->form_textarea('message')
-				->title('Votre message')
+				->title((string)$this->lang('Your message'))
 				->required())
 	->captcha(TRUE, 'contact')
-	->submit('Envoyer')
+	->submit((string)$this->lang('Send'))
 	->success(function($data, $form){
 		$sent = $this	->anti_flood()
 						->email
@@ -30,11 +30,11 @@ $this->rule($this->form_text('subject')
 
 		if ($sent)
 		{
-			notify('Message envoyé');
+			notify((string)$this->lang('Message sent'));
 			$this->modal->dispose();
 		}
 		else
 		{
-			$form->error('Une erreur s\'est produite lors de l\'envoi du message');
+			$form->error((string)$this->lang('An error occurred while sending the message'));
 		}
 	});

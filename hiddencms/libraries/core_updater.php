@@ -12,6 +12,20 @@ use ZipArchive;
 class Core_Updater extends Library
 {
 	const CACHE_TTL = 900;
+	const NO_STABLE_RELEASE = 1001;
+
+	public function stage_label($stage)
+	{
+		// Older backup metadata stored French stage names; keep those records readable.
+		$legacy = [
+			'recherche de la release'=>'Release lookup', 'validation'=>'Validation',
+			'téléchargement'=>'Download', 'extraction'=>'Extraction', 'sauvegarde'=>'Backup',
+			'copie des fichiers'=>'File copy', 'dépendances Composer'=>'Composer dependencies',
+			'migrations SQL'=>'SQL migrations', 'synchronisation des addons'=>'Addon synchronization'
+		];
+		$source = $legacy[$stage] ?? $stage;
+		return (string)$this->lang($source ?: 'Unknown step');
+	}
 
 	public function manifest($root = HIDDENCMS_CMS)
 	{
@@ -20,7 +34,7 @@ class Core_Updater extends Library
 
 		if (!is_array($data) || empty($data['name']) || empty($data['version']))
 		{
-			throw new RuntimeException('Le manifeste HiddenCMS est absent ou invalide.');
+			throw new RuntimeException((string)$this->lang('The HiddenCMS manifest is missing or invalid.'));
 		}
 
 		return $data;
@@ -145,7 +159,7 @@ class Core_Updater extends Library
 
 			if (!$migration instanceof Migration)
 			{
-				throw new RuntimeException('Migration core invalide : '.$id);
+				throw new RuntimeException((string)$this->lang('Invalid core migration: %s', $id));
 			}
 
 			HB()->db->begin_transaction();
@@ -184,23 +198,23 @@ class Core_Updater extends Library
 			{
 				$failure = [
 					'at'      => date('c'),
-					'stage'   => 'recherche de la release',
+					'stage'   => 'Release lookup',
 					'class'   => get_class($e),
 					'message' => $this->failure_message($e)
 				];
 				$this->record_update_failure(NULL, NULL, $failure);
 				$this->log_update_failure(NULL, NULL, $failure);
-				throw new RuntimeException('La recherche de la mise à jour a échoué : '.$failure['message'], 0, $e);
+				throw new RuntimeException((string)$this->lang('Update lookup failed: %s', $failure['message']), 0, $e);
 			}
 		}
 
 		$url = isset($release['zipball_url']) ? $release['zipball_url'] : NULL;
 		$version = ltrim(isset($release['tag_name']) ? $release['tag_name'] : '', 'vV');
-		$stage = 'validation';
+		$stage = 'Validation';
 
 		if (!$url || !$version || !version_compare($version, HIDDENCMS_VERSION, '>'))
 		{
-			throw new RuntimeException('Aucune mise à jour du core n\'est disponible.');
+			throw new RuntimeException((string)$this->lang('No core update is available.'));
 		}
 
 		$work = HIDDENCMS_CMS.'/cache/updates/work-'.bin2hex(random_bytes(6));
@@ -213,25 +227,25 @@ class Core_Updater extends Library
 
 		try
 		{
-			$stage = 'téléchargement';
+			$stage = 'Download';
 			$this->download($url, $archive);
-			$stage = 'extraction';
+			$stage = 'Extraction';
 			$this->extract_archive($archive, $extract);
 			$source = $this->find_release_root($extract);
 			$manifest = $this->manifest($source);
 			$this->validate_release($manifest, $version);
-			$stage = 'sauvegarde';
+			$stage = 'Backup';
 			$backup = $this->create_backup('core-'.$version);
 			$this->mark_backup($backup, 'updating', $version);
 			$this->config('maintenance', TRUE, 'bool');
-			$stage = 'copie des fichiers';
+			$stage = 'File copy';
 			$this->copy_release($source, $manifest);
 			$this->restore_addon_requirements($addon_requirements);
-			$stage = 'dépendances Composer';
+			$stage = 'Composer dependencies';
 			$this->addon_packages->update_dependencies(array_keys($addon_requirements));
-			$stage = 'migrations SQL';
+			$stage = 'SQL migrations';
 			$this->migrate();
-			$stage = 'synchronisation des addons';
+			$stage = 'Addon synchronization';
 			$this->addon_packages->sync(TRUE);
 			$this->mark_backup($backup, 'completed', $version);
 			$this->config('maintenance', $maintenance, 'bool');
@@ -281,10 +295,10 @@ class Core_Updater extends Library
 			$this->record_update_failure($version, $backup, $failure, $rollback_error);
 			$this->log_update_failure($version, $backup, $failure, $rollback_error);
 
-			$message = 'La mise à jour vers '.$version.' a échoué à l’étape « '.$stage.' » : '.$failure['message'];
+			$message = (string)$this->lang('Update to %s failed during %s: %s', $version, $this->stage_label($stage), $failure['message']);
 			$message .= $rollback_error
-				? ' Le retour arrière automatique a également échoué : '.$rollback_error
-				: ($backup ? ' Le site a été restauré automatiquement.' : ' Aucun fichier du site n’a été remplacé.');
+				? ' '.$this->lang('Automatic rollback also failed: %s', $rollback_error)
+				: ' '.($backup ? $this->lang('The site was restored automatically.') : $this->lang('No site files were replaced.'));
 			throw new RuntimeException($message, 0, $e);
 		}
 	}
@@ -293,7 +307,7 @@ class Core_Updater extends Library
 	{
 		if (!class_exists(ZipArchive::class))
 		{
-			throw new RuntimeException('L\'extension PHP Zip est requise pour créer une sauvegarde.');
+			throw new RuntimeException((string)$this->lang('The PHP Zip extension is required to create a backup.'));
 		}
 
 		$id = date('Ymd-His').'-'.bin2hex(random_bytes(3));
@@ -307,7 +321,7 @@ class Core_Updater extends Library
 
 			if (!$handle)
 			{
-				throw new RuntimeException('Impossible de créer la sauvegarde SQL.');
+				throw new RuntimeException((string)$this->lang('Could not create the SQL backup.'));
 			}
 
 			$this->mysqldump('default')->dump($handle);
@@ -316,7 +330,7 @@ class Core_Updater extends Library
 
 			if ($zip->open($directory.'/files.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE)
 			{
-				throw new RuntimeException('Impossible de créer l\'archive de sauvegarde.');
+				throw new RuntimeException((string)$this->lang('Could not create the backup archive.'));
 			}
 
 			foreach ($files as $file)
@@ -373,7 +387,7 @@ class Core_Updater extends Library
 	{
 		if (!preg_match('/^[a-z0-9-]+$/i', $id))
 		{
-			throw new RuntimeException('Identifiant de sauvegarde invalide.');
+			throw new RuntimeException((string)$this->lang('Invalid backup identifier.'));
 		}
 
 		$directory = HIDDENCMS_CMS.'/backups/updates/'.$id;
@@ -382,7 +396,7 @@ class Core_Updater extends Library
 
 		if (!is_array($metadata) || !is_file($directory.'/files.zip') || !is_file($directory.'/database.sql'))
 		{
-			throw new RuntimeException('La sauvegarde demandée est incomplète.');
+			throw new RuntimeException((string)$this->lang('The requested backup is incomplete.'));
 		}
 
 		$restore_maintenance = !empty($metadata['maintenance']);
@@ -442,7 +456,7 @@ class Core_Updater extends Library
 
 			if (!$xml || empty($xml->entry[0]))
 			{
-				throw new RuntimeException('Aucune release stable de HiddenCMS n\'est publiée pour le moment.');
+				throw new RuntimeException((string)$this->lang('No stable HiddenCMS release has been published yet.'), self::NO_STABLE_RELEASE);
 			}
 
 			$entry = $xml->entry[0];
@@ -452,7 +466,7 @@ class Core_Updater extends Library
 
 			if (!$tag)
 			{
-				throw new RuntimeException('Le flux des releases HiddenCMS est invalide.');
+				throw new RuntimeException((string)$this->lang('The HiddenCMS release feed is invalid.'));
 			}
 
 			return [
@@ -467,12 +481,12 @@ class Core_Updater extends Library
 		}
 		catch (Throwable $feed_error)
 		{
-			if ($feed_error instanceof RuntimeException && strpos($feed_error->getMessage(), 'Aucune release stable') === 0)
+			if ($feed_error instanceof RuntimeException && $feed_error->getCode() === self::NO_STABLE_RELEASE)
 			{
 				throw $feed_error;
 			}
 
-			throw new RuntimeException('Impossible de joindre le service de mises à jour.', 0, $previous ?: $feed_error);
+			throw new RuntimeException((string)$this->lang('Could not reach the update service.'), 0, $previous ?: $feed_error);
 		}
 	}
 
@@ -502,8 +516,8 @@ class Core_Updater extends Library
 			if ($content === FALSE || $code >= 400)
 			{
 				throw new RuntimeException($code >= 400
-					? 'Le service de mises à jour a répondu avec le statut '.$code.'.'
-					: 'Impossible de joindre le service de mises à jour.');
+					? (string)$this->lang('The update service returned status %d.', $code)
+					: (string)$this->lang('Could not reach the update service.'));
 			}
 
 			return $content;
@@ -517,7 +531,7 @@ class Core_Updater extends Library
 
 		if ($content === FALSE)
 		{
-			throw new RuntimeException('Impossible de joindre le service de mises à jour.');
+			throw new RuntimeException((string)$this->lang('Could not reach the update service.'));
 		}
 
 		return $content;
@@ -530,7 +544,7 @@ class Core_Updater extends Library
 
 		if (file_put_contents($target, $content) === FALSE)
 		{
-			throw new RuntimeException('Impossible d\'enregistrer l\'archive de mise à jour.');
+			throw new RuntimeException((string)$this->lang('Could not save the update archive.'));
 		}
 	}
 
@@ -538,17 +552,17 @@ class Core_Updater extends Library
 	{
 		if ($manifest['name'] !== 'hiddencms/core' || $manifest['version'] !== $release_version)
 		{
-			throw new RuntimeException('La release ne correspond pas au manifeste annoncé.');
+			throw new RuntimeException((string)$this->lang('The release does not match the announced manifest.'));
 		}
 
 		if (!version_compare($manifest['version'], HIDDENCMS_VERSION, '>'))
 		{
-			throw new RuntimeException('La release n\'est pas plus récente que le core installé.');
+			throw new RuntimeException((string)$this->lang('The release is not newer than the installed core.'));
 		}
 
 		if (!empty($manifest['php']) && class_exists(Semver::class) && !Semver::satisfies(PHP_VERSION, $manifest['php']))
 		{
-			throw new RuntimeException('Cette version de HiddenCMS nécessite PHP '.$manifest['php'].'.');
+			throw new RuntimeException((string)$this->lang('This HiddenCMS version requires PHP %s.', $manifest['php']));
 		}
 	}
 
@@ -564,7 +578,7 @@ class Core_Updater extends Library
 
 			if (!is_file($installed) && !@touch($installed))
 			{
-				throw new RuntimeException('Impossible de sécuriser le répertoire d\'installation.');
+				throw new RuntimeException((string)$this->lang('Could not secure the installation directory.'));
 			}
 		}
 
@@ -589,7 +603,7 @@ class Core_Updater extends Library
 
 			if (!copy($file->getPathname(), $target))
 			{
-				throw new RuntimeException('Impossible de remplacer '.$relative.'.');
+				throw new RuntimeException((string)$this->lang('Could not replace %s.', $relative));
 			}
 		}
 
@@ -658,7 +672,7 @@ class Core_Updater extends Library
 
 		if ($zip->open($archive) !== TRUE)
 		{
-			throw new RuntimeException('L\'archive de mise à jour est illisible.');
+			throw new RuntimeException((string)$this->lang('The update archive is unreadable.'));
 		}
 
 		for ($i = 0; $i < $zip->numFiles; $i++)
@@ -668,7 +682,7 @@ class Core_Updater extends Library
 			if ($name === '' || $name[0] === '/' || preg_match('#(^|/)\.\.(/|$)#', $name))
 			{
 				$zip->close();
-				throw new RuntimeException('L\'archive contient un chemin non autorisé.');
+				throw new RuntimeException((string)$this->lang('The archive contains an unauthorized path.'));
 			}
 		}
 
@@ -677,7 +691,7 @@ class Core_Updater extends Library
 		if (!$zip->extractTo($destination))
 		{
 			$zip->close();
-			throw new RuntimeException('Impossible d\'extraire l\'archive de mise à jour.');
+			throw new RuntimeException((string)$this->lang('Could not extract the update archive.'));
 		}
 
 		$zip->close();
@@ -689,7 +703,7 @@ class Core_Updater extends Library
 
 		if ($zip->open($archive) !== TRUE)
 		{
-			throw new RuntimeException('L\'archive de sauvegarde est illisible.');
+			throw new RuntimeException((string)$this->lang('The backup archive is unreadable.'));
 		}
 
 		$protected = $this->protected_paths($this->manifest());
@@ -713,7 +727,7 @@ class Core_Updater extends Library
 				is_resource($source) && fclose($source);
 				is_resource($destination) && fclose($destination);
 				$zip->close();
-				throw new RuntimeException('Impossible de restaurer '.$relative.'.');
+				throw new RuntimeException((string)$this->lang('Could not restore %s.', $relative));
 			}
 
 			stream_copy_to_stream($source, $destination);
@@ -739,7 +753,7 @@ class Core_Updater extends Library
 			}
 		}
 
-		throw new RuntimeException('Le manifeste de la release est introuvable.');
+		throw new RuntimeException((string)$this->lang('The release manifest could not be found.'));
 	}
 
 	protected function ensure_migrations_table()
@@ -807,7 +821,7 @@ class Core_Updater extends Library
 
 		if (!is_array($composer))
 		{
-			throw new RuntimeException('Le manifeste Composer du core mis à jour est invalide.');
+			throw new RuntimeException((string)$this->lang('The updated core Composer manifest is invalid.'));
 		}
 
 		$composer['require'] = array_merge(isset($composer['require']) && is_array($composer['require']) ? $composer['require'] : [], $requirements);
@@ -852,7 +866,7 @@ class Core_Updater extends Library
 
 		if (file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) === FALSE)
 		{
-			throw new RuntimeException('Impossible d\'écrire '.$file.'.');
+			throw new RuntimeException((string)$this->lang('Could not write %s.', $file));
 		}
 	}
 
@@ -860,7 +874,7 @@ class Core_Updater extends Library
 	{
 		if (!is_dir($directory) && !mkdir($directory, 0775, TRUE) && !is_dir($directory))
 		{
-			throw new RuntimeException('Impossible de créer le dossier '.$directory.'.');
+			throw new RuntimeException((string)$this->lang('Could not create folder %s.', $directory));
 		}
 	}
 

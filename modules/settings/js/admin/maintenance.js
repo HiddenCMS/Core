@@ -4,18 +4,18 @@ $(function(){
 	var input = toggle.find('input');
 	var changing = false;
 	var labels = {
-		open: <?php echo json_encode((string)$this->lang('Site ouvert')) ?>,
-		closed: <?php echo json_encode((string)$this->lang('Maintenance activée')) ?>,
-		openDescription: <?php echo json_encode((string)$this->lang('Le site est accessible aux visiteurs.')) ?>,
-		closedDescription: <?php echo json_encode((string)$this->lang('La page de maintenance est visible par les visiteurs.')) ?>,
-		closeTitle: <?php echo json_encode((string)$this->lang('Activer le mode maintenance')) ?>,
-		openTitle: <?php echo json_encode((string)$this->lang('Rouvrir le site')) ?>,
-		closeQuestion: <?php echo json_encode((string)$this->lang('Les visiteurs verront la page de maintenance. Voulez-vous continuer ?')) ?>,
-		openQuestion: <?php echo json_encode((string)$this->lang('Le site redeviendra immédiatement accessible aux visiteurs. Voulez-vous continuer ?')) ?>,
-		cancel: <?php echo json_encode((string)$this->lang('Annuler')) ?>,
-		confirm: <?php echo json_encode((string)$this->lang('Confirmer')) ?>,
-		close: <?php echo json_encode((string)$this->lang('Fermer')) ?>,
-		error: <?php echo json_encode((string)$this->lang('Le statut du site n\'a pas pu être modifié.')) ?>
+		open: <?php echo json_encode((string)$this->lang('Site open')) ?>,
+		closed: <?php echo json_encode((string)$this->lang('Maintenance enabled')) ?>,
+		openDescription: <?php echo json_encode((string)$this->lang('The site is accessible to visitors.')) ?>,
+		closedDescription: <?php echo json_encode((string)$this->lang('Visitors can see the maintenance page.')) ?>,
+		closeTitle: <?php echo json_encode((string)$this->lang('Enable maintenance mode')) ?>,
+		openTitle: <?php echo json_encode((string)$this->lang('Reopen the site')) ?>,
+		closeQuestion: <?php echo json_encode((string)$this->lang('Visitors will see the maintenance page. Do you want to continue?')) ?>,
+		openQuestion: <?php echo json_encode((string)$this->lang('The site will immediately become accessible to visitors again. Do you want to continue?')) ?>,
+		cancel: <?php echo json_encode((string)$this->lang('Cancel')) ?>,
+		confirm: <?php echo json_encode((string)$this->lang('Confirm')) ?>,
+		close: <?php echo json_encode((string)$this->lang('Close')) ?>,
+		error: <?php echo json_encode((string)$this->lang('The site status could not be changed.')) ?>
 	};
 
 	function render(closed){

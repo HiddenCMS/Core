@@ -26,7 +26,7 @@ class Number extends Text
 
 				if (!is_numeric($value))
 				{
-					$this->_errors[] = 'Nombre invalide';
+					$this->_errors[] = (string)$this->lang('Invalid number');
 				}
 				else
 				{

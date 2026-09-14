@@ -6,25 +6,25 @@
 
 $rules = [
 	'title' => [
-		'label'         => $this->lang('Titre de la page'),
+		'label'         => $this->lang('Page title'),
 		'value'         => $this->form()->value('title'),
 		'type'          => 'text',
 		'rules'         => 'required'
 	],
 	'subtitle' => [
-		'label'         => $this->lang('Sous-titre'),
+		'label'         => $this->lang('Subtitle'),
 		'value'         => $this->form()->value('subtitle'),
 		'type'          => 'text'
 	],
 	'parent_id' => [
-		'label'         => $this->lang('Page parente'),
+		'label'         => $this->lang('Parent page'),
 		'value'         => $this->form()->value('parent_id'),
 		'values'        => $this->form()->value('parents'),
 		'type'          => 'select',
 		'check'         => function($value){
 			if (!HiddenCMS()->module('pages')->model()->valid_parent((int)$this->form()->value('page_id'), (int)$value))
 			{
-				return $this->lang('La page parente sélectionnée n’est pas valide');
+				return $this->lang('The selected parent page is invalid');
 			}
 		}
 	],
@@ -44,7 +44,7 @@ $rules = [
 
 			if (HiddenCMS()->module('pages')->model()->name_exists($value, $parent_id, $page_id))
 			{
-				return $this->lang('Ce slug est déjà utilisé sous cette page parente');
+				return $this->lang('This slug is already in use under this parent page');
 			}
 		}
 	],
@@ -55,7 +55,7 @@ $rules = [
 		'type'          => 'select'
 	],
 	'blocks' => [
-		'label' => $this->lang('Composition de la page'),
+		'label' => $this->lang('Page layout'),
 		'value' => $this->form()->value('blocks'),
 		'type'  => 'textarea',
 		'check' => function($value){
@@ -63,35 +63,35 @@ $rules = [
 
 			if (!is_array($blocks))
 			{
-				return $this->lang('Composition invalide');
+				return $this->lang('Invalid layout');
 			}
 		}
 	],
 	'published' => [
 		'type'    => 'checkbox',
 		'checked' => ['on' => $this->form()->value('published')],
-		'values'  => ['on' => $this->lang('Publier la page dès maintenant')]
+		'values'  => ['on' => $this->lang('Publish')]
 	]
 ];
 
 $modules = $this->form()->value('modules') ?: [];
 
 $labels = [
-	'static'      => (string)$this->lang('Contenu statique'),
+	'static'      => (string)$this->lang('Static content'),
 	'module'      => (string)$this->lang('Module'),
-	'module_type' => (string)$this->lang('Type de module'),
-	'block_type'  => (string)$this->lang('Affichage'),
-	'add_static'  => (string)$this->lang('Ajouter du contenu'),
-	'add_module'  => (string)$this->lang('Ajouter un module'),
+	'module_type' => (string)$this->lang('Module type'),
+	'block_type'  => (string)$this->lang('Display'),
+	'add_static'  => (string)$this->lang('Add content'),
+	'add_module'  => (string)$this->lang('Add a module'),
 	'source'      => (string)$this->lang('Source'),
-	'display'     => (string)$this->lang('Affichage'),
+	'display'     => (string)$this->lang('Display'),
 	'configuration' => (string)$this->lang('Configuration'),
-	'previous'    => (string)$this->lang('Précédent'),
-	'next'        => (string)$this->lang('Suivant'),
-	'cancel'      => (string)$this->lang('Annuler'),
-	'confirm'     => (string)$this->lang('Valider'),
-	'edit'        => (string)$this->lang('Configurer'),
-	'selection'   => (string)$this->lang('Sélection actuelle')
+	'previous'    => (string)$this->lang('Previous'),
+	'next'        => (string)$this->lang('Next'),
+	'cancel'      => (string)$this->lang('Cancel'),
+	'confirm'     => (string)$this->lang('Save'),
+	'edit'        => (string)$this->lang('Configure'),
+	'selection'   => (string)$this->lang('Current selection')
 ];
 
 $icons = [
@@ -574,8 +574,8 @@ else
 }
 
 $layout_labels = [
-	'information' => (string)$this->lang('Informations'),
-	'content'     => (string)$this->lang('Contenu')
+	'information' => (string)$this->lang('Information'),
+	'content'     => (string)$this->lang('Content')
 ];
 
 $layout_icons = [

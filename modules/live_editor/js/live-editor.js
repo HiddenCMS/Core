@@ -5,11 +5,11 @@ var modal_style = function(title, $element, styles, callback){
 
 	var $modal = $([
 		'<div class="ui large modal live-editor-modal" role="dialog">',
-			'<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
 			'<div class="content">'+$(styles).html()+'</div>',
 			'<div class="actions">',
-				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
-				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button>',
+				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Save') ?></button>',
 			'</div>',
 		'</div>'
 	].join('')).appendTo('body').data('element', $element);
@@ -182,13 +182,13 @@ var modal_settings = function(title, settings, callback){
 
 	var $modal = $([
 		'<div class="ui large modal live-editor-modal" role="dialog">',
-			'<div class="header"><?php echo icon('fas fa-cogs') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="header"><?php echo icon('fas fa-cogs') ?> '+title+'<i class="close icon" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
 			'<div class="content">'+settings+'</div>',
 			'<div class="actions">',
-				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
-				'<button type="button" class="ui button live-editor-previous"><?php echo icon('fas fa-chevron-left').' '.$this->lang('Précédent') ?></button>',
-				'<button type="button" class="ui primary button live-editor-next"><?php echo $this->lang('Suivant').' '.icon('fas fa-chevron-right') ?></button>',
-				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Valider') ?></button>',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button>',
+				'<button type="button" class="ui button live-editor-previous"><?php echo icon('fas fa-chevron-left').' '.$this->lang('Previous') ?></button>',
+				'<button type="button" class="ui primary button live-editor-next"><?php echo $this->lang('Next').' '.icon('fas fa-chevron-right') ?></button>',
+				'<button type="button" class="ui primary button live-editor-confirm"><?php echo $this->lang('Save') ?></button>',
 			'</div>',
 		'</div>'
 	].join('')).appendTo('body');
@@ -426,11 +426,11 @@ var modal_fork = function(callback){
 
 	var $modal = $([
 		'<div class="ui small modal live-editor-modal" role="dialog">',
-			'<div class="header"><?php echo $this->lang('Revenir à la disposition commune') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
-			'<div class="content"><?php echo $this->lang('Êtes-vous sûr(e) de vouloir revenir à la disposition commune ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> associés à cette zone seront perdus.') ?></div>',
+			'<div class="header"><?php echo $this->lang('Restore the shared layout') ?><i class="close icon" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
+			'<div class="content"><?php echo $this->lang('Are you sure you want to restore the shared layout?<br />All <b>columns</b> and <b>widgets</b> associated with this zone will be lost.') ?></div>',
 			'<div class="actions">',
-				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
-				'<button type="button" class="ui negative button live-editor-confirm"><?php echo $this->lang('Continuer') ?></button>',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button>',
+				'<button type="button" class="ui negative button live-editor-confirm"><?php echo $this->lang('Continue') ?></button>',
 			'</div>',
 		'</div>'
 	].join('')).appendTo('body');
@@ -455,11 +455,11 @@ var modal_delete = function(message, callback){
 
 	var $modal = $([
 		'<div class="ui small modal live-editor-modal" role="dialog">',
-			'<div class="header"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirmation de suppression') ?><i class="close icon" aria-label="<?php echo $this->lang('Fermer') ?>"></i></div>',
+			'<div class="header"><?php echo icon('far fa-trash-alt').' '.$this->lang('Confirm deletion') ?><i class="close icon" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
 			'<div class="content">'+message+'</div>',
 			'<div class="actions">',
-				'<button type="button" class="ui button cancel"><?php echo $this->lang('Annuler') ?></button>',
-				'<button type="button" class="ui negative button live-editor-confirm"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Supprimer') ?></button>',
+				'<button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button>',
+				'<button type="button" class="ui negative button live-editor-confirm"><?php echo icon('far fa-trash-alt') ?> <?php echo $this->lang('Delete') ?></button>',
 			'</div>',
 		'</div>'
 	].join('')).appendTo('body');
@@ -558,9 +558,9 @@ $(function(){
 						<div class="widget-hover-content">\
 							<h5>'+($(this).hasClass('module') ? '<b><?php echo $this->lang('Module') ?></b> ' : '')+$(this).data('title')+'</h5>\
 							<div class="btn-group" role="group">\
-								'+(!$(this).hasClass('module') ? '<button type="button" class="btn btn-info live-editor-style" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?php echo $this->lang('Apparence') ?>"><?php echo icon('fas fa-paint-brush') ?></button>' : '')+'\
-								<button type="button" class="btn btn-warning live-editor-setting" data-toggle="tooltip" data-placement="bottom" data-container="body" title="<?php echo $this->lang('Configurer') ?>"><?php echo icon('fas fa-cogs') ?></button>\
-								<button type="button" class="btn btn-danger live-editor-delete" data-toggle="tooltip" data-placement="bottom" data-container="body" title="<?php echo $this->lang('Supprimer') ?>"><?php echo icon('far fa-trash-alt') ?></button>\
+								'+(!$(this).hasClass('module') ? '<button type="button" class="btn btn-info live-editor-style" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?php echo $this->lang('Appearance') ?>"><?php echo icon('fas fa-paint-brush') ?></button>' : '')+'\
+								<button type="button" class="btn btn-warning live-editor-setting" data-toggle="tooltip" data-placement="bottom" data-container="body" title="<?php echo $this->lang('Configure') ?>"><?php echo icon('fas fa-cogs') ?></button>\
+								<button type="button" class="btn btn-danger live-editor-delete" data-toggle="tooltip" data-placement="bottom" data-container="body" title="<?php echo $this->lang('Delete') ?>"><?php echo icon('far fa-trash-alt') ?></button>\
 							</div>\
 						</div>\
 					</div>').prependTo(this).fadeTo('fast', 1);
@@ -579,7 +579,7 @@ $(function(){
 			var href = $(this).attr('href');
 
 			if (href.match(/<?php echo str_replace('/', '\/', url()) ?>(?!(admin|live-editor|#))/)){
-				$('#live-editor-map').html('<?php echo icon('fas fa-spinner fa-spin').' '.$this->lang('Chargement en cours...') ?>');
+				$('#live-editor-map').html('<?php echo icon('fas fa-spinner fa-spin').' '.$this->lang('Loading...') ?>');
 				$('form[target="live-editor-iframe"]').prop('action', href).submit();
 			}
 
@@ -674,7 +674,7 @@ $(function(){
 			var $this = $(this);
 			var $row = $this.parents('.live-editor-row-header:first').next('.row');
 
-			modal_style('<?php echo $this->lang('Apparence de la ligne') ?>', $row, '.live-editor-styles-row', function(style){
+			modal_style('<?php echo $this->lang('Row appearance') ?>', $row, '.live-editor-styles-row', function(style){
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/row-style') ?>', {
@@ -691,7 +691,7 @@ $(function(){
 		$iframe.on('click', '.live-editor-row-header .live-editor-delete', function(){
 			var $this = $(this);
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>ligne</b> ?<br />Toutes les <b>colonnes</b> et <b>widgets</b> contenus seront également supprimés.') ?>', function(){
+			modal_delete('<?php echo $this->lang('Are you sure you want to delete this <b>row</b>?<br />All contained <b>columns</b> and <b>widgets</b> will also be deleted.') ?>', function(){
 				var $row = $this.parents('.live-editor-row-header:first').next('.row');
 				var $zone = $row.parents('[data-disposition-id]:first');
 
@@ -799,7 +799,7 @@ $(function(){
 			var $col  = $(this).parents('[data-col-id]:first');
 			var $row  = $col.parent();
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer cette <b>colonne</b> ?<br />Tous les <b>widgets</b> contenus seront également supprimés.') ?>', function(){
+			modal_delete('<?php echo $this->lang('Are you sure you want to delete this <b>column</b>?<br />All contained <b>widgets</b> will also be deleted.') ?>', function(){
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/col-delete') ?>', {
@@ -826,7 +826,7 @@ $(function(){
 			};
 
 			$.post('<?php echo url('admin/ajax/live-editor/widget-settings') ?>', data, function(html){
-				modal_settings('<?php echo $this->lang('Nouveau Widget') ?>', html, function(settings){
+				modal_settings('<?php echo $this->lang('New widget') ?>', html, function(settings){
 					$.extend(data, settings);
 					$.extend(data, {
 						live_editor: $('input[type="hidden"][name="live_editor"]').val()
@@ -895,7 +895,7 @@ $(function(){
 				$style_target = $widget;
 			}
 
-			modal_style('<?php echo $this->lang('Apparence du Widget') ?>', $style_target, '.live-editor-styles-widget', function(style){
+			modal_style('<?php echo $this->lang('Widget appearance') ?>', $style_target, '.live-editor-styles-widget', function(style){
 				$.extend(data, {
 					style: style
 				});
@@ -919,7 +919,7 @@ $(function(){
 			};
 
 			$.post('<?php echo url('admin/ajax/live-editor/widget-settings') ?>', data, function(html){
-				modal_settings('<?php echo $this->lang('Configuration du Widget') ?>', html, function(settings){
+				modal_settings('<?php echo $this->lang('Widget settings') ?>', html, function(settings){
 					$.extend(data, settings);
 
 					$('.live-editor-save').show();
@@ -952,7 +952,7 @@ $(function(){
 				widget_id: $widget.data('widget-id')
 			};
 
-			modal_delete('<?php echo $this->lang('Êtes-vous sûr(e) de vouloir supprimer ce <b>widget</b> ?') ?>', function(){
+			modal_delete('<?php echo $this->lang('Are you sure you want to delete this <b>widget</b>?') ?>', function(){
 				$('.live-editor-save').show();
 
 				$.post('<?php echo url('admin/ajax/live-editor/widget-delete') ?>', data, function(){

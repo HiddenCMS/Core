@@ -23,7 +23,7 @@ class Admin extends Controller_Module
 
 				if ($object->composer_package())
 				{
-					$actions->set('package-remove', ['Supprimer', 'fas fa-trash-alt', 'danger', TRUE]);
+					$actions->set('package-remove', [(string)$this->lang('Delete'), 'fas fa-trash-alt', 'danger', TRUE]);
 				}
 
 				return !$actions->empty();
@@ -51,7 +51,7 @@ class Admin extends Controller_Module
 			}
 		});
 
-		$this->add_action($this->button('Installer', 'fas fa-download', 'primary')->modal_ajax('admin/ajax/addons/install'));
+		$this->add_action($this->button((string)$this->lang('Install'), 'fas fa-download', 'primary')->modal_ajax('admin/ajax/addons/install'));
 
 		return $this	->js('addons')
 					->css('addons')
@@ -62,7 +62,7 @@ class Admin extends Controller_Module
 
 	public function help($controller, $method)
 	{
-		return $this->modal('Aide', 'far fa-life-ring')
+		return $this->modal((string)$this->lang('Help'), 'far fa-life-ring')
 					->large()
 					->body(call_user_func([$controller, $method]))
 					->close();
@@ -84,7 +84,7 @@ class Admin extends Controller_Module
 		$package = $addon->composer_package();
 		$purge = $this->form_checkbox('purge')
 					  ->data([
-						  '1' => 'Supprimer également les tables et les données de cet addon'
+						  '1' => (string)$this->lang('Also delete this addon\'s tables and data')
 					  ]);
 		$form = $this->form2()
 					 ->rule($purge)
@@ -93,7 +93,7 @@ class Admin extends Controller_Module
 						{
 							$purge = !empty($data['purge']) && in_array('1', $data['purge']);
 							$this->addon_packages->remove_package($package, $purge);
-							notify($this->lang('Le paquet <b>%s</b> a été supprimé.', $package));
+							notify($this->lang('Package <b>%s</b> has been removed.', $package));
 							refresh();
 						}
 						catch (\Throwable $e)
@@ -104,9 +104,9 @@ class Admin extends Controller_Module
 
 		$purge->form2($form);
 
-		return $this->modal('Supprimer '.$addon->info()->title, 'fas fa-trash-alt')
+		return $this->modal($this->lang('Delete %s', $addon->info()->title), 'fas fa-trash-alt')
 					->body($purge)
-					->submit('Supprimer', 'primary')
+					->submit($this->lang('Delete'), 'primary')
 					->cancel()
 					->callback($form);
 	}

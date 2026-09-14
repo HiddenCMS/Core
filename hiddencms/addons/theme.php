@@ -38,6 +38,12 @@ abstract class Theme extends Addon
 		return parent::is_deactivatable() && HB()->model2('addon')->get('theme')->count() > 2;
 	}
 
+	public function zone_title($zone)
+	{
+		$source = $this->info()->zone_labels[$zone] ?? $this->info()->zones[$zone] ?? NULL;
+		return $source === NULL ? $this->lang('Zone #%d', $zone) : $this->lang($source);
+	}
+
 	public function regions()
 	{
 		if (!empty($this->info()->regions))
@@ -60,6 +66,17 @@ abstract class Theme extends Addon
 		}
 
 		return $regions;
+	}
+
+	public function region_titles()
+	{
+		$titles = [];
+		foreach ($this->regions() as $name => $identifier)
+		{
+			$zone = array_search($identifier, $this->info()->zones);
+			$titles[$name] = (string)($zone === FALSE ? $this->lang($identifier) : $this->zone_title($zone));
+		}
+		return $titles;
 	}
 
 	public function install($dispositions = [])

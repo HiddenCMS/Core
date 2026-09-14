@@ -11,7 +11,7 @@ class Image extends Widget
 		return [
 			'title'       => $this->lang('Image'),
 			'icon'        => 'far fa-image',
-			'description' => $this->lang('Afficher une image de la médiathèque.'),
+			'description' => $this->lang('Display an image from the media library.'),
 			'author'      => 'HiddenCMS',
 			'license'     => 'GPLv3',
 			'version'     => '1.0'

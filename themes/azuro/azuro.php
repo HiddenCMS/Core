@@ -14,7 +14,7 @@ class Azuro extends Theme
 	{
 		return [
 			'title'       => 'Azuro',
-			'description' => 'Thème gaming',
+			'description' => $this->lang('Gaming theme'),
 			'link'        => 'https://neofr.ag',
 			'author'      => 'Jérémy VALENTIN <jeremy.valentin@neofr.ag>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
@@ -23,6 +23,7 @@ class Azuro extends Theme
 				'HiddenCMS' => 'Alpha 0.2.1'
 			],
 			'zones'       => ['Haut', 'Entête', 'Menu', 'Slider', 'Avant-contenu', 'Contenu', 'Post-contenu', 'Pied de page'],
+			'zone_labels' => ['Top', 'Header', 'Menu', 'Slider', 'Before content', 'Content', 'After content', 'Footer'],
 			'regions'     => [
 				'top'            => 'Haut',
 				'header'         => 'Entête',
@@ -102,7 +103,7 @@ class Azuro extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Accueil')),
+												'title' => utf8_htmlentities($this->lang('Home')),
 												'url'   => ''
 											],
 											[
@@ -110,19 +111,19 @@ class Azuro extends Theme
 												'url'   => 'forum'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Équipes')),
+												'title' => utf8_htmlentities($this->lang('Teams')),
 												'url'   => 'teams'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Matchs')),
+												'title' => utf8_htmlentities($this->lang('Matches')),
 												'url'   => 'events/matches'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Partenaires')),
+												'title' => utf8_htmlentities($this->lang('Partners')),
 												'url'   => 'partners'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Palmarès')),
+												'title' => utf8_htmlentities($this->lang('Achievements')),
 												'url'   => 'awards'
 											]
 										]
@@ -214,11 +215,11 @@ class Azuro extends Theme
 									'settings' => $this->storage->encode([
 										'links'   => [
 											[
-												'title' => utf8_htmlentities($this->lang('Membres')),
+												'title' => utf8_htmlentities($this->lang('Members')),
 												'url'   => 'members'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Recrutement')),
+												'title' => utf8_htmlentities($this->lang('Recruitment')),
 												'url'   => 'recruits'
 											],
 											[
@@ -226,11 +227,11 @@ class Azuro extends Theme
 												'url'   => 'gallery'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Événements')),
+												'title' => utf8_htmlentities($this->lang('Events')),
 												'url'   => 'events'
 											],
 											[
-												'title' => utf8_htmlentities($this->lang('Rechercher')),
+												'title' => utf8_htmlentities($this->lang('Search')),
 												'url'   => 'search'
 											],
 											[

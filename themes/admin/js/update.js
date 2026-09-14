@@ -50,7 +50,7 @@ $(function(){
 			success: function(){
 				$('.module-monitoring .refresh').trigger('click');
 				modal.hide($('#modal-update'));
-				notify('Mise à jour effectuée avec succès');
+				notify(<?php echo json_encode((string)$this->lang('Update completed successfully')) ?>);
 				setTimeout(function(){
 					window.location.reload();
 				}, 2000);

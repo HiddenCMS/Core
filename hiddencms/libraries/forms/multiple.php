@@ -26,7 +26,7 @@ abstract class Multiple extends Labelable
 				}
 				if (!$valid)
 				{
-					$this->_errors[] = $this->lang('Choix invalide');
+					$this->_errors[] = $this->lang('Invalid choice');
 					return FALSE;
 				}
 			}
@@ -47,7 +47,7 @@ abstract class Multiple extends Labelable
 
 				if ($this->_required && empty($data[$this->_name]))
 				{
-					$this->_errors[] = $this->lang('Veuillez remplir ce champ');
+					$this->_errors[] = $this->lang('Please fill this field');
 				}
 
 				$this->_value = $data[$this->_name];
@@ -62,7 +62,7 @@ abstract class Multiple extends Labelable
 				}
 				else if ($this->_required)
 				{
-					$this->_errors[] = $this->lang('Veuillez remplir ce champ');
+					$this->_errors[] = $this->lang('Please fill this field');
 				}
 			}
 		};

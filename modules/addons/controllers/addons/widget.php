@@ -15,10 +15,10 @@ class Widget extends Controller
 	public function __actions()
 	{
 		return $this->array
-					->set('enable', ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
+					->set('enable', [(string)$this->lang('Enable'), 'fas fa-check', 'success', TRUE, function($addon){
 						return $addon->is_deactivatable() && !$addon->is_enabled();
 					}])
-					->set('disable', ['Désactiver', 'fas fa-times', 'muted', TRUE, function($addon){
+					->set('disable', [(string)$this->lang('Disable'), 'fas fa-times', 'muted', TRUE, function($addon){
 						return $addon->is_deactivatable() && $addon->is_enabled();
 					}]);
 	}
@@ -27,7 +27,7 @@ class Widget extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', TRUE))->update();
 
-		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> enabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -36,7 +36,7 @@ class Widget extends Controller
 	{
 		$addon->__addon->set('data', $addon->__addon->data->set('enabled', FALSE))->update();
 
-		notify($this->lang('<b>%s</b> désactivé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> disabled', $addon->info()->title));
 
 		refresh();
 	}

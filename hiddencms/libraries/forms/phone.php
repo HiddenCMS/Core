@@ -15,7 +15,7 @@ class Phone extends Text
 		$this->_check[] = function($post, &$data){
 			if (isset($post[$this->_name]) && $post[$this->_name] !== '' && !preg_match('/^0[1-9]([. ]?)\d{2}(?:\1\d{2}){3}$/', $post[$this->_name]))
 			{
-				$this->_errors[] = 'Numéro de téléphone invalide';
+				$this->_errors[] = (string)$this->lang('Invalid phone number');
 			}
 		};
 

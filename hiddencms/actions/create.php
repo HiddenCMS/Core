@@ -10,7 +10,7 @@ class Create extends \HB\HiddenCMS\Action
 {
 	protected $_is_create = TRUE;
 
-	protected $_title     = 'Ajouter';
+	protected $_title     = 'Add';
 	protected $_icon      = 'fas fa-plus';
 	protected $_color     = 'primary';
 

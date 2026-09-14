@@ -20,17 +20,19 @@ class Admin extends Controller_Module
 		$traffic = $this->model('traffic')->report($days);
 		if (($_GET['export'] ?? '') === 'csv') {
 			$daily = array_column($traffic['daily'], NULL, 'day');
-			foreach (['views' => 'Pages vues', 'visits' => 'Visites (sessions par jour)'] as $key => $label) {
+			foreach (['views' => 'Page views', 'visits' => 'Visits (sessions per day)'] as $key => $label) {
 				$points = []; foreach ($snapshot['series'][0]['data'] as $point) $points[] = [$point[0], (int)($daily[$point[0]][$key] ?? 0)];
-				$snapshot['series'][] = ['name' => $label, 'data' => $points];
+				$snapshot['series'][] = ['name' => (string)$this->lang($label), 'data' => $points];
 			}
 			header('Content-Type: text/csv; charset=UTF-8');
-			header('Content-Disposition: attachment; filename="statistiques-'.$days.'-jours.csv"');
+			header('Content-Disposition: attachment; filename="statistics-'.$days.'-days.csv"');
 			header('Cache-Control: private, no-store');
 			echo $model->csv($snapshot); exit;
 		}
 		$this->css('overview')->js('highstock')->js('overview');
-		return $this->view('overview', ['snapshot' => $snapshot, 'traffic' => $traffic, 'periods' => \HB\Modules\Statistics\Models\Overview::PERIODS]);
+		$periods = [];
+		foreach (\HB\Modules\Statistics\Models\Overview::PERIODS as $period => $label) $periods[$period] = (string)$this->lang($label);
+		return $this->view('overview', ['snapshot' => $snapshot, 'traffic' => $traffic, 'periods' => $periods]);
 	}
 }
 

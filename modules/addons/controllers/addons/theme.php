@@ -10,18 +10,18 @@ use HB\HiddenCMS\Loadables\Controller;
 
 class Theme extends Controller
 {
-	public $__label = ['Thèmes', 'Thème', 'fas fa-tint', 'success'];
+	public $__label = ['Themes', 'Theme', 'fas fa-tint', 'success'];
 
 	public function __actions()
 	{
 		return $this->array
-					->set('enable',    ['Activer', 'fas fa-check', 'success', TRUE, function($addon){
+					->set('enable',    [(string)$this->lang('Enable'), 'fas fa-check', 'success', TRUE, function($addon){
 						return $addon->info()->name != 'admin' && !$addon->is_enabled();
 					}])
-					->set('customize', ['Personaliser', 'fas fa-paint-brush', 'info', FALSE, function($addon){
+					->set('customize', [(string)$this->lang('Customize'), 'fas fa-paint-brush', 'info', FALSE, function($addon){
 						return $addon->info()->name != 'admin' && @$addon->controller('admin');
 					}])
-					->set('reset',     ['Réinstaller par défaut', 'fas fa-sync', 'warning', TRUE, function($addon){
+					->set('reset',     [(string)$this->lang('Reset to defaults'), 'fas fa-sync', 'warning', TRUE, function($addon){
 						return $addon->info()->name != 'admin';
 					}]);
 	}
@@ -40,7 +40,7 @@ class Theme extends Controller
 
 		$this->config('default_theme', $addon->info()->name);
 
-		notify($this->lang('<b>%s</b> activé', $addon->info()->title));
+		notify($this->lang('<b>%s</b> enabled', $addon->info()->title));
 
 		refresh();
 	}
@@ -48,22 +48,22 @@ class Theme extends Controller
 	public function customize($theme, $controller)
 	{
 		$controller	->title($theme->info()->title)
-					->subtitle('Personnalisation du thème')
+					->subtitle((string)$this->lang('Theme customization'))
 					->icon('fas fa-paint-brush')
-					->add_action($this->button('Réinstaller par défaut', 'fas fa-sync', 'warning')->modal($this->reset($theme)));
+					->add_action($this->button((string)$this->lang('Reset to defaults'), 'fas fa-sync', 'warning')->modal($this->reset($theme)));
 
 		return $theme->controller('admin')->index();
 	}
 
 	public function reset($theme)
 	{
-		return $this->modal('Réinstaller par défaut', 'fas fa-sync')
-					->body($this->lang('Êtes-vous sûr(e) de vouloir réinstaller le thème <b>%s</b> ?<br />Toutes les dispositions et configurations de widgets seront perdues.', $theme->info()->title))
-					->submit('Réinstaller', 'warning')
+		return $this->modal((string)$this->lang('Reset to defaults'), 'fas fa-sync')
+					->body($this->lang('Are you sure you want to reinstall the <b>%s</b> theme?<br />All widget layouts and configurations will be lost.', $theme->info()->title))
+					->submit((string)$this->lang('Reinstall'), 'warning')
 					->cancel()
 					->callback(function() use ($theme){
 						$theme->reset();
-						notify($this->lang('Thème %s réinstallé par défaut', $theme->info()->title));
+						notify($this->lang('Theme %s reset to defaults', $theme->info()->title));
 						refresh();
 					});
 	}

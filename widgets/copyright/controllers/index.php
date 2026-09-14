@@ -20,9 +20,15 @@ class Index extends Controller_Widget
 			'copyright' => icon('far fa-copyright')
 		];
 
-		if (!in_string('{hiddencms}', $copyright = utf8_html_entity_decode($this->config->copyright)) && !in_string('{HiddenCMS}', $copyright))
+		$copyright = utf8_html_entity_decode($this->config->copyright);
+		if ($copyright === 'Copyright {copyright} {year} {name}, all rights reserved')
 		{
-			$copyright .= '<div class="float-right">'.$this->lang('Propulsé par %s', '{hiddencms}').'</div>';
+			$copyright = (string)$this->lang('Copyright {copyright} {year} {name}, all rights reserved');
+		}
+
+		if (!in_string('{hiddencms}', $copyright) && !in_string('{HiddenCMS}', $copyright))
+		{
+			$copyright .= '<div class="float-right">'.$this->lang('Powered by %s', '{hiddencms}').'</div>';
 		}
 
 		return $this->panel()

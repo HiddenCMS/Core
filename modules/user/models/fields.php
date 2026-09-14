@@ -10,7 +10,7 @@ class Fields extends Model
 {
 	public function types()
 	{
-		return ['text' => 'Texte', 'select' => 'Liste de choix', 'radio' => 'Choix unique', 'switch' => 'Interrupteur', 'checkbox' => 'Cases à cocher'];
+		return ['text' => (string)$this->lang('Text'), 'select' => (string)$this->lang('Dropdown'), 'radio' => (string)$this->lang('Single choice'), 'switch' => (string)$this->lang('Toggle'), 'checkbox' => (string)$this->lang('Checkboxes')];
 	}
 
 	public function all()
@@ -40,10 +40,10 @@ class Fields extends Model
 	public function login_label()
 	{
 		$identifier = $this->identifier();
-		if ($identifier === 'username') return 'Pseudo';
-		if ($identifier === 'email') return 'Adresse e-mail';
+		if ($identifier === 'username') return (string)$this->lang('Username');
+		if ($identifier === 'email') return (string)$this->lang('Email address');
 		$field = $this->find(substr($identifier, 6));
-		return $field ? utf8_htmlentities($field['label']) : 'Identifiant';
+		return $field ? utf8_htmlentities($field['label']) : (string)$this->lang('Login identifier');
 	}
 
 	public function login_user($value)
@@ -85,7 +85,7 @@ class Fields extends Model
 			$rule = $form->{'form_'.$type}($name)->title(utf8_htmlentities($field['label']));
 			if ($type !== 'text')
 			{
-				$options = $field['type'] === 'switch' ? ['1' => 'Oui'] : $field['options'];
+				$options = $field['type'] === 'switch' ? ['1' => (string)$this->lang('Yes')] : $field['options'];
 				$rule->data(array_map('utf8_htmlentities', $options));
 				if ($field['type'] === 'switch') $rule->toggle();
 				if ($type === 'select') $rule->search(0);
@@ -111,11 +111,11 @@ class Fields extends Model
 		{
 			$name = 'custom_'.substr($identifier, 6);
 			$old = $this->values($user->id)[$name] ?? '';
-			$form->rule($form->form_password('custom_current_password')->title('Mot de passe actuel (si changement de l’identifiant)')->value('')
+			$form->rule($form->form_password('custom_current_password')->title((string)$this->lang('Current password (when changing the login identifier)'))->value('')
 				->check(function($post) use ($old, $name, $user){
 					if (is_string($post[$name] ?? NULL) && $this->decode($post[$name]) !== $old && (empty($post['custom_current_password']) || !$user->password($post['custom_current_password'])))
 					{
-						return 'Le mot de passe actuel est requis pour changer votre identifiant.';
+						return (string)$this->lang('Your current password is required to change your identifier.');
 					}
 				}));
 		}
@@ -123,10 +123,10 @@ class Fields extends Model
 			->success(function($user, $form){
 				try { $this->save_user($user); }
 				catch (InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
-				notify('Champs personnalisés enregistrés');
+				notify((string)$this->lang('Custom fields saved'));
 				refresh();
 			})
-			->submit('Enregistrer')->panel()->title('Champs personnalisés', 'fas fa-list');
+			->submit((string)$this->lang('Save'))->panel()->title('Custom fields', 'fas fa-list');
 	}
 
 	private function decode($value)
@@ -139,36 +139,36 @@ class Fields extends Model
 		$multiple = in_array($field['type'], ['checkbox', 'switch'], TRUE);
 		if (($multiple && $value !== NULL && !is_array($value)) || (!$multiple && $value !== NULL && !is_string($value)))
 		{
-			throw new InvalidArgumentException('Valeur invalide pour le champ '.utf8_htmlentities($field['label']).'.');
+			throw new InvalidArgumentException((string)$this->lang('Invalid value for field %s.', utf8_htmlentities($field['label'])));
 		}
 		if ($multiple)
 		{
 			foreach ($value ?: [] as $choice)
 			{
-				if (!is_string($choice) && !is_int($choice)) throw new InvalidArgumentException('Choix invalide.');
+				if (!is_string($choice) && !is_int($choice)) throw new InvalidArgumentException((string)$this->lang('Invalid choice.'));
 			}
 		}
 		$value = $multiple ? array_values(array_unique($value ?: [])) : $this->decode($value ?? '');
 		$login = $this->identifier() === 'field:'.$field['id'];
 		if (($field['required'] || $login) && ($value === '' || $value === []))
 		{
-			throw new InvalidArgumentException('Le champ '.utf8_htmlentities($field['label']).' est obligatoire.');
+			throw new InvalidArgumentException((string)$this->lang('Field %s is required.', utf8_htmlentities($field['label'])));
 		}
 		if ($field['type'] === 'text')
 		{
-			if (mb_strlen($value) > 190) throw new InvalidArgumentException('Le texte est limité à 190 caractères.');
+			if (mb_strlen($value) > 190) throw new InvalidArgumentException((string)$this->lang('Text is limited to 190 characters.'));
 			if ($login && $value !== '' && !$this->db->from('user_field_value')->where('field_id', $field['id'])
 				->where('login_value', $value)->where('user_id <>', (int)$user_id)->empty())
 			{
-				throw new InvalidArgumentException('Cet identifiant est déjà utilisé.');
+				throw new InvalidArgumentException((string)$this->lang('This identifier is already in use.'));
 			}
 		}
 		else
 		{
-			$options = $field['type'] === 'switch' ? ['1' => 'Oui'] : $field['options'];
+			$options = $field['type'] === 'switch' ? ['1' => (string)$this->lang('Yes')] : $field['options'];
 			foreach ($multiple ? $value : ($value === '' ? [] : [$value]) as $choice)
 			{
-				if (!is_scalar($choice) || !array_key_exists($choice, $options)) throw new InvalidArgumentException('Choix invalide.');
+				if (!is_scalar($choice) || !array_key_exists($choice, $options)) throw new InvalidArgumentException((string)$this->lang('Invalid choice.'));
 			}
 		}
 		return $value;
@@ -206,7 +206,7 @@ class Fields extends Model
 				{
 					if (!$this->db->from('user')->where('deleted', FALSE)->where($key, $user->$key)->empty())
 					{
-						throw new InvalidArgumentException('Ce pseudo ou cette adresse e-mail est déjà utilisé.');
+						throw new InvalidArgumentException((string)$this->lang('This username or email address is already in use.'));
 					}
 				}
 				$user->set('admin', FALSE)->set_password($user->password)->create();
@@ -232,13 +232,13 @@ class Fields extends Model
 			{
 				if (!preg_match('/^field:([1-9][0-9]*)$/', $identifier, $match) || !($field = $this->find($match[1])) || $field['type'] !== 'text')
 				{
-					throw new InvalidArgumentException('Choisissez un pseudo, une adresse e-mail ou un champ texte.');
+					throw new InvalidArgumentException((string)$this->lang('Choose a username, email address or text field.'));
 				}
 				$id = (int)$field['id'];
 				$missing = $this->db->query('SELECT u.id FROM user u LEFT JOIN user_field_value v ON v.user_id=u.id AND v.field_id='.$id.' WHERE u.deleted=\'0\' AND (v.value IS NULL OR v.value IN (\'""\', \'null\')) LIMIT 1')->row();
-				if ($missing) throw new InvalidArgumentException('Renseignez ce champ pour chaque utilisateur actif avant de le choisir pour la connexion.');
+				if ($missing) throw new InvalidArgumentException((string)$this->lang('Complete this field for every active user before choosing it for sign-in.'));
 				$duplicate = $this->db->query('SELECT COUNT(*) AS n FROM user_field_value v JOIN user u ON u.id=v.user_id AND u.deleted=\'0\' WHERE v.field_id='.$id.' GROUP BY CONVERT(JSON_UNQUOTE(v.value) USING utf8mb4) COLLATE utf8mb4_unicode_ci HAVING COUNT(*) > 1 LIMIT 1')->row();
-				if ($duplicate) throw new InvalidArgumentException('Ce champ contient des doublons. Chaque utilisateur doit avoir une valeur unique.');
+				if ($duplicate) throw new InvalidArgumentException((string)$this->lang('This field contains duplicates. Each user must have a unique value.'));
 			}
 			$this->db->execute_checked('UPDATE user_field_value SET login_value=NULL');
 			if (isset($id))
@@ -253,13 +253,13 @@ class Fields extends Model
 	{
 		return $this->locked(function() use ($data, $id){
 			$existing = $id ? $this->find($id) : NULL;
-			if ($id && !$existing) throw new InvalidArgumentException('Champ introuvable.');
+			if ($id && !$existing) throw new InvalidArgumentException((string)$this->lang('Field not found.'));
 			$name = $existing ? $existing['name'] : $this->decode($data['name'] ?? '');
 			$type = $existing ? $existing['type'] : ($data['type'] ?? '');
 			$label = $this->decode($data['label'] ?? '');
-			if (!preg_match('/^[a-z][a-z0-9_]{0,59}$/', $name)) throw new InvalidArgumentException('Nom technique invalide (lettres minuscules, chiffres et underscores).');
-			if (!isset($this->types()[$type]) || !$label || mb_strlen($label) > 100) throw new InvalidArgumentException('Libellé ou type de champ invalide.');
-			if (!$this->db->from('user_field')->where('name', $name)->where('id <>', (int)$id)->empty()) throw new InvalidArgumentException('Ce nom technique existe déjà.');
+			if (!preg_match('/^[a-z][a-z0-9_]{0,59}$/', $name)) throw new InvalidArgumentException((string)$this->lang('Invalid internal name (lowercase letters, numbers and underscores).'));
+			if (!isset($this->types()[$type]) || !$label || mb_strlen($label) > 100) throw new InvalidArgumentException((string)$this->lang('Invalid field label or type.'));
+			if (!$this->db->from('user_field')->where('name', $name)->where('id <>', (int)$id)->empty()) throw new InvalidArgumentException((string)$this->lang('This internal name already exists.'));
 			$options = [];
 			if (in_array($type, ['select', 'radio', 'checkbox'], TRUE))
 			{
@@ -267,17 +267,17 @@ class Fields extends Model
 				{
 					if (trim($line) === '') continue;
 					$parts = array_map('trim', explode('|', $line, 2));
-					if (count($parts) !== 2 || !preg_match('/^[a-zA-Z0-9_-]{1,60}$/', $parts[0]) || $parts[1] === '' || isset($options[$parts[0]])) throw new InvalidArgumentException('Chaque choix doit être unique, au format valeur|libellé.');
+					if (count($parts) !== 2 || !preg_match('/^[a-zA-Z0-9_-]{1,60}$/', $parts[0]) || $parts[1] === '' || isset($options[$parts[0]])) throw new InvalidArgumentException((string)$this->lang('Each choice must be unique, in value|label format.'));
 					$options[$parts[0]] = $parts[1];
 				}
-				if (!$options) throw new InvalidArgumentException('Ajoutez au moins un choix.');
+				if (!$options) throw new InvalidArgumentException((string)$this->lang('Add at least one choice.'));
 				if ($existing)
 				{
 					foreach ($this->db->from('user_field_value')->where('field_id', $id)->get() as $row)
 					{
 						foreach ((array)json_decode($row['value'], TRUE) as $choice)
 						{
-							if ($choice !== '' && !isset($options[$choice])) throw new InvalidArgumentException('Un choix utilisé par un utilisateur ne peut pas être retiré.');
+							if ($choice !== '' && !isset($options[$choice])) throw new InvalidArgumentException((string)$this->lang('A choice used by a user cannot be removed.'));
 						}
 					}
 				}
@@ -295,7 +295,7 @@ class Fields extends Model
 	public function delete_definition($id)
 	{
 		$this->locked(function() use ($id){
-			if ($this->identifier() === 'field:'.$id) throw new InvalidArgumentException('Ce champ est utilisé pour la connexion. Choisissez un autre identifiant avant de le supprimer.');
+			if ($this->identifier() === 'field:'.$id) throw new InvalidArgumentException((string)$this->lang('This field is used for sign-in. Choose another identifier before deleting it.'));
 			$this->db->where('field_id', $id)->delete('user_field_value');
 			$this->db->where('id', $id)->delete('user_field');
 		});

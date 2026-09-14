@@ -2,7 +2,7 @@
 	<?php if ($search_enabled): ?>
 		<div class="table-search float-left">
 			<div class="form-group has-feedback">
-				<input class="form-control" data-provide="typeahead" data-items="5" data-source="<?php echo $search_source_json ?>" type="text"<?php if ($search_value !== ''): ?> value="<?php echo utf8_htmlentities($search_value) ?>"<?php endif; ?> placeholder="<?php echo $this->lang('Rechercher') ?>" autocomplete="off" />
+				<input class="form-control" data-provide="typeahead" data-items="5" data-source="<?php echo $search_source_json ?>" type="text"<?php if ($search_value !== ''): ?> value="<?php echo utf8_htmlentities($search_value) ?>"<?php endif; ?> placeholder="<?php echo $this->lang('Search') ?>" autocomplete="off" />
 			</div>
 		</div>
 	<?php endif ?>

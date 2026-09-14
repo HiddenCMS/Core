@@ -15,5 +15,11 @@ return [
 	'ceae385f' => 'Member excluded',
 	'd90775ec' => 'There are no permission to manage',
 	'db6ab372' => 'Member',
-	'ec006b78' => 'Reset all permissions'
+	'ec006b78' => 'Reset all permissions',
+    '95221e63' => 'There are no permission to manage',
+    '85e5cc2b' => 'Permissions management',
+    'f6b9294d' => 'List of permissions',
+    '519ee2d1' => 'Reset all permissions',
+    'e16490c3' => 'Member excluded',
+    '5a283910' => 'Group excluded',
 ];

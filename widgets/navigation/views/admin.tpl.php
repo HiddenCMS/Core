@@ -6,24 +6,24 @@
 	</div>
 	<div class="eight wide field">
 		<select class="ui search selection dropdown" name="settings[menu_id]" id="settings-menu-id">
-			<option value=""><?php echo $this->lang('Selectionner un menu') ?></option>
+			<option value=""><?php echo $this->lang('Select a menu') ?></option>
 			<?php foreach (isset($menus) ? $menus : [] as $id => $menu_title): ?>
 				<option value="<?php echo $id ?>"<?php if ((string)$id === $selected_menu_id) echo ' selected="selected"' ?>><?php echo $menu_title ?></option>
 			<?php endforeach ?>
 		</select>
 		<?php if (empty($menus)): ?>
-			<div class="ui tiny message"><?php echo $this->lang('Aucun menu disponible. Creez un menu dans le module Menus.') ?></div>
+			<div class="ui tiny message"><?php echo $this->lang('No menus available. Create a menu in the Menus module.') ?></div>
 		<?php endif ?>
 	</div>
 </div>
 <div class="fields">
 	<div class="four wide field">
-		<label for="settings-panel"><?php echo $this->lang('Panneau') ?></label>
+		<label for="settings-panel"><?php echo $this->lang('Panel') ?></label>
 	</div>
 	<div class="eight wide field">
 		<select class="ui search selection dropdown" name="settings[panel]" id="settings-panel">
 			<option value="1"<?php if (!isset($panel) || $panel) echo ' selected="selected"' ?>><?php echo $this->lang('Active') ?></option>
-			<option value="0"<?php if (isset($panel) && !$panel) echo ' selected="selected"' ?>><?php echo $this->lang('Desactive') ?></option>
+			<option value="0"<?php if (isset($panel) && !$panel) echo ' selected="selected"' ?>><?php echo $this->lang('Disabled') ?></option>
 		</select>
 	</div>
 </div>

@@ -12,7 +12,7 @@ class Admin extends Controller_Module
 {
 	public function index()
 	{
-		$this	->subtitle($this->lang('Général'))
+		$this	->subtitle($this->lang('General'))
 				->icon('fas fa-cog');
 
 		$pages = [];
@@ -33,60 +33,60 @@ class Admin extends Controller_Module
 		$this	->form()
 				->add_rules([
 					'name' => [
-						'label'  => $this->lang('Titre du site'),
+						'label'  => $this->lang('Site Title'),
 						'value'  => $this->config->name,
 						'rules'  => 'required'
 					],
 					'description' => [
-						'label'  => $this->lang('Description du site'),
+						'label'  => $this->lang('Site description'),
 						'value'  => $this->config->description,
 						'rules'  => 'required'
 					],
 					'favicon' => [
-						'label'  => $this->lang('Favicon du site'),
+						'label'  => $this->lang('Site favicon'),
 						'value'  => $this->config->favicon,
 						'type'   => 'file',
 						'upload' => 'favicons',
-						'info'   => $this->lang(' d\'image (format carré min. %dpx et max. %d Mo)', 16, file_upload_max_size() / 1024 / 1024),
+						'info'   => $this->lang(' image (square, min. %dpx and max. %d MB)', 16, file_upload_max_size() / 1024 / 1024),
 						'check'  => function($filename, $ext){
 							if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png', 'ico']))
 							{
-								return $this->lang('Veuillez choisir un fichier d\'image');
+								return $this->lang('Please choose an image file');
 							}
 
 							list($w, $h) = getimagesize($filename);
 
 							if ($w != $h)
 							{
-								return $this->lang('L\'image doit être carrée');
+								return $this->lang('The image must be square');
 							}
 							else if ($w < 16)
 							{
-								return $this->lang('L\'image doit faire au moins %dpx', 16);
+								return $this->lang('The image must be at least %dpx', 16);
 							}
 						}
 					],
 					'contact' => [
-						'label'  => $this->lang('Email de contact'),
+						'label'  => $this->lang('Contact Email'),
 						'value'  => $this->config->contact,
 						'type'   => 'email',
 						'rules'  => 'required'
 					],
 					'default_page' => [
-						'label'  => $this->lang('Page d\'accueil'),
+						'label'  => $this->lang('Home Page'),
 						'values' => $pages,
 						'value'  => $this->config->default_page,
 						'type'   => 'select',
 						'rules'  => 'required'
 					],
 					'analytics' => [
-						'label'       => '<a href="https://analytics.google.com" target="_blank">'.$this->lang('Code Google Analytics').'</a>',
-						'description' => 'Format G-XXXXXXXXXX (GA4). Chargé uniquement après accord du visiteur, hors administration. Les anciens codes UA ne sont plus chargés.',
+						'label'       => '<a href="https://analytics.google.com" target="_blank">'.$this->lang('Google Analytics code').'</a>',
+						'description' => (string)$this->lang('Format G-XXXXXXXXXX (GA4). Loaded only after visitor consent, outside administration. Legacy UA codes are no longer loaded.'),
 						'value'       => $this->config->analytics,
 						'check'       => function($code){
 							if (!is_empty($code) && !preg_match('/^(?:G-[A-Z0-9]+|UA-\d+-\d+)$/D', $code))
 							{
-								return $this->lang('Ce code est invalide');
+								return $this->lang('This code is invalid');
 							}
 						}
 					],
@@ -101,7 +101,7 @@ class Admin extends Controller_Module
 						'value'  => $this->config->robots_txt
 					]
 				])
-				->add_submit($this->lang('Valider'))
+				->add_submit($this->lang('Save'))
 				->display_required(FALSE);
 
 		if ($this->form()->is_valid($post))
@@ -111,14 +111,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Paramètres généraux sauvegardés avec succès');
+			notify((string)$this->lang('General settings saved successfully'));
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading($this->lang('Général'), 'fas fa-cog')
+								->heading($this->lang('General'), 'fas fa-cog')
 								->body($this->form()->display())
 			);
 		});
@@ -127,48 +127,48 @@ class Admin extends Controller_Module
 	public function smtp()
 	{
 		if (!$this->user->admin) return $this->error->unauthorized();
-		$this->subtitle('Envoi des emails')->icon('fas fa-envelope');
+		$this->subtitle((string)$this->lang('Email delivery'))->icon('fas fa-envelope');
 		$model = $this->model('smtp');
 		$values = $model->values();
 		return $this->_layout(function($col) use ($model, $values){
 			$form = $this->form2();
-			$form->rule($this->form_select('smtp_enabled')->title('Mode d’envoi')->data(['0' => 'Mail PHP', '1' => 'SMTP'])->value((string)$values['enabled'])->check(function($post){
-				if (!in_array($post['smtp_enabled'] ?? '', ['0', '1'], TRUE)) return 'Mode invalide';
+			$form->rule($this->form_select('smtp_enabled')->title((string)$this->lang('Delivery method'))->data(['0' => (string)$this->lang('PHP mail'), '1' => 'SMTP'])->value((string)$values['enabled'])->check(function($post){
+				if (!in_array($post['smtp_enabled'] ?? '', ['0', '1'], TRUE)) return (string)$this->lang('Invalid delivery method');
 			}));
-			$form->rule($this->form_text('smtp_host')->title('Serveur SMTP')->value($values['host'])->size('col-8')->check(function($post){
+			$form->rule($this->form_text('smtp_host')->title((string)$this->lang('SMTP server'))->value($values['host'])->size('col-8')->check(function($post){
 				$host = $post['smtp_host'] ?? '';
-				if (($post['smtp_enabled'] ?? '') === '1' && $host === '') return 'Indiquez le serveur SMTP.';
-				if ($host !== '' && !filter_var($host, FILTER_VALIDATE_IP) && !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) return 'Serveur invalide : utilisez un nom de domaine ou une adresse IP.';
+				if (($post['smtp_enabled'] ?? '') === '1' && $host === '') return (string)$this->lang('Enter the SMTP server.');
+				if ($host !== '' && !filter_var($host, FILTER_VALIDATE_IP) && !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) return (string)$this->lang('Invalid server: use a domain name or IP address.');
 			}));
 			$form->rule($this->form_number('smtp_port')->title('Port')->value($values['port'])->size('col-4')->check(function($post){
-				if (filter_var($post['smtp_port'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]) === FALSE) return 'Port entre 1 et 65535.';
+				if (filter_var($post['smtp_port'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 65535]]) === FALSE) return (string)$this->lang('The port must be between 1 and 65535.');
 			}));
-			$form->rule($this->form_select('smtp_secure')->title('Chiffrement')->data(['tls' => 'STARTTLS (généralement 587)', 'ssl' => 'TLS implicite (généralement 465)', '' => 'Aucun'])->value($values['secure'])->check(function($post){
-				if (!in_array($post['smtp_secure'] ?? NULL, ['', 'tls', 'ssl'], TRUE)) return 'Chiffrement invalide';
+			$form->rule($this->form_select('smtp_secure')->title((string)$this->lang('Encryption'))->data(['tls' => (string)$this->lang('STARTTLS (usually 587)'), 'ssl' => (string)$this->lang('Implicit TLS (usually 465)'), '' => (string)$this->lang('None')])->value($values['secure'])->check(function($post){
+				if (!in_array($post['smtp_secure'] ?? NULL, ['', 'tls', 'ssl'], TRUE)) return (string)$this->lang('Invalid encryption method');
 			}));
-			$form->rule($this->form_text('smtp_username')->title('Identifiant')->value($values['username'])->size('col-6'));
-			$password = $this->form_password('smtp_password')->title('Nouveau mot de passe')->placeholder('Laisser vide pour conserver le mot de passe')->size('col-6');
+			$form->rule($this->form_text('smtp_username')->title((string)$this->lang('Username'))->value($values['username'])->size('col-6'));
+			$password = $this->form_password('smtp_password')->title((string)$this->lang('New password'))->placeholder((string)$this->lang('Leave blank to keep the password'))->size('col-6');
 			$password->check(function($post) use ($password){
 				$password->value('', TRUE);
-				if (!is_string($post['smtp_password'] ?? '')) return 'Mot de passe invalide';
+				if (!is_string($post['smtp_password'] ?? '')) return (string)$this->lang('Invalid password');
 			});
 			$form->rule($password);
-			$form->rule($this->form_select('smtp_clear_password')->title('Mot de passe enregistré')->data(['0' => 'Conserver', '1' => 'Supprimer'])->value('0'));
-			$form->legend('Expéditeur');
-			$form->rule($this->form_email('smtp_from')->title('Adresse email')->value($values['from'])->placeholder($this->config->contact)->size('col-6'));
-			$form->rule($this->form_text('smtp_name')->title('Nom')->value($values['name'])->placeholder($this->config->name)->size('col-6'));
+			$form->rule($this->form_select('smtp_clear_password')->title((string)$this->lang('Saved password'))->data(['0' => (string)$this->lang('Keep'), '1' => (string)$this->lang('Delete')])->value('0'));
+			$form->legend((string)$this->lang('Sender'));
+			$form->rule($this->form_email('smtp_from')->title((string)$this->lang('Email address'))->value($values['from'])->placeholder($this->config->contact)->size('col-6'));
+			$form->rule($this->form_text('smtp_name')->title('Name')->value($values['name'])->placeholder($this->config->name)->size('col-6'));
 			$col->append($form->success(function($data, $form) use ($model){
-				try { $model->save($data); notify('Configuration email enregistrée'); refresh(); }
-				catch (\Throwable $error) { $form->error('Impossible d’enregistrer la configuration SMTP.'); error_log('[SMTP] Configuration could not be saved.'); }
-			})->submit('Enregistrer')->panel()->title('Configuration email', 'fas fa-envelope'));
-			$test = $this->form2()->rule($this->form_email('smtp_test_recipient')->title('Destinataire')->required()->value($this->user->email));
+				try { $model->save($data); notify((string)$this->lang('Email settings saved')); refresh(); }
+				catch (\Throwable $error) { $form->error((string)$this->lang('Unable to save the SMTP settings.')); error_log('[SMTP] Configuration could not be saved.'); }
+			})->submit((string)$this->lang('Save'))->panel()->title((string)$this->lang('Email settings'), 'fas fa-envelope'));
+			$test = $this->form2()->rule($this->form_email('smtp_test_recipient')->title((string)$this->lang('Recipient'))->required()->value($this->user->email));
 			$col->append($test->success(function($data, $form){
 				try {
-					$sent = $this->email->to(utf8_html_entity_decode($data['smtp_test_recipient']))->subject('Test email HiddenCMS')->message('default', ['content' => 'Ce message confirme le fonctionnement de l’envoi des emails de votre site.'])->send();
-					if ($sent) notify('Message accepté par le serveur d’envoi. Vérifiez la boîte de réception et les indésirables.');
-					else $form->error('Échec de l’envoi. Vérifiez le serveur, le port, le chiffrement et les identifiants.');
-				} catch (\Throwable $error) { $form->error('Échec de l’envoi. Vérifiez la configuration SMTP.'); error_log('[SMTP] Test email failed.'); }
-			})->submit('Envoyer un email de test')->panel()->title('Tester la configuration enregistrée', 'fas fa-paper-plane'));
+					$sent = $this->email->to(utf8_html_entity_decode($data['smtp_test_recipient']))->subject((string)$this->lang('HiddenCMS test email'))->message('default', ['content' => (string)$this->lang('This message confirms that email delivery is working on your site.')])->send();
+					if ($sent) notify((string)$this->lang('Message accepted by the mail server. Check your inbox and spam folder.'));
+					else $form->error((string)$this->lang('Sending failed. Check the server, port, encryption and credentials.'));
+				} catch (\Throwable $error) { $form->error((string)$this->lang('Sending failed. Check the SMTP settings.')); error_log('[SMTP] Test email failed.'); }
+			})->submit((string)$this->lang('Send a test email'))->panel()->title((string)$this->lang('Test the saved settings'), 'fas fa-paper-plane'));
 		});
 	}
 
@@ -195,14 +195,14 @@ class Admin extends Controller_Module
 		$this	->form()
 				->add_rules([
 					[
-						'label'   => 'Inscription',
+						'label'   => (string)$this->lang('Sign up'),
 						'type'    => 'legend'
 					],
 					'registration_status' => [
-						'label'   => 'Statut',
+						'label'   => (string)$this->lang('Status'),
 						'type'    => 'radio',
 						'value'   => (int)$this->config->registration_status,
-						'values'  => ['Fermées', 'Ouvertes']
+						'values'  => [(string)$this->lang('Closed registrations'), (string)$this->lang('Open registrations')]
 					],
 					/*'registration_validation' => [
 						'label'   => 'Validation',
@@ -211,39 +211,39 @@ class Admin extends Controller_Module
 						'values'  => ['Automatique', 'Confirmation par e-mail']
 					],*/
 					'registration_charte' => [
-						'label'   => 'Règlement',
+						'label'   => (string)$this->lang('Rules'),
 						'value'   => $this->config->registration_charte,
 						'type'    => 'editor'
 					],
 					[
-						'label'   => 'Message de bienvenue',
+						'label'   => (string)$this->lang('Welcome message'),
 						'type'    => 'legend'
 					],
 					'welcome' => [
 						'type'    => 'checkbox',
 						'checked' => ['on' => $this->config->welcome],
-						'values'  => ['on' => 'Envoyer un message privé aux nouveaux utilisateurs']
+						'values'  => ['on' => (string)$this->lang('Send a private message to new users')]
 					],
 					'welcome_user_id' => [
-						'label'   => 'Auteur du message',
+						'label'   => (string)$this->lang('Message author'),
 						'values'  => $list_users,
 						'value'   => $this->config->welcome_user_id,
 						'type'    => 'select',
 						'size'    => 'col-5'
 					],
 					'welcome_title' => [
-						'label'   => 'Titre du message',
+						'label'   => (string)$this->lang('Message title'),
 						'value'   => $this->config->welcome_title,
 						'type'    => 'text'
 					],
 					'welcome_content' => [
-						'label'   => 'Message de bienvenue',
+						'label'   => (string)$this->lang('Welcome message'),
 						'value'   => $this->config->welcome_content,
 						'type'    => 'editor',
-						'description' => 'Placez [pseudo] pour afficher automatiquement le pseudo du nouveau membre dans le message'
+						'description' => (string)$this->lang('Use [pseudo] to automatically insert the new member\'s username in the message')
 					]
 				])
-				->add_submit($this->lang('Valider'))
+				->add_submit($this->lang('Save'))
 				->display_required(FALSE);
 
 		if ($this->form()->is_valid($post))
@@ -258,7 +258,7 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Paramètres d\'inscription sauvegardés avec succès');
+			notify((string)$this->lang('Registration settings saved successfully'));
 
 			refresh();
 		}
@@ -273,7 +273,7 @@ class Admin extends Controller_Module
 
 	public function team()
 	{
-		$this	->subtitle('Identité du site')
+		$this	->subtitle((string)$this->lang('Site identity'))
 				->icon('fas fa-id-card');
 
 		$this	->form()
@@ -292,31 +292,38 @@ class Admin extends Controller_Module
 						'check'       => function($filename, $ext){
 							if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 							{
-								return 'Veuillez choisir un fichier d\'image';
+								return $this->lang('Please choose an image file');
 							}
 						},
-						'description' => 'Ce logo peut être utilisé par le thème et les widgets à la place du titre du site.'
+						'description' => (string)$this->lang('This logo can be used by the theme and widgets instead of the site title.')
+					],
+					'login_logo' => [
+						'label' => 'Afficher le logo au-dessus de la connexion',
+						'value' => (string)($this->config->login_logo ?? '0'),
+						'type' => 'select',
+						'values' => ['0' => (string)$this->lang('No'), '1' => (string)$this->lang('Yes')],
+						'description' => 'Utilise le logo du site renseigne ci-dessus.'
 					],
 					'team_type' => [
-						'label'       => 'Type de structure',
+						'label'       => (string)$this->lang('Organization type'),
 						'value'       => $this->config->team_type,
 						'type'        => 'text',
 						'size'        => 'col-4',
 						'description' => '<b>Exemples :</b> association, entreprise, marque, collectif ou projet.'
 					],
 					'team_creation' => [
-						'label'       => 'Date de création',
+						'label'       => (string)$this->lang('Creation date'),
 						'value'       => $this->config->team_creation,
 						'type'        => 'date',
 						'size'        => 'col-4'
 					],
 					'team_biographie' => [
-						'label'       => 'Présentation',
+						'label'       => (string)$this->lang('Introduction'),
 						'value'       => $this->config->team_biographie,
 						'type'        => 'textarea'
 					]
 				])
-				->add_submit($this->lang('Valider'))
+				->add_submit($this->lang('Save'))
 				->display_required(FALSE);
 
 		if ($this->form()->is_valid($post))
@@ -326,14 +333,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Informations sauvegardées avec succès');
+			notify((string)$this->lang('Information saved successfully'));
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Identité du site', 'fas fa-id-card')
+								->heading((string)$this->lang('Site identity'), 'fas fa-id-card')
 								->body($this->form()->display())
 			);
 		});
@@ -341,7 +348,7 @@ class Admin extends Controller_Module
 
 	public function socials()
 	{
-		$this	->subtitle('Réseaux sociaux')
+		$this	->subtitle((string)$this->lang('Social networks'))
 				->icon('fas fa-globe');
 
 		$this	->form()
@@ -419,7 +426,7 @@ class Admin extends Controller_Module
 						'type'  => 'url'
 					]
 				])
-				->add_submit($this->lang('Valider'))
+				->add_submit($this->lang('Save'))
 				->display_required(FALSE);
 
 		if ($this->form()->is_valid($post))
@@ -429,14 +436,14 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Réseaux sociaux sauvegardés avec succès');
+			notify((string)$this->lang('Social network settings saved successfully'));
 
 			refresh();
 		}
 
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
-								->heading('Réseaux sociaux', 'fas fa-globe')
+								->heading((string)$this->lang('Social networks'), 'fas fa-globe')
 								->body($this->form()->display())
 			);
 		});
@@ -450,30 +457,30 @@ class Admin extends Controller_Module
 		$this	->form()
 				->add_rules([
 					'captcha_public_key' => [
-						'label' => 'Clé du site reCAPTCHA v3',
+						'label' => (string)$this->lang('reCAPTCHA v3 site key'),
 						'value' => $this->config->captcha_public_key,
 						'type'  => 'text'
 					],
 					'captcha_private_key' => [
-						'label' => 'Clé secrète reCAPTCHA v3',
+						'label' => (string)$this->lang('reCAPTCHA v3 secret key'),
 						'value' => $this->config->captcha_private_key,
 						'type'  => 'text'
 					],
 					'captcha_score_threshold' => [
-						'label'       => 'Seuil minimal du score',
+						'label'       => (string)$this->lang('Minimum score'),
 						'value'       => isset($this->config->captcha_score_threshold) ? $this->config->captcha_score_threshold : '0.5',
 						'type'        => 'number',
 						'min'         => 0,
 						'max'         => 1,
 						'step'        => 0.1,
-						'description' => 'Valeur comprise entre 0 et 1. Le seuil conseillé pour commencer est 0,5.',
+						'description' => (string)$this->lang('Value between 0 and 1. The recommended initial threshold is 0.5.'),
 						'check'       => function($value){
 							$value = str_replace(',', '.', $value);
-							return is_numeric($value) && (float)$value >= 0 && (float)$value <= 1 ? TRUE : 'Le seuil doit être compris entre 0 et 1';
+							return is_numeric($value) && (float)$value >= 0 && (float)$value <= 1 ? TRUE : (string)$this->lang('The threshold must be between 0 and 1');
 						}
 					]
 				])
-				->add_submit($this->lang('Valider'))
+				->add_submit($this->lang('Save'))
 				->display_required(FALSE);
 
 		if ($this->form()->is_valid($post))
@@ -485,7 +492,7 @@ class Admin extends Controller_Module
 				$this->config(''.$var, $value);
 			}
 
-			notify('Configuration de Google reCAPTCHA sauvegardée avec succès');
+			notify((string)$this->lang('Google reCAPTCHA settings saved successfully'));
 
 			refresh();
 		}
@@ -493,7 +500,7 @@ class Admin extends Controller_Module
 		return $this->_layout(function($col){
 			$col->append($this	->panel()
 								->heading('Google reCAPTCHA', 'fas fa-shield-alt')
-								->body('<div class="ui info message"><div class="header">reCAPTCHA v3</div><p>Utilisez une paire de clés reCAPTCHA v3. La vérification est invisible et attribue un score de confiance à chaque envoi protégé.</p><p><a href="https://www.google.com/recaptcha/admin/create" target="_blank" rel="noopener noreferrer">Configurer Google reCAPTCHA</a></p></div>'.$this->form()->display())
+								->body('<div class="ui info message"><div class="header">reCAPTCHA v3</div><p>'.$this->lang('Use a pair of reCAPTCHA v3 keys. Verification is invisible and assigns a confidence score to each protected submission.').'</p><p><a href="https://www.google.com/recaptcha/admin/create" target="_blank" rel="noopener noreferrer">'.$this->lang('Configure Google reCAPTCHA').'</a></p></div>'.$this->form()->display())
 			);
 		});
 	}
@@ -513,7 +520,7 @@ class Admin extends Controller_Module
 				]
 			])
 			->fast_mode()
-			->add_submit($this->lang('Valider'))
+			->add_submit($this->lang('Save'))
 			->save();
 
 		$position = preg_split('/\s+/', trim((string)$this->config->maintenance_background_position), -1, PREG_SPLIT_NO_EMPTY);
@@ -545,12 +552,12 @@ class Admin extends Controller_Module
 		$form_maintenance = $this->form()
 			->add_rules([
 				'title' => [
-					'label' => $this->lang('Titre'),
+					'label' => $this->lang('Title'),
 					'type'  => 'text',
 					'value' => $this->config->maintenance_title
 				],
 				'content' => [
-					'label' => $this->lang('Contenu'),
+					'label' => $this->lang('Content'),
 					'type'  => 'textarea',
 					'value' => $this->config->maintenance_content
 				],
@@ -559,72 +566,72 @@ class Admin extends Controller_Module
 					'value'  => $this->config->maintenance_logo,
 					'type'   => 'file',
 					'upload' => 'maintenance',
-					'info'   => $this->lang(' d\'image (max. %d Mo)', file_upload_max_size() / 1024 / 1024),
+					'info'   => $this->lang(' image (max. %d MB)', file_upload_max_size() / 1024 / 1024),
 					'check'  => function($filename, $ext){
 						if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 						{
-							return $this->lang('Veuillez choisir un fichier d\'image');
+							return $this->lang('Please choose an image file');
 						}
 					}
 				],
 				'background' => [
-					'label'  => $this->lang('Image de fond'),
+					'label'  => $this->lang('Background image'),
 					'value'  => $this->config->maintenance_background,
 					'type'   => 'file',
 					'upload' => 'maintenance',
-					'info'   => $this->lang(' d\'image (max. %d Mo)', file_upload_max_size() / 1024 / 1024),
+					'info'   => $this->lang(' image (max. %d MB)', file_upload_max_size() / 1024 / 1024),
 					'check'  => function($filename, $ext){
 						if (!in_array($ext, ['gif', 'jpeg', 'jpg', 'png']))
 						{
-							return $this->lang('Veuillez choisir un fichier d\'image');
+							return $this->lang('Please choose an image file');
 						}
 					}
 				],
 				'repeat' => [
-					'label'  => $this->lang('Répéter l\'image'),
+					'label'  => $this->lang('Repeat image'),
 					'value'  => $this->config->maintenance_background_repeat ?: 'no-repeat',
 					'values' => [
-						'no-repeat' => $this->lang('Non'),
-						'repeat-x'  => $this->lang('Horizontalement'),
-						'repeat-y'  => $this->lang('Verticalement'),
-						'repeat'    => $this->lang('Les deux')
+						'no-repeat' => $this->lang('No'),
+						'repeat-x'  => $this->lang('Horizontally'),
+						'repeat-y'  => $this->lang('Vertically'),
+						'repeat'    => $this->lang('Both')
 					],
 					'type'   => 'select'
 				],
 				'positionX' => [
-					'label'  => $this->lang('Position horizontale'),
+					'label'  => $this->lang('Horizontal position'),
 					'value'  => $positionX,
 					'values' => [
-						'left'   => $this->lang('Gauche'),
-						'center' => $this->lang('Centré'),
-						'right'  => $this->lang('Droite')
+						'left'   => $this->lang('Left'),
+						'center' => $this->lang('Centered'),
+						'right'  => $this->lang('Right')
 					],
 					'type'   => 'select'
 				],
 				'positionY' => [
-					'label'  => $this->lang('Position verticale'),
+					'label'  => $this->lang('Vertical position'),
 					'value'  => $positionY,
 					'values' => [
-						'top'    => $this->lang('Haut'),
-						'center' => $this->lang('Milieu'),
-						'bottom' => $this->lang('Bas')
+						'top'    => $this->lang('Top'),
+						'center' => $this->lang('Middle'),
+						'bottom' => $this->lang('Bottom')
 					],
 					'type'   => 'select'
 				],
 				'background_color' => [
-					'label' => $this->lang('Couleur de fond'),
+					'label' => $this->lang('Background color'),
 					'value' => $this->config->maintenance_background_color ?: '#343a40',
 					'type'  => 'colorpicker',
 					'size'  => 'col-4'
 				],
 				'text_color' => [
-					'label' => $this->lang('Couleur du texte'),
+					'label' => $this->lang('Text color'),
 					'value' => $this->config->maintenance_text_color ?: '#fff',
 					'type'  => 'colorpicker',
 					'size'  => 'col-4'
 				]
 			])
-			->add_submit($this->lang('Valider'))
+			->add_submit($this->lang('Save'))
 			->save();
 
 		if ($form_opening->is_valid($post))
@@ -650,16 +657,16 @@ class Admin extends Controller_Module
 
 		return $this->_layout(function($right, $left) use ($form_maintenance, $form_opening){
 			$right->append($this->panel()
-								->heading($this->lang('Personnalisation de la page de maintenance'), 'fas fa-paint-brush')
+								->heading($this->lang('Customizing the maintenance page'), 'fas fa-paint-brush')
 								->body($form_maintenance->display())
 			);
 
 			$left	->append($this	->panel()
-									->heading($this->lang('Statut du site'), 'fas fa-power-off')
+									->heading($this->lang('Website status'), 'fas fa-power-off')
 									->body($this->view('admin/maintenance'))
 					)
 					->append($this	->panel()
-									->heading($this->lang('Ouverture programmée'), 'far fa-clock')
+									->heading($this->lang('Planned opening'), 'far fa-clock')
 									->body($form_opening->display())
 					);
 		});
@@ -667,14 +674,14 @@ class Admin extends Controller_Module
 
 	public function updates()
 	{
-		$this	->title('Mises à jour')
+		$this	->title('Updates')
 				->icon('fas fa-cloud-download-alt')
 				->css('admin/updates');
 
 		$refresh = (bool)$this->input->get->get('refresh');
 		$status = $this->core_updater->status($refresh);
 
-		$this->add_action($this->button('Rechercher', 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
+		$this->add_action($this->button((string)$this->lang('Search'), 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
 
 		return $this->view('admin/updates', [
 			'status'       => $status,
@@ -686,58 +693,58 @@ class Admin extends Controller_Module
 	public function privacy()
 	{
 		if (!$this->user->admin) return $this->error->unauthorized();
-		$this->subtitle('Confidentialité')->icon('fas fa-user-shield');
-		$pages = ['0' => 'Aucune page sélectionnée'];
+		$this->subtitle((string)$this->lang('Privacy'))->icon('fas fa-user-shield');
+		$pages = ['0' => (string)$this->lang('No page selected')];
 		foreach (privacy_pages() as $id => $page) $pages[$id] = $page['title'];
 		$retention = $this->model('retention');
 		return $this->_layout(function($col) use ($pages, $retention){
 			$form = $this->form2()
-				->info($this->html()->attr('class', 'ui warning message')->content('La politique doit correspondre aux traitements réels du site. Le gestionnaire bloque Google Analytics et les vidéos YouTube intégrées avant accord. Les autres services doivent être intégrés explicitement. reCAPTCHA nécessite encore un examen séparé : ces réglages ne valent pas validation de conformité.'))
-				->rule($this->form_text('privacy_controller')->title('Responsable du traitement')->value($this->config->privacy_controller ?? ''))
-				->rule($this->form_email('privacy_contact')->title('Email de contact pour les données personnelles')->value($this->config->privacy_contact ?? ''))
-				->rule($this->form_select('privacy_page')->title('Politique de confidentialité')->data($pages)->search(0)->value((string)(($this->config->privacy_page ?? '') ?: '0'))
+				->info($this->html()->attr('class', 'ui warning message')->content((string)$this->lang('The policy must reflect the actual processing on this site. The manager blocks Google Analytics and embedded YouTube videos before consent. Other services require explicit integration. reCAPTCHA still requires separate review: these settings do not constitute a compliance assessment.')))
+				->rule($this->form_text('privacy_controller')->title((string)$this->lang('Data controller'))->value($this->config->privacy_controller ?? ''))
+				->rule($this->form_email('privacy_contact')->title((string)$this->lang('Personal data contact email'))->value($this->config->privacy_contact ?? ''))
+				->rule($this->form_select('privacy_page')->title('Privacy policy')->data($pages)->search(0)->value((string)(($this->config->privacy_page ?? '') ?: '0'))
 					->check(function($post) use ($pages){
-						if (!is_scalar($post['privacy_page'] ?? NULL) || !array_key_exists($post['privacy_page'], $pages)) return 'Veuillez sélectionner une page publiée accessible aux visiteurs.';
+						if (!is_scalar($post['privacy_page'] ?? NULL) || !array_key_exists($post['privacy_page'], $pages)) return (string)$this->lang('Select a published page accessible to visitors.');
 					}))
-				->rule($this->form_select('privacy_erasure_delay')->title('Délai avant anonymisation')->data([
-					'7' => '7 jours', '14' => '14 jours', '30' => '30 jours'
+				->rule($this->form_select('privacy_erasure_delay')->title((string)$this->lang('Anonymization delay'))->data([
+					'7' => (string)$this->lang('7 days'), '14' => (string)$this->lang('14 days'), '30' => (string)$this->lang('30 days')
 				])->value((string)$this->module('user')->model('privacy')->erasure_delay())
 					->check(function($post){
-						if (!in_array((int)($post['privacy_erasure_delay'] ?? 0), \HB\Modules\User\Models\Privacy::ERASURE_DELAYS, TRUE)) return 'Délai invalide';
+						if (!in_array((int)($post['privacy_erasure_delay'] ?? 0), \HB\Modules\User\Models\Privacy::ERASURE_DELAYS, TRUE)) return (string)$this->lang('Invalid delay');
 					}));
-			$form->rule($this->form_select('statistics_enabled')->title('Statistiques locales du site')->data(['1' => 'Activées après accord du visiteur', '0' => 'Désactivées'])->value($this->config->statistics_enabled ?? '1')->check(function($post){
-				if (!in_array($post['statistics_enabled'] ?? NULL, ['0', '1'], TRUE)) return 'Choix invalide';
+			$form->rule($this->form_select('statistics_enabled')->title((string)$this->lang('Local site statistics'))->data(['1' => (string)$this->lang('Enabled after visitor consent'), '0' => (string)$this->lang('Disabled')])->value($this->config->statistics_enabled ?? '1')->check(function($post){
+				if (!in_array($post['statistics_enabled'] ?? NULL, ['0', '1'], TRUE)) return (string)$this->lang('Invalid choice');
 			}));
-			$form->legend('Champs du profil');
+			$form->legend((string)$this->lang('Profile fields'));
 			foreach (privacy_profile_fields() as $field => $label)
 			{
 				$key = 'privacy_profile_'.$field;
 				$form->rule($this->form_select($key)->title($label)->size('col-6')
-					->data(['disabled' => 'Désactivé', 'private' => 'Privé', 'public' => 'Public'])
+					->data(['disabled' => (string)$this->lang('Disabled option'), 'private' => (string)$this->lang('Private'), 'public' => 'Public'])
 					->value(privacy_profile_mode($field))
 					->check(function($post) use ($key){
-						if (!in_array($post[$key] ?? NULL, ['disabled', 'private', 'public'], TRUE)) return 'Choix invalide';
+						if (!in_array($post[$key] ?? NULL, ['disabled', 'private', 'public'], TRUE)) return (string)$this->lang('Invalid choice');
 					}));
 			}
-			$form->legend('Durées de conservation');
-			$form->info('<div class="ui info message"><p>Une valeur désactivée ne déclenche aucune suppression automatique. Les comptes inactifs sont uniquement signalés pour examen et ne sont jamais supprimés par cette purge.</p></div>');
+			$form->legend((string)$this->lang('Retention periods'));
+			$form->info('<div class="ui info message"><p>'.$this->lang('A disabled value does not trigger automatic deletion. Inactive accounts are only flagged for review and are never deleted by this purge.').'</p></div>');
 			$retention_titles = [
-				'privacy_retention_connection_history' => 'Historique des connexions',
-				'privacy_retention_sessions'           => 'Sessions persistantes',
-				'privacy_retention_db_logs'            => 'Journal des modifications',
-				'privacy_retention_erasure_reports'    => 'Rapports d’effacement terminés',
-				'privacy_retention_backups'            => 'Sauvegardes de mise à jour',
-				'privacy_retention_log_files'          => 'Fichiers de logs anciens',
-				'privacy_retention_inactive_accounts'  => 'Audit des comptes inactifs'
+				'privacy_retention_connection_history' => (string)$this->lang('Connection history'),
+				'privacy_retention_sessions'           => (string)$this->lang('Persistent sessions'),
+				'privacy_retention_db_logs'            => (string)$this->lang('Change log'),
+				'privacy_retention_erasure_reports'    => (string)$this->lang('Completed erasure reports'),
+				'privacy_retention_backups'            => (string)$this->lang('Update backups'),
+				'privacy_retention_log_files'          => (string)$this->lang('Old log files'),
+				'privacy_retention_inactive_accounts'  => (string)$this->lang('Inactive account audit')
 			];
 			$retention_values = $retention->values();
 			foreach (\HB\Modules\Settings\Models\Retention::POLICIES as $name => $allowed)
 			{
-				$options = ['0' => 'Désactivée'];
-				foreach (array_filter($allowed) as $days) $options[(string)$days] = $days.' jours';
+				$options = ['0' => (string)$this->lang('Disabled policy')];
+				foreach (array_filter($allowed) as $days) $options[(string)$days] = (string)$this->lang('%d days', $days);
 				$form->rule($this->form_select($name)->title($retention_titles[$name])->size('col-6')->data($options)->value((string)$retention_values[$name])
 					->check(function($post) use ($name, $allowed){
-						if (!in_array((int)($post[$name] ?? -1), $allowed, TRUE)) return 'Durée invalide';
+						if (!in_array((int)($post[$name] ?? -1), $allowed, TRUE)) return (string)$this->lang('Invalid duration');
 					}));
 			}
 			$col->append($form->success(function($data){
@@ -748,17 +755,17 @@ class Admin extends Controller_Module
 						$key = 'privacy_profile_'.$field;
 						$this->config($key, $data[$key]);
 					}
-					notify('Paramètres de confidentialité enregistrés');
+					notify((string)$this->lang('Privacy settings saved'));
 					refresh();
 				})
-				->submit('Enregistrer')->panel()->title('Confidentialité', 'fas fa-user-shield'));
+				->submit((string)$this->lang('Save'))->panel()->title((string)$this->lang('Privacy'), 'fas fa-user-shield'));
 
 			$last = $retention->last_run();
 			$body = $last
-				? '<div class="ui message"><div class="header">Dernière opération : '.($last['mode'] === 'purge' ? 'purge' : 'simulation').'</div><p>'.date('d/m/Y à H:i', strtotime($last['completed_at'])).' · '.($last['status'] === 'completed' ? 'Terminée' : 'Échec').'</p></div>'.$retention->summary($last['report'])
-				: '<div class="ui message">Aucune simulation ni purge exécutée pour le moment.</div>';
-			$body .= '<div class="retention-actions"><a href="#" class="ui button" data-modal-ajax="'.url('admin/ajax/settings/retention-preview').'">'.icon('fas fa-search').' Simuler</a><a href="#" class="ui negative button" data-modal-ajax="'.url('admin/ajax/settings/retention-purge').'">'.icon('fas fa-trash-alt').' Exécuter la purge</a></div>';
-			$col->append($this->panel()->title('Contrôle de la conservation', 'fas fa-hourglass-half')->body($body));
+				? '<div class="ui message"><div class="header">'.$this->lang('Last operation: %s', $last['mode'] === 'purge' ? $this->lang('Purge') : $this->lang('Preview')).'</div><p>'.date('Y-m-d H:i', strtotime($last['completed_at'])).' · '.($last['status'] === 'completed' ? (string)$this->lang('Completed') : (string)$this->lang('Failed')).'</p></div>'.$retention->summary($last['report'])
+				: '<div class="ui message">'.$this->lang('No retention preview or purge has run yet.').'</div>';
+			$body .= '<div class="retention-actions"><a href="#" class="ui button" data-modal-ajax="'.url('admin/ajax/settings/retention-preview').'">'.icon('fas fa-search').' '.$this->lang('Preview retention').'</a><a href="#" class="ui negative button" data-modal-ajax="'.url('admin/ajax/settings/retention-purge').'">'.icon('fas fa-trash-alt').' '.$this->lang('Run purge').'</a></div>';
+			$col->append($this->panel()->title((string)$this->lang('Retention controls'), 'fas fa-hourglass-half')->body($body));
 		});
 	}
 
@@ -778,14 +785,14 @@ class Admin extends Controller_Module
 																			<dd>{name}</dd>
 																		<dt>Symbole '.icon('far fa-copyright').'</dt>
 																			<dd>{copyright}</dd>
-																		<dt>Année</dt>
+																		<dt>'.$this->lang('Year').'</dt>
 																			<dd>{year}</dd>
 																	</dl>')
 											)
 											->rule('copyright', 'Copyright', $this->config->copyright)
 											->success(function($data){
 												$this->config('copyright', $data['copyright']);
-												notify('Copyright modifié');
+												notify((string)$this->lang('Copyright updated'));
 												refresh();
 											})
 											->panel()
@@ -802,17 +809,17 @@ class Admin extends Controller_Module
 			'panel' => FALSE,
 			'links' => [
 				[
-					'title' => 'Général',
+					'title' => (string)$this->lang('General'),
 					'icon'  => 'fas fa-cog',
 					'url'   => 'admin/settings'
 				],
 				[
-					'title' => 'Identité du site',
+					'title' => (string)$this->lang('Site identity'),
 					'icon'  => 'fas fa-id-card',
 					'url'   => 'admin/settings/team'
 				],
 				[
-					'title' => 'Envoi des emails',
+					'title' => (string)$this->lang('Email delivery'),
 					'icon'  => 'fas fa-envelope',
 					'url'   => 'admin/settings/smtp'
 				],
@@ -822,7 +829,7 @@ class Admin extends Controller_Module
 					'url'   => 'admin/settings/registration'
 				],
 				[
-					'title' => 'Réseaux sociaux',
+					'title' => (string)$this->lang('Social networks'),
 					'icon'  => 'fas fa-globe',
 					'url'   => 'admin/settings/socials'
 				],
@@ -837,7 +844,7 @@ class Admin extends Controller_Module
 					'url'   => 'admin/settings/maintenance'
 				],
 				[
-					'title' => 'Confidentialité',
+					'title' => (string)$this->lang('Privacy'),
 					'icon'  => 'fas fa-user-shield',
 					'url'   => 'admin/settings/privacy'
 				],

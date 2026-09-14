@@ -11,5 +11,9 @@ return [
 	'7741ccea' => 'Lost password?',
 	'8a431149' => 'Inbox',
 	'bd0fa24a' => 'Logout',
-	'c983be27' => 'Welcome <a href="'.url('user').'">'.$this->user->username.'</a>'
+	'c983be27' => 'Welcome <a href="'.url('user').'">'.$this->user->username.'</a>',
+    '3260f019' => 'Logout',
+    'bfd0dc3d' => 'Inbox',
+    'bcaa555b' => 'Write',
+    '12926ad7' => 'Space (mini) Member',
 ];

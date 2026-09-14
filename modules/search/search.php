@@ -13,7 +13,7 @@ class Search extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Rechercher'),
+			'title'       => $this->lang('Search'),
 			'description' => '',
 			'icon'        => 'fas fa-search',
 			'link'        => 'https://neofr.ag',

@@ -17,7 +17,7 @@ class Index extends Controller_Module
 			$this->error();
 		}
 
-		return $this->title($this->config->maintenance_title ?: $this->lang('Site en maintenance'))
+		return $this->title($this->config->maintenance_title ?: $this->lang('Site under maintenance'))
 					->css('maintenance')
 					->css('maintenance-layout')
 					->exec_if($this->config->maintenance_opening, function(){

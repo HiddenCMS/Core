@@ -1,7 +1,7 @@
 {
     "name": "hiddencms/core",
-    "version": "0.7.9",
-    "schema": "0.7.2",
+    "version": "0.8.0",
+    "schema": "0.8.0",
     "channel": "stable",
     "php": ">=8.1",
     "update": {
@@ -16,6 +16,7 @@
             "uploads"
         ],
         "remove": [
+            "hiddencms/langs/source-en.php",
             "dist/css/zone_helpers.css",
             "dist/js/geolocalisation.js",
             "dist/js/user-agent.js"

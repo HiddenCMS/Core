@@ -6,45 +6,45 @@
 
 $rules = [
 		$this->form_text('first_name')
-					->title('Prénom')
+					->title('First name')
 					->size('col-6'),
 		$this->form_text('last_name')
-					->title('Nom')
+					->title('Name')
 					->size('col-6'),
 		$this->form_date('date_of_birth')
-					->title('Date de naissance')
+					->title('Date of birth')
 					->check(function($post, $data){
 						if (!is_empty($data['date_of_birth']) && $this->date($data['date_of_birth'])->diff() > 0)
 						{
-							return 'Date de naissance invalide';
+							return (string)$this->lang('Invalid date of birth');
 						}
 					})
 					->size('col-6'),
 		$this->form_select('sex')
-					->title('Sexe')
+					->title('Gender')
 					->data([
-						'unspecified' => 'Ne souhaite pas préciser',
-						'female' => 'Femme',
-						'male'   => 'Homme'
+						'unspecified' => (string)$this->lang('Prefer not to say'),
+						'female' => (string)$this->lang('Female'),
+						'male'   => (string)$this->lang('Male')
 					])
 					->value($this->model()->sex ?: 'unspecified')
 					->check(function($post){
 						if (!in_array($post['sex'] ?? '', ['unspecified', 'female', 'male'], TRUE))
 						{
-							return 'Choix invalide';
+							return (string)$this->lang('Invalid choice');
 						}
 					})
 					->size('col-6'),
 		$this->form_select('country')
-					->title('Pays')
-					->placeholder('Non renseigné')
+					->title('Country')
+					->placeholder((string)$this->lang('Not specified'))
 					->data(get_countries())
 					->size('col-6'),
 		$this->form_text('location')
-					->title('Localisation')
+					->title('Location')
 					->size('col-6'),
 		$this->form_text('quote')
-					->title('Citation'),
+					->title('Quote'),
 		$this->form_editor('signature')
 					->title('Signature')
 					->value(bbcode($this->model()->signature))
@@ -59,7 +59,7 @@ foreach ($rules as $rule)
 
 $this->success(function($profile){
 			$profile->commit();
-			notify($this->lang('Profil modifié'));
+			notify($this->lang('Profile updated'));
 			refresh();
 		})
 		->success(function($profile){

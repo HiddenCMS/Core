@@ -13,7 +13,7 @@ class Admin extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => 'Tableau de bord',
+			'title'       => $this->lang('Dashboard'),
 			'description' => '',
 			'icon'        => 'fas fa-tachometer-alt',
 			'link'        => 'https://neofr.ag',

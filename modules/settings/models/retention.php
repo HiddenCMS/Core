@@ -19,13 +19,13 @@ class Retention extends Model
 	];
 
 	const LABELS = [
-		'connection_history' => 'Historique des connexions',
+		'connection_history' => 'Connection history',
 		'sessions'           => 'Sessions',
-		'db_logs'            => 'Journal des modifications',
-		'erasure_reports'    => 'Rapports d’effacement',
-		'backups'            => 'Sauvegardes',
-		'log_files'          => 'Fichiers de logs',
-		'inactive_accounts'  => 'Comptes inactifs à examiner'
+		'db_logs'            => 'Change log',
+		'erasure_reports'    => 'Erasure reports',
+		'backups'            => 'Backups',
+		'log_files'          => 'Log files',
+		'inactive_accounts'  => 'Inactive accounts to review'
 	];
 
 	public function values()
@@ -83,7 +83,7 @@ class Retention extends Model
 				}
 				else
 				{
-					$report['warnings'][] = 'Sauvegarde non supprimée : '.$backup['id'];
+					$report['warnings'][] = (string)$this->lang('Backup not deleted: %s', $backup['id']);
 				}
 			}
 			foreach ($report['filesystem']['logs'] as $log)
@@ -94,7 +94,7 @@ class Retention extends Model
 				}
 				else
 				{
-					$report['warnings'][] = 'Fichier de log non supprimé : '.$log['name'];
+					$report['warnings'][] = (string)$this->lang('Log file not deleted: %s', $log['name']);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ class Retention extends Model
 		$items = [];
 		foreach ($report['candidates'] ?? [] as $key => $count)
 		{
-			$items[] = '<div class="item"><div class="content"><strong>'.utf8_htmlentities(self::LABELS[$key] ?? $key).'</strong><div class="description">'.(int)$count.' élément(s)</div></div></div>';
+			$items[] = '<div class="item"><div class="content"><strong>'.utf8_htmlentities((string)$this->lang(self::LABELS[$key] ?? $key)).'</strong><div class="description">'.$this->lang('%d items', (int)$count).'</div></div></div>';
 		}
 		return '<div class="ui relaxed divided list">'.implode('', $items).'</div>';
 	}

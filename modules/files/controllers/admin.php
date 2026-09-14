@@ -381,7 +381,7 @@ class Admin extends Controller_Module
 				}
 			}
 
-			notify($count ? $this->lang('%d fichier(s) ajoute(s)', $count) : $this->lang('Aucun fichier ajoute'), $count ? 'success' : 'warning');
+			notify($count ? $this->lang('%d file(s) added', $count) : $this->lang('No files added'), $count ? 'success' : 'warning');
 			redirect($this->index_path($dir));
 		}
 
@@ -397,7 +397,7 @@ class Admin extends Controller_Module
 
 			if ($target_dir === NULL || !is_dir($this->full_path($target_dir)) || $name === '')
 			{
-				notify($this->lang('Nom de dossier invalide'), 'danger');
+				notify($this->lang('Invalid folder name'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
@@ -406,7 +406,7 @@ class Admin extends Controller_Module
 
 			$this->copy_access('read_directory', $this->directory_id($target_dir), 'read_directory', $this->directory_id($relative));
 
-			notify($this->lang('Dossier cree avec succes'));
+			notify($this->lang('Folder created successfully'));
 			redirect($this->index_path($dir));
 		}
 
@@ -422,12 +422,12 @@ class Admin extends Controller_Module
 
 			if (!$full || !file_exists($full))
 			{
-				notify($this->lang('Element introuvable'), 'danger');
+				notify($this->lang('Item not found'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
 			is_dir($full) ? dir_remove($full) : unlink($full);
-			notify($this->lang('Element supprime avec succes'));
+			notify($this->lang('Item deleted successfully'));
 			redirect($this->index_path($dir));
 		}
 
@@ -486,7 +486,7 @@ class Admin extends Controller_Module
 				}
 			}
 
-			notify($count ? $this->lang('%d element(s) supprime(s)', $count) : $this->lang('Aucun element supprime'), $count ? 'success' : 'warning');
+			notify($count ? $this->lang('%d item(s) deleted', $count) : $this->lang('No items deleted'), $count ? 'success' : 'warning');
 			redirect($this->index_path($dir));
 		}
 
@@ -504,7 +504,7 @@ class Admin extends Controller_Module
 
 			if (!$source_full || !file_exists($source_full) || $target_dir === NULL || !is_dir($this->full_path($target_dir)) || $name === '')
 			{
-				notify($this->lang('Deplacement impossible'), 'danger');
+				notify($this->lang('Unable to move'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
@@ -512,7 +512,7 @@ class Admin extends Controller_Module
 
 			if (is_dir($source_full) && ($target === $source || strpos($target.'/', $source.'/') === 0))
 			{
-				notify($this->lang('Impossible de deplacer un dossier dans lui-meme'), 'danger');
+				notify($this->lang('A folder cannot be moved into itself'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
@@ -520,12 +520,12 @@ class Admin extends Controller_Module
 
 			if (!$target_full || file_exists($target_full))
 			{
-				notify($this->lang('Un element existe deja a cet emplacement'), 'danger');
+				notify($this->lang('An item already exists at this location'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
 			rename($source_full, $target_full);
-			notify($this->lang('Element deplace avec succes'));
+			notify($this->lang('Item moved successfully'));
 			redirect($this->index_path($target_dir));
 		}
 
@@ -541,7 +541,7 @@ class Admin extends Controller_Module
 
 			if (count($items) !== 1 || $name === '')
 			{
-				notify($this->lang('Renommage impossible'), 'danger');
+				notify($this->lang('Unable to rename'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
@@ -554,7 +554,7 @@ class Admin extends Controller_Module
 					$file	->set('name', $name)
 							->update();
 
-					notify($this->lang('Element renomme avec succes'));
+					notify($this->lang('Item renamed successfully'));
 					redirect($this->index_path($dir));
 				}
 			}
@@ -567,7 +567,7 @@ class Admin extends Controller_Module
 
 				if (!$source_full || !is_dir($source_full) || $target === $source || strpos($target.'/', $source.'/') === 0)
 				{
-					notify($this->lang('Renommage impossible'), 'danger');
+					notify($this->lang('Unable to rename'), 'danger');
 					redirect($this->index_path($dir));
 				}
 
@@ -575,7 +575,7 @@ class Admin extends Controller_Module
 
 				if (!$target_full || file_exists($target_full))
 				{
-					notify($this->lang('Un element existe deja a cet emplacement'), 'danger');
+					notify($this->lang('An item already exists at this location'), 'danger');
 					redirect($this->index_path($dir));
 				}
 
@@ -608,12 +608,12 @@ class Admin extends Controller_Module
 						}
 					}
 
-					notify($this->lang('Element renomme avec succes'));
+					notify($this->lang('Item renamed successfully'));
 					redirect($this->index_path($target));
 				}
 			}
 
-			notify($this->lang('Renommage impossible'), 'danger');
+			notify($this->lang('Unable to rename'), 'danger');
 			redirect($this->index_path($dir));
 		}
 
@@ -629,7 +629,7 @@ class Admin extends Controller_Module
 
 			if (empty($items) || $target_dir === NULL || !is_dir($this->full_path($target_dir)))
 			{
-				notify($this->lang('Deplacement impossible'), 'danger');
+				notify($this->lang('Unable to move'), 'danger');
 				redirect($this->index_path($dir));
 			}
 
@@ -726,7 +726,7 @@ class Admin extends Controller_Module
 				}
 			}
 
-			notify($count ? $this->lang('%d element(s) deplace(s)', $count) : $this->lang('Aucun element deplace'), $count ? 'success' : 'warning');
+			notify($count ? $this->lang('%d item(s) moved', $count) : $this->lang('No items moved'), $count ? 'success' : 'warning');
 			redirect($this->index_path($target_dir));
 		}
 	}
@@ -812,11 +812,11 @@ class Admin extends Controller_Module
 
 	private function render_tree($current)
 	{
-		return '<div class="files-tree-heading">'.icon('far fa-folder-open').' '.$this->lang('Dossiers').'</div>'
+		return '<div class="files-tree-heading">'.icon('far fa-folder-open').' '.$this->lang('Folders').'</div>'
 			.'<ul class="files-tree">'
 				.'<li class="files-tree-node files-tree-root">'
 					.'<a class="'.($current === '' ? 'active' : '').'" href="'.$this->index_url().'">'
-						.icon('far fa-folder').' '.$this->lang('Racine')
+						.icon('far fa-folder').' '.$this->lang('Root')
 					.'</a>'
 					.$this->render_tree_branch('', $current)
 				.'</li>'
@@ -825,7 +825,7 @@ class Admin extends Controller_Module
 
 	private function render_breadcrumb($dir)
 	{
-		$html = '<nav class="files-breadcrumb">'.icon('fas fa-map-marker-alt').'<a href="'.$this->index_url().'">'.$this->lang('Racine').'</a>';
+		$html = '<nav class="files-breadcrumb">'.icon('fas fa-map-marker-alt').'<a href="'.$this->index_url().'">'.$this->lang('Root').'</a>';
 		$path = '';
 
 		foreach (array_filter(explode('/', $dir)) as $part)
@@ -834,7 +834,7 @@ class Admin extends Controller_Module
 			$html .= '<span>/</span><a href="'.$this->index_url($path).'">'.utf8_htmlentities($part).'</a>';
 		}
 
-		return $html.'<span class="files-breadcrumb-access">'.$this->button_access($this->directory_id($dir), 'directory', 'files', $this->lang('Permissions de lecture du dossier')).'</span></nav>';
+		return $html.'<span class="files-breadcrumb-access">'.$this->button_access($this->directory_id($dir), 'directory', 'files', $this->lang('Folder read permissions')).'</span></nav>';
 	}
 
 	private function directory_value($dir)
@@ -856,7 +856,7 @@ class Admin extends Controller_Module
 		return '<div class="ui fluid search selection dropdown files-path-dropdown" data-value="'.utf8_htmlentities($current).'">'
 				.'<input type="hidden" name="'.$name.'" value="'.utf8_htmlentities($current).'">'
 				.'<i class="dropdown icon"></i>'
-				.'<div class="default text">'.$this->lang('Chemin du dossier').'</div>'
+				.'<div class="default text">'.$this->lang('Folder path').'</div>'
 				.'<div class="menu">'.$options.'</div>'
 			.'</div>';
 	}
@@ -927,7 +927,7 @@ class Admin extends Controller_Module
 
 		if (empty($items))
 		{
-			return '<div class="files-empty">'.icon('far fa-folder-open').'<span>'.$this->lang('Ce dossier est vide').'</span></div>';
+			return '<div class="files-empty">'.icon('far fa-folder-open').'<span>'.$this->lang('This folder is empty').'</span></div>';
 		}
 
 		$rows = '';
@@ -940,7 +940,7 @@ class Admin extends Controller_Module
 			$size = $item['dir'] ? '-' : human_size($item['size']);
 			$date = date('d/m/Y H:i', $item['date']);
 			$value = $item['type'] === 'file' ? 'file:'.$item['id'] : 'dir:'.$item['path'];
-			$access = $item['type'] === 'file' ? $this->button_access($item['id'], 'file', 'files', $this->lang('Permissions de lecture')) : $this->button_access($item['id'], 'directory', 'files', $this->lang('Permissions de lecture'));
+			$access = $item['type'] === 'file' ? $this->button_access($item['id'], 'file', 'files', $this->lang('Read permissions')) : $this->button_access($item['id'], 'directory', 'files', $this->lang('Read permissions'));
 
 			$rows .= '<tr data-file-row data-path="'.utf8_htmlentities($value).'" data-name="'.$name.'">'
 					.'<td class="files-select"><input type="checkbox" class="files-select-item" value="'.utf8_htmlentities($value).'" data-name="'.$name.'"></td>'
@@ -955,10 +955,10 @@ class Admin extends Controller_Module
 				.'<table class="ui selectable compact table files-table">'
 					.'<thead><tr>'
 						.'<th class="files-select"><input type="checkbox" class="files-select-all"></th>'
-						.'<th>'.$this->lang('Nom').'</th>'
-						.'<th>'.$this->lang('Taille').'</th>'
+						.'<th>'.$this->lang('Name').'</th>'
+						.'<th>'.$this->lang('Size').'</th>'
 						.'<th>'.$this->lang('Date').'</th>'
-						.'<th class="right aligned">'.$this->lang('Lecture').'</th>'
+						.'<th class="right aligned">'.$this->lang('Read').'</th>'
 					.'</tr></thead>'
 					.'<tbody>'.$rows.'</tbody>'
 				.'</table>'
@@ -976,24 +976,24 @@ class Admin extends Controller_Module
 
 		if ($this->is_authorized('modify_files'))
 		{
-			$buttons .= '<button class="ui primary icon button files-selection-action" type="button" data-modal-target="#files-move-modal" title="'.$this->lang('Deplacer').'" aria-label="'.$this->lang('Deplacer').'" disabled>'
+			$buttons .= '<button class="ui primary icon button files-selection-action" type="button" data-modal-target="#files-move-modal" title="'.$this->lang('Move').'" aria-label="'.$this->lang('Move').'" disabled>'
 					.icon('fas fa-exchange-alt')
 				.'</button>';
 
-			$buttons .= '<button class="ui info icon button files-selection-action" type="button" data-files-selection-single data-modal-target="#files-rename-modal" title="'.$this->lang('Renommer').'" aria-label="'.$this->lang('Renommer').'" disabled>'
+			$buttons .= '<button class="ui info icon button files-selection-action" type="button" data-files-selection-single data-modal-target="#files-rename-modal" title="'.$this->lang('Rename').'" aria-label="'.$this->lang('Rename').'" disabled>'
 					.icon('fas fa-pencil-alt')
 				.'</button>';
 		}
 
 		if ($this->is_authorized('delete_files'))
 		{
-			$buttons .= '<button class="ui negative icon button files-selection-action" type="button" data-modal-target="#files-delete-modal" title="'.$this->lang('Supprimer').'" aria-label="'.$this->lang('Supprimer').'" disabled>'
+			$buttons .= '<button class="ui negative icon button files-selection-action" type="button" data-modal-target="#files-delete-modal" title="'.$this->lang('Delete').'" aria-label="'.$this->lang('Delete').'" disabled>'
 					.icon('far fa-trash-alt')
 				.'</button>';
 		}
 
 		return '<div class="files-selection-bar" data-files-selection>'
-				.'<span class="files-selection-count">'.$this->lang('Aucun element selectionne').'</span>'
+				.'<span class="files-selection-count">'.$this->lang('No items selected').'</span>'
 				.$buttons
 			.'</div>';
 	}
@@ -1005,11 +1005,11 @@ class Admin extends Controller_Module
 
 		if ($this->is_authorized('add_files'))
 		{
-			$upload = '<button class="ui primary icon button" type="button" data-modal-target="#files-upload-modal" title="'.$this->lang('Ajouter').'" aria-label="'.$this->lang('Ajouter').'">'
+			$upload = '<button class="ui primary icon button" type="button" data-modal-target="#files-upload-modal" title="'.$this->lang('Add').'" aria-label="'.$this->lang('Add').'">'
 					.icon('fas fa-upload')
 				.'</button>';
 
-			$mkdir = '<button class="ui primary icon button" type="button" data-modal-target="#files-mkdir-modal" title="'.$this->lang('Creer un dossier').'" aria-label="'.$this->lang('Creer un dossier').'">'
+			$mkdir = '<button class="ui primary icon button" type="button" data-modal-target="#files-mkdir-modal" title="'.$this->lang('Create a folder').'" aria-label="'.$this->lang('Create a folder').'">'
 					.icon('fas fa-folder-plus')
 				.'</button>';
 		}
@@ -1030,23 +1030,23 @@ class Admin extends Controller_Module
 		return '<form class="ui modal form files-mkdir-modal files-mkdir-form" id="files-mkdir-modal" tabindex="-1" role="dialog" aria-hidden="true" method="post" action="'.$this->index_url($dir).'">'
 						.'<input type="hidden" name="files_action" value="mkdir">'
 						.'<div class="header">'
-							.icon('fas fa-folder-plus').' '.$this->lang('Creer un dossier')
-							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"></i>'
+							.icon('fas fa-folder-plus').' '.$this->lang('Create a folder')
+							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Close').'"></i>'
 						.'</div>'
 						.'<div class="content">'
 							.'<div class="field">'
-								.'<label>'.$this->lang('Nom du dossier').'</label>'
-								.'<input type="text" name="name" placeholder="'.$this->lang('Nouveau dossier').'" required>'
+								.'<label>'.$this->lang('Folder name').'</label>'
+								.'<input type="text" name="name" placeholder="'.$this->lang('New folder').'" required>'
 							.'</div>'
 							.'<div class="field">'
-								.'<label>'.$this->lang('Chemin').'</label>'
+								.'<label>'.$this->lang('Path').'</label>'
 								.$this->render_path_input($dir)
-								.'<small class="description">'.$this->lang('Tapez pour afficher les dossiers existants').'</small>'
+								.'<small class="description">'.$this->lang('Type to find existing folders').'</small>'
 							.'</div>'
 						.'</div>'
 						.'<div class="actions">'
-							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
-							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Creer').'" aria-label="'.$this->lang('Creer').'">'.icon('fas fa-folder-plus').'</button>'
+							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Cancel').'" aria-label="'.$this->lang('Cancel').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Create').'" aria-label="'.$this->lang('Create').'">'.icon('fas fa-folder-plus').'</button>'
 						.'</div>'
 			.'</form>';
 	}
@@ -1061,22 +1061,22 @@ class Admin extends Controller_Module
 		return '<form class="ui large modal form files-upload-modal files-upload-form" id="files-upload-modal" tabindex="-1" role="dialog" aria-hidden="true" method="post" action="'.$this->index_url($dir).'" enctype="multipart/form-data">'
 						.'<input type="hidden" name="files_action" value="upload">'
 						.'<div class="header">'
-							.icon('fas fa-upload').' '.$this->lang('Ajouter des fichiers')
-							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"></i>'
+							.icon('fas fa-upload').' '.$this->lang('Add files')
+							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Close').'"></i>'
 						.'</div>'
 						.'<div class="content">'
 							.'<input class="files-upload-input" type="file" name="files[]" multiple>'
 							.'<button class="files-upload-dropzone" type="button">'
 								.'<span class="files-upload-dropzone-icon">'.icon('fas fa-cloud-upload-alt').'</span>'
-								.'<strong>'.$this->lang('Glisser-deposer les fichiers ici').'</strong>'
-								.'<small>'.$this->lang('ou cliquer pour choisir des fichiers').'</small>'
-								.'<small>'.$this->lang('Taille maximale par fichier : %s', human_size(file_upload_max_size())).'</small>'
+								.'<strong>'.$this->lang('Drag and drop files here').'</strong>'
+								.'<small>'.$this->lang('or click to choose files').'</small>'
+								.'<small>'.$this->lang('Maximum file size: %s', human_size(file_upload_max_size())).'</small>'
 							.'</button>'
 							.'<ul class="files-upload-list"></ul>'
 						.'</div>'
 						.'<div class="actions">'
-							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
-							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Ajouter').'" aria-label="'.$this->lang('Ajouter').'">'.icon('fas fa-upload').'</button>'
+							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Cancel').'" aria-label="'.$this->lang('Cancel').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Add').'" aria-label="'.$this->lang('Add').'">'.icon('fas fa-upload').'</button>'
 						.'</div>'
 			.'</form>';
 	}
@@ -1092,19 +1092,19 @@ class Admin extends Controller_Module
 						.'<input type="hidden" name="files_action" value="move_selected">'
 						.'<div class="files-selected-inputs"></div>'
 						.'<div class="header">'
-							.icon('fas fa-exchange-alt').' '.$this->lang('Deplacer la selection')
-							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"></i>'
+							.icon('fas fa-exchange-alt').' '.$this->lang('Move selection')
+							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Close').'"></i>'
 						.'</div>'
 						.'<div class="content">'
 							.'<p class="files-selected-summary"></p>'
 							.'<div class="field">'
-								.'<label>'.$this->lang('Chemin de destination').'</label>'
+								.'<label>'.$this->lang('Destination path').'</label>'
 								.$this->render_path_input($dir)
 							.'</div>'
 						.'</div>'
 						.'<div class="actions">'
-							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
-							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Deplacer').'" aria-label="'.$this->lang('Deplacer').'">'.icon('fas fa-exchange-alt').'</button>'
+							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Cancel').'" aria-label="'.$this->lang('Cancel').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="ui primary icon button" title="'.$this->lang('Move').'" aria-label="'.$this->lang('Move').'">'.icon('fas fa-exchange-alt').'</button>'
 						.'</div>'
 			.'</form>';
 	}
@@ -1120,19 +1120,19 @@ class Admin extends Controller_Module
 						.'<input type="hidden" name="files_action" value="rename_selected">'
 						.'<div class="files-selected-inputs"></div>'
 						.'<div class="header">'
-							.icon('fas fa-pencil-alt').' '.$this->lang('Renommer')
-							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"></i>'
+							.icon('fas fa-pencil-alt').' '.$this->lang('Rename')
+							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Close').'"></i>'
 						.'</div>'
 						.'<div class="content">'
 							.'<p class="files-selected-summary"></p>'
 							.'<div class="field">'
-								.'<label>'.$this->lang('Nom').'</label>'
+								.'<label>'.$this->lang('Name').'</label>'
 								.'<input type="text" name="name" required>'
 							.'</div>'
 						.'</div>'
 						.'<div class="actions">'
-							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
-							.'<button type="submit" class="ui info icon button" title="'.$this->lang('Renommer').'" aria-label="'.$this->lang('Renommer').'">'.icon('fas fa-pencil-alt').'</button>'
+							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Cancel').'" aria-label="'.$this->lang('Cancel').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="ui info icon button" title="'.$this->lang('Rename').'" aria-label="'.$this->lang('Rename').'">'.icon('fas fa-pencil-alt').'</button>'
 						.'</div>'
 			.'</form>';
 	}
@@ -1148,23 +1148,23 @@ class Admin extends Controller_Module
 						.'<input type="hidden" name="files_action" value="delete_selected">'
 						.'<div class="files-selected-inputs"></div>'
 						.'<div class="header">'
-							.icon('far fa-trash-alt').' '.$this->lang('Supprimer la selection')
-							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Fermer').'"></i>'
+							.icon('far fa-trash-alt').' '.$this->lang('Delete selection')
+							.'<i class="close icon" data-dismiss="modal" aria-label="'.$this->lang('Close').'"></i>'
 						.'</div>'
 						.'<div class="content">'
 							.'<p class="files-selected-summary"></p>'
-							.'<div class="ui negative message">'.$this->lang('Cette action est definitive.').'</div>'
+							.'<div class="ui negative message">'.$this->lang('This action is permanent.').'</div>'
 						.'</div>'
 						.'<div class="actions">'
-							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Annuler').'" aria-label="'.$this->lang('Annuler').'">'.icon('fas fa-times').'</button>'
-							.'<button type="submit" class="ui negative icon button" title="'.$this->lang('Supprimer').'" aria-label="'.$this->lang('Supprimer').'">'.icon('far fa-trash-alt').'</button>'
+							.'<button type="button" class="ui secondary icon button" data-dismiss="modal" title="'.$this->lang('Cancel').'" aria-label="'.$this->lang('Cancel').'">'.icon('fas fa-times').'</button>'
+							.'<button type="submit" class="ui negative icon button" title="'.$this->lang('Delete').'" aria-label="'.$this->lang('Delete').'">'.icon('far fa-trash-alt').'</button>'
 						.'</div>'
 			.'</form>';
 	}
 
 	public function index()
 	{
-		$this->title($this->lang('Fichiers'));
+		$this->title($this->lang('Files'));
 		$this->css('file_manager');
 		$this->js('file_manager');
 
@@ -1186,7 +1186,7 @@ class Admin extends Controller_Module
 			.$this->render_delete_modal($dir);
 
 		return $this->panel()
-					->heading($this->lang('Gestionnaire de fichiers'), 'far fa-folder-open')
+					->heading($this->lang('File manager'), 'far fa-folder-open')
 					->body($content, FALSE);
 	}
 }

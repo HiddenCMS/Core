@@ -1,12 +1,12 @@
 <table class="ui compact table table-access">
 	<thead>
 		<tr>
-			<th class="ten wide"><?php echo $this->lang('Groupes') ?></th>
+			<th class="ten wide"><?php echo $this->lang('Groups') ?></th>
 			<th class="three wide center aligned" data-radio="success">
-				<div data-toggle="tooltip" title="<?php echo $this->lang('Groupe autoris?') ?>"><?php echo icon('fas fa-check') ?></div>
+				<div data-toggle="tooltip" title="<?php echo $this->lang('Authorized group') ?>"><?php echo icon('fas fa-check') ?></div>
 			</th>
 			<th class="three wide center aligned" data-radio="danger">
-				<div data-toggle="tooltip" title="<?php echo $this->lang('Groupe exclu') ?>"><?php echo icon('fas fa-ban') ?></div>
+				<div data-toggle="tooltip" title="<?php echo $this->lang('Group excluded') ?>"><?php echo icon('fas fa-ban') ?></div>
 			</th>
 		</tr>
 	</thead>

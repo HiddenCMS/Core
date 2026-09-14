@@ -8,13 +8,13 @@ $name = $this->form()->value('name');
 
 $rules = [
 	'title' => [
-		'label' => $this->lang('Titre'),
+		'label' => $this->lang('Title'),
 		'value' => $this->form()->value('title'),
 		'type'  => 'text',
 		'rules' => 'required'
 	],
 	'name' => [
-		'label' => $this->lang('Nom technique'),
+		'label' => $this->lang('Internal name'),
 		'value' => $name,
 		'type'  => 'text',
 		'check' => function($value, $post) use ($name){
@@ -27,7 +27,7 @@ $rules = [
 
 			if ($value != $name && !HiddenCMS()->db->from('outlines')->where('name', $value)->empty())
 			{
-				return $this->lang('Nom technique deja utilise');
+				return $this->lang('Internal name already in use');
 			}
 		}
 	],
@@ -41,11 +41,11 @@ $rules = [
 	'base' => [
 		'type'    => 'checkbox',
 		'checked' => ['on' => $this->form()->value('base')],
-		'values'  => ['on' => $this->lang('Outline de base')]
+		'values'  => ['on' => $this->lang('Default outline')]
 	],
 	'enabled' => [
 		'type'    => 'checkbox',
 		'checked' => ['on' => $this->form()->value('enabled')],
-		'values'  => ['on' => $this->lang('Activer cet outline')]
+		'values'  => ['on' => $this->lang('Enable this outline')]
 	]
 ];

@@ -25,7 +25,7 @@
                 });
             });
             root.querySelectorAll('.statistics-chart').forEach(function(chart){
-            if(!window.Highcharts){chart.textContent='Graphique indisponible. Les données restent accessibles dans le tableau ci-dessous.';return;}
+            if(!window.Highcharts){chart.textContent=chart.dataset.unavailable;return;}
             var series=JSON.parse(chart.dataset.series).map(function(item){return {name:item.name,color:item.color,data:item.data.map(function(point){return [Date.parse(point[0]+'T00:00:00Z'),point[1]];})};});
             charts.push(new Highcharts.Chart(chart,{
                 chart:{type:'line',animation:false,spacing:[24,20,16,16]},title:{text:null},credits:{enabled:false},

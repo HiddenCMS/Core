@@ -18,7 +18,7 @@ class Admin_Ajax extends Controller_Module
 				->js('table');
 
 		$reset = $this->button()
-						->tooltip($this->lang('R?initialiser toutes les permissions'))
+						->tooltip($this->lang('Reset all permissions'))
 						->icon('fas fa-sync')
 						->color('info access-reset')
 						->compact()
@@ -51,7 +51,7 @@ class Admin_Ajax extends Controller_Module
 				.'</div>'
 			.'</div>';
 
-		return $this	->modal($title ?: $this->lang('Gestion des permissions'), $module->info()->icon)
+		return $this	->modal($title ?: $this->lang('Permissions management'), $module->info()->icon)
 						->set_id('access-permissions-modal-'.url_title($module->info()->name.'-'.$type.'-'.$id))
 						->body($body, FALSE)
 						->large()
@@ -76,7 +76,7 @@ class Admin_Ajax extends Controller_Module
 				.'<div class="access-modal-section">'
 					.'<div class="access-modal-section-header">'
 						.'<span>'.icon($icon).' '.$title.'</span>'
-						.'<span>'.$this->button()->tooltip($this->lang('Utilisateurs'))->icon('fas fa-users')->color('info access-users')->compact()->outline().'</span>'
+						.'<span>'.$this->button()->tooltip($this->lang('Users'))->icon('fas fa-users')->color('info access-users')->compact()->outline().'</span>'
 					.'</div>'
 					.'<div class="access-modal-section-body">'
 						.$this->view('details', [
@@ -133,7 +133,7 @@ class Admin_Ajax extends Controller_Module
 		$this	->table()
 				->add_columns([
 						[
-						'title'   => $this->lang('Membre'),
+						'title'   => $this->lang('Member'),
 						'content' => function($data){
 							return HB()->user->link($data['user_id'], $data['username']).'<span data-user-id="'.$data['user_id'].'"></span>';
 						},
@@ -145,7 +145,7 @@ class Admin_Ajax extends Controller_Module
 						}
 					],
 					[
-						'title'   => $this->lang('Groupes'),
+						'title'   => $this->lang('Groups'),
 						'content' => function($data){
 							return HB()->groups->user_groups($data['user_id']);
 						},
@@ -162,7 +162,7 @@ class Admin_Ajax extends Controller_Module
 
 							if (is_int($data['active']))
 							{
-								$output = '<a class="access-revoke" href="#" data-toggle="tooltip" title="'.$this->lang('Remettre en automatique').'">'.icon('fas fa-thumbtack').'</a>';
+								$output = '<a class="access-revoke" href="#" data-toggle="tooltip" title="'.$this->lang('Restore automatic settings').'">'.icon('fas fa-thumbtack').'</a>';
 							}
 
 							return '<td class="access-status">'.$output.'</td>';
@@ -174,7 +174,7 @@ class Admin_Ajax extends Controller_Module
 						'td'      => FALSE
 					],
 					[
-						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre autoris?').'">'.icon('fas fa-check').'</i></div>',
+						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Authorized member').'">'.icon('fas fa-check').'</i></div>',
 						'content' => function($data){
 							return $this->view('radio', [
 								'class'  => 'success',
@@ -184,7 +184,7 @@ class Admin_Ajax extends Controller_Module
 						'td'      => FALSE
 					],
 					[
-						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Membre exclu').'">'.icon('fas fa-ban').'</i></div>',
+						'title'   => '<div class="text-center" data-toggle="tooltip" title="'.$this->lang('Member excluded').'">'.icon('fas fa-ban').'</i></div>',
 						'content' => function($data){
 							static $admins;
 

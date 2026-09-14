@@ -1,1 +1,1 @@
-<h1>Connexion requise</h1>
+<h1><?php echo HB()->lang('Sign-in required') ?></h1>

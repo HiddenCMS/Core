@@ -7,17 +7,17 @@
 $menu_id = isset($model['menu_id']) ? (int)$model['menu_id'] : 0;
 
 $this	->rule($this->form_text('title')
-					->title($this->lang('Titre'))
+					->title($this->lang('Title'))
 					->required()
 		)
 		->rule($this->form_text('name')
-					->title($this->lang('Chemin d\'acces'))
+					->title($this->lang('Path'))
 					->check(function($post, $data) use ($menu_id){
 						$name = url_title(!empty($data['name']) ? $data['name'] : (!empty($data['title']) ? $data['title'] : ''));
 
 						if ($name === '')
 						{
-							return $this->lang('Veuillez renseigner un titre valide');
+							return $this->lang('Please enter a valid title');
 						}
 
 						$query = HiddenCMS()->db	->from('menus')
@@ -30,7 +30,7 @@ $this	->rule($this->form_text('title')
 
 						if (!$query->empty())
 						{
-							return $this->lang('Chemin d\'acces deja utilise');
+							return $this->lang('Path already in use');
 						}
 					})
 		);

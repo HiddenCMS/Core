@@ -21,7 +21,7 @@ class Index extends Controller_Widget
 
 		if (empty($links) && $this->url->segments[0] == 'index')
 		{
-			array_unshift($links, [$this->lang('Accueil'), '', 'fas fa-map-marker-alt']);
+			array_unshift($links, [$this->lang('Home'), '', 'fas fa-map-marker-alt']);
 		}
 		else if ($this->output->module() && $this->output->module()->info()->name != 'pages')
 		{

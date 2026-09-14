@@ -13,7 +13,7 @@ class Admin extends Controller_Module
 	public function index()
 	{
 		if (!$this->user->admin) return $this->error->unauthorized();
-		$this->title($this->lang('Tableau de bord'))->css('dashboard');
+		$this->title($this->lang('Dashboard'))->css('dashboard');
 		return $this->view('dashboard', ['dashboard' => $this->model('dashboard')->data()]);
 	}
 

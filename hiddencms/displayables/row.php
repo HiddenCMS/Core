@@ -50,10 +50,10 @@ class Row extends Displayable
 			{
 				$output .= '<div class="live-editor-row-header">
 								<div class="btn-group">
-									<button type="button" class="btn btn-sm btn-info live-editor-style" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Apparence').'">'.icon('fas fa-paint-brush').'</button>
-									<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Supprimer').'">'.icon('fas fa-times').'</button>
+									<button type="button" class="btn btn-sm btn-info live-editor-style" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Appearance').'">'.icon('fas fa-paint-brush').'</button>
+									<button type="button" class="btn btn-sm btn-danger live-editor-delete" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Delete').'">'.icon('fas fa-times').'</button>
 								</div>
-								<h3>'.HB()->lang('Row').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-col" data-toggle="tooltip" data-container="body" title="'.HB()->lang('Nouveau Col').'">'.icon('fas fa-plus').'</button></div></h3>
+								<h3>'.HB()->lang('Row').' <div class="btn-group"><button type="button" class="btn btn-xs btn-success live-editor-add-col" data-toggle="tooltip" data-container="body" title="'.HB()->lang('New col').'">'.icon('fas fa-plus').'</button></div></h3>
 							</div>';
 			}
 		}

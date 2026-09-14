@@ -80,19 +80,19 @@ class Admin_Ajax extends Controller_Module
 	{
 		if (!$this->is_authorized('add_files'))
 		{
-			return $this->json(['error' => 'Vous n’êtes pas autorisé à ajouter des fichiers.']);
+			return $this->json(['error' => (string)$this->lang('You are not allowed to add files.')]);
 		}
 
 		if (empty($_FILES['file']) || !empty($_FILES['file']['error']) || empty($_FILES['file']['tmp_name']))
 		{
-			return $this->json(['error' => 'Le fichier n’a pas pu être téléversé.']);
+			return $this->json(['error' => (string)$this->lang('The file could not be uploaded.')]);
 		}
 
 		$dir = $this->normalize(post('dir'));
 
 		if ($dir === NULL || !is_dir($this->full_path($dir)))
 		{
-			return $this->json(['error' => 'Le dossier de destination est invalide.']);
+			return $this->json(['error' => (string)$this->lang('The destination folder is invalid.')]);
 		}
 
 		$accept = in_array(post('accept'), ['image', 'gallery-image', 'pdf'], TRUE) ? post('accept') : 'file';
@@ -100,22 +100,22 @@ class Admin_Ajax extends Controller_Module
 
 		if ($accept === 'pdf' && ($extension !== 'pdf' || (new \finfo(FILEINFO_MIME_TYPE))->file($_FILES['file']['tmp_name']) !== 'application/pdf'))
 		{
-			return $this->json(['error' => 'Veuillez choisir un document PDF valide.']);
+			return $this->json(['error' => (string)$this->lang('Please choose a valid PDF document.')]);
 		}
 
 		if ($accept === 'image' && !in_array($extension, $this->image_extensions, TRUE))
 		{
-			return $this->json(['error' => 'Veuillez choisir un fichier image.']);
+			return $this->json(['error' => (string)$this->lang('Please choose an image file.')]);
 		}
 
 		if ($accept === 'gallery-image' && !in_array($extension, ['jpeg', 'jpg', 'png'], TRUE))
 		{
-			return $this->json(['error' => 'Veuillez choisir une image JPEG ou PNG.']);
+			return $this->json(['error' => (string)$this->lang('Please choose a JPEG or PNG image.')]);
 		}
 
 		if (!($file = HB()->model2('file')->static_uploaded_file($_FILES['file'], $this->upload_dir($dir))) || !$file->id)
 		{
-			return $this->json(['error' => 'Le fichier n’a pas pu être téléversé.']);
+			return $this->json(['error' => (string)$this->lang('The file could not be uploaded.')]);
 		}
 
 		$this->copy_access('read_directory', $this->directory_id($dir), 'read_file', (int)$file->id, 'file');
@@ -131,7 +131,7 @@ class Admin_Ajax extends Controller_Module
 	{
 		if (!$this->is_authorized('add_files'))
 		{
-			return $this->json(['error' => 'Vous n’êtes pas autorisé à créer des dossiers.']);
+			return $this->json(['error' => (string)$this->lang('You are not allowed to create folders.')]);
 		}
 
 		$dir = $this->normalize(post('dir'));
@@ -139,7 +139,7 @@ class Admin_Ajax extends Controller_Module
 
 		if ($dir === NULL || $name === '' || !is_dir($this->full_path($dir)))
 		{
-			return $this->json(['error' => 'Le nom ou le dossier de destination est invalide.']);
+			return $this->json(['error' => (string)$this->lang('The name or destination folder is invalid.')]);
 		}
 
 		$path = $dir.($dir !== '' ? '/' : '').$name;
@@ -147,14 +147,14 @@ class Admin_Ajax extends Controller_Module
 
 		if (!$target || file_exists($target))
 		{
-			return $this->json(['error' => 'Un dossier portant ce nom existe déjà.']);
+			return $this->json(['error' => (string)$this->lang('A folder with this name already exists.')]);
 		}
 
 		dir_create($target);
 
 		if (!is_dir($target))
 		{
-			return $this->json(['error' => 'Le dossier n’a pas pu être créé.']);
+			return $this->json(['error' => (string)$this->lang('The folder could not be created.')]);
 		}
 
 		$this->copy_access('read_directory', $this->directory_id($dir), 'read_directory', $this->directory_id($path), 'directory');

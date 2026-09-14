@@ -17,7 +17,7 @@ class Anti_Flood extends Library
 			if (($attempts = $this->session('anti_flood', 'attempts') ?: 0) < 10)
 			{
 				$this->session->set('anti_flood', 'attempts', $attempts + 1);
-				notify($message ?: $this->lang('anti_flood'), 'danger');
+				notify($message ?: $this->lang('Please wait before trying again.'), 'danger');
 				$this->output->json();
 			}
 			else

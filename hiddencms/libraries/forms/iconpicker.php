@@ -28,7 +28,7 @@ class Iconpicker extends Labelable
 		$this->_check[] = function($post, &$data){
 			if ($this->_required && (!isset($post[$this->_name]) || is_empty($post[$this->_name]) || $post[$this->_name] == 'empty'))
 			{
-				$this->_errors[] = 'Veuillez sélectionner une icône';
+				$this->_errors[] = (string)$this->lang('Please select an icon');
 			}
 		};
 

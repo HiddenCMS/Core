@@ -89,7 +89,7 @@ $(function(){
 
 				if (typeof data.user_authorized != 'undefined' && typeof data.user_forced != 'undefined'){
 					if (data.user_forced){
-						$tr.find('.access-status').html('<a class="access-revoke" href="#" data-toggle="tooltip" title="<?php echo $this->lang('Remettre en automatique') ?>"><?php echo icon('fas fa-thumbtack') ?></a>');
+						$tr.find('.access-status').html('<a class="access-revoke" href="#" data-toggle="tooltip" title="<?php echo $this->lang('Restore automatic settings') ?>"><?php echo icon('fas fa-thumbtack') ?></a>');
 					}
 					else {
 						$tr.find('.access-status').html('');
@@ -187,15 +187,15 @@ $(function(){
 	$(document).on('click', '.access-reset', function(){
 		$('	<div class="ui modal modal-access-reset" tabindex="-1" role="dialog">\
 				<div class="header">\
-					<?php echo $this->lang('Confirmation de réinitialisation des permissions') ?>\
-					<i class="close icon" data-dismiss="modal" aria-label="<?php echo $this->lang('Fermer') ?>"></i>\
+					<?php echo $this->lang('Confirm permission reset') ?>\
+					<i class="close icon" data-dismiss="modal" aria-label="<?php echo $this->lang('Close') ?>"></i>\
 				</div>\
 				<div class="content">\
-					<?php echo $this->lang('Êtes-vous sûr(e) de vouloir réinitialiser les permissions ?') ?>\
+					<?php echo $this->lang('Are you sure you want to reset the permissions?') ?>\
 				</div>\
 				<div class="actions">\
-					<button type="button" class="ui secondary button" data-dismiss="modal"><?php echo $this->lang('Annuler') ?></button>\
-					<button class="ui teal button access-reset-confirm" data-module="'+$(this).data('module')+'" data-type="'+$(this).data('type')+'" data-id="'+$(this).data('id')+'"><?php echo $this->lang('Réinitialiser') ?></button>\
+					<button type="button" class="ui secondary button" data-dismiss="modal"><?php echo $this->lang('Cancel') ?></button>\
+					<button class="ui teal button access-reset-confirm" data-module="'+$(this).data('module')+'" data-type="'+$(this).data('type')+'" data-id="'+$(this).data('id')+'"><?php echo $this->lang('Reset') ?></button>\
 				</div>\
 			</div>').appendTo('body');
 

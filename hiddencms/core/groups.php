@@ -19,7 +19,7 @@ class Groups extends Core
 		$this->_groups = [
 			'admins' => [
 				'name'   => 'admins',
-				'title'  => HiddenCMS()->lang('Administrateurs'),
+				'title'  => HiddenCMS()->lang('Administrators'),
 				'color'  => 'danger',
 				'icon'   => 'fas fa-rocket',
 				'hidden' => FALSE,
@@ -28,7 +28,7 @@ class Groups extends Core
 			],
 			'members' => [
 				'name'   => 'members',
-				'title'  => HiddenCMS()->lang('Membres'),
+				'title'  => HiddenCMS()->lang('Members'),
 				'color'  => 'success',
 				'icon'   => 'fas fa-user',
 				'hidden' => FALSE,
@@ -37,7 +37,7 @@ class Groups extends Core
 			],
 			'visitors' => [
 				'name'   => 'visitors',
-				'title'  => HiddenCMS()->lang('Visiteurs'),
+				'title'  => HiddenCMS()->lang('Visitors'),
 				'color'  => 'info',
 				'icon'   => '',
 				'hidden' => FALSE,

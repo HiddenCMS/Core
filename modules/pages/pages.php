@@ -37,21 +37,21 @@ class Pages extends Module
 			'default' => [
 				'access'  => [
 					[
-						'title'  => 'Pages',
+						'title'  => $this->lang('Pages'),
 						'icon'   => 'far fa-file',
 						'access' => [
 							'add_pages' => [
-								'title' => 'Ajouter',
+								'title' => $this->lang('Add'),
 								'icon'  => 'fas fa-plus',
 								'admin' => TRUE
 							],
 							'modify_pages' => [
-								'title' => 'Modifier',
+								'title' => $this->lang('Edit'),
 								'icon'  => 'fas fa-edit',
 								'admin' => TRUE
 							],
 							'delete_pages' => [
-								'title' => 'Supprimer',
+								'title' => $this->lang('Delete'),
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
 							]
@@ -74,11 +74,11 @@ class Pages extends Module
 				],
 				'access'  => [
 					[
-						'title'  => 'Pages',
+						'title'  => $this->lang('Pages'),
 						'icon'   => 'far fa-file',
 						'access' => [
 							'access_page' => [
-								'title' => 'Accès au contenu',
+								'title' => $this->lang('Access content'),
 								'icon'  => 'far fa-eye'
 							]
 						]

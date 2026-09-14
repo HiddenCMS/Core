@@ -16,7 +16,7 @@ class Admin extends Controller_Module
 		{
 			return $this->panel()
 						->heading($this->lang('Permissions'), 'fas fa-unlock-alt')
-						->body($this->lang('Il n\'y a aucune permission à administrer'));
+						->body($this->lang('There are no permission to manage'));
 		}
 
 		$this->js('access');
@@ -34,7 +34,7 @@ class Admin extends Controller_Module
 						->table()
 						->add_columns([
 							[
-								'title'   => $this->lang('Nom'),
+								'title'   => $this->lang('Name'),
 								'content' => function($data){
 									return $data['title'];
 								}
@@ -63,14 +63,14 @@ class Admin extends Controller_Module
 								[
 									'content' => [
 										function($data) use ($module, $type){
-											return $this->button()->tooltip($this->lang('Réinitialiser'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
+											return $this->button()->tooltip($this->lang('Reset'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 												'module' => $module->info()->name,
 												'type'   => $type,
 												'id'     => $data['id']
 											]);
 										},
 										function($data) use ($module, $type){
-											return $this->button_access($data['id'], $type, $module->info()->name, $this->lang('Éditer'));
+											return $this->button_access($data['id'], $type, $module->info()->name, $this->lang('Edit'));
 										}
 									]
 								]
@@ -86,9 +86,9 @@ class Admin extends Controller_Module
 	public function _edit($module, $type, $access, $id, $title = NULL)
 	{
 		$this	->title($module->info()->title)
-				->subtitle($title ?: $this->lang('Gestion des permissions'))
+				->subtitle($title ?: $this->lang('Permissions management'))
 				->icon($module->info()->icon)
-				->add_action('admin/'.$module->info()->name, $this->lang('Accéder au module %s', $module->info()->title), $module->info()->icon)
+				->add_action('admin/'.$module->info()->name, $this->lang('Access the %s module', $module->info()->title), $module->info()->icon)
 				->css('access')
 				->js('access')
 				->css('table')
@@ -99,7 +99,7 @@ class Admin extends Controller_Module
 						$this->row(
 							$this->col(
 								$this	->panel()
-										->heading($this->lang('Liste des permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('Réinitialiser toutes les permissions'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
+										->heading($this->lang('List of permissions').'<div class="float-right">'.$this->button()->tooltip($this->lang('Reset all permissions'))->icon('fas fa-sync')->color('info access-reset')->compact()->outline()->data([
 											'module' => $module->info()->name,
 											'type'   => $type,
 											'id'     => $id

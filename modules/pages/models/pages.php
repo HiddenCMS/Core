@@ -53,6 +53,20 @@ class Pages extends Model
 
 	public function resolve($segments, $lang = 'default', $all = FALSE)
 	{
+		if ($lang === 'default' && !$all)
+		{
+			$languages = [$this->config->lang->info()->name];
+			foreach ($this->config->langs ?: [] as $language) $languages[] = $language->info()->name;
+			$best = FALSE;
+			foreach (array_unique($languages) as $language)
+			{
+				$candidate = $this->resolve($segments, $language, FALSE);
+				if (!$candidate) continue;
+				if (!$best || count($candidate['segments']) < count($best['segments'])) $best = $candidate;
+				if (!$candidate['segments']) break;
+			}
+			return $best;
+		}
 		if ($lang == 'default')
 		{
 			$lang = $this->config->lang->info()->name;
@@ -314,7 +328,7 @@ class Pages extends Model
 
 	public function get_parent_choices($exclude_page_id = 0)
 	{
-		$choices = [0 => $this->lang('Aucune (page racine)')];
+		$choices = [0 => $this->lang('None (root page)')];
 		$pages = $this->add_paths($this->db
 									->select('p.page_id', 'p.parent_id', 'p.name', 'pl.title')
 									->from('pages p')
@@ -463,7 +477,7 @@ class Pages extends Model
 	{
 		if (!$this->valid_parent(0, $parent_id))
 		{
-			throw new \InvalidArgumentException('Page parente invalide.');
+			throw new \InvalidArgumentException((string)$this->lang('Invalid parent page.'));
 		}
 
 		$page_id = $this->db->insert('pages', [
@@ -490,7 +504,7 @@ class Pages extends Model
 	{
 		if (!$this->valid_parent($page_id, $parent_id))
 		{
-			throw new \InvalidArgumentException('Page parente invalide.');
+			throw new \InvalidArgumentException((string)$this->lang('Invalid parent page.'));
 		}
 
 		if (!$this->db	->from('pages p')

@@ -19,5 +19,8 @@ return [
 	'b8e8afdd' => 'Default title',
 	'c84feb0b' => 'Computer',
 	'e03f8812' => 'Tablet landscape',
-	'eb2aa0ff' => 'Cols'
+	'eb2aa0ff' => 'Cols',
+    '5beec5f0' => 'Computer',
+    61526780 => 'Tablet landscape',
+    '2da1d4dc' => 'Tablet portrait',
 ];

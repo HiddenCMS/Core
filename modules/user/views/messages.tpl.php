@@ -1,9 +1,9 @@
 <div class="card col-lg-1 col-md-2 col-sm-2 px-0">
 	<div class="card-body p-3">
-		<p><a href="<?php echo url('user/messages/compose') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Nouveau message') ?>" class="btn btn-primary btn-block"><?php echo icon('far fa-envelope') ?></a></p>
+		<p><a href="<?php echo url('user/messages/compose') ?>" data-toggle="tooltip" title="<?php echo $this->lang('New message') ?>" class="btn btn-primary btn-block"><?php echo icon('far fa-envelope') ?></a></p>
 		<div class="btn-group-vertical btn-block">
-			<a href="<?php echo url('user/messages') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Boîte de réception') ?>" class="btn btn-<?php echo $box == 'inbox' ? 'secondary' : 'light' ?>"><?php echo icon('fas fa-inbox') ?></a>
-			<a href="<?php echo url('user/messages/sent') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Messages envoyé') ?>" class="btn btn-<?php echo $box == 'sent' ? 'secondary' : 'light' ?>"><?php echo icon('far fa-paper-plane') ?></a>
+			<a href="<?php echo url('user/messages') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Inbox') ?>" class="btn btn-<?php echo $box == 'inbox' ? 'secondary' : 'light' ?>"><?php echo icon('fas fa-inbox') ?></a>
+			<a href="<?php echo url('user/messages/sent') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Message sent') ?>" class="btn btn-<?php echo $box == 'sent' ? 'secondary' : 'light' ?>"><?php echo icon('far fa-paper-plane') ?></a>
 			<a href="<?php echo url('user/messages/archives') ?>" data-toggle="tooltip" title="<?php echo $this->lang('Archives') ?>" class="btn btn-<?php echo $box == 'archives' ? 'secondary' : 'light' ?>"><?php echo icon('fas fa-archive') ?></a>
 		</div>
 	</div>
@@ -34,7 +34,7 @@
 				</ul>
 			</div>
 		<?php else: ?>
-		<div class="alert alert-info">Aucun message</div>
+		<div class="alert alert-info"><?php echo $this->lang('No messages') ?></div>
 		<?php endif ?>
 	</div>
 </div>
@@ -54,7 +54,7 @@
 			</div>
 			<hr />
 			<?php endforeach ?>
-			<h4>Répondre</h4>
+			<h4><?php echo $this->lang('Reply') ?></h4>
 			<?php echo $form_reply->display() ?>
 		</div>
 		<?php endif ?>

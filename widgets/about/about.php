@@ -13,7 +13,7 @@ class About extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('À propos'),
+			'title'       => $this->lang('About'),
 			'icon'        => 'fas fa-info-circle',
 			'description' => '',
 			'link'        => 'https://neofr.ag',

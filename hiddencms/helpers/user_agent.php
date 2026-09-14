@@ -17,7 +17,7 @@ function user_agent($user_agent)
 function user_agent_info($user_agent)
 {
 	$user_agent = (string) $user_agent;
-	$browser = 'Navigateur inconnu';
+	$browser = (string)HB()->lang('Unknown browser');
 	$browser_icon = 'fas fa-question-circle';
 	$version = '';
 
@@ -56,7 +56,7 @@ function user_agent_info($user_agent)
 		$browser .= ' '.explode('.', $version)[0];
 	}
 
-	$os = 'Système inconnu';
+	$os = (string)HB()->lang('Unknown system');
 	$os_icon = 'fas fa-question-circle';
 	if (preg_match('#Windows NT ([\d\.]+)#i', $user_agent, $matches))
 	{
@@ -105,11 +105,11 @@ function user_agent_info($user_agent)
 		$os_icon = 'fab fa-linux';
 	}
 
-	$device = 'Ordinateur';
+	$device = (string)HB()->lang('Desktop');
 	$device_icon = 'fas fa-desktop';
 	if (preg_match('#iPad|Tablet|Nexus 7|Nexus 9|SM-T#i', $user_agent) || (stripos($user_agent, 'Android') !== FALSE && stripos($user_agent, 'Mobile') === FALSE))
 	{
-		$device = 'Tablette';
+		$device = (string)HB()->lang('Tablet');
 		$device_icon = 'fas fa-tablet-alt';
 	}
 	else if (preg_match('#Mobile|iPhone|iPod|Android.*Mobile#i', $user_agent))
@@ -119,7 +119,7 @@ function user_agent_info($user_agent)
 	}
 	else if ($user_agent === '')
 	{
-		$device = 'Appareil inconnu';
+		$device = (string)HB()->lang('Unknown device');
 		$device_icon = 'fas fa-question-circle';
 	}
 

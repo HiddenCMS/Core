@@ -15,7 +15,7 @@ class Colorpicker extends Text
 		$this->_check[] = function($post, &$data){
 			if (isset($post[$this->_name]) && $post[$this->_name] !== '' && !get_colors($post[$this->_name]))
 			{
-				$this->_errors[] = 'Couleur invalide';
+				$this->_errors[] = (string)$this->lang('Invalid color');
 			}
 		};
 

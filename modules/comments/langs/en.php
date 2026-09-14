@@ -11,5 +11,7 @@ return [
 	'81a8e398' => 'Are you sure you want to delete this comment?',
 	'8d65d073' => 'Number of comments',
 	'9cab37aa' => 'All comments',
-	'c18f1b3c' => 'Comments'
+	'c18f1b3c' => 'Comments',
+    'a6e8f47c' => 'Comments',
+    'db0c3644' => 'Are you sure you want to delete this comment?',
 ];

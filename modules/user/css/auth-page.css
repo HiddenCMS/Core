@@ -1,10 +1,15 @@
 .user-auth-page {
+	align-content: center;
+	gap: 1.5rem;
 	display: grid;
 	min-height: min(680px, calc(100vh - 10rem));
 	padding: clamp(2rem, 7vw, 6rem) 1rem;
 	place-items: center;
 	background: #edf2ef;
 }
+
+.user-auth-logo { display: block; max-width: min(240px, 100%); }
+.user-auth-logo img { display: block; width: auto; max-width: 100%; max-height: 110px; object-fit: contain; }
 
 .user-auth-box {
 	width: min(100%, 470px);

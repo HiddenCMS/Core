@@ -13,7 +13,7 @@ class User extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => 'Utilisateur',
+			'title'       => $this->lang('User'),
 			'description' => '',
 			'icon'        => 'fas fa-user',
 			'reserved_route' => 'user',
@@ -23,10 +23,10 @@ class User extends Module
 			'admin'       => FALSE,
 			'front'       => TRUE,
 			'outline_routes' => [
-				'login'           => 'Connexion',
-				'register'        => 'Inscription',
-				'lost-password'   => 'Mot de passe oublié',
-				'lost-password/*' => 'Réinitialisation du mot de passe'
+				'login'           => $this->lang('Sign in'),
+				'register'        => $this->lang('Sign up'),
+				'lost-password'   => $this->lang('Forgot your password?'),
+				'lost-password/*' => $this->lang('Password reset')
 			],
 			'routes'      => [
 				//Index

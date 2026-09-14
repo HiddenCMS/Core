@@ -13,7 +13,7 @@ class Module extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Contenu de page'),
+			'title'       => $this->lang('Page content'),
 			'icon'        => 'fas fa-file-alt',
 			'description' => '',
 			'link'        => 'https://neofr.ag',

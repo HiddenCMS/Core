@@ -1,23 +1,23 @@
 <div class="wrapper">
 	<nav id="sidebar" class="ui vertical menu">
 		<div class="sidebar-header">
-			<button type="button" class="ui icon button sidebar-close" aria-label="Fermer le menu"><?php echo icon('fas fa-times') ?></button>
+			<button type="button" class="ui icon button sidebar-close" aria-label="<?php echo $this->lang('Close menu') ?>"><?php echo icon('fas fa-times') ?></button>
 			<a class="logo" href="<?php echo url('admin') ?>" aria-label="HiddenCMS">
 				<img src="<?php echo image('logo/hiddencms.svg') ?>" alt="HiddenCMS">
 			</a>
 		</div>
 		<?php echo $this->widget('navigation')->output('vertical', $this->__caller->data->get('sidebar')) ?>
 	</nav>
-	<button type="button" class="sidebar-backdrop" aria-label="Fermer le menu" tabindex="-1" hidden></button>
+	<button type="button" class="sidebar-backdrop" aria-label="<?php echo $this->lang('Close menu') ?>" tabindex="-1" hidden></button>
 	<div class="admin-content">
 		<nav id="topbar" class="ui top attached menu">
-			<button type="button" id="sidebarCollapse" class="ui icon button" aria-label="Replier le menu" aria-controls="sidebar" aria-expanded="true">
+			<button type="button" id="sidebarCollapse" class="ui icon button" aria-label="<?php echo $this->lang('Collapse menu') ?>" aria-controls="sidebar" aria-expanded="true" data-label-close="<?php echo $this->lang('Close menu') ?>" data-label-open="<?php echo $this->lang('Open menu') ?>" data-label-expand="<?php echo $this->lang('Expand menu') ?>" data-label-collapse="<?php echo $this->lang('Collapse menu') ?>">
 				<?php echo icon('fas fa-bars') ?>
 			</button>
 			<div class="right menu">
 				<a class="item" href="<?php echo url('user') ?>"><?php echo $this->user->username ?></a>
-				<a class="item" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times') ?> Se déconnecter</a>
-				<a class="item" href="<?php echo url() ?>"><?php echo icon('fas fa-home') ?> Retourner sur le site</a>
+				<a class="item" href="<?php echo url('user/logout') ?>"><?php echo icon('fas fa-times').' '.$this->lang('Sign out') ?></a>
+				<a class="item" href="<?php echo url() ?>"><?php echo icon('fas fa-home').' '.$this->lang('Back to site') ?></a>
 			</div>
 		</nav>
 
@@ -30,7 +30,7 @@
 				$actions = $this->array($this->output->data->get('module', 'actions'))
 								->append_if($module_method == 'index' && $module->get_permissions('default') && $this->module('access')->is_authorized(), $this->button('Permissions', 'fas fa-unlock-alt', 'success')->outline()->modal_ajax('admin/ajax/access/edit/'.$module_name.'/0-default'))
 								->append_if(isset($module->info()->settings) && $this->module('addons')->is_authorized(), $this->button('Configuration', 'fas fa-wrench', 'warning')->outline()->modal_ajax('admin/addons/settings/'.$module->__addon->id.'/'.$module_name))
-								->append_if(($help_controller = @$module->controller('admin_help')) && $help_controller->has_method($module_method), $this->button('Aide', 'far fa-life-ring', 'info')->outline()->modal_ajax('admin/addons/help/'.$module->__addon->id.'/'.$module_name.'/'.$module_method));
+								->append_if(($help_controller = @$module->controller('admin_help')) && $help_controller->has_method($module_method), $this->button($this->lang('Help'), 'far fa-life-ring', 'info')->outline()->modal_ajax('admin/addons/help/'.$module->__addon->id.'/'.$module_name.'/'.$module_method));
 			?>
 			<section id="page-header" class="ui segment">
 				<div class="header">
@@ -52,11 +52,11 @@
 		<?php endif ?>
 
 		<footer class="footer">
-			<span class="muted"><?php echo $this->lang('Propulsé par').' HiddenCMS' ?></span>
+			<span class="muted"><?php echo $this->lang('Powered by').' HiddenCMS' ?></span>
 			<ul class="project-links">
 				<?php
 				foreach ([
-					[$this->lang('Projet'), 'https://github.com/HiddenCMS/Core']
+					[$this->lang('Project'), 'https://github.com/HiddenCMS/Core']
 				] as list($title, $url)): ?>
 					<li>
 						<a href="<?php echo $url ?>" target="_blank"><?php echo $title ?></a>

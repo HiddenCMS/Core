@@ -16,11 +16,11 @@ class Admin extends Theme
 	{
 		return [
 			'title'       => 'Administration',
-			'description' => 'Panel d\'administration',
+			'description' => $this->lang('Administration panel'),
 			'link'        => 'https://neofr.ag',
 			'author'      => 'MichaÃ«l BILCOT & JÃ©rÃ©my VALENTIN <contact@HiddenCMS.com>',
 			'license'     => 'LGPLv3 <https://neofr.ag/license>',
-			'zones'       => [$this->lang('Contenu'), $this->lang('pre_content'), $this->lang('post_content'), $this->lang('header'), $this->lang('Haut'), $this->lang('footer')]
+			'zones'       => [$this->lang('Content'), $this->lang('Before content'), $this->lang('After content'), $this->lang('Header'), $this->lang('Top'), $this->lang('Footer')]
 		];
 	}
 
@@ -81,7 +81,7 @@ class Admin extends Theme
 
 		if (@$theme->addon()->controller('admin'))
 		{
-			$customize	->set('title',  'Apparence')
+			$customize	->set('title',  (string)$this->lang('Appearance'))
 						->set('icon',   'fas fa-paint-brush')
 						->set('access', $this->user->admin)
 						->set('url',   'admin/addons/customize/'.$theme->url());
@@ -90,7 +90,7 @@ class Admin extends Theme
 		$configuration_links = array_values(array_filter([
 			$customize->__toArray(),
 			[
-				'title'  => 'Paramètres',
+				'title'  => (string)$this->lang('Settings'),
 				'icon'   => 'fas fa-cogs',
 				'access' => $this->user->admin,
 				'url'    => 'admin/settings'
@@ -107,7 +107,7 @@ class Admin extends Theme
 
 		$user_links = array_values(array_filter([
 			[
-				'title'  => 'Membres / Groupes',
+				'title'  => (string)$this->lang('Members / Groups'),
 				'icon'   => 'fas fa-users',
 				'access' => $this->user->admin,
 				'url'    => 'admin/user'
@@ -139,12 +139,12 @@ class Admin extends Theme
 			'panel' => FALSE,
 			'links' => array_filter([
 				[
-					'title' => 'Tableau de bord',
+					'title' => (string)$this->lang('Dashboard'),
 					'icon'  => 'fas fa-tachometer-alt',
 					'url'   => 'admin'
 				],
 				[
-					'title' => 'Contenu',
+					'title' => (string)$this->lang('Content'),
 					'icon'  => 'fas fa-edit',
 					'url'   => $content_submenu['default'] ?: NULL
 				],
@@ -155,31 +155,31 @@ class Admin extends Theme
 					'url'   => $content_submenu['gaming']
 				] : [],
 				[
-					'title'  => 'Utilisateurs',
+					'title'  => (string)$this->lang('Users'),
 					'icon'   => 'fas fa-users',
 					'access' => $this->user->admin,
 					'url'    => $user_links ?: NULL
 				],
 				[
-					'title'  => 'Statistiques',
+					'title'  => (string)$this->lang('Statistics'),
 					'icon'   => 'far fa-chart-bar',
 					'access' => $this->user->admin,
 					'url'    => 'admin/statistics'
 				],
 				[
-					'title'  => 'Configurations',
+					'title'  => (string)$this->lang('Site configuration'),
 					'icon'   => 'fas fa-sliders-h',
 					'access' => $this->user->admin,
 					'url'    => $configuration_links ?: NULL
 				],
 				[
-					'title'  => 'Thèmes & Addons',
+					'title'  => (string)$this->lang('Themes & Addons'),
 					'icon'   => 'fas fa-puzzle-piece',
 					'access' => $this->user->admin,
 					'url'    => 'admin/addons'
 				],
 				[
-					'title'     => 'Mises à jour',
+					'title'     => (string)$this->lang('Updates'),
 					'icon'      => 'fas fa-cloud-download-alt',
 					'access'    => $this->user->admin,
 					'url'       => 'admin/settings/updates',

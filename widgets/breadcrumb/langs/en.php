@@ -6,5 +6,6 @@
  */
 
 return [
-	'160813ca' => 'Breadcrumb'
+	'160813ca' => 'Breadcrumb',
+    'bf4e2ad5' => 'Breadcrumb',
 ];

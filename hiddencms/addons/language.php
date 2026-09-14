@@ -41,7 +41,13 @@ abstract class Language extends Addon
 		{
 			return $locale;
 		}
-		else if (($result = HB()->collection('i18n')->where('lang_id', $this->__addon->id)->where('model', NULL)->where('name', $key)->row()) && $result())
+		// Shared labels also have a core catalogue, after component overrides.
+		$shared = dirname(__DIR__).'/langs/'.$this->info()->name.'.php';
+		if ($source === 'en' && $callback($shared))
+		{
+			return $shared;
+		}
+		if (($result = HB()->collection('i18n')->where('lang_id', $this->__addon->id)->where('model', NULL)->where('name', $key)->row()) && $result())
 		{
 			return $result->value;
 		}

@@ -1,207 +1,109 @@
 $(function(){
-	$('section:first').fadeIn();
-
-	var delay = function(delay){
-		var d = $.Deferred();
-		setTimeout(function(){
-			d.resolve();
-		}, delay);
-		return d;
-	};
-
-	var icon = function(icon){
-		var icons = {
-			danger:  'fas fa-times',
-			success: 'fas fa-check-circle',
-			info:    'fas fa-info-circle',
-			warning: 'far fa-exclamation-triangle'
-		};
-
-		return '<i class="icon fa '+icons[icon]+' text-'+icon+' fa-fw"></i>';
-	};
-
-	var next = function(){
-		var $section = $('section:visible');
-		$section.find('[data-action="next-step"]').hide();
-		$section.fadeOut(function(){
-			$(this).next().fadeIn();
-		});
-	};
-
-	if ($('.check-init').length){
-		$.ajax({
-			url: 'index.php?step=check',
-			success: function(data){
-				var d = $.Deferred().resolve();
-				var errors = 0;
-				var all = [];
-
-				$.each(data, function(_, data){
-					var d2 = $.Deferred();
-					all.push(d2);
-
-					d = d.then(function(){
-						var $check = $('.first-check-errors .list-group-item.d-none');
-
-						var $new = $check.clone().removeClass('d-none').hide();
-						$new.html($new.html()
-							.replace('{icon}',  '<i class="icon fa fa-circle-notch fa-spin fa-fw"></i>')
-							.replace('{title}', data.title)
-						);
-
-						$check.before($new.fadeIn());
-
-						$('.first-check-errors').removeClass('d-none');
-
-						return delay(300).then(function(){
-							setTimeout(function(){
-								var $info = $new.find('.list-inline').hide();
-
-								$new.find('.icon').fadeOut(function(){
-									if (data.icon == 'danger'){
-										$new.addClass('text-danger');
-										errors++;
-									}
-
-									$(this).attr('class', $(icon(data.icon)).attr('class')).fadeIn();
-
-									$.each(data.info, function(a, b){
-										$info.append('<li class="list-inline-item">'+(isNaN(parseInt(a)) ? a+' ' : '')+'<b>'+b+'</b></li>');
-									});
-
-									$info.fadeIn(function(){
-										d2.resolve();
-									});
-								});
-							}, Math.random() * 6000 + 1500);
-						});
-					});
-				});
-
-				$.when.apply($, all).then(function(){
-					if (errors){
-						$('section:visible .legend .checking').fadeOut(function(){
-							$('section:visible .legend .errors').hide().removeClass('d-none').fadeIn();
-						});
-					}
-					else{
-						$('section:visible .legend').fadeTo(400, 0, function(){
-							$(this).addClass('invisible');
-						});
-						$('section:visible .btn-action').hide().removeClass('invisible').fadeIn();
-					}
-				});
-			}
-		});
-	}
-
-	var check_form = function($form, hidden, install){
-		var $next_btn = $('section:visible .btn-action');
-		var $btn      = $form.find('button[type="submit"]');
-		var step      = $form.parents('.step:first').data('step');
-		var d;
-
-		if (!hidden){
-			$form.find('.form-control').each(function(){
-				$(this).removeClass('is-valid is-invalid').siblings('.invalid-feedback').remove();
-			});
-
-			$next_btn.hide().removeClass('invisible').fadeOut();
-
-			$btn.data('original-text', $btn.text()).html('<i class="fas fa-circle-notch fa-spin"></i> '+$btn.data('loading-text')).prop('disabled', true);
-
-			d = delay(750);
-		}
-
-		var d2 = $.ajax({
-			url: 'index.php?step='+step+(install ? '&install=true' : ''),
-			type: 'POST',
-			data: new FormData($form[0]),
-			processData: false,
-			contentType: false
-		});
-
-		var valid_input = function($input){
-			if ($input.val() != ''){
-				$input.addClass('is-valid');
-			}
-		};
-
-		var d3 = $.Deferred();
-
-		$.when(d, d2).done(function(_, data){
-			if (data[0] == 'ok'){
-				$next_btn.fadeIn();
-
-				$form.find('.form-control').each(function(){
-					valid_input($(this));
-				});
-
-				d3.resolve();
-
-				if (step == 'user'){
-					next();
-					return;
-				}
-			}
-			else if (typeof data[0].errors != 'undefined'){
-				$next_btn.fadeOut();
-
-				$.each(data[0].errors, function(name, value){
-					var $input = $form.find('.form-control[name='+name+']');
-
-					if (value == 'ok'){
-						valid_input($input);
-					}
-					else {
-						if (value != ''){
-							$input.after('<div class="invalid-feedback">'+value+'</div>');
-						}
-
-						$input.addClass('is-invalid');
-					}
-				});
-			}
-
-			$btn.html($btn.data('original-text')).prop('disabled', false);
-		});
-
-		return d3;
-	};
-
-	$('.step[data-step] form').submit(function(e){
-		e.preventDefault();
-		check_form($(this), false, false);
-	});
-
-	$('body').on('click', '[data-action="next-step"]', function(){
-		if ($(this).parents('.step:first').data('step') == 'db'){
-			var $form = $('section:visible').find('form');
-
-			check_form($form, true, false).then(function(){
-				next();
-
-				var blinking = function($elem){
-					if ($elem.length){
-						$elem.fadeIn(1500, function(){
-							$elem.fadeOut(1500, function(){
-								blinking($elem);
-							});
-						});
-					}
-				};
-
-				delay(1000).then(function(){
-					blinking($('.blinking'))
-				});
-
-				$.when(delay(5000), check_form($form, true, true)).done(function(){
-					document.location.reload();
-				});
-			});
-		}
-		else {
-			next();
-		}
-	});
+ var $theme = $('#installer-dark');
+ var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+ try { var saved = localStorage.getItem('hiddencms-installer-theme'); if (saved) dark = saved === 'dark'; } catch (_) {}
+ var applyTheme = function(value){
+  $('body').attr('data-theme', value ? 'dark' : 'light');
+  $theme.prop('checked', value);
+  $('.logo img').attr('src', 'dist/images/logo/hiddencms'+(value ? '-light' : '')+'.svg');
+ };
+ applyTheme(dark);
+ $theme.on('change', function(){ applyTheme(this.checked); try { localStorage.setItem('hiddencms-installer-theme', this.checked ? 'dark' : 'light'); } catch (_) {} });
+ var $error = $('.installer-error'), retry;
+ var showError = function(action){
+  retry = action;
+  $error.find('span').text($error.data('message'));
+  $error.prop('hidden', false);
+ };
+ var clearError = function(){ $error.prop('hidden', true); };
+ $('[data-action="retry"]').on('click', function(){ clearError(); if (retry) retry(); });
+ var progress = function($section){
+  var stage = $section.data('stage') || $section.data('step') || 'check', reached = false;
+  $('.installer-progress li').each(function(){
+   var current = $(this).data('stage') === stage;
+   $(this).toggleClass('active', current).toggleClass('complete', !reached && !current);
+   if (current) { $(this).attr('aria-current', 'step'); reached = true; } else $(this).removeAttr('aria-current');
+  });
+ };
+ var next = function(){
+  var $section = $('section:visible');
+  $section.fadeOut(150, function(){ var $next = $(this).next('section'); $next.fadeIn(150); progress($next); });
+ };
+ $('section:first').show(); progress($('section:first'));
+ var runChecks = function(){
+  clearError();
+  $('.first-check-errors').addClass('d-none');
+  $('.first-check-errors .list-group-item:not(.d-none)').remove();
+  $('.check-init .legend').removeClass('invisible').show();
+  $('.check-init .checking').show(); $('.check-init .errors').addClass('d-none');
+  $.ajax({ url: 'index.php?step=check', dataType: 'json' }).done(function(data){
+   if (!Array.isArray(data)) { showError(runChecks); return; }
+   var $template = $('.first-check-errors .list-group-item.d-none'), errors = 0;
+   $.each(data, function(_, check){
+    var $item = $template.clone().removeClass('d-none');
+    var icons = { danger: 'fas fa-times', success: 'fas fa-check-circle', info: 'fas fa-info-circle', warning: 'fas fa-exclamation-triangle' };
+    var $content = $('<span>').html(check.title);
+    $item.empty().append($('<i>').attr('class', (icons[check.icon] || icons.info)+' icon fa-fw text-'+check.icon)).append($content);
+    var $info = $('<ul class="list-inline float-right">');
+    $.each(check.info, function(key, value){ $info.append($('<li class="list-inline-item">').html((isNaN(parseInt(key)) ? key+' ' : '')+'<b>'+value+'</b>')); });
+    $item.append($info); $template.before($item);
+    if (check.icon === 'danger') errors++;
+   });
+   $('.first-check-errors').removeClass('d-none');
+   $('.check-init .checking').hide();
+   if (errors) $('.check-init .errors').removeClass('d-none');
+   else { $('.check-init .legend').hide(); $('.check-init [data-action="next-step"]').removeClass('invisible').show(); }
+  }).fail(function(){ showError(runChecks); });
+ };
+ // Compatibility checks use the existing server-produced, trusted HTML labels.
+ if ($('.check-init').length) runChecks();
+ var checkForm = function($form, install){
+  clearError();
+  var $section = $form.closest('.step'), step = $section.data('step');
+  var $button = $form.find('button[type="submit"]'), original = $button.text();
+  var $next = $section.find('[data-action="next-step"]');
+  $next.hide(); $form.find('.invalid-feedback').remove();
+  $form.find('.form-control').removeClass('is-valid is-invalid');
+  $button.prop('disabled', true).text($button.data('loading-text'));
+  $form.attr('aria-busy', 'true');
+  var done = $.Deferred();
+  $.ajax({ url: 'index.php?step='+step+(install ? '&install=true' : ''), type: 'POST', dataType: 'json',
+   data: new FormData($form[0]), processData: false, contentType: false
+  }).done(function(data){
+   if (data === 'ok') {
+    $form.find('.form-control').addClass('is-valid');
+    $next.removeClass('invisible').show();
+    done.resolve();
+   } else {
+    if (install) { $section.siblings('section:visible').hide(); $section.show(); progress($section); }
+    $.each(data.errors || {}, function(name, message){
+     var $input = $form.find('.form-control').filter(function(){ return this.name === name; });
+     $input.addClass(message === 'ok' ? 'is-valid' : 'is-invalid');
+     if (message && message !== 'ok') $input.after($('<div class="invalid-feedback">').text(message));
+    });
+    if (!data.errors) showError(function(){ checkForm($form, install).done(function(){ if (install) location.reload(); else if (step === 'user') next(); }); });
+    done.reject();
+   }
+  }).fail(function(){
+   if (install) { $section.siblings('section:visible').hide(); $section.show(); progress($section); }
+   showError(function(){ checkForm($form, install).done(function(){ if (install) location.reload(); else if (step === 'user') next(); }); });
+   done.reject();
+  }).always(function(){ $button.prop('disabled', false).text(original); $form.removeAttr('aria-busy'); });
+  return done.promise();
+ };
+ $('.step[data-step] form').on('submit', function(event){
+  event.preventDefault(); var $form = $(this);
+  checkForm($form, false).done(function(){ if ($form.closest('.step').data('step') === 'user') next(); });
+ });
+ $('body').on('click', '[data-action="next-step"]', function(event){
+  event.preventDefault();
+  var $section = $(this).closest('.step');
+  if ($section.data('step') === 'db') {
+   var $form = $section.find('form');
+   if ($form.attr('aria-busy') === 'true') return;
+   next();
+   checkForm($form, true).done(function(){ location.reload(); });
+  } else next();
+ });
+ $('.step[data-step] form .form-control').on('input change', function(){ $(this).closest('.step').find('[data-action="next-step"]').hide(); });
 });

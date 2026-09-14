@@ -13,7 +13,7 @@ class Search extends Widget
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Rechercher'),
+			'title'       => $this->lang('Search'),
 			'icon'        => 'fas fa-search',
 			'description' => '',
 			'link'        => 'https://neofr.ag',

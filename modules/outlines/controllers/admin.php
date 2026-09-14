@@ -36,7 +36,7 @@ class Admin extends Controller_Module
 	{
 		$actions = function($outline){
 			$buttons = [
-				(string)$this->button_update('admin/live-editor?outline_id='.$outline['outline_id'], $this->lang('Editer visuellement'))
+				(string)$this->button_update('admin/live-editor?outline_id='.$outline['outline_id'], $this->lang('Edit visually'))
 							->icon('fas fa-desktop'),
 				(string)$this->button_duplicate_modal($this->_duplicate($outline)),
 				(string)$this->button_update('admin/outlines/'.$outline['outline_id'].'/'.url_title($outline['title']))
@@ -45,7 +45,7 @@ class Admin extends Controller_Module
 			if (!$outline['base'])
 			{
 				$buttons[] = (string)$this->button()
-										->tooltip($this->lang('Supprimer'))
+										->tooltip($this->lang('Delete'))
 										->icon('far fa-trash-alt')
 										->color('danger')
 										->compact()
@@ -59,7 +59,7 @@ class Admin extends Controller_Module
 			], implode('', $buttons));
 		};
 
-		$table = $this	->table2($this->array($outlines), $this->lang('Il n\'y a pas encore d\'outline'))
+		$table = $this	->table2($this->array($outlines), $this->lang('There are no outlines yet'))
 						->col($this->lang('Outline'), function($outline){
 							return $this->component('identity', [
 								'title' => $outline['title'],
@@ -83,12 +83,12 @@ class Admin extends Controller_Module
 
 		return $table->panel()
 					->title($this->lang('Outlines'), 'fas fa-layer-group')
-					->footer($this->button_create('admin/outlines/add', $this->lang('Ajouter un outline')));
+					->footer($this->button_create('admin/outlines/add', $this->lang('Add an outline')));
 	}
 
 	public function add()
 	{
-		$this->subtitle($this->lang('Ajouter un outline'));
+		$this->subtitle($this->lang('Add an outline'));
 
 		return $this	->form2('outline', [
 						'outline_id' => 0,
@@ -109,19 +109,19 @@ class Admin extends Controller_Module
 							$this->checkbox_enabled($data['enabled'] ?? [])
 						)))
 						{
-							$form->error($this->lang('Impossible d\'enregistrer l\'outline'));
+							$form->error($this->lang('Unable to save the outline'));
 							return;
 						}
 
 						$this->outline_model()->set_reserved_routes($outline_id, $data['reserved_routes'] ?? []);
 
-						notify($this->lang('Outline ajoute avec succes'));
+						notify($this->lang('Outline added successfully'));
 						redirect('admin/live-editor?outline_id='.$outline_id);
 					})
-					->submit($this->lang('Ajouter'))
+					->submit($this->lang('Add'))
 					->back('admin/outlines')
 					->panel()
-					->heading($this->lang('Ajouter un outline'), 'fas fa-layer-group');
+					->heading($this->lang('Add an outline'), 'fas fa-layer-group');
 	}
 
 	public function _edit($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled)
@@ -153,22 +153,22 @@ class Admin extends Controller_Module
 
 						if (!$result)
 						{
-							$form->error($this->lang('Impossible d\'enregistrer l\'outline'));
+							$form->error($this->lang('Unable to save the outline'));
 							return;
 						}
 
 						$this->outline_model()->set_reserved_routes($outline_id, $data['reserved_routes'] ?? []);
 
-						notify($this->lang('Outline edite avec succes'));
+						notify($this->lang('Outline updated successfully'));
 						redirect_back('admin/outlines');
 					})
-					->submit($this->lang('Editer'))
+					->submit($this->lang('Edit'))
 					->back('admin/outlines')
 					->panel()
-					->heading($this->lang('Edition de l\'outline'), 'fas fa-layer-group')
+					->heading($this->lang('Edit outline'), 'fas fa-layer-group')
 					->footer(
 						$this->button()
-							->title($this->lang('Editer visuellement'))
+							->title($this->lang('Edit visually'))
 							->icon('fas fa-desktop')
 							->color('info')
 							->url('admin/live-editor?outline_id='.$outline_id)
@@ -179,50 +179,50 @@ class Admin extends Controller_Module
 	{
 		return $this	->form2()
 					->rule($this	->form_text('title')
-									->title($this->lang('Nom du nouvel outline'))
-									->value($this->lang('Copie de %s', $outline['title']))
+									->title($this->lang('New outline name'))
+									->value($this->lang('Copy of %s', $outline['title']))
 									->required()
 									->check(function($post){
 										$name = !empty($post['title']) ? url_title($post['title']) : '';
 
 										if ($name && $this->outline_model()->name_exists($name))
 										{
-											return $this->lang('Un outline utilise deja ce nom');
+											return $this->lang('An outline already uses this name');
 										}
 									})
 					)
 					->success(function($data) use ($outline){
 						if (!($outline_id = $this->outline_model()->duplicate_outline($outline['outline_id'], $data['title'])))
 						{
-							notify($this->lang('Impossible de dupliquer l\'outline'), 'danger');
+							notify($this->lang('Unable to duplicate the outline'), 'danger');
 							refresh();
 						}
 
-						notify($this->lang('Outline duplique avec succes'));
+						notify($this->lang('Outline duplicated successfully'));
 
 						redirect('admin/live-editor?outline_id='.$outline_id);
 					})
-					->submit($this->lang('Dupliquer'))
-					->modal($this->lang('Dupliquer %s', $outline['title']), 'far fa-copy')
+					->submit($this->lang('Duplicate'))
+					->modal($this->lang('Duplicate %s', $outline['title']), 'far fa-copy')
 					->cancel();
 	}
 
 	public function _delete($outline)
 	{
-		return $this	->modal($this->lang('Supprimer %s', $outline['title']), 'far fa-trash-alt text-danger')
-					->body($this->lang('Les pages utilisant cet outline seront rattachees a l\'outline de base.'))
+		return $this	->modal($this->lang('Delete %s', $outline['title']), 'far fa-trash-alt text-danger')
+					->body($this->lang('Pages using this outline will be assigned to the default outline.'))
 					->callback(function() use ($outline){
 						if (!$this->outline_model()->delete_outline($outline['outline_id']))
 						{
-							notify($this->lang('Impossible de supprimer l\'outline'), 'danger');
+							notify($this->lang('Unable to delete the outline'), 'danger');
 							refresh();
 						}
 
-						notify($this->lang('Outline supprime avec succes'));
+						notify($this->lang('Outline deleted successfully'));
 
 						redirect('admin/outlines');
 					})
-					->submit($this->lang('Supprimer'), 'danger')
+					->submit($this->lang('Delete'), 'danger')
 					->cancel();
 	}
 }

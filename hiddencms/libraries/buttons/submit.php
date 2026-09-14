@@ -19,7 +19,7 @@ class Submit extends Button
 			$tag = 'button';
 		};
 
-		return $this->title($title ?: $this->lang('Valider'))
+		return $this->title($title ?: $this->lang('Save'))
 					->color($color);
 	}
 }

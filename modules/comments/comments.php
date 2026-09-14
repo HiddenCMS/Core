@@ -13,7 +13,7 @@ class Comments extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Commentaires'),
+			'title'       => $this->lang('Comments'),
 			'description' => '',
 			'icon'        => 'far fa-comments',
 			'link'        => 'https://neofr.ag',
@@ -50,16 +50,16 @@ class Comments extends Module
 											->set('content',   $data['comment'])
 											->create();
 
-									notify('Commentaire envoyé');
+									notify((string)$this->lang('Comment sent'));
 
 									refresh();
 								})
-								->submit('Envoyer')
+								->submit((string)$this->lang('Send'))
 			]);
 		}
 		else
 		{
-			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('Vous devez être identifié pour pouvoir poster un commentaire').'</div>';
+			$new = '<div class="alert alert-danger" role="alert">'.icon('fas fa-ban').' '.$this->lang('You must be signed in to post a comment').'</div>';
 		}
 
 		return $this->css('comments')

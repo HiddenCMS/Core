@@ -9,20 +9,20 @@ $this	->compact()
 					->title($this->module('user')->model('fields')->login_label())
 					->required()
 					->check(function($data){
-						if (!is_string($data['login'] ?? NULL)) return 'Identifiant invalide';
+						if (!is_string($data['login'] ?? NULL)) return (string)$this->lang('Invalid identifier');
 					})
 		)
 		->rule($this->form_password('password')
-					->title('Mot de passe')
+					->title((string)$this->lang('Password'))
 					->required()
 					->check(function($data){
-						if (!is_string($data['password'] ?? NULL)) return 'Mot de passe invalide';
+						if (!is_string($data['password'] ?? NULL)) return (string)$this->lang('Invalid password');
 					})
 		)
 		->rule($this->form_checkbox('remember')
 					->value(['on'])
 					->data([
-						'on' => 'Se souvenir de moi'
+						'on' => (string)$this->lang('Remember me')
 					])
 		)
 		->success(function($data, $form){
@@ -39,12 +39,12 @@ $this	->compact()
 				else
 				{
 					$this->session->login($user, in_array('on', $data['remember']));
-					redirect();
+					$this->url->redirect(user_login_destination());
 				}
 			}
 			else
 			{
-				$form->error('Identifiants invalides');
+				$form->error((string)$this->lang('Invalid credentials'));
 			}
 		})
-		->submit('Se connecter');
+		->submit((string)$this->lang('Sign in'));

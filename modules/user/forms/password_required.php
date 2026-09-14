@@ -5,16 +5,16 @@
  */
 
 $this	->rule($this->form_password('password')
-					->title('Mot de passe')
+					->title((string)$this->lang('Password'))
 					->required()
 		)
 		->rule($this->form_password('password_confirm')
-					->title('Confirmation')
+					->title((string)$this->lang('Confirm password'))
 					->required()
 					->check(function($data){
 						if ($data['password'] && $data['password'] !== $data['password_confirm'])
 						{
-							return 'Les mots de passe de correspondent pas';
+							return (string)$this->lang('Passwords do not match');
 						}
 					})
 		);

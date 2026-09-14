@@ -88,7 +88,7 @@ class Modal extends Library
 		if (!is_a($button, 'HB\HiddenCMS\Libraries\Button'))
 		{
 			$button = parent::button()
-							->title($button ?: $this->lang('Valider'))
+							->title($button ?: $this->lang('Save'))
 							->color($color);
 		}
 
@@ -102,7 +102,7 @@ class Modal extends Library
 		if (!is_a($button, 'HB\HiddenCMS\Libraries\Button'))
 		{
 			$button = parent::button_submit()
-							->title($button ?: $this->lang('Valider'))
+							->title($button ?: $this->lang('Save'))
 							->color($color);
 		}
 
@@ -113,12 +113,12 @@ class Modal extends Library
 
 	public function close()
 	{
-		return $this->dismiss($this->lang('Fermer'));
+		return $this->dismiss($this->lang('Close'));
 	}
 
 	public function cancel()
 	{
-		return $this->dismiss($this->lang('Annuler'));
+		return $this->dismiss($this->lang('Cancel'));
 	}
 
 	public function large()
@@ -209,7 +209,7 @@ class Modal extends Library
 			'has_form'    => (bool)$this->_callback,
 			'form_action' => url($this->url->request),
 			'form_method' => 'post',
-			'close_label' => $this->lang('Fermer')
+			'close_label' => $this->lang('Close')
 		];
 	}
 

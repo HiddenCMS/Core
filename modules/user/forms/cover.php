@@ -11,6 +11,6 @@ $this	->rule($this->form_image('cover', 'user/cover')
 		)
 		->success(function($profile){
 			$profile->commit();
-			notify($this->lang('Photo de couverture modifiée'));
+			notify($this->lang('Cover photo updated'));
 			refresh();
 		});

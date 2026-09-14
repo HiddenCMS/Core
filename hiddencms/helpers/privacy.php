@@ -3,9 +3,9 @@
 function privacy_profile_fields()
 {
 	return [
-		'first_name' => 'Prénom', 'last_name' => 'Nom',
-		'date_of_birth' => 'Naissance (âge public)', 'sex' => 'Sexe',
-		'country' => 'Pays', 'location' => 'Localisation'
+		'first_name' => (string)HB()->lang('First name'), 'last_name' => (string)HB()->lang('Last name'),
+		'date_of_birth' => (string)HB()->lang('Date of birth (public age)'), 'sex' => (string)HB()->lang('Gender'),
+		'country' => (string)HB()->lang('Country'), 'location' => (string)HB()->lang('Location')
 	];
 }
 
@@ -57,12 +57,12 @@ function privacy_notice()
 	$links = [];
 	if ($url = privacy_policy_url())
 	{
-		$links[] = '<a href="'.utf8_htmlentities($url).'" target="_blank" rel="noopener">'.HB()->lang('Politique de confidentialité').'</a>';
+		$links[] = '<a href="'.utf8_htmlentities($url).'" target="_blank" rel="noopener">'.HB()->lang('Privacy policy').'</a>';
 	}
 	$email = html_entity_decode((string)(HB()->config->privacy_contact ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 	if (filter_var($email, FILTER_VALIDATE_EMAIL))
 	{
-		$label = HB()->lang('Contact confidentialité');
+		$label = HB()->lang('Privacy contact');
 		$owner = html_entity_decode((string)(HB()->config->privacy_controller ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 		if ($owner !== '') $label .= ' : '.utf8_htmlentities($owner);
 		$links[] = '<a href="mailto:'.utf8_htmlentities($email).'">'.$label.'</a>';
@@ -90,19 +90,19 @@ function privacy_services($id = NULL, $definition = NULL)
 		$addons[$id] = $definition;
 	}
 	$services = ['youtube' => [
-		'title' => 'Vidéos YouTube',
-		'description' => 'Google / YouTube lit les vidéos intégrées et peut utiliser des traceurs. Sans accord, les vidéos restent bloquées.',
+		'title' => (string)HB()->lang('YouTube videos'),
+		'description' => (string)HB()->lang('Google / YouTube plays embedded videos and may use trackers. Without consent, videos remain blocked.'),
 		'hosts' => ['www.youtube.com', 'youtube.com', 'www.youtube-nocookie.com', 'youtube-nocookie.com']
 	]];
 	if ($analytics = privacy_analytics_id()) $services['analytics'] = [
-		'title' => 'Mesure d’audience',
-		'description' => 'Google Analytics mesure la fréquentation et les interactions sur ce site. Sans accord, aucune mesure Google Analytics n’est chargée.',
+		'title' => (string)HB()->lang('Audience measurement'),
+		'description' => (string)HB()->lang('Google Analytics measures traffic and interactions on this site. Without consent, Google Analytics measurement is not loaded.'),
 		'hosts' => ['www.googletagmanager.com'], 'measurementId' => $analytics
 	];
 	$statistics = @HB()->module('statistics');
 	if (!HB()->url->admin && !HB()->user->admin && $statistics && $statistics->is_enabled() && (HB()->config->statistics_enabled ?? '1') === '1') $services['site_statistics'] = [
-		'title' => 'Statistiques du site',
-		'description' => 'Compteur local de visites et de pages vues. Aucune adresse IP, identité, URL privée ou donnée transmise à un tiers dans ces statistiques. Un identifiant de session haché change chaque jour et est supprimé après deux jours ; les compteurs agrégés sont conservés treize mois.',
+		'title' => (string)HB()->lang('Site statistics'),
+		'description' => (string)HB()->lang('Local visit and page view counters. These statistics contain no IP address, identity, private URL or data transmitted to third parties. A hashed session identifier changes daily and is deleted after two days; aggregate counters are retained for thirteen months.'),
 		'hosts' => [HB()->url->domain]
 	];
 	return array_merge($services, $addons);
@@ -110,7 +110,7 @@ function privacy_services($id = NULL, $definition = NULL)
 
 function privacy_preferences_link()
 {
-	return '<button type="button" class="privacy-preferences-link" data-privacy-open>'.HB()->lang('Gérer mes cookies').'</button>';
+	return '<button type="button" class="privacy-preferences-link" data-privacy-open>'.HB()->lang('Manage cookies').'</button>';
 }
 
 function privacy_embed($service, $src, $title = '')
@@ -121,9 +121,9 @@ function privacy_embed($service, $src, $title = '')
 		|| isset($parts['port']) || !in_array(strtolower($parts['host'] ?? ''), $definition['hosts'], TRUE)) return '';
 	$title = $title ?: $definition['title'];
 	return '<div class="privacy-embed" data-privacy-service="'.utf8_htmlentities($service, ENT_QUOTES).'" data-privacy-src="'.utf8_htmlentities($src, ENT_QUOTES).'" data-privacy-title="'.utf8_htmlentities($title, ENT_QUOTES).'">'
-		.'<div class="privacy-embed-placeholder"><strong>'.utf8_htmlentities($title).'</strong><p>'.HB()->lang('Ce contenu externe est bloqué selon vos préférences de confidentialité.').'</p>'
-		.'<button type="button" class="privacy-button" data-privacy-open>'.HB()->lang('Choisir mes préférences').'</button>'
-		.'<noscript><p>'.HB()->lang('JavaScript est nécessaire pour autoriser ce contenu.').'</p></noscript></div></div>';
+		.'<div class="privacy-embed-placeholder"><strong>'.utf8_htmlentities($title).'</strong><p>'.HB()->lang('This external content is blocked by your privacy preferences.').'</p>'
+		.'<button type="button" class="privacy-button" data-privacy-open>'.HB()->lang('Choose my preferences').'</button>'
+		.'<noscript><p>'.HB()->lang('JavaScript is required to allow this content.').'</p></noscript></div></div>';
 }
 
 // Filter rich-text embeds on the server: a client-side observer would be too late.

@@ -11,5 +11,5 @@
 	<?php endforeach ?>
 </div>
 <?php else: ?>
-Aucun message récent...
+<?php echo $this->lang('No recent messages...') ?>
 <?php endif ?>

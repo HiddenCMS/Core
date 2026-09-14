@@ -13,7 +13,7 @@ class Files extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Fichiers'),
+			'title'       => $this->lang('Files'),
 			'description' => '',
 			'icon'        => 'far fa-folder-open',
 			'link'        => 'https://neofr.ag',
@@ -36,7 +36,7 @@ class Files extends Module
 		];
 	}
 
-	public function picker_field($name, $file_id = 0, $label = 'Fichier', $accept = 'file', $empty_label = 'Aucun fichier sélectionné')
+	public function picker_field($name, $file_id = 0, $label = 'File', $accept = 'file', $empty_label = 'No file selected')
 	{
 		$file = [];
 
@@ -59,7 +59,7 @@ class Files extends Module
 		]);
 	}
 
-	public function picker_directory_field($name, $path = '', $label = 'Dossier', $accept = 'gallery-image', $empty_label = 'Aucun dossier sélectionné')
+	public function picker_directory_field($name, $path = '', $label = 'Folder', $accept = 'gallery-image', $empty_label = 'No folder selected')
 	{
 		$path = trim(str_replace('\\', '/', (string)$path), '/');
 		$selected = $path !== '';
@@ -71,9 +71,9 @@ class Files extends Module
 			.'<input type="hidden" name="'.utf8_htmlentities($name).'" value="'.utf8_htmlentities($path).'" />'
 			.'<div class="files-picker-selection'.($selected ? ' has-file' : '').'">'
 			.'<div class="files-picker-selection-preview">'.icon('far fa-folder-open').'</div>'
-			.'<div class="files-picker-selection-details"><strong data-file-picker-name>'.($selected ? utf8_htmlentities($path) : $this->lang($empty_label)).'</strong><small>'.$this->lang('Les images JPEG et PNG de ce dossier alimenteront automatiquement la galerie.').'</small></div>'
-			.'<div class="files-picker-selection-actions"><button type="button" class="ui primary button" data-file-picker-open>'.icon('far fa-folder-open').' '.$this->lang('Parcourir').'</button>'
-			.'<button type="button" class="ui icon button" data-file-picker-clear title="'.$this->lang('Retirer').'" aria-label="'.$this->lang('Retirer').'"'.(!$selected ? ' style="display:none"' : '').'>'.icon('fas fa-times').'</button></div>'
+			.'<div class="files-picker-selection-details"><strong data-file-picker-name>'.($selected ? utf8_htmlentities($path) : $this->lang($empty_label)).'</strong><small>'.$this->lang('JPEG and PNG images in this folder will automatically populate the gallery.').'</small></div>'
+			.'<div class="files-picker-selection-actions"><button type="button" class="ui primary button" data-file-picker-open>'.icon('far fa-folder-open').' '.$this->lang('Browse').'</button>'
+			.'<button type="button" class="ui icon button" data-file-picker-clear title="'.$this->lang('Remove').'" aria-label="'.$this->lang('Remove').'"'.(!$selected ? ' style="display:none"' : '').'>'.icon('fas fa-times').'</button></div>'
 			.'</div></div>';
 	}
 
@@ -83,21 +83,21 @@ class Files extends Module
 			'default' => [
 				'access'  => [
 					[
-						'title'  => 'Fichiers',
+						'title'  => $this->lang('Files'),
 						'icon'   => 'far fa-folder-open',
 						'access' => [
 							'add_files' => [
-								'title' => 'Ajouter',
+								'title' => $this->lang('Add'),
 								'icon'  => 'fas fa-plus',
 								'admin' => TRUE
 							],
 							'modify_files' => [
-								'title' => 'Modifier',
+								'title' => $this->lang('Edit'),
 								'icon'  => 'fas fa-edit',
 								'admin' => TRUE
 							],
 							'delete_files' => [
-								'title' => 'Supprimer',
+								'title' => $this->lang('Delete'),
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
 							]
@@ -107,12 +107,12 @@ class Files extends Module
 			],
 			'directory' => [
 				'get_all' => function(){
-					return HiddenCMS()->db->select('directory_id', 'CONCAT_WS(" ", "Dossier", path)')->from('files_directories')->order_by('path')->get();
+					return array_map(function($row){ return ['directory_id'=>$row['directory_id'], 'path'=>$this->lang('Folder').' '.$row['path']]; }, HiddenCMS()->db->select('directory_id', 'path')->from('files_directories')->order_by('path')->get());
 				},
 				'check' => function($directory_id){
 					if (($path = HiddenCMS()->db->select('path')->from('files_directories')->where('directory_id', (int)$directory_id)->row()) !== [])
 					{
-						return 'Dossier '.$path;
+						return $this->lang('Folder').' '.$path;
 					}
 				},
 				'init' => [
@@ -122,11 +122,11 @@ class Files extends Module
 				],
 				'access' => [
 					[
-						'title'  => 'Dossiers',
+						'title'  => $this->lang('Folders'),
 						'icon'   => 'far fa-folder',
 						'access' => [
 							'read_directory' => [
-								'title' => 'Lecture',
+								'title' => $this->lang('Read'),
 								'icon'  => 'far fa-eye'
 							]
 						]
@@ -135,12 +135,12 @@ class Files extends Module
 			],
 			'file' => [
 				'get_all' => function(){
-					return HiddenCMS()->db->select('id', 'CONCAT_WS(" ", "Fichier", name)')->from('file')->where('path LIKE', 'upload/files/%')->order_by('name')->get();
+					return array_map(function($row){ return ['id'=>$row['id'], 'name'=>$this->lang('File').' '.$row['name']]; }, HiddenCMS()->db->select('id', 'name')->from('file')->where('path LIKE', 'upload/files/%')->order_by('name')->get());
 				},
 				'check' => function($file_id){
 					if (($name = HiddenCMS()->db->select('name')->from('file')->where('id', (int)$file_id)->where('path LIKE', 'upload/files/%')->row()) !== [])
 					{
-						return 'Fichier '.$name;
+						return $this->lang('File').' '.$name;
 					}
 				},
 				'init' => [
@@ -150,11 +150,11 @@ class Files extends Module
 				],
 				'access' => [
 					[
-						'title'  => 'Fichiers',
+						'title'  => $this->lang('Files'),
 						'icon'   => 'far fa-file',
 						'access' => [
 							'read_file' => [
-								'title' => 'Lecture',
+								'title' => $this->lang('Read'),
 								'icon'  => 'far fa-eye'
 							]
 						]

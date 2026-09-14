@@ -50,21 +50,21 @@ class Menu extends Module
 			'default' => [
 				'access'  => [
 					[
-						'title'  => 'Menus',
+						'title'  => $this->lang('Menus'),
 						'icon'   => 'fas fa-bars',
 						'access' => [
 							'add_menus' => [
-								'title' => 'Ajouter',
+								'title' => $this->lang('Add'),
 								'icon'  => 'fas fa-plus',
 								'admin' => TRUE
 							],
 							'modify_menus' => [
-								'title' => 'Modifier',
+								'title' => $this->lang('Edit'),
 								'icon'  => 'fas fa-edit',
 								'admin' => TRUE
 							],
 							'delete_menus' => [
-								'title' => 'Supprimer',
+								'title' => $this->lang('Delete'),
 								'icon'  => 'far fa-trash-alt',
 								'admin' => TRUE
 							]
@@ -74,12 +74,12 @@ class Menu extends Module
 			],
 			'link' => [
 				'get_all' => function(){
-					return HB()->db->select('item_id', 'CONCAT_WS(" ", "Lien", title)')->from('menus_items')->order_by('title')->get();
+					return array_map(function($row){ return ['item_id'=>$row['item_id'], 'title'=>$this->lang('Link').' '.$row['title']]; }, HB()->db->select('item_id', 'title')->from('menus_items')->order_by('title')->get());
 				},
 				'check' => function($item_id){
 					if (($title = HB()->db->select('title')->from('menus_items')->where('item_id', (int)$item_id)->row()) !== [])
 					{
-						return 'Lien '.$title;
+						return $this->lang('Link').' '.$title;
 					}
 				},
 				'init' => [
@@ -89,11 +89,11 @@ class Menu extends Module
 				],
 				'access' => [
 					[
-						'title' => 'Liens',
+						'title' => $this->lang('Links'),
 						'icon' => 'fas fa-link',
 						'access' => [
 							'view_link' => [
-								'title' => 'Visibilité',
+								'title' => $this->lang('Visibility'),
 								'icon' => 'far fa-eye'
 							]
 						]

@@ -15,16 +15,16 @@ class Admin extends Controller_Module
 		$this->css('pages');
 
 		return $this->panel()
-					->heading($this->lang('Liste des pages'), 'fas fa-bars')
+					->heading($this->lang('Pages list'), 'fas fa-bars')
 					->body($this->render_pages_tree($pages), FALSE)
-					->footer_if($this->is_authorized('add_pages'), $this->button_create('admin/pages/add', $this->lang('Créer une page')));
+					->footer_if($this->is_authorized('add_pages'), $this->button_create('admin/pages/add', $this->lang('Create a page')));
 	}
 
 	private function render_pages_tree($pages)
 	{
 		if (empty($pages))
 		{
-			return '<div class="table-empty">'.$this->lang('Il n\'y a pas encore de page').'</div>';
+			return '<div class="table-empty">'.$this->lang('There are no pages').'</div>';
 		}
 
 		$children = [];
@@ -52,7 +52,7 @@ class Admin extends Controller_Module
 				if ($page['published'])
 				{
 					$actions[] = $this->button()
-									->tooltip($this->lang('Voir la page'))
+									->tooltip($this->lang('View page'))
 									->icon('far fa-eye')
 									->url($page['path'])
 									->color('secondary')
@@ -75,7 +75,7 @@ class Admin extends Controller_Module
 					$actions[] = $this->button_delete('admin/pages/delete/'.$page['page_id'].'/'.url_title($page['title']));
 				}
 
-				$status_title = $page['published'] ? $this->lang('Publiée') : $this->lang('En attente de publication');
+				$status_title = $page['published'] ? $this->lang('Published') : $this->lang('Pending publication');
 				$status = '<i class="pages-tree-status '.($page['published'] ? 'fas fa-circle is-published' : 'far fa-circle is-draft').'" data-toggle="tooltip" title="'.$status_title.'" aria-label="'.$status_title.'"></i>';
 				$edit_url = 'admin/pages/'.$page['page_id'].'/'.url_title($page['title']);
 				$title_output = $this->is_authorized('modify_pages')
@@ -109,7 +109,7 @@ class Admin extends Controller_Module
 
 		$outlines = $this->model()->get_outlines();
 
-		$this	->subtitle($this->lang('Ajouter une page'))
+		$this	->subtitle($this->lang('Add page'))
 				->form()
 				->add_rules('pages', [
 					'page_id'         => 0,
@@ -120,7 +120,7 @@ class Admin extends Controller_Module
 					'outlines'        => $outlines,
 					'blocks'          => $this->storage->encode([])
 				])
-				->add_submit($this->lang('Ajouter'))
+				->add_submit($this->lang('Add'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
@@ -131,7 +131,7 @@ class Admin extends Controller_Module
 
 			if (!$parent_id && $this->model()->is_reserved_page_name($page_name))
 			{
-				notify($this->lang('Le premier segment du chemin d\'accès est réservé par un module'), 'danger');
+				notify($this->lang('The first path segment is reserved by a module'), 'danger');
 			}
 			else
 			{
@@ -146,14 +146,14 @@ class Admin extends Controller_Module
 										$blocks,
 										$parent_id);
 
-			notify($this->lang('Page ajoutée avec succès'));
+			notify($this->lang('Page successfully added'));
 
 			redirect_back('admin/pages');
 			}
 		}
 
 		return $this->panel()
-					->heading($this->lang('Ajouter une page'), 'fas fa-align-left')
+					->heading($this->lang('Add page'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
@@ -176,7 +176,7 @@ class Admin extends Controller_Module
 					'outlines'       => $this->model()->get_outlines(),
 					'blocks'         => $this->model()->get_blocks_form_value($page_id, $content)
 				])
-				->add_submit($this->lang('Éditer'))
+				->add_submit($this->lang('Edit'))
 				->add_back('admin/pages');
 
 		if ($this->form()->is_valid($post))
@@ -186,8 +186,8 @@ class Admin extends Controller_Module
 
 			if (!$parent_id && $this->model()->is_reserved_page_name($page_name))
 			{
-				notify($this->lang('Le slug d’une page racine est réservé par un module'), 'danger');
-				return $this->panel()->heading($this->lang('Édition de la page'), 'fas fa-align-left')->body($this->form()->display());
+				notify($this->lang('The root page slug is reserved by a module'), 'danger');
+				return $this->panel()->heading($this->lang('Edit page'), 'fas fa-align-left')->body($this->form()->display());
 			}
 
 			$blocks = $this->model()->build_blocks($post);
@@ -203,13 +203,13 @@ class Admin extends Controller_Module
 										$blocks,
 										$parent_id);
 
-			notify($this->lang('Page éditée avec succès'));
+			notify($this->lang('Page successfully edited'));
 
 			redirect_back('admin/pages');
 		}
 
 		return $this->panel()
-					->heading($this->lang('Édition de la page'), 'fas fa-align-left')
+					->heading($this->lang('Edit page'), 'fas fa-align-left')
 					->body($this->form()->display());
 	}
 
@@ -217,13 +217,13 @@ class Admin extends Controller_Module
 	{
 		if ($this->model()->has_children($page_id))
 		{
-			return '<div class="ui warning message"><div class="header">'.$this->lang('Cette page contient des pages enfants').'</div><p>'.$this->lang('Déplacez ou supprimez d’abord ses pages enfants avant de la supprimer.').'</p></div>';
+			return '<div class="ui warning message"><div class="header">'.$this->lang('This page has child pages').'</div><p>'.$this->lang('Move or delete its child pages before deleting this page.').'</p></div>';
 		}
 
-		$this	->title($this->lang('Suppression d\'une page'))
+		$this	->title($this->lang('Delete page'))
 				->subtitle($title)
 				->form()
-				->confirm_deletion($this->lang('Confirmation de suppression'), $this->lang('Êtes-vous sûr(e) de vouloir supprimer la page <b>%s</b> ?', $title));
+				->confirm_deletion($this->lang('Confirm deletion'), $this->lang('Are you sure you want to delete page <b>%s</b>?', $title));
 
 		if ($this->form()->is_valid())
 		{

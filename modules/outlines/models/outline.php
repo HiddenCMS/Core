@@ -53,7 +53,7 @@ class Outline extends Model2
 
 	public function get_regions($theme = NULL)
 	{
-		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->regions();
+		return HiddenCMS()->theme($theme ?: $this->config->default_theme)->region_titles();
 	}
 
 	public function get_themes()
@@ -81,7 +81,7 @@ class Outline extends Model2
 			$name = (string)$module->info()->name;
 			$title = (string)$module->info()->title;
 
-			$routes[$name] = $title.' - Toutes les pages (/'.$route.')';
+			$routes[$name] = $title.' - '.$this->lang('All pages').' (/'.$route.')';
 
 			foreach ($this->reserved_outline_routes($module) as $relative_route => $route_title)
 			{
@@ -508,6 +508,7 @@ class Outline extends Model2
 		{
 			$route = trim((string)$route, '/');
 
+			if ($title instanceof \HB\HiddenCMS\Libraries\Lang) $title = (string)$title;
 			if ($route !== '' && is_string($title) && trim($title) !== '')
 			{
 				$result[$route] = trim($title);
@@ -519,7 +520,7 @@ class Outline extends Model2
 
 	private function default_disposition($zone_title)
 	{
-		if (url_title($zone_title) == 'contenu')
+		if (in_array(url_title($zone_title), ['content', 'contenu'], TRUE))
 		{
 			return $this->array([
 				$this->row(

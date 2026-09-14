@@ -7,7 +7,7 @@
 				<?php echo utf8_htmlentities($this->config->name) ?>
 			<?php endif ?>
 		</h2>
-		<nav class="maintenance-nav" aria-label="<?php echo $this->lang('Navigation secondaire') ?>">
+		<nav class="maintenance-nav" aria-label="<?php echo $this->lang('Secondary navigation') ?>">
 			<?php
 				foreach ([
 					'behance'    => 'Behance',
@@ -34,21 +34,21 @@
 				<span class="maintenance-user"><?php echo utf8_htmlentities($this->user->username) ?></span>
 			<?php endif ?>
 			<?php echo $this->user()
-				? '<a href="'.url('user/logout').'" class="maintenance-link">'.icon('fas fa-times').' '.$this->lang('Déconnexion').'</a>'
-				: '<a href="'.url('user/login').'" class="maintenance-link">'.icon('fas fa-sign-in-alt').' '.$this->lang('Se connecter').'</a>' ?>
+				? '<a href="'.url('user/logout').'" class="maintenance-link">'.icon('fas fa-times').' '.$this->lang('Sign out').'</a>'
+				: '<a href="'.url('user/login').'" class="maintenance-link">'.icon('fas fa-sign-in-alt').' '.$this->lang('Sign in').'</a>' ?>
 		</nav>
 	</header>
 
 	<main class="maintenance-content" role="main">
-		<div class="maintenance-status"><?php echo icon('fas fa-tools').' '.$this->lang('Maintenance en cours') ?></div>
-		<h1><?php echo utf8_htmlentities($this->config->maintenance_title ?: $this->lang('Site en maintenance')) ?></h1>
+		<div class="maintenance-status"><?php echo icon('fas fa-tools').' '.$this->lang('Maintenance in progress') ?></div>
+		<h1><?php echo utf8_htmlentities($this->config->maintenance_title ?: $this->lang('Site under maintenance')) ?></h1>
 		<?php if ($content = $this->config->maintenance_content): ?>
 			<div class="maintenance-message"><?php echo bbcode($content) ?></div>
 		<?php else: ?>
-			<p class="maintenance-message"><?php echo $this->lang('Nous effectuons actuellement une opération de maintenance. Le site sera de nouveau disponible prochainement.') ?></p>
+			<p class="maintenance-message"><?php echo $this->lang('We are currently performing maintenance. The site will be available again soon.') ?></p>
 		<?php endif ?>
 		<?php if ($this->config->maintenance_opening && ($opening = $this->date($this->config->maintenance_opening))): ?>
-			<p class="maintenance-opening"><?php echo $this->lang('Retour pr&eacute;vu') ?> : <?php echo utf8_htmlentities($opening->format('d/m/Y H:i')) ?></p>
+			<p class="maintenance-opening"><?php echo $this->lang('Expected return') ?> : <?php echo utf8_htmlentities($opening->format('d/m/Y H:i')) ?></p>
 			<div id="countdown" class="countdownHolder" data-timestamp="<?php echo $opening->timestamp() ?>"></div>
 		<?php endif ?>
 	</main>

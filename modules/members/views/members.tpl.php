@@ -32,7 +32,7 @@
 					<?php if ($this->user->id != $member->id): ?>
 						<?php echo $this->button()->label('Contacter')->icon('far fa-envelope')->color('dark')->style('btn-sm')->url('user/messages/compose/'.$member->url()) ?>
 					<?php else: ?>
-						<?php echo $this->button()->label('Gérer mon compte')->icon('fas fa-cog')->color('primary')->style('btn-sm')->url('user') ?>
+						<?php echo $this->button()->label((string)$this->lang('Manage my account'))->icon('fas fa-cog')->color('primary')->style('btn-sm')->url('user') ?>
 					<?php endif ?>
 				</div>
 				<?php endif ?>
@@ -42,6 +42,6 @@
 </div>
 <?php else: ?>
 <div class="card border-info text-center">
-	<div class="card-body"><?php echo $this->lang('Il n\'y a pas encore de membre dans ce groupe') ?></div>
+	<div class="card-body"><?php echo $this->lang('There are no members in this group') ?></div>
 </div>
 <?php endif ?>

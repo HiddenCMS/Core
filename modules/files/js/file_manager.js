@@ -1,11 +1,21 @@
 $(function(){
+	var labels = <?php echo json_encode([
+		'empty'=>(string)$this->lang('No items selected'),
+		'single'=>(string)$this->lang('%d item selected'),
+		'multiple'=>(string)$this->lang('%d items selected'),
+		'remove'=>(string)$this->lang('Remove'),
+		'units'=>[(string)$this->lang('B'), (string)$this->lang('KB'), (string)$this->lang('MB'), (string)$this->lang('GB')]
+	], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+	var selectionLabel = function(count){
+		return count ? (count === 1 ? labels.single : labels.multiple).replace('%d', count) : labels.empty;
+	};
 	var formatSize = function(size){
 		if (!size)
 		{
-			return '0 o';
+			return '0 '+labels.units[0];
 		}
 
-		var units = ['o', 'Ko', 'Mo', 'Go'];
+		var units = labels.units;
 		var value = size;
 		var unit = 0;
 
@@ -75,11 +85,11 @@ $(function(){
 
 				if (!checked)
 				{
-					$count.text('Aucun element selectionne');
+					$count.text(selectionLabel(0));
 				}
 				else
 				{
-					$count.text(checked+' element'+(checked > 1 ? 's' : '')+' selectionne'+(checked > 1 ? 's' : ''));
+					$count.text(selectionLabel(checked));
 				}
 
 				$selectAll.prop('checked', total > 0 && checked === total);
@@ -102,7 +112,7 @@ $(function(){
 					}).appendTo($inputs);
 				});
 
-				$summary.text(paths.length+' element'+(paths.length > 1 ? 's' : '')+' selectionne'+(paths.length > 1 ? 's' : ''));
+				$summary.text(selectionLabel(paths.length));
 				$name.val(paths.length === 1 ? paths[0].name : '');
 			};
 
@@ -199,8 +209,8 @@ $(function(){
 						.append($('<button/>', {
 							type: 'button',
 							'class': 'ui negative mini icon button',
-							title: 'Retirer',
-							'aria-label': 'Retirer',
+							title: labels.remove,
+							'aria-label': labels.remove,
 							html: '<i class="fas fa-times"></i>'
 						}).on('click', function(){
 							files.splice(index, 1);

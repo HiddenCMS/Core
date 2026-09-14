@@ -12,7 +12,7 @@
 						->append_if($quote = $profile->quote, '<i class="text-muted">'.$quote.'</i>')
 						->append(trim(privacy_profile_value($profile, 'first_name').' '.privacy_profile_value($profile, 'last_name')))
 						->append_if($sex || $date_of_birth, function() use ($sex, $date_of_birth){
-							return $this->label($date_of_birth ? $this->lang('%d an|%d ans', $age = $date_of_birth->interval('today')->y, $age) : ($sex == 'female' ? 'Femme' : 'Homme'), $sex ? ($sex == 'female' ? 'fas fa-venus' : 'fas fa-mars').' '.$sex : 'fas fa-birthday-cake');
+							return $this->label($date_of_birth ? $this->lang('%d year|%d years', $age = $date_of_birth->interval('today')->y, $age) : ($sex == 'female' ? (string)$this->lang('Female') : (string)$this->lang('Male')), $sex ? ($sex == 'female' ? 'fas fa-venus' : 'fas fa-mars').' '.$sex : 'fas fa-birthday-cake');
 						})
 						->append_if($location || $country, function() use ($location, $country){
 							return $this->label($this->no_translate($location) ?: (get_countries()[$country] ?? ''), $country && ($flag = image('flags/'.$country.'.png', $this->theme('default'))) ? '<img src="'.$flag.'" alt="" />' : 'fas fa-map-marker-alt');
@@ -38,5 +38,5 @@
 		}
 	?>
 	<?php if (isset($socials) && !$socials->empty()): ?><div class="socials"><?php echo $socials ?></div><?php endif ?>
-	<?php if ($this->user() && $this->user != $user) echo $this->button()->title('Contacter')->icon('far fa-envelope')->color('dark')->style('btn-block')->url('user/messages/compose/'.$user->url()) ?>
+	<?php if ($this->user() && $this->user != $user) echo $this->button()->title('Contact')->icon('far fa-envelope')->color('dark')->style('btn-block')->url('user/messages/compose/'.$user->url()) ?>
 </div>

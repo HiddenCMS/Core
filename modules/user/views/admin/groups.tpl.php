@@ -14,7 +14,7 @@
 		<?php endforeach ?>
 		</ul>
 		<div class="ui right aligned basic segment">
-			<?php echo $this->button_submit($this->lang('Valider')) ?>
+			<?php echo $this->button_submit($this->lang('Save')) ?>
 		</div>
 	</form>
 <?php endif ?>
