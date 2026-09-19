@@ -13,7 +13,7 @@ class Live_Editor extends Module
 	protected function __info()
 	{
 		return [
-			'title'       => $this->lang('Live Editor'),
+			'title'       => $this->lang('Layout builder'),
 			'description' => '',
 			'icon'        => 'fas fa-desktop',
 			'link'        => 'https://neofr.ag',

@@ -4,6 +4,7 @@ $(function(){
     var backdrop = document.querySelector('.sidebar-backdrop');
     var mobile = window.matchMedia('(max-width: 768px)');
     var compact = false;
+    if (!sidebar || !toggle) return;
     try { compact = sessionStorage.getItem('admin-sidebar-compact') === '1'; } catch (e) {}
     Array.from(sidebar.querySelectorAll(':scope > .nav > .nav-item > a')).forEach(function(link){
         var label = link.querySelector('.nav-link-title, .hidden-xs');

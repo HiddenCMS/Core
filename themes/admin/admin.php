@@ -98,7 +98,7 @@ class Admin extends Theme
 			isset($relocated_links['menu']) ? $relocated_links['menu'] : [],
 			isset($relocated_links['outlines']) ? $relocated_links['outlines'] : [],
 			[
-				'title'  => 'Live Editor',
+				'title'  => $this->lang('Layout builder'),
 				'icon'   => 'fas fa-desktop',
 				'access' => $this->user->admin,
 				'url'    => 'admin/live-editor'

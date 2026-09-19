@@ -10,6 +10,22 @@ use HB\HiddenCMS\Loadables\Controllers\Module as Controller_Module;
 
 class Admin_Ajax extends Controller_Module
 {
+	public function layout_save($outline_id, $layout)
+	{
+		$this->model()->save_layout($outline_id, $layout);
+
+		return $this->json([
+			'ok'      => TRUE,
+			'layout'  => $this->model()->get_layout($outline_id),
+			'message' => (string)$this->lang('Layout saved')
+		]);
+	}
+
+	public function builder_widget_admin($widget_name, $type, $settings)
+	{
+		return implode($this->widget($widget_name)->get_admin($type, $settings));
+	}
+
 	public function zone_fork($disposition_id, $disposition, $url, $theme, $page, $zone)
 	{
 		$url = ltrim(preg_replace('_^'.$this->url().'_', '', $url), '/');

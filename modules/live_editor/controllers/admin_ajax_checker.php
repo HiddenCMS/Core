@@ -10,6 +10,41 @@ use HB\HiddenCMS\Loadables\Controllers\Module_Checker;
 
 class Admin_Ajax_Checker extends Module_Checker
 {
+	public function layout_save()
+	{
+		if (!$this->user->admin)
+		{
+			return;
+		}
+
+		$outline_id = (int)post('outline_id');
+		$layout = json_decode((string)post('layout'), TRUE);
+
+		if ($outline_id > 0 && is_array($layout) && $this->module('outlines')->model2('outline')->get_outline_by_id($outline_id))
+		{
+			return [$outline_id, $layout];
+		}
+	}
+
+	public function builder_widget_admin()
+	{
+		if (!$this->user->admin)
+		{
+			return;
+		}
+
+		$widget_name = trim((string)post('widget'));
+		$type = trim((string)post('type')) ?: 'index';
+		$settings = json_decode((string)post('settings'), TRUE);
+		$settings = is_array($settings) ? $settings : [];
+		$this->model()->get_widgets($widgets, $types);
+
+		if (isset($widgets[$widget_name]) && (isset($types[$widget_name][$type]) || $type === 'index'))
+		{
+			return [$widget_name, $type, $settings];
+		}
+	}
+
 	public function zone_fork()
 	{
 		return $this->_check_disposition('disposition_id', 'url');
