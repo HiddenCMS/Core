@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="<?php echo css('file_picker.css') ?>" />
-<script type="text/javascript" src="<?php echo js('file_picker.js') ?>"></script>
+<script type="text/javascript" src="<?php echo js('file_picker.js') ?>" defer></script>
 <div class="field files-picker-field" data-file-picker data-accept="<?php echo utf8_htmlentities($accept) ?>">
 	<label><?php echo $this->lang($label) ?></label>
 	<input type="hidden" name="<?php echo utf8_htmlentities($name) ?>" value="<?php echo $file ? (int)$file['id'] : '' ?>" />

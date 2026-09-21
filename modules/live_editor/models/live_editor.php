@@ -25,11 +25,21 @@ class Live_Editor extends Model
 		{
 			$dispositions[(int)$record['zone']] = $record;
 		}
+		$base_dispositions = [];
+		$base = !$outline['base'] ? HB()->module('outlines')->model2('outline')->get_outline() : FALSE;
+		if ($base && $base['theme'] === $outline['theme'])
+		{
+			foreach ($this->db->from('dispositions')->where('theme', $base['theme'])->where('page', 'outline:'.(int)$base['outline_id'])->get() as $record)
+			{
+				$base_dispositions[(int)$record['zone']] = $record;
+			}
+		}
 
 		$layout = [];
 		foreach ($theme->info()->zones as $zone => $identifier)
 		{
-			$record = isset($dispositions[$zone]) ? $dispositions[$zone] : NULL;
+			$inherited = !isset($dispositions[$zone]) && isset($base_dispositions[$zone]);
+			$record = isset($dispositions[$zone]) ? $dispositions[$zone] : ($inherited ? $base_dispositions[$zone] : NULL);
 			$rows = $record ? $this->disposition->to_array($this->disposition->decode($record['disposition'])) : [];
 
 			foreach ($rows as &$row)
@@ -50,9 +60,10 @@ class Live_Editor extends Model
 			}
 
 			$layout[] = [
-				'disposition_id' => $record ? (int)$record['disposition_id'] : 0,
+				'disposition_id' => $record && !$inherited ? (int)$record['disposition_id'] : 0,
 				'zone'           => (int)$zone,
 				'title'          => (string)$theme->zone_title($zone),
+				'inherited'      => $inherited,
 				'rows'           => $rows
 			];
 		}
@@ -71,6 +82,8 @@ class Live_Editor extends Model
 
 		$records = [];
 		$old_widgets = [];
+		$theme = $this->theme($outline['theme']);
+		$valid_zones = array_map('intval', array_keys((array)$theme->info()->zones));
 		foreach ($this->db->from('dispositions')->where('theme', $outline['theme'])->where('page', 'outline:'.(int)$outline_id)->get() as $record)
 		{
 			$records[(int)$record['zone']] = $record;
@@ -86,9 +99,19 @@ class Live_Editor extends Model
 			foreach ($layout as $zone_data)
 			{
 				$zone = isset($zone_data['zone']) ? (int)$zone_data['zone'] : -1;
-				if (!isset($records[$zone]) || !isset($zone_data['rows']) || !is_array($zone_data['rows'])) continue;
+				if (!in_array($zone, $valid_zones, TRUE) || !isset($zone_data['rows']) || !is_array($zone_data['rows'])) continue;
 				if (isset($processed_zones[$zone])) throw new \InvalidArgumentException((string)$this->lang('Invalid layout'));
 				$processed_zones[$zone] = TRUE;
+
+				if (!$outline['base'] && !empty($zone_data['inherited']))
+				{
+					if (isset($records[$zone]))
+					{
+						$this->delete_widgets($this->disposition->decode($records[$zone]['disposition']));
+						$this->db->where('disposition_id', (int)$records[$zone]['disposition_id'])->delete('dispositions');
+					}
+					continue;
+				}
 
 				$disposition = $this->array();
 				foreach ($zone_data['rows'] as $row_data)
@@ -133,13 +156,29 @@ class Live_Editor extends Model
 					}
 					$disposition->append($row);
 				}
-				$updates[$records[$zone]['disposition_id']] = $disposition;
+				$updates[] = [
+					'id' => isset($records[$zone]) ? (int)$records[$zone]['disposition_id'] : 0,
+					'zone' => $zone,
+					'disposition' => $disposition
+				];
 			}
-			if (array_diff_key($records, $processed_zones)) throw new \InvalidArgumentException((string)$this->lang('Incomplete layout'));
+			if (count($processed_zones) !== count($valid_zones)) throw new \InvalidArgumentException((string)$this->lang('Incomplete layout'));
 
-			foreach ($updates as $disposition_id => $disposition)
+			foreach ($updates as $update)
 			{
-				$this->set_disposition($disposition_id, $disposition);
+				if ($update['id'])
+				{
+					$this->set_disposition($update['id'], $update['disposition']);
+				}
+				else
+				{
+					$this->db->insert('dispositions', [
+						'theme' => $outline['theme'],
+						'page' => 'outline:'.(int)$outline_id,
+						'zone' => $update['zone'],
+						'disposition' => $this->disposition->encode($update['disposition'])
+					]);
+				}
 			}
 
 			$deleted_widgets = array_values(array_diff($old_widgets, $used_widgets));

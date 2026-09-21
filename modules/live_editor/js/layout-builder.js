@@ -10,6 +10,7 @@
 	var nextKey = 1;
 	var $canvas = $('#layout-builder-canvas');
 	var $status = $('#layout-builder-status');
+	var loadedWidgetScripts = {};
 
 	function clone(value){
 		return JSON.parse(JSON.stringify(value));
@@ -23,6 +24,56 @@
 
 	function escapeHtml(value){
 		return $('<div>').text(value == null ? '' : String(value)).html();
+	}
+
+	function injectWidgetSettings($container, html){
+		var holder = document.createElement('div');
+		holder.innerHTML = html || '';
+		var scripts = $(holder).find('script').remove().toArray();
+		$container.empty().append($(holder).contents());
+		var sequence = $.Deferred().resolve().promise();
+
+		$.each(scripts, function(index, script){
+			sequence = sequence.then(function(){
+				var src = script.getAttribute('src');
+				if (src){
+					var absoluteSrc = $('<a>').attr('href', src)[0].href;
+					var alreadyLoaded = loadedWidgetScripts[absoluteSrc] || $('script[src]').filter(function(){ return this.src === absoluteSrc; }).length > 0;
+					if (alreadyLoaded) return;
+					return $.ajax({url: absoluteSrc, dataType: 'script', cache: true}).done(function(){ loadedWidgetScripts[absoluteSrc] = true; });
+				}
+				$.globalEval(script.text || script.textContent || script.innerHTML || '');
+			});
+		});
+
+		return sequence;
+	}
+
+	function loadWidgetScript(src){
+		var absoluteSrc = $('<a>').attr('href', src)[0].href;
+		if (loadedWidgetScripts[absoluteSrc]) return $.Deferred().resolve().promise();
+		loadedWidgetScripts[absoluteSrc] = true;
+		return $.ajax({url: absoluteSrc, dataType: 'script', cache: true}).fail(function(){ delete loadedWidgetScripts[absoluteSrc]; });
+	}
+
+	function initializeWidgetEditors($container){
+		if (window.HiddenCMS && typeof window.HiddenCMS.initFilePickers === 'function'){
+			window.HiddenCMS.initFilePickers($container);
+		}
+		if (!$container.find('textarea.wysiwyg').length) return;
+		var tinyMceReady = window.tinymce ? $.Deferred().resolve().promise() : loadWidgetScript(data.assets.tinyMce);
+		tinyMceReady.then(function(){
+			if (window.tinymce){
+				var base = window.location.pathname.replace(/\/admin(?:\/.*)?$/, '').replace(/\/[a-z]{2}(?:-[A-Z]{2})?$/, '');
+				window.tinymce.baseURL = base+'/dist/js/tinymce';
+			}
+			if (window.HiddenCMS && typeof window.HiddenCMS.initTinyMce === 'function') return;
+			return loadWidgetScript(data.assets.formTinyMce);
+		}).done(function(){
+			if (window.HiddenCMS && typeof window.HiddenCMS.initTinyMce === 'function'){
+				window.HiddenCMS.initTinyMce($container);
+			}
+		});
 	}
 
 	function ensureKeys(){
@@ -61,7 +112,7 @@
 	function renderCol(col){
 		var width = colWidth(col.size);
 		var widgets = $.map(col.widgets || [], renderWidget).join('');
-		return '<div class="lb-col" data-key="'+col._key+'" style="flex-basis:'+((width / 12) * 100)+'%;max-width:'+((width / 12) * 100)+'%">'+
+		return '<div class="lb-col" data-key="'+col._key+'" style="grid-column:span '+width+'">'+
 			'<div class="lb-col-header">'+
 				'<button type="button" class="lb-drag lb-col-drag" title="<?php echo $this->lang('Move') ?>"><?php echo icon('fas fa-grip-vertical') ?></button>'+
 				'<span><?php echo $this->lang('Column') ?></span>'+
@@ -89,9 +140,11 @@
 	}
 
 	function renderZone(zone, index){
-		return '<section class="lb-zone" data-zone-index="'+index+'">'+
+		var inherited = !!zone.inherited;
+		var inheritance = data.isBaseOutline ? '' : '<label class="lb-inheritance"><input type="checkbox" class="lb-zone-inherited" '+(inherited ? 'checked' : '')+'> <span><?php echo $this->lang('Inherit from the default outline') ?></span></label>';
+		return '<section class="lb-zone'+(inherited ? ' is-inherited' : '')+'" data-zone-index="'+index+'">'+
 			'<header class="lb-zone-header"><div><span><?php echo $this->lang('Section') ?></span><h2>'+escapeHtml(zone.title)+'</h2></div>'+
-			'<button type="button" class="ui small primary button lb-add-row"><?php echo icon('fas fa-plus').' '.$this->lang('Row') ?></button></header>'+
+			inheritance+'<button type="button" class="ui small primary button lb-add-row" '+(inherited ? 'disabled' : '')+'><?php echo icon('fas fa-plus').' '.$this->lang('Row') ?></button></header>'+
 			'<div class="lb-rows">'+$.map(zone.rows || [], renderRow).join('')+'<div class="lb-zone-empty"><?php echo $this->lang('Drop a row here or add one') ?></div></div>'+
 		'</section>';
 	}
@@ -134,9 +187,9 @@
 	}
 
 	function initSortables(){
-		$canvas.find('.lb-rows').sortable({connectWith: '.lb-rows', items: '> .lb-row', handle: '.lb-row-drag', placeholder: 'lb-placeholder lb-row-placeholder', stop: sorted});
-		$canvas.find('.lb-cols').sortable({connectWith: '.lb-cols', items: '> .lb-col', handle: '.lb-col-drag', placeholder: 'lb-placeholder lb-col-placeholder', stop: sorted});
-		$canvas.find('.lb-widgets').sortable({connectWith: '.lb-widgets', items: '> .lb-widget', handle: '.lb-widget .lb-drag', placeholder: 'lb-placeholder lb-widget-placeholder', stop: sorted});
+		initPointerSort('.lb-rows', '.lb-row', '.lb-row-drag', 'y');
+		initPointerSort('.lb-cols', '.lb-col', '.lb-col-drag', 'x');
+		initPointerSort('.lb-widgets', '.lb-widget', '.lb-widget > .lb-drag', 'y');
 		$canvas.find('.lb-col').each(function(){
 			var $col = $(this);
 			var $next = $col.next('.lb-col');
@@ -159,11 +212,9 @@
 					var delta = Math.round((moveEvent.clientX - startX) / rowWidth * 12);
 					units = Math.max(1, Math.min(pairUnits - 1, currentUnits + delta));
 					nextUnits = pairUnits - units;
-					var percent = units / 12 * 100;
-					var nextPercent = nextUnits / 12 * 100;
-					$col.css({flexBasis: percent+'%', maxWidth: percent+'%'});
+					$col.css('grid-column', 'span '+units);
 					$col.find('.lb-col-size-label').text(units+'/12');
-					$next.css({flexBasis: nextPercent+'%', maxWidth: nextPercent+'%'}).find('.lb-col-size-label').text(nextUnits+'/12');
+					$next.css('grid-column', 'span '+nextUnits).find('.lb-col-size-label').text(nextUnits+'/12');
 				}).one('pointerup.lbResize pointercancel.lbResize', function(){
 					$(document).off('.lbResize');
 					$('body').removeClass('lb-is-resizing');
@@ -177,6 +228,46 @@
 		});
 	}
 
+	function initPointerSort(containerSelector, itemSelector, handleSelector, axis){
+		$canvas.find(handleSelector).on('pointerdown', function(event){
+			if (event.button !== undefined && event.button !== 0) return;
+			var $item = $(this).closest(itemSelector);
+			var before = clone(state);
+			var moved = false;
+			if (this.setPointerCapture) this.setPointerCapture(event.pointerId);
+			$item.addClass('lb-is-dragging');
+			$('body').addClass('lb-is-sorting');
+			event.preventDefault();
+			event.stopPropagation();
+
+			$(document).on('pointermove.lbSort', function(moveEvent){
+				var target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY);
+				var $container = $(target).closest(containerSelector);
+				if (!$container.length) return;
+				var $target = $(target).closest(itemSelector);
+				if ($target.length && !$target.is($item)){
+					var rect = $target[0].getBoundingClientRect();
+					var after = axis === 'x' ? moveEvent.clientX > rect.left + rect.width / 2 : moveEvent.clientY > rect.top + rect.height / 2;
+					$item[after ? 'insertAfter' : 'insertBefore']($target);
+					moved = true;
+				}
+				else if (!$target.length && !$container.children(itemSelector).last().is($item)){
+					$container.append($item);
+					moved = true;
+				}
+			}).one('pointerup.lbSort pointercancel.lbSort', function(){
+				$(document).off('.lbSort');
+				$item.removeClass('lb-is-dragging');
+				$('body').removeClass('lb-is-sorting');
+				if (moved){
+					syncOrder();
+					if (serialize(state) !== serialize(before)) commit(before);
+					else render();
+				}
+			});
+		});
+	}
+
 	function openWidgetModal(widgetName, colKey, widgetKey){
 		if ($('.layout-builder-widget-modal').length) return;
 		var lookup = maps(), existing = widgetKey ? lookup.widgets[widgetKey] : null;
@@ -185,7 +276,7 @@
 		var selectedType = existing && existing.type ? existing.type : Object.keys(data.types[widgetName] || {})[0] || 'index';
 		var $modal = $([
 			'<div class="ui large modal live-editor-modal layout-builder-widget-modal" role="dialog">',
-				'<div class="header"><?php echo icon('fas fa-cogs').' '.$this->lang('Widget settings') ?><i class="close icon"></i></div>',
+				'<div class="header"><?php echo icon('fas fa-cogs').' '.$this->lang('Widget settings') ?><i class="close icon" role="button" tabindex="0" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
 				'<div class="content">'+$('#layout-builder-widget-form').html()+'</div>',
 				'<div class="actions">',
 					'<button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button>',
@@ -236,7 +327,7 @@
 				settings: JSON.stringify(settings)
 			}).done(function(html){
 				if (request !== settingsRequest) return;
-				$settings.html(html || '');
+				injectWidgetSettings($settings, html).always(function(){ initializeWidgetEditors($settings); });
 				setStepAvailable('settings', $.trim(html || '') !== '');
 				showStep(currentStep);
 			}).fail(function(){
@@ -288,6 +379,7 @@
 		$modal.on('click', '.live-editor-settings-steps .step:not(.disabled)', function(){ showStep($(this).data('step')); });
 		var applyWidget = function(){
 			var before = clone(state), model = existing || {id: 0, style: null, size: null, settings: {}};
+			$modal.find('#live-editor-settings-form').trigger('nf.live-editor-settings.submit');
 			model.widget = $modal.find('#live-editor-settings-widget').val();
 			model.type = $modal.find('#live-editor-settings-type').val() || 'index';
 			model.title = $modal.find('#live-editor-settings-title').val();
@@ -298,11 +390,21 @@
 			$modal.modal('hide');
 		};
 		$modal.find('#live-editor-settings-form').on('submit', function(event){ event.preventDefault(); });
+		$modal.on('click', '.close.icon, .cancel', function(){ $modal.modal('hide'); });
+		$modal.on('keydown', '.close.icon', function(event){ if (event.key === 'Enter' || event.key === ' ') $(this).trigger('click'); });
 		$modal.modal({
 			autofocus: false,
 			observeChanges: true,
 			onApprove: function(){ applyWidget(); return false; },
-			onHidden: function(){ $modal.remove(); }
+			onHidden: function(){
+				if (window.tinymce){
+					$modal.find('textarea.wysiwyg[id]').each(function(){
+						var editor = tinymce.get(this.id);
+						if (editor) editor.remove();
+					});
+				}
+				$modal.remove();
+			}
 		}).modal('show');
 		selectWidget(widgetName, true, !!existing);
 		showStep('widget');
@@ -313,7 +415,7 @@
 		var before = clone(state), classes = $.grep(String(model.style || '').split(/\s+/), Boolean);
 		var modifiers = {}, $modal = $([ 
 			'<div class="ui large modal layout-builder-style-modal">',
-				'<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+escapeHtml(title)+'<i class="close icon"></i></div>',
+				'<div class="header"><?php echo icon('fas fa-paint-brush') ?> '+escapeHtml(title)+'<i class="close icon" role="button" tabindex="0" aria-label="<?php echo $this->lang('Close') ?>"></i></div>',
 				'<div class="content">'+$(templateSelector).html()+'</div>',
 				'<div class="actions"><button type="button" class="ui button cancel"><?php echo $this->lang('Cancel') ?></button><button type="button" class="ui primary approve button lb-style-save"><?php echo icon('fas fa-check').' '.$this->lang('Apply') ?></button></div>',
 			'</div>'
@@ -348,17 +450,13 @@
 			commit(before);
 			$modal.modal('hide');
 		};
+		$modal.on('click', '.close.icon, .cancel', function(){ $modal.modal('hide'); });
+		$modal.on('keydown', '.close.icon', function(event){ if (event.key === 'Enter' || event.key === ' ') $(this).trigger('click'); });
 		$modal.modal({
 			autofocus: false,
 			onApprove: function(){ applyStyle(); return false; },
 			onHidden: function(){ $modal.remove(); }
 		}).modal('show');
-	}
-
-	function sorted(){
-		var before = clone(state);
-		syncOrder();
-		commit(before);
 	}
 
 	function commit(previous){
@@ -382,6 +480,50 @@
 		var base = Math.floor(12 / count), remainder = 12 % count;
 		$.each(cols, function(index, col){ col.size = 'col-'+(base + (index < remainder ? 1 : 0)); });
 	}
+
+	function fitToGrid(cols){
+		if (!cols.length) return;
+		if (cols.length === 1){
+			cols[0].size = 'col-12';
+			return;
+		}
+
+		var weights = $.map(cols, function(col){ return colWidth(col.size); });
+		var total = weights.reduce(function(sum, width){ return sum + width; }, 0);
+		var remaining = 12;
+		$.each(cols, function(index, col){
+			var columnsLeft = cols.length - index - 1;
+			var width = columnsLeft ? Math.round(weights[index] / total * 12) : remaining;
+			width = Math.max(1, Math.min(remaining - columnsLeft, width));
+			col.size = 'col-'+width;
+			remaining -= width;
+		});
+	}
+
+	function normalizeGrid(){
+		$.each(state, function(zoneIndex, zone){
+			$.each(zone.rows || [], function(rowIndex, row){
+				var total = (row.cols || []).reduce(function(sum, col){ return sum + colWidth(col.size); }, 0);
+				if (total !== 12) fitToGrid(row.cols || []);
+			});
+		});
+	}
+
+	$canvas.on('change', '.lb-zone-inherited', function(){
+		var before = clone(state), zone = state[parseInt($(this).closest('.lb-zone').data('zone-index'), 10)];
+		zone.inherited = this.checked;
+		if (!zone.inherited){
+			$.each(zone.rows || [], function(rowIndex, row){
+				$.each(row.cols || [], function(colIndex, col){
+					$.each(col.widgets || [], function(widgetIndex, widget){
+						widget.id = 0;
+						widget.dirty = true;
+					});
+				});
+			});
+		}
+		commit(before);
+	});
 
 	$canvas.on('click', '.lb-add-row', function(){
 		var before = clone(state);
@@ -422,7 +564,11 @@
 		}
 		else if ($button.hasClass('lb-remove-col')){
 			var colKey = $button.closest('.lb-col').data('key');
-			$.each(lookup.rows, function(key, row){ row.cols = $.grep(row.cols, function(col){ return col._key !== colKey; }); });
+			$.each(lookup.rows, function(key, row){
+				var count = row.cols.length;
+				row.cols = $.grep(row.cols, function(col){ return col._key !== colKey; });
+				if (row.cols.length !== count) fitToGrid(row.cols);
+			});
 		}
 		else {
 			var widgetKey = $button.closest('.lb-widget').data('key');
@@ -477,9 +623,45 @@
 		window.location.href = this.value;
 	});
 
+	$('.layout-builder-tabs [data-builder-tab]').on('click', function(){
+		var tab = $(this).data('builder-tab');
+		$('.layout-builder-tabs [data-builder-tab]').removeClass('active');
+		$(this).addClass('active');
+		$('[data-builder-panel]').prop('hidden', true).filter('[data-builder-panel="'+tab+'"]').prop('hidden', false);
+	});
+
+	function saveOutlineForm($button, url, $form, $message){
+		var $status = $($message), values = $form.serializeArray();
+		values.push({name: 'outline_id', value: data.outlineId});
+		$button.addClass('loading').prop('disabled', true);
+		$status.removeClass('success error').text('');
+		$.post(url, $.param(values)).done(function(response){
+			if (typeof response === 'string'){
+				try { response = JSON.parse(response); } catch (error){ response = null; }
+			}
+			if (!response || !response.ok){
+				$status.addClass('error').text('<?php echo $this->lang('Unable to save changes') ?>');
+				return;
+			}
+			$status.addClass('success').text(response.message || '<?php echo $this->lang('Changes saved') ?>');
+			if (response.reload) window.setTimeout(function(){ window.location.href = response.reload; }, 450);
+		}).fail(function(xhr){
+			var response = xhr.responseJSON || {};
+			$status.addClass('error').text(response.error || '<?php echo $this->lang('Unable to save changes') ?>');
+		}).always(function(){ $button.removeClass('loading').prop('disabled', false); });
+	}
+
+	$('#layout-builder-assignments-save').on('click', function(){
+		saveOutlineForm($(this), data.urls.assignmentsSave, $('#layout-builder-assignments'), '#layout-builder-assignments-status');
+	});
+	$('#layout-builder-options-save').on('click', function(){
+		saveOutlineForm($(this), data.urls.optionsSave, $('#layout-builder-options'), '#layout-builder-options-status');
+	});
+
 	window.addEventListener('beforeunload', function(event){
 		if (serialize(state) !== savedState){ event.preventDefault(); event.returnValue = ''; }
 	});
 
+	normalizeGrid();
 	render();
 })(jQuery);

@@ -45,6 +45,30 @@ class Admin_Ajax_Checker extends Module_Checker
 		}
 	}
 
+	public function assignments_save()
+	{
+		if (!$this->user->admin) return;
+		$outline_id = (int)post('outline_id');
+		if ($outline_id > 0 && $this->module('outlines')->model2('outline')->get_outline_by_id($outline_id))
+		{
+			return [$outline_id, array_map('intval', (array)post('pages')), array_map('strval', (array)post('routes'))];
+		}
+	}
+
+	public function options_save()
+	{
+		if (!$this->user->admin) return;
+		$outline_id = (int)post('outline_id');
+		$title = trim((string)post('title'));
+		$name = url_title(trim((string)post('name')) ?: $title);
+		$theme = trim((string)post('theme'));
+		$model = $this->module('outlines')->model2('outline');
+		if ($outline_id > 0 && $title !== '' && $name !== '' && $model->get_outline_by_id($outline_id) && isset($model->get_themes()[$theme]) && !$model->name_exists($name, $outline_id))
+		{
+			return [$outline_id, $name, $title, $theme, (bool)post('base'), (bool)post('breadcrumb'), (bool)post('enabled')];
+		}
+	}
+
 	public function zone_fork()
 	{
 		return $this->_check_disposition('disposition_id', 'url');

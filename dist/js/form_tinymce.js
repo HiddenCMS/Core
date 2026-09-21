@@ -1,5 +1,11 @@
 window.HiddenCMS = window.HiddenCMS || {};
 
+window.HiddenCMS.tinyMceBaseUrl = function(){
+	var base = window.location.pathname.replace(/\/admin(?:\/.*)?$/, '');
+	base = base.replace(/\/[a-z]{2}(?:-[A-Z]{2})?$/, '');
+	return base+'/dist/js/tinymce';
+};
+
 window.HiddenCMS.initTinyMce = function(context){
 	var $context = $(context);
 	var $editors = $context.is('textarea.wysiwyg') ? $context : $context.find('textarea.wysiwyg');
@@ -21,6 +27,7 @@ window.HiddenCMS.initTinyMce = function(context){
 
 		tinymce.init({
 			target: this,
+			base_url: window.HiddenCMS.tinyMceBaseUrl(),
 			license_key: 'gpl',
 			branding: false,
 			promotion: false,
@@ -83,6 +90,8 @@ window.HiddenCMS.initTinyMce = function(context){
 	});
 };
 
-form.find('textarea.wysiwyg', function(){
-	window.HiddenCMS.initTinyMce(this);
-});
+if (typeof form !== 'undefined' && form && typeof form.find === 'function'){
+	form.find('textarea.wysiwyg', function(){
+		window.HiddenCMS.initTinyMce(this);
+	});
+}

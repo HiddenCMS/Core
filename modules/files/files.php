@@ -65,7 +65,7 @@ class Files extends Module
 		$selected = $path !== '';
 
 		return '<link rel="stylesheet" href="'.css('file_picker.css').'" />'
-			.'<script type="text/javascript" src="'.js('file_picker.js').'"></script>'
+			.'<script type="text/javascript" src="'.js('file_picker.js').'" defer></script>'
 			.'<div class="field files-picker-field" data-file-picker data-picker-mode="directory" data-accept="'.utf8_htmlentities($accept).'">'
 			.'<label>'.$this->lang($label).'</label>'
 			.'<input type="hidden" name="'.utf8_htmlentities($name).'" value="'.utf8_htmlentities($path).'" />'

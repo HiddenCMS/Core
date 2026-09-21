@@ -274,6 +274,7 @@ class Outline extends Model2
 	{
 		$name = $name ?: url_title($title);
 		$theme = $theme ?: $this->config->default_theme;
+		$current = $this->get_outline_by_id($outline_id);
 
 		$updated = $this->db	->where('outline_id', $outline_id)
 								->update('outlines', [
@@ -290,7 +291,10 @@ class Outline extends Model2
 			return FALSE;
 		}
 
-		$this->create_dispositions($outline_id, $theme);
+		if (!$current || $current['theme'] !== $theme)
+		{
+			$this->create_dispositions($outline_id, $theme);
+		}
 
 		if ($base)
 		{

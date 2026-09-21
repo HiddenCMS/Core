@@ -1021,7 +1021,7 @@ class Form extends Library
 	{
 		$this	->css('file_picker')
 				->js('file_picker')
-				->js('https://cdn.jsdelivr.net/npm/tinymce@6.8.5/tinymce.min.js')
+				->js('tinymce/tinymce.min')
 				->js('form_tinymce');
 
 		return $this->_display_textarea($var, $options, $post, TRUE);

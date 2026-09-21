@@ -58,8 +58,16 @@
 	gap: 8px;
 }
 
-.files-picker-modal > .content{
-	min-height: 480px;
+.files-picker-modal.ui.modal{
+	max-height: calc(100dvh - 32px);
+	overflow: hidden !important;
+}
+
+.files-picker-modal.ui.modal > .content{
+	max-height: calc(100dvh - 180px);
+	overflow-x: hidden;
+	overflow-y: auto !important;
+	overscroll-behavior: contain;
 }
 
 .files-picker-tools{

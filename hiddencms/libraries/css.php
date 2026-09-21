@@ -34,6 +34,12 @@ class Css extends Library
 			$file = $this->_file.'.css';
 			$path = path($file, 'css', $this->__caller);
 			$asset = $this->__caller->__path('assets', 'css/'.$file);
+
+			if (!$asset && check_file('dist/css/'.$file))
+			{
+				$asset = 'dist/css/'.$file;
+			}
+
 			$version = $asset ? (int)filemtime($asset) : 0;
 
 			if ($v = max((int)$this->config->version_css, $version))

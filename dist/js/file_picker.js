@@ -222,6 +222,14 @@
 
 		$search.on('input', render);
 		$confirm.on('click', choose);
+		$modal.on('click', '.close.icon, .cancel', function(){ $modal.modal('hide'); });
+		$modal.on('keydown', '.close.icon', function(event){
+			if (event.key === 'Enter' || event.key === ' '){
+				event.preventDefault();
+				$modal.modal('hide');
+			}
+		});
+		$modal.find('.close.icon').attr({role: 'button', tabindex: '0'});
 		$upload.on('click', function(){ $uploadInput.trigger('click'); });
 		$up.on('click', function(){
 			var parts = currentDir.split('/');

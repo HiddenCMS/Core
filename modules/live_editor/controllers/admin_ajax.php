@@ -26,6 +26,50 @@ class Admin_Ajax extends Controller_Module
 		return implode($this->widget($widget_name)->get_admin($type, $settings));
 	}
 
+	public function assignments_save($outline_id, $pages, $routes)
+	{
+		$model = $this->module('outlines')->model2('outline');
+		$base = $model->get_outline();
+		$selected = array_values(array_unique(array_map('intval', $pages)));
+		$current = [];
+		foreach ($this->db->select('page_id')->from('pages')->where('outline_id', (int)$outline_id)->get(FALSE) as $page)
+		{
+			$current[] = (int)$page['page_id'];
+		}
+
+		$this->db->begin_transaction();
+		try
+		{
+			if ($selected) $this->db->where('page_id', $selected)->update('pages', ['outline_id' => (int)$outline_id]);
+			$removed = array_values(array_diff($current, $selected));
+			if ($removed) $this->db->where('page_id', $removed)->update('pages', ['outline_id' => $base ? (int)$base['outline_id'] : NULL]);
+			$model->set_reserved_routes($outline_id, $routes);
+			$this->db->commit();
+		}
+		catch (\Throwable $error)
+		{
+			$this->db->rollback();
+			throw $error;
+		}
+
+		return $this->json(['ok' => TRUE, 'message' => (string)$this->lang('Assignments saved')]);
+	}
+
+	public function options_save($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled)
+	{
+		$model = $this->module('outlines')->model2('outline');
+		if (!$model->edit_outline($outline_id, $name, $title, $theme, $base, $breadcrumb, $enabled))
+		{
+			throw new \RuntimeException((string)$this->lang('Unable to save the outline'));
+		}
+
+		return $this->json([
+			'ok' => TRUE,
+			'message' => (string)$this->lang('Outline options saved'),
+			'reload' => url('admin/live-editor?outline_id='.(int)$outline_id)
+		]);
+	}
+
 	public function zone_fork($disposition_id, $disposition, $url, $theme, $page, $zone)
 	{
 		$url = ltrim(preg_replace('_^'.$this->url().'_', '', $url), '/');
