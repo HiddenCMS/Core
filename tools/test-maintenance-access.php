@@ -26,4 +26,8 @@ $assert(Url::maintenance_access_allowed(FALSE, ['members', 'club'], ['club']), '
 $assert(!Url::maintenance_access_allowed(FALSE, ['members'], ['partners']), 'Unlisted groups remain blocked by maintenance');
 $assert(!Url::maintenance_access_allowed(FALSE, ['members'], ''), 'An empty setting grants no additional access');
 
+$theme = file_get_contents(dirname(__DIR__).'/hiddencms/views/theme/main.tpl.php');
+$assert(strpos($theme, '$this->url->maintenance_bypass') !== FALSE, 'Maintenance bypass accounts receive the warning banner');
+$assert((bool)preg_match('/if \(\$this->user->admin\).*Open the website/s', $theme), 'Only administrators receive the site-opening action');
+
 echo $checks." checks passed.\n";

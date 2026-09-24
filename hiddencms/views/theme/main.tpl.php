@@ -19,12 +19,14 @@
 <title><?php echo $title ?></title>
 </head>
 <body>
-<?php if ($this->config->maintenance && !$this->url->admin && isset($this->user) && $this->user->admin && $this->output->module()->name != 'live_editor'): ?>
+<?php if ($this->config->maintenance && !$this->url->admin && $this->url->maintenance_bypass && $this->output->module()->name != 'live_editor'): ?>
 	<div class="bg-danger py-2">
 		<div class="container">
 			<div class="row align-items-center">
-				<div class="col-6 text-white"><?php echo icon('fas fa-power-off').' '.$this->lang('The website is down for maintenance') ?></div>
+				<div class="<?php echo $this->user->admin ? 'col-6' : 'col-12' ?> text-white"><?php echo icon('fas fa-power-off').' '.$this->lang('The website is down for maintenance') ?></div>
+				<?php if ($this->user->admin): ?>
 				<div class="col-6 text-right"><a href="<?php echo url('admin/settings/maintenance') ?>" class="btn btn-outline-light"><?php echo $this->lang('Open the website') ?></a></div>
+				<?php endif ?>
 			</div>
 		</div>
 	</div>
