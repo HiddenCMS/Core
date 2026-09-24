@@ -14,19 +14,26 @@ class Admin extends Controller_Module
 	{
 		if (!$this->user->admin)
 		{
-			foreach ($this->model2('addon')->get('module') as $module)
-			{
-				if ($module->info()->name !== 'admin' && $module->is_enabled() && $module->is_authorized())
-				{
-					return redirect('admin/'.$module->info()->name);
-				}
-			}
+			if ($destination = $this->delegated_destination()) return redirect($destination);
 
 			return $this->error->unauthorized();
 		}
 
 		$this->title($this->lang('Dashboard'))->css('dashboard');
 		return $this->view('dashboard', ['dashboard' => $this->model('dashboard')->data()]);
+	}
+
+	protected function delegated_destination()
+	{
+		foreach (HB()->model2('addon')->get('module') as $module)
+		{
+			if ($module->info()->name !== 'admin' && $module->is_enabled() && $module->is_authorized())
+			{
+				return 'admin/'.$module->info()->name;
+			}
+		}
+
+		return NULL;
 	}
 
 	public function help($module_name, $method)

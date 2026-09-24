@@ -40,6 +40,8 @@ try
 	{
 		$db->execute_checked('CREATE TABLE '.$quote($temporary).'.'.$quote($table).' LIKE '.$quote($original).'.'.$quote($table));
 	}
+	$db->execute_checked('INSERT INTO '.$quote($temporary).'.`addon_type` SELECT * FROM '.$quote($original).'.`addon_type`');
+	$db->execute_checked('INSERT INTO '.$quote($temporary).'.`addon` SELECT * FROM '.$quote($original).'.`addon`');
 
 	$db->execute_script('USE '.$quote($temporary));
 	$statements = new ReflectionProperty($db->driver(), 'stmt');
@@ -105,6 +107,9 @@ try
 	try
 	{
 		$assert(HB()->module('statistics')->is_authorized(), 'Statistics module accepts a delegated viewer');
+		$destination = new ReflectionMethod(HB()->module('admin')->controller('admin'), 'delegated_destination');
+		$destination->setAccessible(TRUE);
+		$assert(strpos((string)$destination->invoke(HB()->module('admin')->controller('admin')), 'admin/') === 0, 'Delegated dashboard resolves an authorized module through the core addon model');
 
 		$group_id = $db->insert('groups', [
 			'name'   => 'editors',
