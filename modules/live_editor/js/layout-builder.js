@@ -22,6 +22,20 @@
 		});
 	}
 
+	function settingsFromForm(serialized){
+		var settings = {};
+		new URLSearchParams(serialized || '').forEach(function(value, name){
+			var match = name.match(/^settings\[([^\]]+)\](\[\])?$/);
+			if (!match) return;
+			if (match[2]){
+				if (!Array.isArray(settings[match[1]])) settings[match[1]] = [];
+				settings[match[1]].push(value);
+			}
+			else settings[match[1]] = value;
+		});
+		return settings;
+	}
+
 	function escapeHtml(value){
 		return $('<div>').text(value == null ? '' : String(value)).html();
 	}
@@ -384,6 +398,7 @@
 			model.type = $modal.find('#live-editor-settings-type').val() || 'index';
 			model.title = $modal.find('#live-editor-settings-title').val();
 			model.settings_form = $modal.find('#live-editor-settings :input').serialize();
+			model.settings = settingsFromForm(model.settings_form);
 			model.dirty = true;
 			if (!existing) lookup.cols[colKey].widgets.push(model);
 			commit(before);

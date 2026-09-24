@@ -212,7 +212,7 @@ class Live_Editor extends Model
 		$settings = [];
 		if (array_key_exists('settings_form', $widget_data) && is_string($widget_data['settings_form']))
 		{
-			parse_str($widget_data['settings_form'], $settings);
+			$settings = self::parse_widget_settings_form($widget_data['settings_form']);
 		}
 		else if (!empty($widget_data['settings']) && is_array($widget_data['settings']))
 		{
@@ -225,6 +225,13 @@ class Live_Editor extends Model
 			'type'     => $type,
 			'settings' => $this->widget($name)->get_settings($type, $settings)
 		];
+	}
+
+	public static function parse_widget_settings_form($settings_form)
+	{
+		parse_str((string)$settings_form, $settings);
+
+		return isset($settings['settings']) && is_array($settings['settings']) ? $settings['settings'] : $settings;
 	}
 
 	private function collect_widget_ids($disposition, array &$ids)

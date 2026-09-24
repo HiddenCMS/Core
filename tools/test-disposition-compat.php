@@ -11,3 +11,7 @@ foreach ([$legacy, $wrapped] as $value) {
 }
 if ($codec->encode($codec->decode('{"zone_classes":"no-padding","rows":[]}')) !== '[]') throw new RuntimeException('Empty layout failed');
 echo "PASS Empty layout preserved\n";
+
+$settings = HB()->module('live_editor')->model()->parse_widget_settings_form('settings%5Bslider_id%5D=2&settings%5Bfull_width%5D=0&settings%5Bfull_width%5D=1');
+if ($settings !== ['slider_id' => '2', 'full_width' => '1']) throw new RuntimeException('Widget settings form parsing failed');
+echo "PASS Widget settings form envelope removed\n";
