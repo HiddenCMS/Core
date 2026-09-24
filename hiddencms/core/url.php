@@ -104,7 +104,7 @@ class Url extends Core
 			}
 			else if ($this->config->maintenance)
 			{
-				$user_groups = $this->user->id ? $this->groups($this->user->id) : [];
+				$user_groups = $this->user->id ? (array)$this->groups($this->user->id) : [];
 
 				$this->_const['maintenance_bypass'] = self::maintenance_access_allowed(
 					(bool)$this->user->admin,
@@ -357,8 +357,11 @@ class Url extends Core
 		return ($this->https ? 'https' : 'http').'://'.$this->host;
 	}
 
-	public static function maintenance_access_allowed($admin, array $user_groups, $allowed_groups)
+	public static function maintenance_access_allowed($admin, $user_groups, $allowed_groups)
 	{
+		$user_groups = array_values(array_filter((array)$user_groups, function($group_id){
+			return is_string($group_id) && $group_id !== '';
+		}));
 		$allowed_groups = array_values(array_filter((array)$allowed_groups, function($group_id){
 			return is_string($group_id) && $group_id !== '';
 		}));
