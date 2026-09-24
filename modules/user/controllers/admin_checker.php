@@ -12,7 +12,11 @@ class Admin_Checker extends Module_Checker
 {
 	public function create()
 	{
-		$this->error_if(!$this->user->admin);
+		if (!$this->is_authorized('create_users'))
+		{
+			$this->error->unauthorized();
+		}
+
 		return [];
 	}
 
@@ -54,8 +58,23 @@ class Admin_Checker extends Module_Checker
 		];
 	}
 
+	public function _groups_add()
+	{
+		if (!$this->is_authorized('manage_groups'))
+		{
+			$this->error->unauthorized();
+		}
+
+		return [];
+	}
+
 	public function _groups_edit()
 	{
+		if (!$this->is_authorized('manage_groups'))
+		{
+			$this->error->unauthorized();
+		}
+
 		if ($group = $this->groups->check_group(func_get_args()))
 		{
 			return [
@@ -72,6 +91,11 @@ class Admin_Checker extends Module_Checker
 
 	public function _groups_delete()
 	{
+		if (!$this->is_authorized('manage_groups'))
+		{
+			$this->error->unauthorized();
+		}
+
 		$this->ajax();
 
 		if ($group = $this->groups->check_group(func_get_args()))
@@ -85,11 +109,21 @@ class Admin_Checker extends Module_Checker
 
 	public function _sessions($page = '')
 	{
+		if (!$this->is_authorized('manage_sessions'))
+		{
+			$this->error->unauthorized();
+		}
+
 		return [HB()->collection('session')->order_by('_.last_activity DESC')->paginate($page)];
 	}
 
 	public function _sessions_delete($session_id)
 	{
+		if (!$this->is_authorized('manage_sessions'))
+		{
+			$this->error->unauthorized();
+		}
+
 		$this->ajax();
 
 		if (!$this->db->from('session')->where('id', $session_id)->empty())

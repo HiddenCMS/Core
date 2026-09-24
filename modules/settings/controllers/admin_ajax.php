@@ -12,7 +12,7 @@ class Admin_Ajax extends Controller_Module
 {
 	public function core_update()
 	{
-		$status = $this->core_updater->status();
+		$status = $this->core_updater->status_snapshot();
 		$latest = !empty($status['core']['latest']) ? $status['core']['latest'] : '';
 
 		return $this->modal($this->lang('Update HiddenCMS'), 'fas fa-cloud-download-alt')
@@ -37,7 +37,7 @@ class Admin_Ajax extends Controller_Module
 	public function addon_update($vendor, $name)
 	{
 		$package = strtolower($vendor.'/'.$name);
-		$status = $this->core_updater->status();
+		$status = $this->core_updater->status_snapshot();
 		$update = isset($status['addons'][$package]) ? $status['addons'][$package] : NULL;
 
 		if (!$update)

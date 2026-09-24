@@ -27,4 +27,6 @@ return [
     '0e6e74f1' => 'Customizing the maintenance page',
     '3ec1592d' => 'Website status',
     'b3a88e55' => 'Planned opening',
+	'ab03498a' => 'Not checked',
+	'8bd61243' => 'No update check has been run yet. Use Search or configure the scheduled task.',
 ];

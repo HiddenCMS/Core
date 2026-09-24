@@ -12,58 +12,74 @@ class Update extends \HB\HiddenCMS\Actions\Update
 
 	protected function check($user)
 	{
-		return !$user->deleted;
+		return !$user->deleted &&
+			($this->access('user', 'edit_users') || $this->access('user', 'assign_user_groups')) &&
+			($this->user->admin || !$user->admin);
 	}
 
 	protected function action($user)
 	{
-		$form_groups = $this
-			->form()
-			->add_rules([
-				'groups' => [
-					'type'   => 'checkbox',
-					'values' => array_filter($this->groups(), function($group){
-						return !$group['auto'] || $group['auto'] == 'HiddenCMS' || $group['users'] !== NULL;
-					}),
-					'rules'  => 'required'
-				]
-			])
-			->save();
+		$can_edit          = $this->access('user', 'edit_users');
+		$can_assign_groups = $this->access('user', 'assign_user_groups');
+		$available_groups  = [];
+		$form_groups       = NULL;
 
-		if ($form_groups->is_valid($post))
+		if ($can_assign_groups)
 		{
-			$this->db	->where('user_id', $user->id)
-						->delete('users_groups');
-
-			$this->db	->where('id', $user->id)
-						->update('user', [
-							'admin' => FALSE
-						]);
-
-			if (in_array('admins', $post['groups']))
-			{
-				$this->db	->where('id', $user->id)
-							->update('user', [
-								'admin' => TRUE
-							]);
-			}
-
-			foreach ($post['groups'] as $group_id)
-			{
-				if ($this->groups()[$group_id]['auto'])
+			$available_groups = array_filter($this->groups(), function($group, $group_id){
+				if (!$this->user->admin && (
+					$group_id == 'admins' ||
+					$this->access('user', 'create_users', 0, $group_id) ||
+					$this->access('user', 'manage_groups', 0, $group_id)
+				))
 				{
-					continue;
+					return FALSE;
 				}
 
-				$this->db->insert('users_groups', [
-					'user_id'  => $user->id,
-					'group_id' => $group_id
-				]);
+				return !$group['auto'] || $group['auto'] == 'HiddenCMS' || $group['users'] !== NULL;
+			}, ARRAY_FILTER_USE_BOTH);
+
+			$form_groups = $this
+				->form()
+				->add_rules([
+					'groups' => [
+						'type'   => 'checkbox',
+						'values' => $available_groups,
+						'rules'  => 'required'
+					]
+				])
+				->save();
+
+			if ($form_groups->is_valid($post))
+			{
+				$this->db	->where('user_id', $user->id)
+							->delete('users_groups');
+
+				if ($this->user->admin)
+				{
+					$this->db	->where('id', $user->id)
+								->update('user', [
+									'admin' => in_array('admins', $post['groups'])
+								]);
+				}
+
+				foreach ($post['groups'] as $group_id)
+				{
+					if (!isset($available_groups[$group_id]) || $available_groups[$group_id]['auto'])
+					{
+						continue;
+					}
+
+					$this->db->insert('users_groups', [
+						'user_id'  => $user->id,
+						'group_id' => $group_id
+					]);
+				}
+
+				notify((string)$this->lang('Member groups updated'));
+
+				redirect_back('admin/user');
 			}
-
-			notify((string)$this->lang('Member groups updated'));
-
-			redirect_back('admin/user');
 		}
 
 		$this->module()	->title($this->lang('Member edit'))
@@ -73,10 +89,13 @@ class Update extends \HB\HiddenCMS\Actions\Update
 						->js('groups')
 						->js('admin/user_editor');
 
-		$account = $this->row()
-					->append(
+		$account = $this->row();
+
+		if ($can_edit)
+		{
+			$account->append(
 						$this	->col()
-								->size('col-12 col-lg-7')
+								->size($can_assign_groups ? 'col-12 col-lg-7' : 'col-12')
 								->append(
 									$this	->form2('username email new_password', $user)
 											->success(function($user){
@@ -93,19 +112,25 @@ class Update extends \HB\HiddenCMS\Actions\Update
 											->panel()
 											->title('Member')
 								)
-					)
-					->append(
+					);
+		}
+
+		if ($can_assign_groups)
+		{
+			$account->append(
 						$this	->col()
-								->size('col-12 col-lg-5')
+								->size($can_edit ? 'col-12 col-lg-5' : 'col-12')
 								->append(
 									$this	->panel()
 											->heading($this->lang('Groups'), 'fas fa-users')
 											->body($this->view('admin/groups', [
 												'user_id' => $user->id,
-												'form_id' => $form_groups->token()
+												'form_id' => $form_groups->token(),
+												'groups'  => $available_groups
 											]))
 								)
 					);
+		}
 
 		$images = $this->row()
 					->append(
@@ -126,16 +151,22 @@ class Update extends \HB\HiddenCMS\Actions\Update
 					);
 
 		$tabs = [
-			'account' => ['title' => 'Compte', 'icon' => 'fas fa-user', 'content' => $account],
-			'profile' => ['title' => 'Profil', 'icon' => 'fas fa-pencil-alt', 'content' => $this->form2('profile', $user->profile())->panel()->title('Profile', 'fas fa-pencil-alt')],
-			'links' => ['title' => (string)$this->lang('Links'), 'icon' => 'fas fa-globe', 'content' => $this->form2('profile_socials', $user->profile())->panel()->title('Links', 'fas fa-globe')],
-			'images' => ['title' => 'Images', 'icon' => 'far fa-image', 'content' => $images]
+			'account' => ['title' => 'Compte', 'icon' => 'fas fa-user', 'content' => $account]
 		];
-		if ($custom = $this->module('user')->model('fields')->profile_panel($user))
+
+		if ($can_edit)
 		{
-			$tabs['custom'] = ['title' => (string)$this->lang('Custom fields'), 'icon' => 'fas fa-list', 'content' => $custom];
+			$tabs['profile'] = ['title' => 'Profil', 'icon' => 'fas fa-pencil-alt', 'content' => $this->form2('profile', $user->profile())->panel()->title('Profile', 'fas fa-pencil-alt')];
+			$tabs['links'] = ['title' => (string)$this->lang('Links'), 'icon' => 'fas fa-globe', 'content' => $this->form2('profile_socials', $user->profile())->panel()->title('Links', 'fas fa-globe')];
+			$tabs['images'] = ['title' => 'Images', 'icon' => 'far fa-image', 'content' => $images];
+
+			if ($custom = $this->module('user')->model('fields')->profile_panel($user))
+			{
+				$tabs['custom'] = ['title' => (string)$this->lang('Custom fields'), 'icon' => 'fas fa-list', 'content' => $custom];
+			}
+
+			$tabs['sessions'] = ['title' => 'Sessions', 'icon' => 'fas fa-desktop', 'content' => $this->table2('session', $user->sessions(), (string)$this->lang('No active sessions'))->panel()->title('Active sessions', 'fas fa-globe')];
 		}
-		$tabs['sessions'] = ['title' => 'Sessions', 'icon' => 'fas fa-desktop', 'content' => $this->table2('session', $user->sessions(), (string)$this->lang('No active sessions'))->panel()->title('Active sessions', 'fas fa-globe')];
 
 		return $this->view('admin/user_editor', ['tabs' => $tabs]);
 	}

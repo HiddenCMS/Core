@@ -15,12 +15,14 @@ class Admin extends Controller_Module
 		$this	->title('Members / Groups')
 				->icon('fas fa-users');
 
+		$can_manage_groups = $this->is_authorized('manage_groups');
+
 		$table_groups = $this
 			->table()
 			->add_columns([
 				[
-					'content' => function($data){
-						return $data['auto'] != 'HiddenCMS' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
+					'content' => function($data) use ($can_manage_groups){
+						return $can_manage_groups && $data['auto'] != 'HiddenCMS' ? $this->button_sort($data['data_id'], 'admin/ajax/user/groups/sort') : NULL;
 					},
 					'size'    => TRUE
 				],
@@ -39,14 +41,14 @@ class Admin extends Controller_Module
 					'size'    => TRUE
 				],
 				[
-					'content' => function($data){
-							return $this->button_update('admin/user/groups/edit/'.$data['url']);
+					'content' => function($data) use ($can_manage_groups){
+							return $can_manage_groups ? $this->button_update('admin/user/groups/edit/'.$data['url']) : NULL;
 					},
 					'size'    => TRUE
 				],
 				[
-					'content' => function($data){
-						if (!$data['auto'])
+					'content' => function($data) use ($can_manage_groups){
+						if ($can_manage_groups && !$data['auto'])
 						{
 							return $this->button_delete('admin/user/groups/delete/'.$data['url']);
 						}
@@ -58,14 +60,16 @@ class Admin extends Controller_Module
 			->pagination(FALSE)
 			->save();
 
+		$groups_column = $can_manage_groups ? $this->col(
+			$this	->panel()
+					->heading($this->lang('Groups'), 'fas fa-users')
+					->body($table_groups->display())
+					->footer($this->button_create('admin/user/groups/add', $this->lang('Add a group')))
+					->size('col-12 col-lg-3')
+		) : NULL;
+
 		return $this->row(
-			$this->col(
-				$this	->panel()
-						->heading($this->lang('Groups'), 'fas fa-users')
-						->body($table_groups->display())
-						->footer($this->button_create('admin/user/groups/add', $this->lang('Add a group')))
-						->size('col-12 col-lg-3')
-			),
+			$groups_column,
 			$this->col(
 				$this	->table2($members, (string)$this->lang('No members'))
 						->col($this	->table_col()
@@ -96,9 +100,9 @@ class Admin extends Controller_Module
 						->counter('COUNT(*)', '%s membre|%s membres')
 						->panel()
 						->title('Members', 'fas fa-users')
-						->footer_if($this->user->admin, $this->button_create('admin/user/create', (string)$this->lang('Create a user')))
+						->footer_if($this->is_authorized('create_users'), $this->button_create('admin/user/create', (string)$this->lang('Create a user')))
 						->footer_if($this->user->admin, $this->button()->title((string)$this->lang('Fields and sign-in'))->icon('fas fa-sliders-h')->color('secondary')->url('admin/user/fields'))
-						->size('col-12 col-lg-9')
+						->size($can_manage_groups ? 'col-12 col-lg-9' : 'col-12')
 			)
 		);
 	}
@@ -116,7 +120,7 @@ class Admin extends Controller_Module
 				}
 				catch (\InvalidArgumentException $e) { $form->error($e->getMessage()); return; }
 				notify((string)$this->lang('User created'));
-				redirect('admin/user/user/update/'.$user->url());
+				redirect($this->is_authorized('edit_users') || $this->is_authorized('assign_user_groups') ? 'admin/user/user/update/'.$user->url() : 'admin/user');
 			})
 			->submit((string)$this->lang('Create'))->back('admin/user')->panel()->title((string)$this->lang('New user'), 'fas fa-user-plus');
 	}

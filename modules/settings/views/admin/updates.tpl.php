@@ -1,6 +1,7 @@
 <?php
 $core = $status['core'];
 $available = !empty($core['available']);
+$checked = !empty($status['checked_at']);
 $escape = function($value){
 	return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 };
@@ -11,8 +12,8 @@ $escape = function($value){
 	<div>
 		<span class="updates-eyebrow"><?php echo $this->lang('Installed version') ?></span>
 		<strong class="updates-version"><?php echo $escape($core['current']) ?></strong>
-		<span class="ui tiny label <?php echo $available ? 'updates-label-warning' : 'updates-label-success' ?>">
-			<?php echo $available ? $this->lang('Update available') : $this->lang('Up to date') ?>
+		<span class="ui tiny label <?php echo !$checked || $available ? 'updates-label-warning' : 'updates-label-success' ?>">
+			<?php echo !$checked ? $this->lang('Not checked') : ($available ? $this->lang('Update available') : $this->lang('Up to date')) ?>
 		</span>
 	</div>
 	<div class="updates-overview-actions">
@@ -22,6 +23,10 @@ $escape = function($value){
 		<?php endif ?>
 	</div>
 </div>
+
+<?php if (!$checked): ?>
+	<div class="ui info message"><?php echo icon('fas fa-info-circle').' '.$this->lang('No update check has been run yet. Use Search or configure the scheduled task.') ?></div>
+<?php endif ?>
 
 <?php if (!empty($core['error'])): ?>
 	<div class="ui warning message"><?php echo icon('fas fa-exclamation-triangle') ?> <?php echo $escape($core['error']) ?></div>

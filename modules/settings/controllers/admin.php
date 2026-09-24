@@ -679,7 +679,7 @@ class Admin extends Controller_Module
 				->css('admin/updates');
 
 		$refresh = (bool)$this->input->get->get('refresh');
-		$status = $this->core_updater->status($refresh);
+		$status = $refresh ? $this->core_updater->status(TRUE) : $this->core_updater->status_snapshot();
 
 		$this->add_action($this->button((string)$this->lang('Search'), 'fas fa-sync', 'primary', 'admin/settings/updates?refresh=1'));
 

@@ -82,4 +82,6 @@ return [
     '406e9ad8' => 'Confirmer',
     'd2c0aec0' => 'Fermer',
     'a2279060' => 'Le statut du site n\'a pas pu être modifié.',
+	'ab03498a' => 'Non vérifié',
+	'8bd61243' => 'Aucune vérification des mises à jour n’a encore été exécutée. Utilisez Rechercher ou configurez la tâche planifiée.',
 ];

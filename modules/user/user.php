@@ -10,6 +10,55 @@ use HB\HiddenCMS\Addons\Module;
 
 class User extends Module
 {
+	public function permissions()
+	{
+		return [
+			'default' => [
+				'access' => [[
+					'title'  => $this->lang('Users'),
+					'icon'   => 'fas fa-users',
+					'access' => [
+						'view_users' => [
+							'title' => $this->lang('View users'),
+							'icon'  => 'far fa-eye',
+							'admin' => TRUE
+						],
+						'create_users' => [
+							'title' => $this->lang('Create users'),
+							'icon'  => 'fas fa-user-plus',
+							'admin' => TRUE
+						],
+						'edit_users' => [
+							'title' => $this->lang('Edit users'),
+							'icon'  => 'fas fa-user-edit',
+							'admin' => TRUE
+						],
+						'delete_users' => [
+							'title' => $this->lang('Delete users'),
+							'icon'  => 'fas fa-user-times',
+							'admin' => TRUE
+						],
+						'assign_user_groups' => [
+							'title' => $this->lang('Assign user groups'),
+							'icon'  => 'fas fa-user-tag',
+							'admin' => TRUE
+						],
+						'manage_groups' => [
+							'title' => $this->lang('Manage groups'),
+							'icon'  => 'fas fa-users-cog',
+							'admin' => TRUE
+						],
+						'manage_sessions' => [
+							'title' => $this->lang('Manage sessions'),
+							'icon'  => 'fas fa-desktop',
+							'admin' => TRUE
+						]
+					]
+				]]
+			]
+		];
+	}
+
 	protected function __info()
 	{
 		return [

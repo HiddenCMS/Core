@@ -52,18 +52,8 @@ class Core_Updater extends Library
 			}
 		}
 
-		$status = [
-			'checked_at' => date('c'),
-			'core' => [
-				'current'   => HIDDENCMS_VERSION,
-				'latest'    => NULL,
-				'available' => FALSE,
-				'release'   => NULL,
-				'error'     => NULL
-			],
-			'addons' => [],
-			'compatibility' => []
-		];
+		$status = $this->empty_status();
+		$status['checked_at'] = date('c');
 
 		try
 		{
@@ -98,6 +88,27 @@ class Core_Updater extends Library
 		$this->write_json($cache, $status);
 
 		return $status;
+	}
+
+	public function status_snapshot()
+	{
+		return $this->cached_status() ?: $this->empty_status();
+	}
+
+	protected function empty_status()
+	{
+		return [
+			'checked_at' => NULL,
+			'core' => [
+				'current'   => HIDDENCMS_VERSION,
+				'latest'    => NULL,
+				'available' => FALSE,
+				'release'   => NULL,
+				'error'     => NULL
+			],
+			'addons' => [],
+			'compatibility' => []
+		];
 	}
 
 	public function clear_status_cache()

@@ -109,13 +109,13 @@ class Admin extends Theme
 			[
 				'title'  => (string)$this->lang('Members / Groups'),
 				'icon'   => 'fas fa-users',
-				'access' => $this->user->admin,
+				'access' => $this->user->admin || $this->module('user')->is_authorized(),
 				'url'    => 'admin/user'
 			],
 			[
 				'title'  => 'Sessions',
 				'icon'   => 'fas fa-globe',
-				'access' => $this->user->admin,
+				'access' => $this->user->admin || $this->access('user', 'manage_sessions'),
 				'url'    => 'admin/user/sessions'
 			]
 		]));
@@ -126,7 +126,7 @@ class Admin extends Theme
 		{
 			try
 			{
-				$updates_status = $this->core_updater->status();
+				$updates_status = $this->core_updater->cached_status();
 				$updates_count = (!empty($updates_status['core']['available']) ? 1 : 0) + count(isset($updates_status['addons']) && is_array($updates_status['addons']) ? $updates_status['addons'] : []);
 			}
 			catch (\Throwable $e)

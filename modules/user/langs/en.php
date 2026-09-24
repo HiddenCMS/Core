@@ -79,4 +79,11 @@ return [
     '45801d05' => 'New password',
     'c733de56' => 'Active sessions',
     '83dfdfa4' => 'Contact',
+	'c389be3e' => 'View users',
+	'c229b964' => 'Create users',
+	'98186c50' => 'Edit users',
+	'9085fb65' => 'Delete users',
+	'26a4d2c0' => 'Assign user groups',
+	'54bea6bd' => 'Manage groups',
+	'84841e16' => 'Manage sessions',
 ];

@@ -36,6 +36,56 @@ try
 
 		echo PHP_EOL;
 	}
+	else if ($command === 'updates-check')
+	{
+		$directory = HIDDENCMS_CMS.'/cache/updates';
+		if (!is_dir($directory) && !mkdir($directory, 0775, TRUE) && !is_dir($directory))
+		{
+			throw new RuntimeException('Could not create the update cache directory.');
+		}
+
+		$lock = fopen($directory.'/check.lock', 'c+');
+		if (!$lock)
+		{
+			throw new RuntimeException('Could not create the update check lock.');
+		}
+
+		if (!flock($lock, LOCK_EX | LOCK_NB))
+		{
+			fclose($lock);
+			echo "An update check is already running.\n";
+			exit(0);
+		}
+
+		try
+		{
+			$status = HB()->core_updater->status(TRUE);
+		}
+		finally
+		{
+			flock($lock, LOCK_UN);
+			fclose($lock);
+		}
+
+		$core_update = !empty($status['core']['available']) ? 'Core '.$status['core']['latest'].' available' : 'Core up to date';
+		$addon_count = count(isset($status['addons']) && is_array($status['addons']) ? $status['addons'] : []);
+		echo $core_update.', '.$addon_count.' addon update(s).'.PHP_EOL;
+
+		$errors = array_filter([
+			isset($status['core']['error']) ? $status['core']['error'] : NULL,
+			isset($status['addons_error']) ? $status['addons_error'] : NULL
+		]);
+
+		foreach ($errors as $error)
+		{
+			fwrite(STDERR, $error.PHP_EOL);
+		}
+
+		if ($errors)
+		{
+			exit(1);
+		}
+	}
 	else if ($command === 'migrate')
 	{
 		$done = HB()->core_updater->migrate();

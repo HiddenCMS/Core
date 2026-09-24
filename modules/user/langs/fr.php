@@ -64,4 +64,11 @@ return [
     'c733de56' => 'Sessions actives',
     '83dfdfa4' => 'Contacter',
     'cf660c68' => 'Membres / Groupes',
+	'c389be3e' => 'Consulter les utilisateurs',
+	'c229b964' => 'Créer des utilisateurs',
+	'98186c50' => 'Modifier les utilisateurs',
+	'9085fb65' => 'Supprimer les utilisateurs',
+	'26a4d2c0' => 'Affecter les groupes des utilisateurs',
+	'54bea6bd' => 'Gérer les groupes',
+	'84841e16' => 'Gérer les sessions',
 ];

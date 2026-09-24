@@ -12,6 +12,11 @@ class Admin_Ajax_Checker extends Module_Checker
 {
 	public function _groups_sort()
 	{
+		if (!$this->is_authorized('manage_groups'))
+		{
+			$this->error->unauthorized();
+		}
+
 		if (($check = post_check('id', 'position')) && ($group = $this->groups->check_group([$check['id']])) && $group['auto'] != 'HiddenCMS')
 		{
 			return $check;

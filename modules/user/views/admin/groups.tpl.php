@@ -1,4 +1,4 @@
-<?php $groups = $this->groups(); if (!empty($groups)): ?>
+<?php $groups = isset($groups) ? $groups : $this->groups(); if (!empty($groups)): ?>
 	<form class="ui form" action="<?php echo url($this->url->request) ?>" method="post">
 		<ul class="groups user-group-list">
 		<?php foreach ($groups as $group_id => $group): ?>
