@@ -119,6 +119,9 @@ class Admin extends Theme
 				'url'    => 'admin/user/sessions'
 			]
 		]));
+		$user_access = $this->user->admin || $this->module('user')->is_authorized();
+		$configuration_access = $this->user->admin || isset($relocated_links['menu']) || isset($relocated_links['outlines']);
+		$statistics_access = $this->user->admin || $this->module('statistics')->is_authorized();
 
 		$updates_count = 0;
 
@@ -141,6 +144,7 @@ class Admin extends Theme
 				[
 					'title' => (string)$this->lang('Dashboard'),
 					'icon'  => 'fas fa-tachometer-alt',
+					'access' => $this->user->admin,
 					'url'   => 'admin'
 				],
 				[
@@ -157,19 +161,19 @@ class Admin extends Theme
 				[
 					'title'  => (string)$this->lang('Users'),
 					'icon'   => 'fas fa-users',
-					'access' => $this->user->admin,
+					'access' => $user_access,
 					'url'    => $user_links ?: NULL
 				],
 				[
 					'title'  => (string)$this->lang('Statistics'),
 					'icon'   => 'far fa-chart-bar',
-					'access' => $this->user->admin,
+					'access' => $statistics_access,
 					'url'    => 'admin/statistics'
 				],
 				[
 					'title'  => (string)$this->lang('Site configuration'),
 					'icon'   => 'fas fa-sliders-h',
-					'access' => $this->user->admin,
+					'access' => $configuration_access,
 					'url'    => $configuration_links ?: NULL
 				],
 				[

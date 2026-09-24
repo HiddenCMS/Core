@@ -12,7 +12,19 @@ class Admin extends Controller_Module
 {
 	public function index()
 	{
-		if (!$this->user->admin) return $this->error->unauthorized();
+		if (!$this->user->admin)
+		{
+			foreach ($this->model2('addon')->get('module') as $module)
+			{
+				if ($module->info()->name !== 'admin' && $module->is_enabled() && $module->is_authorized())
+				{
+					return redirect('admin/'.$module->info()->name);
+				}
+			}
+
+			return $this->error->unauthorized();
+		}
+
 		$this->title($this->lang('Dashboard'))->css('dashboard');
 		return $this->view('dashboard', ['dashboard' => $this->model('dashboard')->data()]);
 	}

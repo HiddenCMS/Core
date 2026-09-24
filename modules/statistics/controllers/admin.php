@@ -12,7 +12,7 @@ class Admin extends Controller_Module
 {
 	public function index()
 	{
-		if (!$this->user->admin) return $this->error->unauthorized();
+		if (!$this->is_authorized('view_statistics')) return $this->error->unauthorized();
 		$model = $this->model('overview');
 		$days = $model->period($_GET['period'] ?? $this->session('statistics', 'overview_period'));
 		$this->session->set('statistics', 'overview_period', $days);

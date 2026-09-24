@@ -12,7 +12,7 @@ class Admin_Ajax_Checker extends Module_Checker
 {
 	public function index()
 	{
-		if (!$this->user->admin) return;
+		if (!$this->is_authorized('view_statistics')) return;
 		if ($check = post_check(['modules', 'start', 'end', 'period'], $this->form()->token('sq6fswkfb81n0lu4cb7eyb3tuixcovla')))
 		{
 			if (!is_string($check['start']) || !is_string($check['end']) || !is_string($check['period']) || !is_array($check['modules'])) return;

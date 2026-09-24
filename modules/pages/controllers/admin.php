@@ -160,15 +160,17 @@ class Admin extends Controller_Module
 	public function _edit($page_id, $name, $published, $outline_id, $parent_id, $title, $subtitle, $content, $tab)
 	{
 		$this->css('pages');
+		$form_title = utf8_html_entity_decode($title, ENT_QUOTES);
+		$form_subtitle = utf8_html_entity_decode($subtitle, ENT_QUOTES);
 
-		$this	->subtitle($title)
+		$this	->subtitle($form_title)
 				->form()
 				->add_rules('pages', [
 					'page_id'        => $page_id,
 					'parent_id'      => $parent_id,
 					'parents'        => $this->model()->get_parent_choices($page_id),
-					'title'          => $title,
-					'subtitle'       => $subtitle,
+					'title'          => $form_title,
+					'subtitle'       => $form_subtitle,
 					'name'           => $name,
 					'published'      => $published,
 					'outline_id'     => $outline_id,

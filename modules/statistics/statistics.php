@@ -10,6 +10,25 @@ use HB\HiddenCMS\Addons\Module;
 
 class Statistics extends Module
 {
+	public function permissions()
+	{
+		return [
+			'default' => [
+				'access' => [[
+					'title'  => $this->lang('Statistics'),
+					'icon'   => 'far fa-chart-bar',
+					'access' => [
+						'view_statistics' => [
+							'title' => $this->lang('View statistics'),
+							'icon'  => 'far fa-eye',
+							'admin' => TRUE
+						]
+					]
+				]]
+			]
+		];
+	}
+
 	protected function __info()
 	{
 		return [

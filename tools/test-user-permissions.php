@@ -22,8 +22,8 @@ $assert    = function($condition, $message) use (&$checks){
 	$checks++;
 	echo 'PASS '.$message.PHP_EOL;
 };
-$grant = function($action, $user_id) use ($db){
-	$access_id = $db->insert('access', ['module' => 'user', 'action' => $action, 'id' => 0]);
+$grant = function($action, $user_id, $module_name = 'user') use ($db){
+	$access_id = $db->insert('access', ['module' => $module_name, 'action' => $action, 'id' => 0]);
 	$db->insert('access_details', [
 		'access_id'  => $access_id,
 		'entity'     => $user_id,
@@ -91,6 +91,12 @@ try
 	$assert(!HB()->access('user', 'manage_groups', 0, NULL, $delegate->id), 'User creation does not implicitly grant group management');
 	$assert(!HB()->access('user', 'delete_users', 0, NULL, $delegate->id), 'User creation does not implicitly grant user deletion');
 
+	$statistics_permissions = HB()->module('statistics')->permissions()['default']['access'][0]['access'];
+	$assert(isset($statistics_permissions['view_statistics']), 'Statistics exposes a delegated viewing permission');
+	$grant('view_statistics', $delegate->id, 'statistics');
+	HB()->access->reload();
+	$assert(HB()->access('statistics', 'view_statistics', 0, NULL, $delegate->id), 'A delegated account can receive statistics access');
+
 	$current_user = HB()->user;
 	$previous_id = $current_user->id;
 	$previous_admin = $current_user->admin;
@@ -98,6 +104,8 @@ try
 
 	try
 	{
+		$assert(HB()->module('statistics')->is_authorized(), 'Statistics module accepts a delegated viewer');
+
 		$group_id = $db->insert('groups', [
 			'name'   => 'editors',
 			'color'  => 'info',

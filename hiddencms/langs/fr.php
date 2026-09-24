@@ -858,6 +858,7 @@ return array (
   '9d9fcb2d' => 'Fort',
   '9db6e342' => 'Aucune galerie publiée pour le moment.',
   '9de7ced0' => 'Diamant',
+  '9df02efb' => 'Voir les statistiques',
   '9dfbdf9f' => 'Êtes-vous sûr.e de vouloir supprimer <b>%s</b> ?',
   '9eb6ffb2' => 'Paramètres généraux sauvegardés avec succès',
   '9eca8f2f' => 'Mes données personnelles',
