@@ -665,6 +665,22 @@ a.badge:focus-visible {
 	min-width: 0;
 }
 
+.module-admin .ui.form > .right.aligned.extra.content {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: .5rem;
+	margin-top: 1rem;
+	padding: 0;
+	border: 0;
+	background: transparent;
+}
+
+.module-admin .ui.form > .right.aligned.extra.content > .button {
+	margin: 0;
+}
+
 .module-admin .ui.form input[type="file"] {
 	max-width: 100%;
 }
