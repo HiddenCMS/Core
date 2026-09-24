@@ -98,6 +98,26 @@ try
 
 	try
 	{
+		$group_id = $db->insert('groups', [
+			'name'   => 'editors',
+			'color'  => 'info',
+			'icon'   => 'fas fa-pen',
+			'hidden' => FALSE,
+			'auto'   => FALSE
+		]);
+		$db->insert('users_groups', [
+			'user_id'  => $delegate->id,
+			'group_id' => $group_id
+		]);
+
+		$maintenance_groups = new ReflectionMethod(HB()->url, 'maintenance_user_groups');
+		$maintenance_groups->setAccessible(TRUE);
+		$resolved_groups = $maintenance_groups->invoke(HB()->url);
+
+		$assert(in_array('members', $resolved_groups, TRUE), 'Maintenance resolves the implicit member group during session initialization');
+		$assert(in_array((string)$group_id, $resolved_groups, TRUE), 'Maintenance resolves persisted custom groups before the group service is loaded');
+		$assert(HB()->url::maintenance_access_allowed(FALSE, $resolved_groups, [(string)$group_id]), 'A persisted custom group grants maintenance access');
+
 		$update = $target->action('update');
 		$check = new ReflectionMethod($update, 'check');
 		$check->setAccessible(TRUE);

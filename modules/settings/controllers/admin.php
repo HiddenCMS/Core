@@ -552,7 +552,7 @@ class Admin extends Controller_Module
 		$maintenance_groups = [];
 		foreach ($this->groups() as $group_id => $group)
 		{
-			if (!in_array($group_id, ['admins', 'visitors'], TRUE))
+			if (!in_array($group_id, ['admins', 'visitors'], TRUE) && strpos((string)$group['auto'], 'module_') !== 0)
 			{
 				$maintenance_groups[$group_id] = $group['title'];
 			}

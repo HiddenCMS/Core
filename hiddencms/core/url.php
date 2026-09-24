@@ -104,7 +104,7 @@ class Url extends Core
 			}
 			else if ($this->config->maintenance)
 			{
-				$user_groups = $this->user->id ? (array)$this->groups($this->user->id) : [];
+				$user_groups = $this->maintenance_user_groups();
 
 				$this->_const['maintenance_bypass'] = self::maintenance_access_allowed(
 					(bool)$this->user->admin,
@@ -367,6 +367,28 @@ class Url extends Core
 		}));
 
 		return (bool)$admin || (bool)array_intersect($allowed_groups, $user_groups);
+	}
+
+	protected function maintenance_user_groups()
+	{
+		if (!$this->user->id)
+		{
+			return [];
+		}
+
+		$groups = [$this->user->admin ? 'admins' : 'members'];
+
+		foreach ($this->db
+			->select('g.group_id', 'g.name', 'g.auto')
+			->from('users_groups ug')
+			->join('groups g', 'g.group_id = ug.group_id', 'INNER')
+			->where('ug.user_id', $this->user->id)
+			->get(FALSE) as $group)
+		{
+			$groups[] = $group['auto'] ? $group['name'] : url_title($group['group_id']);
+		}
+
+		return array_values(array_unique(array_filter($groups)));
 	}
 }
 
