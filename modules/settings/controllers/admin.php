@@ -549,6 +549,17 @@ class Admin extends Controller_Module
 			}
 		}
 
+		$maintenance_groups = [];
+		foreach ($this->groups() as $group_id => $group)
+		{
+			if (!in_array($group_id, ['admins', 'visitors'], TRUE))
+			{
+				$maintenance_groups[$group_id] = $group['title'];
+			}
+		}
+
+		$allowed_groups = array_values(array_filter((array)$this->config->maintenance_allowed_groups));
+
 		$form_maintenance = $this->form()
 			->add_rules([
 				'title' => [
@@ -629,6 +640,14 @@ class Admin extends Controller_Module
 					'value' => $this->config->maintenance_text_color ?: '#fff',
 					'type'  => 'colorpicker',
 					'size'  => 'col-4'
+				],
+				'allowed_groups' => [
+					'label'       => $this->lang('Groups allowed during maintenance'),
+					'description' => $this->lang('Members of these groups can access the website while maintenance mode is enabled. Administrators always retain access.'),
+					'type'        => 'select',
+					'multiple'    => TRUE,
+					'values'      => $maintenance_groups,
+					'checked'     => array_fill_keys($allowed_groups, TRUE)
 				]
 			])
 			->add_submit($this->lang('Save'))
@@ -641,6 +660,8 @@ class Admin extends Controller_Module
 		}
 		else if ($form_maintenance->is_valid($post))
 		{
+			$selected_groups = array_values(array_intersect(array_keys($maintenance_groups), $post['allowed_groups']));
+
 			$this	->config('maintenance_title',               $post['title'])
 					->config('maintenance_content',             $post['content'])
 					->config('maintenance_logo',                $post['logo'], 'int')
@@ -648,7 +669,8 @@ class Admin extends Controller_Module
 					->config('maintenance_background_repeat',   $post['repeat'])
 					->config('maintenance_background_position', trim($post['positionX'].' '.$post['positionY']))
 					->config('maintenance_background_color',    trim($post['background_color']))
-					->config('maintenance_text_color',          trim($post['text_color']));
+					->config('maintenance_text_color',          trim($post['text_color']))
+					->config('maintenance_allowed_groups',      implode('|', $selected_groups), 'list');
 
 			$this->module('tools')->api()->scss('reload', ['./modules/settings/css/sass/maintenance.scss']);
 

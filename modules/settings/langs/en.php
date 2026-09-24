@@ -29,4 +29,6 @@ return [
     'b3a88e55' => 'Planned opening',
 	'ab03498a' => 'Not checked',
 	'8bd61243' => 'No update check has been run yet. Use Search or configure the scheduled task.',
+	'b7091efd' => 'Groups allowed during maintenance',
+	'd2868b5e' => 'Members of these groups can access the website while maintenance mode is enabled. Administrators always retain access.',
 ];

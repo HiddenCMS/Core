@@ -464,6 +464,7 @@ INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
 ('http_authentication_name', '', '', '', 'string'),
 ('humans_txt', '', '', '/* TEAM */\n	HiddenCMS\n	Contact: contact [at] hiddencms.local\n', 'string'),
 ('maintenance', '', '', '0', 'bool'),
+('maintenance_allowed_groups', '', '', '', 'list'),
 ('maintenance_background', '', '', '0', 'int'),
 ('maintenance_background_color', '', '', '', 'string'),
 ('maintenance_background_position', '', '', '', 'string'),

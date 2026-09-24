@@ -357,6 +357,18 @@ class Form extends Library
 		return $this->_check_text($post, $var, $options);
 	}
 
+	private function _check_select(&$post, $var, $options)
+	{
+		if (!empty($options['multiple']))
+		{
+			$post[$var] = array_values(array_filter(isset($post[$var]) ? (array)$post[$var] : [], function($value){
+				return strlen((string)$value);
+			}));
+		}
+
+		return $this->_check_text($post, $var, $options);
+	}
+
 	private function _check_email($post, $var, $options)
 	{
 		if ($post[$var] !== '' && !is_valid_email($post[$var]))
@@ -984,7 +996,9 @@ class Form extends Library
 		}
 
 		$choices = [];
+		$multiple = !empty($options['multiple']);
 		$user_value = $this->_display_value($var, $options);
+		$user_values = array_map('strval', (array)$user_value);
 
 		if (!empty($options['values']))
 		{
@@ -993,16 +1007,17 @@ class Form extends Library
 				$choices[] = [
 					'value'    => $value,
 					'label'    => $label,
-					'selected' => $user_value == (string)$value
+					'selected' => $multiple ? in_array((string)$value, $user_values, TRUE) : $user_value == (string)$value
 				];
 			}
 		}
 
 		return $this->_render('select', [
 			'id'          => 'form_'.$this->token().'_'.$var,
-			'name'        => $this->token().'['.$var.']',
+			'name'        => $this->token().'['.$var.']'.($multiple ? '[]' : ''),
 			'placeholder' => !isset($options['rules']) || !in_array('required', $options['rules']),
-			'choices'     => $choices
+			'choices'     => $choices,
+			'multiple'    => $multiple
 		]);
 	}
 

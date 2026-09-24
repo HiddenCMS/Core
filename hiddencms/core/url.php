@@ -32,6 +32,7 @@ class Url extends Core
 		$this->_const['location']     = ($this->https ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		$this->_const['request']      = $_SERVER['REQUEST_URI'];
 		$this->_const['cli']          = FALSE;
+		$this->_const['maintenance_bypass'] = FALSE;
 
 		$url = parse_url($this->location);
 
@@ -103,12 +104,20 @@ class Url extends Core
 			}
 			else if ($this->config->maintenance)
 			{
+				$user_groups = $this->user->id ? $this->groups($this->user->id) : [];
+
+				$this->_const['maintenance_bypass'] = self::maintenance_access_allowed(
+					(bool)$this->user->admin,
+					$user_groups,
+					$this->config->maintenance_allowed_groups
+				);
+
 				if ($this->config->maintenance_opening && ($opening = $this->date($this->config->maintenance_opening)) && $opening->diff() <= 0)
 				{
 					$this	->config('maintenance', FALSE, 'bool')
 							->config('maintenance_opening', '');
 				}
-				else if (!$this->user->admin && !preg_match('#(ajax/user/(lost-password|login)|user/(login|register|lost-password(?:/[a-z0-9]+)?|logout))#', $this->url->request))
+				else if (!$this->_const['maintenance_bypass'] && !preg_match('#(ajax/user/(lost-password|login)|user/(login|register|lost-password(?:/[a-z0-9]+)?|logout))#', $this->url->request))
 				{
 					header('HTTP/1.0 503 Service Unavailable');
 
@@ -346,6 +355,15 @@ class Url extends Core
 	public function __toString()
 	{
 		return ($this->https ? 'https' : 'http').'://'.$this->host;
+	}
+
+	public static function maintenance_access_allowed($admin, array $user_groups, $allowed_groups)
+	{
+		$allowed_groups = array_values(array_filter((array)$allowed_groups, function($group_id){
+			return is_string($group_id) && $group_id !== '';
+		}));
+
+		return (bool)$admin || (bool)array_intersect($allowed_groups, $user_groups);
 	}
 }
 
