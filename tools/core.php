@@ -110,6 +110,16 @@ try
 		echo ($execute ? 'Purge' : 'Simulation').' terminée.'.PHP_EOL;
 		foreach ($report['candidates'] as $key => $count) echo ' - '.$key.' : '.$count.PHP_EOL;
 	}
+	else if ($command === 'files-sync')
+	{
+		$dry_run = in_array('--dry-run', $argv, TRUE);
+		$report = HB()->module('files')->model('synchronizer')->sync($dry_run);
+		echo ($dry_run ? 'Synchronization preview: ' : 'Synchronization complete: ').$report['directories'].' folder(s), '.$report['files'].' file(s) '.($dry_run ? 'to add' : 'added');
+		if ($report['renamed']) echo ', '.$report['renamed'].' file(s) '.($dry_run ? 'to rename' : 'renamed');
+		if ($report['permissions']) echo ', '.$report['permissions'].' permission(s) '.($dry_run ? 'to repair' : 'repaired');
+		if ($report['skipped']) echo ', '.$report['skipped'].' skipped';
+		echo '.'.PHP_EOL;
+	}
 	else if ($command === 'rollback')
 	{
 		if (empty($argv[2]))

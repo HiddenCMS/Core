@@ -173,7 +173,10 @@ class Admin extends Controller_Module
 
 	private function file_public_slug($file)
 	{
-		return pathinfo(basename($this->normalize_db_path($file['path'])), PATHINFO_FILENAME);
+		$name = pathinfo((string)$file['name'], PATHINFO_FILENAME);
+		$slug = url_title($name);
+
+		return (int)$file['id'].'-'.($slug ?: 'file');
 	}
 
 	private function file_records()
@@ -799,11 +802,19 @@ class Admin extends Controller_Module
 
 		foreach ($directories as $path => $title)
 		{
-			$html .= '<li class="files-tree-node">'
-					.'<a class="'.($path === $current ? 'active' : '').'" href="'.$this->index_url($path).'">'
+			$children = $this->render_tree_branch($path, $current);
+			$has_children = $children !== '';
+			$current_branch = $path === $current || ($current !== '' && strpos($current, $path.'/') === 0);
+			$html .= '<li class="files-tree-node'.($has_children ? ' has-children' : '').($current_branch ? ' is-open is-current-branch' : '').'" data-files-tree-path="'.utf8_htmlentities($path).'">'
+					.'<div class="files-tree-row">'
+						.($has_children
+							? '<button class="files-tree-toggle" type="button" data-files-tree-toggle aria-expanded="'.($current_branch ? 'true' : 'false').'" title="'.$this->lang('Toggle folder').'" aria-label="'.$this->lang('Toggle folder').'">'.icon('fas fa-chevron-right').'</button>'
+							: '<span class="files-tree-toggle-spacer"></span>')
+						.'<a class="'.($path === $current ? 'active' : '').'" href="'.$this->index_url($path).'">'
 						.icon('far fa-folder').' '.utf8_htmlentities($title)
-					.'</a>'
-					.$this->render_tree_branch($path, $current)
+						.'</a>'
+					.'</div>'
+					.$children
 				.'</li>';
 		}
 
@@ -812,13 +823,21 @@ class Admin extends Controller_Module
 
 	private function render_tree($current)
 	{
+		$children = $this->render_tree_branch('', $current);
+		$has_children = $children !== '';
+
 		return '<div class="files-tree-heading">'.icon('far fa-folder-open').' '.$this->lang('Folders').'</div>'
 			.'<ul class="files-tree">'
-				.'<li class="files-tree-node files-tree-root">'
-					.'<a class="'.($current === '' ? 'active' : '').'" href="'.$this->index_url().'">'
+				.'<li class="files-tree-node files-tree-root'.($has_children ? ' has-children is-open' : '').' is-current-branch" data-files-tree-path="">'
+					.'<div class="files-tree-row">'
+						.($has_children
+							? '<button class="files-tree-toggle" type="button" data-files-tree-toggle aria-expanded="true" title="'.$this->lang('Toggle folder').'" aria-label="'.$this->lang('Toggle folder').'">'.icon('fas fa-chevron-right').'</button>'
+							: '<span class="files-tree-toggle-spacer"></span>')
+						.'<a class="'.($current === '' ? 'active' : '').'" href="'.$this->index_url().'">'
 						.icon('far fa-folder').' '.$this->lang('Root')
-					.'</a>'
-					.$this->render_tree_branch('', $current)
+						.'</a>'
+					.'</div>'
+					.$children
 				.'</li>'
 			.'</ul>';
 	}

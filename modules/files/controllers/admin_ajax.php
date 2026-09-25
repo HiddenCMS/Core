@@ -294,11 +294,12 @@ class Admin_Ajax extends Controller_Module
 	{
 		$path = $this->normalize_db_path($file['path']);
 		$full = HIDDENCMS_CMS.'/'.$path;
+		$slug = url_title(pathinfo((string)$file['name'], PATHINFO_FILENAME)) ?: 'file';
 
 		return [
 			'id'       => (int)$file['id'],
 			'name'     => $file['name'],
-			'url'      => url('files/'.pathinfo(basename($path), PATHINFO_FILENAME)),
+			'url'      => url('files/'.(int)$file['id'].'-'.$slug),
 			'is_image' => (bool)$is_image,
 			'extension'=> strtoupper(extension($path)),
 			'size'     => is_file($full) ? human_size(filesize($full)) : '',

@@ -55,7 +55,6 @@ INSERT INTO `addon` (`id`, `type_id`, `name`, `data`) VALUES
 (13, 1, 'statistics', '{"enabled":true}'),
 (14, 1, 'user', '{"enabled":true}'),
 (15, 2, 'admin', NULL),
-(16, 2, 'azuro', NULL),
 (17, 3, 'breadcrumb', '{"enabled":true}'),
 (18, 3, 'header', '{"enabled":true}'),
 (19, 3, 'html', '{"enabled":true}'),
@@ -185,23 +184,6 @@ CREATE TABLE `dispositions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 INSERT INTO `dispositions` (`disposition_id`, `theme`, `page`, `zone`, `disposition`) VALUES
-(1, 'azuro', '*', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":"col-7"}]},{"size":null,"widgets":[{"id":2,"style":null,"size":"col-3"}]}]}]'),
-(2, 'azuro', '*', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":27,"style":null,"size":null}]}]}]'),
-(3, 'azuro', '*', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":26,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":"col-7"}]}]}]'),
-(4, 'azuro', '*', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":28,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":"card-dark","size":null}]}]}]'),
-(5, 'azuro', '*', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":29,"style":"card-transparent","size":null}]}]}]'),
-(6, 'azuro', '*', 3, '[]'),
-(7, 'azuro', '*', 4, '[]'),
-(8, 'azuro', '*', 6, '[]'),
-(17, 'azuro', 'user/*', 5, '[{"style":null,"cols":[{"size":"col-12","widgets":[{"id":33,"style":null,"size":null}]}]}]'),
-(18, 'azuro', 'outline:1', 0, '[{"style":"align-items-center","cols":[{"size":"col-9","widgets":[{"id":1,"style":null,"size":null}]},{"size":"col-3","widgets":[{"id":2,"style":null,"size":null}]}]}]'),
-(19, 'azuro', 'outline:1', 1, '[{"style":"align-items-center","cols":[{"size":null,"widgets":[{"id":3,"style":null,"size":null}]}]}]'),
-(20, 'azuro', 'outline:1', 2, '[{"style":"align-items-center","cols":[{"size":"col-7","widgets":[{"id":4,"style":null,"size":null}]},{"size":"col-5","widgets":[{"id":5,"style":null,"size":null}]}]}]'),
-(21, 'azuro', 'outline:1', 3, '[]'),
-(22, 'azuro', 'outline:1', 4, '[]'),
-(23, 'azuro', 'outline:1', 5, '[{"style":null,"cols":[{"size":"col-8","widgets":[{"id":6,"style":null,"size":null}]},{"size":"col-4","widgets":[{"id":8,"style":null,"size":null}]}]}]'),
-(24, 'azuro', 'outline:1', 6, '[]'),
-(25, 'azuro', 'outline:1', 7, '[{"style":null,"cols":[{"size":null,"widgets":[{"id":10,"style":"card-transparent","size":null}]}]}]'),
 (26, 'altitude', '*', 0, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":26,"style":null,"size":null}]}]}]'),
 (27, 'altitude', '*', 1, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":27,"style":null,"size":null}]}]}]'),
 (28, 'altitude', '*', 2, '[{"style":"altitude-transparent","cols":[{"size":"col-12","widgets":[{"id":28,"style":null,"size":null}]}]}]'),
@@ -419,14 +401,6 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `settings` (`name`, `site`, `lang`, `value`, `type`) VALUES
-('azuro_background', '', '', '0', 'int'),
-('azuro_background_attachment', '', '', 'scroll', 'string'),
-('azuro_background_color', '', '', '#343a40', 'string'),
-('azuro_background_position', '', '', 'center top', 'string'),
-('azuro_background_repeat', '', '', 'no-repeat', 'string'),
-('azuro_primary_color', '', '', '#00d7b3', 'string'),
-('azuro_secondary_color', '', '', '#00c7e4', 'string'),
-('azuro_text_color', '', '', '#212529', 'string'),
 ('altitude_accent_color', '', '', '#ff9900', 'string'),
 ('altitude_background_color', '', '', '#f4f5f1', 'string'),
 ('altitude_content_width', '', '', '1200', 'string'),
@@ -738,20 +712,6 @@ CREATE TABLE `widgets` (
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 INSERT INTO `widgets` (`widget_id`, `widget`, `type`, `title`, `settings`) VALUES
-(1, 'navigation', 'index', NULL, '{"menu_id":1,"panel":0}'),
-(2, 'search', 'index', NULL, NULL),
-(3, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"#fff","color_description":"#a4b5c5"}'),
-(4, 'navigation', 'index', NULL, '{"menu_id":2,"panel":0}'),
-(5, 'user', 'index_mini', NULL, NULL),
-(6, 'module', 'index', NULL, NULL),
-(7, 'navigation', 'vertical', NULL, '{"menu_id":3,"panel":1}'),
-(8, 'user', 'index', NULL, NULL),
-(10, 'copyright', 'index', NULL, NULL),
-(12, 'module', 'index', NULL, NULL),
-(13, 'module', 'index', NULL, NULL),
-(14, 'module', 'index', NULL, NULL),
-(15, 'module', 'index', NULL, NULL),
-(16, 'module', 'index', NULL, NULL),
 (26, 'user', 'index_mini', NULL, NULL),
 (27, 'header', 'index', NULL, '{"display":"logo","align":"text-center","title":"","description":"","color_title":"","color_description":""}'),
 (28, 'navigation', 'index', NULL, '{"links":[{"title":"Home","url":""}]}'),

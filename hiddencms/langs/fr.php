@@ -1457,4 +1457,5 @@ return array (
 	'045031db' => 'Widget invalide',
 	'14424039' => 'Mise en page incomplète',
 	'148e3473' => 'Redimensionner la colonne',
+	'66d43933' => 'Déplier ou replier le dossier',
 );

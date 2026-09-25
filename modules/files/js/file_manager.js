@@ -29,6 +29,66 @@ $(function(){
 	};
 
 	var init = function(){
+		$('.files-tree').each(function(){
+			var $tree = $(this);
+
+			if ($tree.data('files-tree-bound'))
+			{
+				return;
+			}
+
+			$tree.data('files-tree-bound', true);
+			var storageKey = 'hiddencms.files.tree.open';
+			var stored = [];
+
+			try
+			{
+				stored = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+				stored = Array.isArray(stored) ? stored : [];
+			}
+			catch (e)
+			{
+				stored = [];
+			}
+
+			var updateNode = function($node, open){
+				$node.toggleClass('is-open', open);
+				$node.children('.files-tree-row').find('[data-files-tree-toggle]').first().attr('aria-expanded', open ? 'true' : 'false');
+			};
+
+			$tree.find('.files-tree-node.has-children').each(function(){
+				var $node = $(this);
+				var path = String($node.data('files-tree-path') || '');
+
+				if ($node.hasClass('is-current-branch') || stored.indexOf(path) !== -1)
+				{
+					updateNode($node, true);
+				}
+			});
+
+			$tree.on('click', '[data-files-tree-toggle]', function(){
+				var $node = $(this).closest('.files-tree-node');
+				var path = String($node.data('files-tree-path') || '');
+				var open = !$node.hasClass('is-open');
+				updateNode($node, open);
+
+				if (open && stored.indexOf(path) === -1)
+				{
+					stored.push(path);
+				}
+				else if (!open)
+				{
+					stored = stored.filter(function(item){ return item !== path; });
+				}
+
+				try
+				{
+					window.localStorage.setItem(storageKey, JSON.stringify(stored));
+				}
+				catch (e) {}
+			});
+		});
+
 		$('.files-path-dropdown').each(function(){
 			var $dropdown = $(this);
 
